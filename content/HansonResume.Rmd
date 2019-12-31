@@ -1,0 +1,98 @@
+---
+title: "Bryan A. Hanson"
+---
+
+
+[Contact Bryan](mailto:hanson@depauw.edu) --
+[Web](http://academic.depauw.edu/~hanson/index.html) --
+[GitHub](https://github.com/bryanhanson/) --
+[Blog](https://ChemoSpec.org/)
+
+Expertise in: Development of R packages supporting science, especially spectroscopy and chemometrics (10 + years). Exploratory data analysis and visualization.  Reproducible research and report automation. Web page creation and maintenance. Comfortable with R, markdown, LaTeX, html, css, JavaScript.
+
+## Positions Held
+
+<table>
+  <tr>
+    <td>Professor of Chemistry & Biochemistry, DePauw University</td>
+    <td>&nbsp;&nbsp;&nbsp;</td>
+    <td>1986--2018</td>
+  </tr>
+</table>
+
+## Education
+
+<table>
+  <tr>
+    <td>Post-doctoral Associate, Oregon State University</td>
+    <td>&nbsp;&nbsp;&nbsp;</td>
+    <td>1984--1986</td>
+  </tr>
+	<tr>
+    <td>Ph.D., Chemistry, University of California Los Angeles, California</td>
+    <td>&nbsp;&nbsp;&nbsp;</td>
+    <td>September 1984</td>
+  </tr>
+	<tr>
+    <td>B.S., Biochemistry, California State University Los Angeles, California</td>
+    <td>&nbsp;&nbsp;&nbsp;</td>
+    <td>October 1981</td>
+  </tr>
+</table>
+## Selected R Software Packages Authored
+
+ChemoSpec: Exploratory Chemometrics for Spectroscopy [link](https://CRAN.R-project.org/package=ChemoSpec)
+
+ChemoSpec2D: Exploratory Chemometrics for 2D Spectroscopy [link](https://CRAN.R-project.org/package=ChemoSpec2D)
+
+exCon: Interactive Exploration of Contour Data [link](https://CRAN.R-project.org/package=exCon) -- [live demo](https://bryanhanson.github.io/exCon/exCon.html)
+
+readJDX: Import Data in the JCAMP-DX Format [link](https://CRAN.R-project.org/package=readJDX)
+
+SpecHelpers: Spectroscopy Related Utilities [link](https://CRAN.R-project.org/package=SpecHelpers)
+
+unmixR: Hyperspectral Unmixing with R, with Anton Belov, Conor McManus, Claudia Beleites and Simon Fuller [link](https://gitlab.com/chemometrics/unmixR)
+
+HiveR: Hive Plots in 2D and 3D [link](https://CRAN.R-project.org/package=HiveR)
+
+LindenmayeR: Functions to Explore L-Systems (Lindenmayer Systems) [link](https://CRAN.R-project.org/package=HiveR)
+
+## Selected Presentations
+
+"Development of Chemometric Tools for 2D NMR Data Sets" Poster at PANIC 2018 (Practical Applications of NMR in Industry Conference), La Jolla (San Diego) California, March 2018. [Download](http://academic.depauw.edu/~hanson/MiscPages/ChemoSpec2DPANIC2018Poster.pdf)
+
+"Using R to Make Sense of NMR Data Sets" invited talk at PANIC 2017 (Practical Applications of NMR in Industry Conference), Hilton Head South Carolina, February 2017. [Download](http://academic.depauw.edu/~hanson/MiscPages/PANIC2017Talk.pdf)
+
+"unmixR: Hyperspectral Unmixing in \emph{R}" with Conor McManus, Simon Fuller, and Claudia Beleites.  Poster at \emph{useR!} 2014,  University of California at Los Angeles, June 30--July 3, 2014. [Download](http://academic.depauw.edu/~hanson/MiscPages/unmixRuseR2014Poster.pdf)
+
+"HiveR: 2 and 3D Hive Plots of Networks" Invited talk at useR! 2012 Conference, Nashville Tennessee, June 12--15, 2012. [Download](http://academic.depauw.edu/~hanson/MiscPages/HiveRuseR2012Talk.pdf)
+
+"HiveR: 2 and 3D Hive Plots of Networks" Poster at useR! 2012 Conference, Nashville Tennessee, June 12--15, 2012. [Download](http://academic.depauw.edu/~hanson/MiscPages/HiveRuseR2012Poster.pdf)
+
+"Implementation of ANOVA-PCA in R for Multivariate Exploration" with M. J. Keinsley.  Poster at useR! 2012 Conference, Nashville Tennessee, June 12--15, 2012. [Download](http://academic.depauw.edu/~hanson/MiscPages/aovPCAuseR2012Poster.pdf)
+
+"ChemoSpec: an R Package for the Chemometric Analysis of Spectroscopic Data" useR! 2010 Conference, National Institute of Standards and Technology, Gaithersburg Maryland, July 2010. [Download](http://academic.depauw.edu/~hanson/MiscPages/ChemoSpecuseR2010Poster.pdf)
+
+"Assessing <em>Serenoa repens</em> (Arecaceae) Quality at the Retail Level Using Spectroscopic and Chemometric Methods" with Tao Ye and M. Daniel Raftery.  Presented at the 49$^{th}$ Annual Meeting of the Society for Economic Botany, June 1--5, 2008, Duke University. [Download](http://academic.depauw.edu/~hanson/MiscPages/SrESEB2008Poster.pdf)
+
+## Selected Conferences Attended
+
+Practical Applications of NMR in Industry Conference (PANIC) La Jolla (San Diego) California, March 2018.
+
+Practical Applications of NMR in Industry Conference (PANIC) Hilton Head South Carolina, February 2017.
+
+useR! 2014,  University of California at Los Angele, June 30--July 3, 2014.
+
+userR! 2012 Meeting, Vanderbilt University, June 12--15 2012.
+
+useR! 2010, National Institute of Standards and Technology, Gaithersburg Maryland, July 2010.
+
+## Miscellaneous
+
+Google Summer of Code 2016: Co-mentored Anton Belov (Russian computer science student) in writing new functions for the unmixR package.
+
+Google Summer of Code 2013: Co-mentored Conor McManus (Irish computer science student) in writing the unmixR package.
+
+I am a significant contributor to the [Valid NMR Chemometrics Wiki](http://www.validnmr.com/w/index.php?title=Chemometrics).
+
+You can see my [StackExchange](https://stackexchange.com/users/316869/bryan-hanson?tab=accounts) Activity.
