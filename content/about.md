@@ -1,6 +1,6 @@
 ---
 date: "2020-01-01"
-title: About
+title: About This Blog
 disable_comments: true
 ---
 
@@ -9,25 +9,12 @@ disable_comments: true
 >
 > -- <cite>Karl Broman</cite>
 
-## Now
+The purpose of this blog is to provide a place to share my work in the area of Chemometrics & Spectroscopy using FOSS (free and open source) tools.  Mostly I work with `R` but I use other tools as needed.  Some areas I expect to write about from time-to-time include:
 
-I am currently a freelance `R` consultant with expertise in:
-
-* Development of `R` packages supporting science, especially spectroscopy and chemometrics
-* Spectroscopy (NMR, IR, UV-Vis etc)
-* Chemometrics
-* Exploratory Data Analysis
-* Data Visualizations
-* Data Management: organization, cleaning
-* Reproducible Research: the automated writing of research reports
-* `R` Training
-* Web page creation and maintenance
-* Familiar with `R`, markdown, LaTeX, html, css, JavaScript
-* [Resume](/resume/)
-
-## Then
-
-I retired in June 2018 from DePauw University after 32 years of teaching chemistry and biochemistry.  It was a good run. No regrets.  Just time to do something else.
+* Major updates to `R` packages I author [See here](/links/)
+* Tutorials on how to accomplish certain tasks, generally inspired by user questions.
+* Developments in the chemometrics and spectroscopy community.
+* Occasionally, discussion of interesting papers.
 
 <hr>
 
