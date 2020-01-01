@@ -2,7 +2,7 @@ baseurl = "/"
 languageCode = "en-us"
 title = "Chemometrics & Spectroscopy using R"
 theme = "hugo-lithium"
-googleAnalytics = ""
+googleAnalytics = "UA-25299003-2"
 disqusShortname = ""
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 
@@ -12,7 +12,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 
 [taxonomies]
     tag = "tags"
-    
+
 [[menu.main]]
     name = "About"
     url = "/about/"
