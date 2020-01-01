@@ -1,6 +1,7 @@
 ---
 date: "2020-01-01"
 title: Links
+disable_comments: true
 ---
 Here are links to some of my projects:
 

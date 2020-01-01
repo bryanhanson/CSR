@@ -1,5 +1,7 @@
 ---
 title: "Bryan A. Hanson"
+date: "2020-01-01"
+disable_comments: true
 ---
 
 

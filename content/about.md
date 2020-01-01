@@ -1,6 +1,7 @@
 ---
 date: "2020-01-01"
 title: About
+disable_comments: true
 ---
 
 > "Open source means everyone can see my stupid mistakes.
