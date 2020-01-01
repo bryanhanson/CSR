@@ -22,7 +22,7 @@ I am currently a freelance `R` consultant with expertise in:
 * `R` Training
 * Web page creation and maintenance
 * Familiar with `R`, markdown, LaTeX, html, css, JavaScript
-* [Resume](/HansonResume/)
+* [Resume](/resume/)
 
 ## Then
 
