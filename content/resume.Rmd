@@ -41,6 +41,7 @@ Expertise in: Development of R packages supporting science, especially spectrosc
     <td>October 1981</td>
   </tr>
 </table>
+
 ## Selected R Software Packages Authored
 
 ChemoSpec: Exploratory Chemometrics for Spectroscopy [link](https://CRAN.R-project.org/package=ChemoSpec)

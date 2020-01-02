@@ -2,12 +2,12 @@
 title: "Data Exchange Formats"
 author: "Bryan Hanson"
 date: 2020-01-xx
-tags: ["Misc"]
+tags: ["Data Formats"]
 slug: "P3"
 draft: true
 ---
 
-Spectroscopic data exchange formats are a mess.
+Spectroscopic data exchange formats are a mess.  The whole point...
 
 Delta & TopSpin export as...
 

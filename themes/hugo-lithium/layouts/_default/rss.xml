@@ -34,7 +34,7 @@
         {{ .Content | html }}
       </description>
       {{ range .Params.tags }}
-            <tag>{{ . }}</tag>
+        <category>{{ . }}</category>
       {{ end }}
     </item>
     {{ end }}
