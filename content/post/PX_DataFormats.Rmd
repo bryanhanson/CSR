@@ -1,0 +1,14 @@
+---
+title: "Data Exchange Formats"
+author: "Bryan Hanson"
+date: 2020-01-xx
+tags: ["Misc"]
+slug: "P3"
+draft: true
+---
+
+Spectroscopic data exchange formats are a mess.
+
+Delta & TopSpin export as...
+
+But ASCII can be in various formats...

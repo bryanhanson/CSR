@@ -1,5 +1,6 @@
 baseurl = "/"
 languageCode = "en-us"
+copyright = "Creative Commons Attribution-ShareAlike 4.0 International License"
 title = "Chemometrics & Spectroscopy using R"
 theme = "hugo-lithium"
 googleAnalytics = "UA-25299003-2"
@@ -10,6 +11,8 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
     post = "/:year/:month/:day/:slug/"
     tags = "/tags/:slug/"
 
+[author]
+    name = "Bryan A. Hanson"
 [taxonomies]
     tag = "tags"
 
