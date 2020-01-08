@@ -1,0 +1,250 @@
+---
+title: FOSS For Spectroscopy
+date: 2020-01-08
+disable_comments: true
+---
+
+<script src="/rmarkdown-libs/jquery/jquery.min.js"></script>
+<script src="/rmarkdown-libs/elevate-section-attrs/elevate-section-attrs.js"></script>
+<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
+
+
+<!-- Following code to keep printed version cleaner; see https://stackoverflow.com/a/24467913/633251  -->
+<style type="text/css" media="print">
+a:link:after, a:visited:after {
+  content: normal !important;
+}
+</style>
+<!-- See https://kryogenix.org/code/browser/sorttable/ -->
+<script src="sorttable.js"></script>
+<p>The following table collects information about free and open source software (<a href="https://en.wikipedia.org/wiki/Free_and_open-source_software">FOSS</a>) for spectroscopy. All information is taken from the respective websites and/or repositories. Some softwares have been described in publications. If so, a link is provided, but the document may be behind a paywall.</p>
+<p>Unless otherwise noted, the software mentioned here:</p>
+<ul>
+<li>Is suitable for one or more of the following techniques: NMR, IR, Raman, ESR/EPR, fluorescence and UV-Vis.</li>
+<li>Mass <em>spectrometry</em> software is not included.</li>
+<li>Software for MRI is not included.</li>
+</ul>
+<p><a href="https://www.mdpi.com/2218-1989/9/10/200">Stanstrup <em>et al.</em></a> have published a comprehensive paper describing the <code>R</code> packages suitable for use in metabolomics, which partially overlaps with the information here.</p>
+<p>The <a href="https://cran.r-project.org/web/views/ChemPhys.html">CRAN Task View for Chemometrics &amp; Computational Physics</a> includes some <code>R</code> packages listed here as well as related software.</p>
+<p>Additions or corrections? Please <a href="https://github.com/bryanhanson/FOSS4Spectroscopy/issues">file an issue</a> with the necessary information or submit a pull request at the <a href="https://github.com/bryanhanson/FOSS4Spectroscopy">repo</a>.</p>
+<p><a href="https://www.repostatus.org/#wip"><img src="https://www.repostatus.org/badges/latest/wip.svg" alt="Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public." /></a>
+<a href="https://travis-ci.com/bryanhanson/FOSS4Spectroscopy"><img src="https://travis-ci.com/bryanhanson/FOSS4Spectroscopy.svg?branch=master" alt="Build Status" /></a></p>
+<hr>
+<ul>
+<li><em>Click on a header to sort the table</em></li>
+<li><a href="#abbreviations">Abbreviations</a> &amp; terms below the table</li>
+<li>The table currently has 10 entries; the majority are <code>R</code> (6) or <code>Python</code> (1).</li>
+</ul>
+<table class="sortable table table-striped table-bordered" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+name
+</th>
+<th style="text-align:left;">
+description
+</th>
+<th style="text-align:left;">
+language
+</th>
+<th style="text-align:left;">
+notes
+</th>
+<th style="text-align:left;">
+<a href="#status">status</a>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<a href="https://bryanhanson.github.io/ChemoSpec/">ChemoSpec</a>
+</td>
+<td style="text-align:left;">
+EDA of 1D spectra
+</td>
+<td style="text-align:left;">
+R
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+2019-11-15
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://bryanhanson.github.io/ChemoSpec2D/">ChemoSpec2D</a>
+</td>
+<td style="text-align:left;">
+EDA of 2D NMR
+</td>
+<td style="text-align:left;">
+R
+</td>
+<td style="text-align:left;">
+2D NMR only
+</td>
+<td style="text-align:left;">
+2019-06-10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://cran.r-project.org/package=speaq">speaq</a> (<a href="https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1006018">pub</a>)
+</td>
+<td style="text-align:left;">
+NMR data processing
+</td>
+<td style="text-align:left;">
+R
+</td>
+<td style="text-align:left;">
+1D NMR only
+</td>
+<td style="text-align:left;">
+2019-12-09
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://openvnmrj.org">OpenVnmrJ</a>
+</td>
+<td style="text-align:left;">
+NMR data acquisition &amp; processing (Varian instruments)
+</td>
+<td style="text-align:left;">
+C
+</td>
+<td style="text-align:left;">
+nD NMR only
+</td>
+<td style="text-align:left;">
+2019-12-09
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="http://www.nmrglue.com/">nmrGlue</a> (<a href="https://link.springer.com/article/10.1007%2Fs10858-013-9718-x">pub</a>)
+</td>
+<td style="text-align:left;">
+NMR data processing, analysis, visualization &amp; conversion
+</td>
+<td style="text-align:left;">
+Python
+</td>
+<td style="text-align:left;">
+nD NMR only
+</td>
+<td style="text-align:left;">
+2019-12-19
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://cran.r-project.org/package=hyperSpec">hyperSpec</a>
+</td>
+<td style="text-align:left;">
+Hyperspectral data sets (spectra accompanied by spatial, time or concentration information)
+</td>
+<td style="text-align:left;">
+R
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+2018-06-27
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://cran.r-project.org/package=readJDX">readJDX</a>
+</td>
+<td style="text-align:left;">
+Import JCAMP-DX files to ChemoSpec/Spectra format
+</td>
+<td style="text-align:left;">
+R
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+2019-11-11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://github.com/Chathurga/HyperChemoBridge">hyperChemoBridge</a>
+</td>
+<td style="text-align:left;">
+Interconversion of hyperSpec and ChemoSpec formats
+</td>
+<td style="text-align:left;">
+R
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+2019-12-31
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="https://www.ibbr.umd.edu/nmrpipe/">nmrPipe</a> (<a href="https://link.springer.com/article/10.1007/BF00197809">pub</a>)
+</td>
+<td style="text-align:left;">
+NMR data processing, analysis, visualization &amp; conversion
+</td>
+<td style="text-align:left;">
+C-shell
+</td>
+<td style="text-align:left;">
+nD NMR only
+</td>
+<td style="text-align:left;">
+2016-12-31
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<a href="http://nmrml.org/">nmrML</a> (<a href="https://dx.doi.org/10.1021/acs.analchem.7b02795">pub</a>)
+</td>
+<td style="text-align:left;">
+Markup language for sharing NMR data
+</td>
+<td style="text-align:left;">
+XML
+</td>
+<td style="text-align:left;">
+NMR only
+</td>
+<td style="text-align:left;">
+2019-12-31
+</td>
+</tr>
+</tbody>
+</table>
+<div id="status" class="section level5">
+<h5>Status Column:</h5>
+<p>The status column in the table gives the date of the most recent:</p>
+<ul>
+<li>commit to a repository,</li>
+<li>activity on an issue filed in a repository,</li>
+<li>web site update, or</li>
+<li>submission to an archival network such as CRAN</li>
+</ul>
+<p>as a proxy for regular maintenance. Keep in mind that some software is fairly mature and thus an older status date does not necessarily mean the software is not maintained. Follow the links to the websites for more details.</p>
+<p><em>The date is found by automatic checking of sites with valid links. Commits and issues are only checked for Github sites. Web site updates are found using the <code>Python</code> package <a href="https://pypi.org/project/htmldate/.">htmldate</a></em></p>
+</div>
+<div id="abbreviations" class="section level5">
+<h5>Abbreviations &amp; Terms:</h5>
+<ul>
+<li><strong>CRAN:</strong> <a href="https://cran.r-project.org/">Comprehensive R Archival Network</a></li>
+<li><strong>EDA:</strong> Exploratory data analysis (unsupervised chemometrics)</li>
+<li><strong>language:</strong> Most software is built on several languages. In the table, “language” refers to the language one uses to interact with the software. Some software has partial or complete interactive features.</li>
+<li><strong>nD NMR:</strong> n-dimensional NMR, 1D, 2D, 3D etc</li>
+<li><strong>Python:</strong> Multipurpose programming language <a href="https://www.python.org/about/">details</a></li>
+<li><strong>R:</strong> A software environment for statistical computing and graphics <a href="https://www.r-project.org/">details, platforms</a></li>
+<li><strong>VM:</strong> Virtual machine. Any of several means of delivering software to run on any computer, such as VirtualBox or Docker containers.</li>
+</ul>
+</div>

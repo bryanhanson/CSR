@@ -6,6 +6,8 @@ tags: ["R", "Python"]
 slug: "P1"
 ---
 
+*Note: The FOSS4Spectroscopy page is currently undergoing improvements, so the first link below is not active.  I have provided a preview version [here](/F4S/) in the meantime.  The preview version only has a limited number of entries and is formatted differently, but it should give you the idea behind the page.  Thanks for your patience!*
+
 For this inaugural blog post, I'm pleased to share a project I have been working on recently: [FOSS4Spectroscopy](https://bryanhanson.github.io/FOSS4Spectroscopy/) is an attempt to catalog FOSS spectroscopy software.  The page is designed to be updated easily with new or edited entries -- see the page for details, and please contribute!
 
 For this initial version, I searched the CRAN ecosystem via [packagefinder](https://CRAN.R-project.org/package=packagefinder) and the `Python` world via [PyPi.org](https://pypi.org/) using spectroscopy-related keywords.  My expertise is in `R` so I'm pretty confident I have most of the `R` packages included.  I'm not so confident about coverage of the `Python` packages (where else should I look?).
