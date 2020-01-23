@@ -1,0 +1,19 @@
+---
+title: "ChemoSpecUtils Update"
+author: "Bryan Hanson"
+date: 2020-01-22
+tags: ["R", "ChemoSpecUtils"]
+slug: "P4"
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p><code>ChemoSpecUtils</code>, a package that supports the common needs of <a href="https://bryanhanson.github.io/ChemoSpec/">ChemoSpec</a> and <a href="https://bryanhanson.github.io/ChemoSpec2D/">ChemoSpec2D</a>, has been updated on CRAN and is coming to a mirror near you. Noteworthy changes:</p>
+<ul>
+<li>There are new color options available in addition to the <code>auto</code> color scheme used during data importing. These should be useful to normal-vision individuals when there are a lot of categories. The <code>auto</code> option remains the default to avoid breaking anyone’s code. All the built-in color schemes are shown below. They can be used in any of the import functions in either package. The code used to make the figure below is in <code>?colorSymbol</code>. <em>Note: you probably should get the <code>devel</code> version to <code>ChemoSpec</code> in order to see the documentation about how to use the new colors.</em></li>
+<li>The function <code>removeFreq</code> in <code>ChemoSpec</code> now accepts a formula for the specification of the frequencies to remove. This brings it in line with the corresponding function in <code>ChemoSpec2D</code>. This should be a lot easier to use.</li>
+<li>The function <code>sampleDist</code> is now available and replaces <code>sampleDistSpectra</code>. Again the functions in the two overlying packages are essentially as similar as they can be.</li>
+<li>This version is compatible with the upcoming release of <code>R</code> 4.0.</li>
+</ul>
+<p><img src="/post/P4_ChemoSpecUtils_Update_files/figure-html/colors-1.png" width="672" /></p>
