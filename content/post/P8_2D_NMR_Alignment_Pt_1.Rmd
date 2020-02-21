@@ -4,7 +4,6 @@ author: "Bryan Hanson"
 date: 2020-02-20
 tags: ["ChemoSpec2D", "Alignment", "R", "NMR"]
 slug: "P8"
-draft: true
 bibliography: REFS.bib
 ---
 
@@ -16,7 +15,7 @@ In this series of posts, I'll discuss the alignment process for the case of 2D N
 
 No doubt you've compared two spectra by overlaying them on the screen, or printing them out, placing them on top of each other, and holding them up to the light.  Conceptually, one can "align" spectra by a similar method: just slide one of the pieces of paper up/down and left/right until the spectra are optimally aligned.  But how would one do this algorithmically?  A literature searched turned up only a few publications on this topic. Among these, there was only one that I felt I could implement using the description in the paper: the HATS-PR algorithm of Robinette *et al.* [@Robinette2011].
 
-We'll discuss the HATS algorithm in a future post.  As a first step, we need to consider how we know when two spectra are properly aligned.  Visual inspection won't work, as we will encounter cases where peaks in one region align, but only at the expense of peaks in another region.  How would we rank such cases?  To automate this process, we need to use an *objective function*, basically some kind of equation, that we evaluate as we explore the alignment space. A simple but effective option is to compute the distance between the two spectra.  This is done by concatenating each row of the 2D spectra to give a long vector of intensities.  The distance between these vectors can then be computed using any of the standard distance definitions.  Let's illustrate, starting by taking a look at some mis-aligned data.  `ChemoSpec2D` contains a mis-aligned data set, `MUD2`, for just this purpose.  Here are two spectra from `MUD2`; note we are using the new convenience functions `LofC` and `LofL` to make it easy to overlay the spectra.
+We'll discuss the HATS algorithm in a future post.  As a first step however, we need to consider how we know when two spectra are properly aligned.  Visual inspection won't work, as we will encounter cases where peaks in one region align, but only at the expense of peaks in another region.  How would we rank such cases?  To automate this process, we need to use an *objective function*, basically some kind of equation, that we evaluate as we explore the alignment space. A simple but effective option is to compute the distance between the two spectra.  This is done by concatenating each row of the 2D spectra to give a long vector of intensities.  The distance between these vectors can then be computed using any of the standard distance definitions.  Let's illustrate, starting by taking a look at some mis-aligned data.  `ChemoSpec2D` contains a mis-aligned data set, `MUD2`, for just this purpose.  Here are two spectra from `MUD2`; note we are using the new convenience functions `LofC` and `LofL` to make it easy to overlay the spectra.
 
 ```{r hiddenSetup, echo = FALSE, eval = TRUE, results = "hide"}
 rm(list = ls())
@@ -39,7 +38,7 @@ cos_dist <- sampleDist(MUD2, method = "cosine",
   main = "Cosine Distance")
 ```
 
-The actual numerical values are in `cos_dist`, a matrix.  Looking at the heatmap, there are some modest differences among the spectra. However, if one looks at the scale, cosine distances are only defined on [-1 ... 1].  While the cosine distance is popular in some spectroscopic contexts, it's not the best objective function because there is little absolute difference between -1 and 1 (and for `MUD2` the absolute differences are even smaller, as the range is only `r round(range(cos_dist), 2)`).
+The actual numerical values are in `cos_dist`, a matrix.  Looking at the heatmap, there are some modest differences among the spectra. However, if one looks at the scale, cosine distances are only defined on [-1 ... 1].  While the cosine distance is popular in some spectroscopic contexts, it's not the best objective function for our purpose because there is little absolute difference between -1 and 1 (and for `MUD2` the absolute differences are even smaller, as the range is only `r round(range(cos_dist), 2)`).
 
 Let's consider instead the Euclidean distance.
 
