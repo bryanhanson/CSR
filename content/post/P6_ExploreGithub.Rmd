@@ -9,7 +9,7 @@ slug: "P6"
 As the code driving
 [FOSS for Spectroscopy](https://bryanhanson.github.io/FOSS4Spectroscopy/) has matured, I began to think about how to explore Github in a systematic way for additional repositories with tools for spectroscopy.  It turns out that a Github repo can have topics assigned to it, and you can use the Github API to search them. Wait, *what?* I didn't know one could add topics to a repo, even though there is a little invite right there under the repo name:
 
-<img src="/images/repoTopics.png" alt="Repo Topics" style="width:400px;"/>
+<img src="/images/P6_Repo_Topics.png" alt="Repo Topics" style="width:400px;"/>
 
 Naturally I turned to StackOverflow to find out how to do this, and quickly encountered this [question](https://stackoverflow.com/a/48412541/633251).  It was asked when the topics feature was new, so one needs to do things just a bit differently now, but there is a way forward.
 

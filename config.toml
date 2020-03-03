@@ -13,6 +13,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 
 [author]
     name = "Bryan A. Hanson"
+    
 [taxonomies]
     tag = "tags"
 

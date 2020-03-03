@@ -1,0 +1,64 @@
+---
+title: "Aligning 2D NMR Spectra Part 2"
+author: "Bryan Hanson"
+date: 2020-02-20
+tags: ["ChemoSpec2D", "Alignment", "R", "NMR"]
+slug: "P9"
+draft: false
+bibliography: REFS.bib
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>This is Part 2 of a series on aligning 2D NMR, as implemented in the package <code>ChemoSpec2D</code>. <a href="https://chemospec.org/2020/02/20/p8/">Part 1</a>.</p>
+<div id="the-hats-pr-algorithm" class="section level2">
+<h2>The HATS-PR Algorithm</h2>
+<p>In Part 1 I briefly mentioned that we would be using the HATS-PR algorithm of Robinette <em>et al.</em> <span class="citation">(Robinette et al. 2011)</span>. I also discussed the choice of objective function which is used to report on the quality of the alignment. HATS-PR stands for “Hierachical Alignment of Two-Dimensional Spectra - Pattern Recognition”. In <code>ChemoSpec2D</code> the algorithm is implemented in the <code>hats_alignSpectra2D</code> function. Here are the major steps of the HATS-PR algorithm:</p>
+<ol style="list-style-type: decimal">
+<li>Contruct a <em>guide tree</em> using hierarchical clustering (HCA): compute the distance between the spectra, and use these distances to construct a dendrogram (the guide tree). As the name suggests, this tree is used to guide the alignment. The most similar spectra are aligned first, then the next most similar, and so on. In later rounds one applies the alignment procedure to sets of spectra that have already been aligned. In Robinette <em>et al.</em> they use the Pearson correlation coefficient as the distance measure. In <code>ChemoSpec2D</code> you can choose from a number of distance measures. I encourage you to experiment with the choices and see how they affect the alignment process for your data sets.</li>
+<li>For each alignment event, check the alignment using the objective function, which recall is a distance measure. If the objective function is below the threshold, no alignment is needed (“below” assumes we are minimizing the objective function, but we might also be maximizing and hence trying to exceed the threshold). If alignment is necessary, move one of the spectra relative to the other <em>in some fashion</em>, checking each new postion with the objective function until the best alignment is found. This is an exercise in optimization.</li>
+</ol>
+</div>
+<div id="finding-the-optimal-alignment" class="section level2">
+<h2>Finding the Optimal Alignment</h2>
+<p>The heart of the task is in the phrase <em>in some fashion</em>. At one extreme, one can imagine holding one spectrum fixed, and sliding the other spectrum left and right, up and down, over some range of values – essentially a grid of data points. At each position on the virtual grid, evaluate the objective function and keep track of the results. This will always find the answer, but such a brute force search will be very time-consuming and undesirable, especially if the search space is large. Alternatively, do something more efficient! Robinette <em>et al.</em> use a “simple gradient ascent” approach, but there is a vast literature on optimization strategies that we can consider. In <code>ChemoSpec2D</code> we use a machine learning approach (details next), but the function is written in such a way that one can add other optimization approaches seamlessly. <em>Anything</em> is better than a brute force approach.</p>
+</div>
+<div id="optimizing-with-mlrmbo" class="section level2">
+<h2>Optimizing with <code>mlrMBO</code></h2>
+<p>The name <code>mlrMBO</code> comes from “machine learning with R model-based optimization.” <code>mlrMBO</code> is a powerful and flexible package for general purpose optimization, especially in the cases where the objective function is computationally expensive. There is a nice <a href="https://cran.r-project.org/web/packages/mlrMBO/vignettes/mlrMBO.html">introductory vignette</a>.</p>
+<p>The basic steps in the model-based optimization using <code>mlrMBO</code> as implemented in <code>hats_alignSpectra2D</code> in package <code>ChemoSpec2D</code> are as follows:</p>
+<ol style="list-style-type: decimal">
+<li>Define your objective function. Our choice of the Euclidean distance was described in Part 1, along with other options. Most distance measures are not computationally expensive in terms of code. However, the huge number of data points in a typical 2D NMR spectrum bogs things down considerably. The approach taken in model-based optimation mitigates this to a great deal, since the objective function is only used for the initial response surface.</li>
+<li>Generate an “initial design”, by which we mean a strategy to search the possible optimization space. <code>hats_alignSpectra2D</code> takes arguments <code>maxF1</code> and <code>maxF2</code> which define the space that will be considered as the two spectra are shifted relative to each other. The space potentially covered is <code>-maxF1</code> to <code>maxF1</code> and similarly for the F2 dimension. We take advantage of concepts from the design of experiments field, and use the <a href="https://cran.r-project.org/web/packages/lhs/vignettes/lhs_basics.html">lhs package</a> to generate a Latin Hypercube Sample of our space.</li>
+<li>The sample points selected by <code>lhs</code> are evaluated using the objective function.</li>
+<li>The values of the objective function at the sample points are used to create a surrogate model, essentially a response surface. The key here is that the surrogate model is computationally fast and will stand in for the actual objective function during the optimization. <code>mlrMBO</code> provides many <a href="https://mlr.mlr-org.com/articles/tutorial/integrated_learners.html">options</a> for the surrogate model. For <code>hats_alignSpectra2D</code> we use a response surface based on kriging, which is a means of interpolating values that was originally developed in the geospatial statistics world.</li>
+<li>New samples points are suggested by the kriging algorithm, evaluated using the surrogate function, and used to update (improve) the model. Each iteration improves the quality of the model.</li>
+<li>After reaching the designated threshold or the number of iterations specified, the best answer is returned. In this case the best answer is the optimal shift of one spectrum relative to the other, in each dimension.</li>
+</ol>
+</div>
+<div id="other-details" class="section level2">
+<h2>Other Details</h2>
+<p>In addition to the differences noted above, the implementation of HATS-PR in <code>ChemoSpec2D</code> carries out only <em>global</em> alignment. The algorithm described by Robinette <em>et al.</em> includes <em>local</em> alignment steps which I have not implemented. Local alignment is a possible future addition.</p>
+</div>
+<div id="configure-your-workspace" class="section level2">
+<h2>Configure Your Workspace</h2>
+<p>If you are going to actually execute the code here (as opposed to just reading along), you’ll need the development version of <code>ChemoSpec2D</code> (I improved some of the plots that track the alignment progress since the last CRAN release). And you’ll need certain packages. Here are the steps to install everything:</p>
+<pre class="r"><code>chooseCRANmirror() # choose a CRAN mirror
+install.packages(&quot;remotes&quot;)
+library(&quot;remotes&quot;)
+install_github(repo = &quot;bryanhanson/ChemoSpec2D@devel&quot;) # devel branch
+library(&quot;ChemoSpec2D&quot;)
+# other packages needed
+install.packages(&quot;mlrMBO&quot;) # will also install mlr, smoof, ParamHelpers
+install.packages(&quot;lhs&quot;)</code></pre>
+<p>Now you are ready for the main event! Part 3 will be available soon.</p>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1>References</h1>
+<div id="refs" class="references hanging-indent">
+<div id="ref-Robinette2011">
+<p>Robinette, Steven L., Ramadan Ajredini, Hasan Rasheed, Abdulrahman Zeinomar, Frank C. Schroeder, Aaron T. Dossey, and Arthur S. Edison. 2011. “Hierarchical Alignment and Full Resolution Pattern Recognition of 2D Nmr Spectra: Application to Nematode Chemical Ecology.” <em>Analytical Chemistry</em> 83 (5): 1649–57. <a href="https://doi.org/10.1021/ac102724x">https://doi.org/10.1021/ac102724x</a>.</p>
+</div>
+</div>
+</div>
