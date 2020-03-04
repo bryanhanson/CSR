@@ -7,7 +7,7 @@ slug: "P8"
 bibliography: REFS.bib
 ---
 
-In this series of posts, I'll discuss the alignment process for the case of 2D NMR, as implemented in the package `ChemoSpec2D`. This is Part 1.  [Part 2](https://chemospec.org/2020/02/20/p9/). [Part 3](https://chemospec.org/2020/02/20/p10/).
+In this series of posts, I'll discuss the alignment process for the case of 2D NMR, as implemented in the package `ChemoSpec2D`. This is Part 1.  [Part 2](https://chemospec.org/2020/03/02/p9/). [Part 3](https://chemospec.org/2020/03/04/p10/).
 
 <img src="/images/P8_Manual_Alignment.png" alt="Manual Alignment" style="width:400px;"/>
 

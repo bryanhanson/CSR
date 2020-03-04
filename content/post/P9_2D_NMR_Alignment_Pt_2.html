@@ -11,7 +11,7 @@ bibliography: REFS.bib
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
-<p>This is Part 2 of a series on aligning 2D NMR, as implemented in the package <code>ChemoSpec2D</code>. <a href="https://chemospec.org/2020/02/20/p8/">Part 1</a>.</p>
+<p>This is Part 2 of a series on aligning 2D NMR, as implemented in the package <code>ChemoSpec2D</code>. <a href="https://chemospec.org/2020/02/20/p8/">Part 1</a> <a href="https://chemospec.org/2020/03/04/p10/">Part 3</a></p>
 <div id="the-hats-pr-algorithm" class="section level2">
 <h2>The HATS-PR Algorithm</h2>
 <p>In Part 1 I briefly mentioned that we would be using the HATS-PR algorithm of Robinette <em>et al.</em> <span class="citation">(Robinette et al. 2011)</span>. I also discussed the choice of objective function which is used to report on the quality of the alignment. HATS-PR stands for “Hierachical Alignment of Two-Dimensional Spectra - Pattern Recognition”. In <code>ChemoSpec2D</code> the algorithm is implemented in the <code>hats_alignSpectra2D</code> function. Here are the major steps of the HATS-PR algorithm:</p>
@@ -47,12 +47,13 @@ bibliography: REFS.bib
 <pre class="r"><code>chooseCRANmirror() # choose a CRAN mirror
 install.packages(&quot;remotes&quot;)
 library(&quot;remotes&quot;)
-install_github(repo = &quot;bryanhanson/ChemoSpec2D@devel&quot;) # devel branch
+# devel branch -- you need 0.4.156 or higher
+install_github(repo = &quot;bryanhanson/ChemoSpec2D@devel&quot;)
 library(&quot;ChemoSpec2D&quot;)
 # other packages needed
 install.packages(&quot;mlrMBO&quot;) # will also install mlr, smoof, ParamHelpers
 install.packages(&quot;lhs&quot;)</code></pre>
-<p>Now you are ready for the main event! Part 3 will be available soon.</p>
+<p>Now you are ready for the main event! <a href="https://chemospec.org/2020/03/04/p10/">Part 3</a></p>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1>References</h1>

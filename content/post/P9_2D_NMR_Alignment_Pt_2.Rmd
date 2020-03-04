@@ -8,7 +8,7 @@ draft: false
 bibliography: REFS.bib
 ---
 
-This is Part 2 of a series on aligning 2D NMR, as implemented in the package `ChemoSpec2D`. [Part 1](https://chemospec.org/2020/02/20/p8/).
+This is Part 2 of a series on aligning 2D NMR, as implemented in the package `ChemoSpec2D`. [Part 1](https://chemospec.org/2020/02/20/p8/) [Part 3](https://chemospec.org/2020/03/04/p10/)
 
 ## The HATS-PR Algorithm
 
@@ -46,13 +46,14 @@ If you are going to actually execute the code here (as opposed to just reading a
 chooseCRANmirror() # choose a CRAN mirror
 install.packages("remotes")
 library("remotes")
-install_github(repo = "bryanhanson/ChemoSpec2D@devel") # devel branch
+# devel branch -- you need 0.4.156 or higher
+install_github(repo = "bryanhanson/ChemoSpec2D@devel")
 library("ChemoSpec2D")
 # other packages needed
 install.packages("mlrMBO") # will also install mlr, smoof, ParamHelpers
 install.packages("lhs")
 ```
 
-Now you are ready for the main event! Part 3 will be available soon.
+Now you are ready for the main event! [Part 3](https://chemospec.org/2020/03/04/p10/)
 
 # References
