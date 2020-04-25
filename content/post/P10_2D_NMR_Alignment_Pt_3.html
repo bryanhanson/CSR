@@ -29,59 +29,59 @@ set.seed(123)</code></pre>
 <pre><code>## [ChemoSpec2D] Processing row  1  of  9  from the guide tree:
 ## [ChemoSpec2D] Starting alignment of sample(s) 7 
 ##  with sample(s) 4 
-## [ChemoSpec2D] Best alignment is to shift F2 by  0  and F1 by  -1 
+## [ChemoSpec2D] Best alignment is to shift F2 by  0  and F1 by  1 
 ## 
 ## [ChemoSpec2D] Processing row  2  of  9  from the guide tree:
 ## [ChemoSpec2D] Starting alignment of sample(s) 6 
 ##  with sample(s) 3 
-## [ChemoSpec2D] Best alignment is to shift F2 by  0  and F1 by  -1 
+## [ChemoSpec2D] Best alignment is to shift F2 by  0  and F1 by  1 
 ## 
 ## [ChemoSpec2D] Processing row  3  of  9  from the guide tree:
 ## [ChemoSpec2D] Starting alignment of sample(s) 5 
 ##  with sample(s) 2 
-## [ChemoSpec2D] Best alignment is to shift F2 by  0  and F1 by  -1 
+## [ChemoSpec2D] Best alignment is to shift F2 by  0  and F1 by  1 
 ## 
 ## [ChemoSpec2D] Processing row  4  of  9  from the guide tree:
 ## [ChemoSpec2D] Starting alignment of sample(s) 8 
 ##  with sample(s) 1 
-## [ChemoSpec2D] Best alignment is to shift F2 by  0  and F1 by  -1 
+## [ChemoSpec2D] Best alignment is to shift F2 by  0  and F1 by  1 
 ## 
 ## [ChemoSpec2D] Processing row  5  of  9  from the guide tree:
 ## [ChemoSpec2D] Starting alignment of sample(s) 1, 8 
 ##  with sample(s) 9 
-## [ChemoSpec2D] Best alignment is to shift F2 by  2  and F1 by  1 
+## [ChemoSpec2D] Best alignment is to shift F2 by  -2  and F1 by  -1 
 ## 
 ## [ChemoSpec2D] Processing row  6  of  9  from the guide tree:
 ## [ChemoSpec2D] Starting alignment of sample(s) 2, 5 
 ##  with sample(s) 3, 6 
-## [ChemoSpec2D] Best alignment is to shift F2 by  2  and F1 by  0 
+## [ChemoSpec2D] Best alignment is to shift F2 by  -2  and F1 by  0 
 ## 
 ## [ChemoSpec2D] Processing row  7  of  9  from the guide tree:
 ## [ChemoSpec2D] Starting alignment of sample(s) 4, 7 
 ##  with sample(s) 10 
-## [ChemoSpec2D] Best alignment is to shift F2 by  0  and F1 by  3 
+## [ChemoSpec2D] Best alignment is to shift F2 by  0  and F1 by  -3 
 ## 
 ## [ChemoSpec2D] Processing row  8  of  9  from the guide tree:
 ## [ChemoSpec2D] Starting alignment of sample(s) 2, 3, 5, 6 
 ##  with sample(s) 1, 8, 9 
-## [ChemoSpec2D] Best alignment is to shift F2 by  0  and F1 by  3 
+## [ChemoSpec2D] Best alignment is to shift F2 by  0  and F1 by  -3 
 ## 
 ## [ChemoSpec2D] Processing row  9  of  9  from the guide tree:
 ## [ChemoSpec2D] Starting alignment of sample(s) 1, 2, 3, 5, 6, 8, 9 
 ##  with sample(s) 4, 7, 10 
-## [ChemoSpec2D] Best alignment is to shift F2 by  -5  and F1 by  0 
+## [ChemoSpec2D] Best alignment is to shift F2 by  5  and F1 by  0 
 ## 
 ## [ChemoSpec2D] Alignment steps and results:
 ##        Ref                Mask F2shift F1shift
-## 1        4                   7       0      -1
-## 2        3                   6       0      -1
-## 3        2                   5       0      -1
-## 4        1                   8       0      -1
-## 5        9                1, 8       2       1
-## 6     3, 6                2, 5       2       0
-## 7       10                4, 7       0       3
-## 8  1, 8, 9          2, 3, 5, 6       0       3
-## 9 4, 7, 10 1, 2, 3, 5, 6, 8, 9      -5       0</code></pre>
+## 1        4                   7       0       1
+## 2        3                   6       0       1
+## 3        2                   5       0       1
+## 4        1                   8       0       1
+## 5        9                1, 8      -2      -1
+## 6     3, 6                2, 5      -2       0
+## 7       10                4, 7       0      -3
+## 8  1, 8, 9          2, 3, 5, 6       0      -3
+## 9 4, 7, 10 1, 2, 3, 5, 6, 8, 9       5       0</code></pre>
 <p>As the alignment proceeds, updates from the function are prefixed with <code>[ChemoSpec2D]</code>. In the first step we get a message that row 1 of 9 of the guide tree is being processed, in which sample 7 is being aligned with sample 4. The guide tree is shown below. One can see that samples 7 and 4 are very similar, so they are aligned first. If you inspect the output above, you can see that the four most similar pairs of spectra are aligned first, followed by groups of spectra according to similarity. For each alignment the needed shifts are reported. The last part of the output is a summary of all the alignments carried out. Note that the vertical scale on the guide tree is the same as the scale on the <code>sampleDist</code> plot in Part 1 (using the Euclidean distance).</p>
 <p><img src="/images/P10_Dendrogram.png" alt="X Space" style="width:600px;"/></p>
 <div id="diagnostics-on-space" class="section level2">

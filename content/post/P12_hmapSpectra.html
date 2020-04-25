@@ -1,0 +1,81 @@
+---
+title: "Spectral Heatmaps"
+author: "Bryan Hanson"
+date: 2020-04-25
+tags: ["R", "heatmap", "seriation", "ChemoSpec"]
+slug: "P12"
+bibliography: REFS.bib
+draft: false
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>Most everyone is familiar with heatmaps in a general way. It’s hard not to run into them. Let’s consider some variations:</p>
+<ul>
+<li>A heatmap is a 2D array of rectangular cells colored by value. Generally, the rows and columns are ordered in some purposeful manner. These are very commonly encountered in microarrays for example.</li>
+<li>An image is a type of heatmap in which the ordering of the rows and columns is defined spatially – it would not make sense to reorder them. This kind of data arises from the physical dimensions of a sensor, for instance the sensor on a digital camera or a raman microscope. An image might also arise by a decision to subset and present data in a “square” format. An example would be the topographic maps provided by the US government which cover a rectangular latitude/longitude range. This type of data can also be presented as a contour plot. See the examples in <code>?image</code> for image and contour plots of the classic Maunga Whau volcano data, as well as an overlay of the contours on the image plot.</li>
+<li>A chloropleth is a map with irregular geographic boundaries and regions colored by some value. These are typically used in presenting social or political data. A chloropleth is not really a heatmap but it is often mis-characterized as one.</li>
+</ul>
+<p>These three types of plots are conceptually unified in that they require a 3D data set. In the case of the heatmap and the image, the underlying data are on a regular x, y grid of values; mathematically, a matrix. The row and column indices are mapped to the x, y values, and the matrix entries are the z values. A chloropleth can be thought of as a very warped matrix where the cells are not on a regular grid but instead a series of arbitrary connected paths, namely the geographic boundaries. There is a value inside each connected path (the z value), but naturally the specification of the paths requires a completely different data structure. An intermediate type would be the cartogram heatmap described by <a href="https://serialmentor.com/dataviz/geospatial-data.html#cartograms">Wilke</a>.</p>
+<div id="heatmaps-in-spectroscopy-hmapspectra" class="section level1">
+<h1>Heatmaps in Spectroscopy: hmapSpectra</h1>
+<p>The <code>hmapSpectra</code> function in <code>ChemoSpec</code> displays a heatmap to help you focus on which frequencies drive the separation of your samples.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> We’ll use the example from <code>?hmapSpectra</code> which uses the built-in <code>SrE.IR</code> data set. This data set is a series of IR spectra of commercial <em>Serenoa repens</em> oils which are composed of mixtures of triglycerides and free fatty acids (see <code>?SrE.IR</code> for more information). Thus the carbonyl region is of particular interest. The example narrows the frequency range to the carbonyl region for easy interpretation. Let’s look first at the spectra.</p>
+<p><em>Note: rather than link every mention of a help page in this post, remember you can see all the documentation at this <a href="https://bryanhanson.github.io/ChemoSpec/reference/index.html">site</a>.</em></p>
+<pre class="r"><code>library(&quot;ChemoSpec&quot;)</code></pre>
+<pre><code>## Loading required package: ChemoSpecUtils</code></pre>
+<pre class="r"><code>data(SrE.IR) # load the data set
+# limit to the carbonyl region
+IR &lt;- removeFreq(SrE.IR, rem.freq = SrE.IR$freq &gt; 1775 | SrE.IR$freq &lt; 1660)
+plotSpectra(IR, which = 1:16, lab.pos = 1800)</code></pre>
+<p><img src="/post/P12_hmapSpectra_files/figure-html/showSpectra-1.png" width="672" /></p>
+<p>The blue and green spectra are samples composed only of triglycerides, and hence the ester carbonyl is the primary feature. All other samples are clearly mixtures of ester and carboxylic acid stretching peaks. And now for the heatmap, using defaults:</p>
+<pre class="r"><code>res &lt;- hmapSpectra(IR)</code></pre>
+<pre><code>## Registered S3 method overwritten by &#39;seriation&#39;:
+##   method         from 
+##   reorder.hclust gclus</code></pre>
+<p><img src="/post/P12_hmapSpectra_files/figure-html/defaultMap-1.png" width="672" /></p>
+<p>In this default display, you’ll notice that the rows and column labels are indices to the underlying sample names and frequency list. This is not so helpful. The color scheme is not so exciting either. <code>hmapSpectra</code> uses the package <code>seriation</code> which in turn uses the <code>heatmap.2</code> function in package <code>gplots</code>. Fortunately we can use the <code>...</code> argument to pass additional arguments to <code>heatmap.2</code> to get a much more useful plot.</p>
+</div>
+<div id="customizing-the-hmapspectra-display" class="section level1">
+<h1>Customizing the hmapSpectra Display</h1>
+<pre class="r"><code># Label samples and frequencies by passing arguments to heatmap.2
+# Also make a few other nice plot adjustments
+res &lt;- hmapSpectra(IR,
+  col = heat.colors(5),
+  labRow = IR$names, labCol = as.character(round(IR$freq)),
+  margins = c(4, 6), key.title = &quot;&quot;
+)</code></pre>
+<p><img src="/post/P12_hmapSpectra_files/figure-html/betterMap-1.png" width="672" /></p>
+<p>This is a lot nicer plot, since the rows are labeled with the sample names, and the columns with frequencies. Note that not every column is labeled, only every few frequencies. If you need the actual frequencies, which you probably will, they can be obtained from the returned object (<code>res</code> in this case; see the end of this post for an example).</p>
+</div>
+<div id="interpreting-the-plot" class="section level1">
+<h1>Interpreting the Plot</h1>
+<p>How do we interpret this plot? This is a <em>seriated</em> heatmap, which means the rows and columns have been re-ordered according to some algorithm (more on this in a moment). The ordering puts the frequencies most important in distinguishing the samples in the upper left and lower right (the yellow regions). In the lower right corner, we see the two outlier samples TJ_OO and SV_EPO grouped together. On the frequency axis, we see that ester stretching peaks around 1740 <span class="math inline">\(\mathrm{cm}^1\)</span> are characteristic for these samples. In the upper left corner, we see several samples grouped together, and associated with the fatty acid carboxylic acid peak around 1710 <span class="math inline">\(\mathrm{cm}^1\)</span>. From these two observations, we can conclude that these two peak ranges are most important in separating the samples. Of course, in this simple example using a small part of the spectrum, this answer was already clear by simple inspection. Using a simple/limited range of data helps us to be sure we understand what’s happening when we try a new technique.</p>
+</div>
+<div id="using-a-different-distance-measure-seriation-method" class="section level1">
+<h1>Using a Different Distance Measure &amp; Seriation Method</h1>
+<p>The default data treatments for <code>hmapSpectra</code> are inherited from <code>hmap</code> in package <code>seriation</code>. The default distance between the samples is the Euclidean distance. The default seriation method is “OLO” or “optimal leaf ordering”. The full list of seriation methods is described in <code>?seriate</code>. There are more than 20 options. As with the display details, we can change these defaults via the <code>...</code> arguments. Let’s use the cosine distance (the same as the Pearson distance), and seriate using the Gruvaeus-Wainer algorithm (there’s a brief explanation of this algorithm at <code>?seriate</code>).</p>
+<pre class="r"><code>cosine_dist &lt;- function(x) as.dist(1 - cor(t(x)))
+res &lt;- hmapSpectra(IR,
+  col = heat.colors(5),
+  labRow = IR$names, labCol = as.character(round(IR$freq)),
+  margins = c(4, 6), key.title = &quot;&quot;,
+    dist_fun = cosine_dist,
+    method = &quot;GW&quot;
+)</code></pre>
+<p><img src="/post/P12_hmapSpectra_files/figure-html/bestMap-1.png" width="672" /></p>
+<p>You can see that using different distance measures and seriation algorithms gives a rather different result: the ester “hot spots” which were in the lower right corner are now almost in the lower left corner. Which settings are best will depend on your data set, the goal of your analysis, and there are a lot of options from which to choose. The settings used here are simply for demonstration purposes, I make no claim these settings are appropriate!</p>
+<p>Finally, if you want to capture the re-ordered frequencies, you can access them in the returned object:</p>
+<pre class="r"><code>round(IR$freq[res$colInd])</code></pre>
+<pre><code>##  [1] 1709 1707 1711 1713 1705 1714 1703 1701 1716 1743 1741 1745 1747 1740 1749
+## [16] 1738 1736 1751 1734 1757 1755 1753 1732 1730 1728 1726 1724 1722 1718 1720
+## [31] 1697 1699 1695 1693 1691 1689 1687 1686 1684 1682 1680 1678 1676 1674 1670
+## [46] 1672 1668 1666 1664 1662 1660 1774 1772 1770 1768 1767 1765 1763 1761 1759</code></pre>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Other functions in <code>ChemoSpec</code> that can help you explore which frequencies are important are <code>plotLoadings</code>, <code>plot2Loadings</code> and <code>sPlotSpectra</code>.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
