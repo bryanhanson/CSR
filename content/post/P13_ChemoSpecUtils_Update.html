@@ -1,0 +1,22 @@
+---
+title: "ChemoSpecUtils Update"
+author: "Bryan Hanson"
+date: 2020-04-27
+tags: ["R", "ChemoSpecUtils"]
+slug: "P13"
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p><code>ChemoSpecUtils</code>, a package that supports the common needs of <a href="https://bryanhanson.github.io/ChemoSpec/">ChemoSpec</a> and <a href="https://bryanhanson.github.io/ChemoSpec2D/">ChemoSpec2D</a>, has been updated to fix an unfortunate distance calculation error in version 0.4.38, released in January of this year. From the NEWS file for version 0.4.51:</p>
+<ul>
+<li>Function <code>rowDist</code>, which supports a number of functions, was overhauled to address confusion in the documentation, and in my head, about distances vs. similarities. Also, different definitions found in the literature were documented more clearly. The Minkowski distance option was removed (ask if you want it back), code was cleaned up, documentation greatly improved, an example was added and unit tests were added. Plot scales were also corrected as necessary. Depending upon which distance option is chosen, this change affects <code>hcaSpectra</code>, <code>plotSpectraDist</code>, <code>sampleDist</code> and <code>hcaScores</code> in package <code>ChemoSpec</code> as well as <code>hats_alignSpectra2D</code> and <code>hcaScores</code> in package <code>ChemoSpec2D</code>.</li>
+</ul>
+<p>This brings to mind a Karl Broman quote I think about frequently:</p>
+<blockquote>
+<p>“Open source means everyone can see my stupid mistakes.
+Version control means everyone can see every stupid mistake I’ve ever made.”</p>
+<p>– <cite>Karl Broman</cite></p>
+</blockquote>
+<p><a href="https://kbroman.wordpress.com/2011/08/17/the-stupidest-r-code-ever/">Karl Broman quote source</a></p>
