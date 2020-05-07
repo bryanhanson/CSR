@@ -4,7 +4,7 @@ author: "Bryan Hanson"
 date: 2020-05-07
 tags: ["R", "hyperSpec", "GSOC"]
 slug: "P14"
-draft: true
+draft: false
 ---
 
 [`hyperSpec`](https://cran.r-project.org/web/packages/hyperSpec/index.html) is an `R` package for working with hyperspectral data sets.  Hyperspectral data can take many forms, but a common application is a series of spectra collected over an x, y grid, for instance Raman imaging of medical specimens.  `hyperSpec` was originally written by Claudia Beleites and she currently guides a core group of contributors.[^1]
