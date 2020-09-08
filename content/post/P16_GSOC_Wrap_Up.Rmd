@@ -4,7 +4,7 @@ author: "Guest post by Erick Oduniyi"
 date: 2020-09-08
 tags: ["R", "hyperSpec", "GSOC", "Guest Post"]
 slug: "P16"
-draft: true
+draft: false
 ---
 
 <table>
