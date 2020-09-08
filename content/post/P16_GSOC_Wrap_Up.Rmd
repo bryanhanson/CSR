@@ -26,7 +26,7 @@ This past summer (2020) I had the amazing opportunity to participate in the [Goo
 This was a particularly meaningful experience as it was my last undergraduate summer internship. I’m a senior studying computer engineering at the University of Kansas, and at the beginning of the summer I still didn't feel super comfortable working on public (open-source) projects. So, I thought this program would help build my confidence as a computer and software engineer. Moreover:
 
 * I wanted to work with the `R` organization because that is my favorite programming language.
-* I wanted to work with`r-hyperspec` because I thought that would be the most impactful in terms of practicing project management and software ecosystem development.
+* I wanted to work with `r-hyperspec` because I thought that would be the most impactful in terms of practicing project management and software ecosystem development.
 
 In the process I hoped to:
 
@@ -44,6 +44,6 @@ And through a lot of hard work all of those things came to be! Truthfully, even 
 * Fortify `hyperSpec` for `EMSC` with bridge packages
 * Fortify `hyperSpec` for `matrixStats` with bridge packages.
 
-So, I'm excited to continue to work with the team! I think there are a ton of ideas I and the team have and hopefully we will get explore in deeper context. Speaking of the [team](https://github.com/orgs/r-hyperspec/teams/r-hyperspec/members), I have them to thank for an awesome `GSOC 2020` experience. If you are interested in the journey that was the GSoC 2020 experience (perhaps you might be interested in trying the program next year), then please feel free to jump around [here](https://eoduniyi.github.io/hyperSpec.gsoc2020/) to get a feel for the things that I learned and how I worked with the `r-hyperspec` team this summer.
+So, I'm excited to continue to work with the team! I think there are a ton of ideas I and the team have and hopefully we will get to explore them in deeper context. Speaking of the [team](https://github.com/orgs/r-hyperspec/teams/r-hyperspec/members), I have them to thank for an awesome `GSOC 2020` experience. If you are interested in the journey that was the GSoC 2020 experience (perhaps you might be interested in trying the program next year), then please feel free to jump around [here](https://eoduniyi.github.io/hyperSpec.gsoc2020/) to get a feel for the things that I learned and how I worked with the `r-hyperspec` team this summer.
 
 Best, E. Oduniyi
