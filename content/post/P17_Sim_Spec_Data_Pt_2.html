@@ -1,0 +1,59 @@
+---
+title: "Simulating Spectroscopic Data Part 2"
+author: "Bryan Hanson"
+date: 2020-05-27
+tags: ["R", "Simulated Data", "SpecHelpers", "Noise"]
+slug: "P16"
+draft: true
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>In the first <a href="https://chemospec.org/2020/06/28/p15/">post</a> in this series, we showed how to vary the peak shape and add various baseline distortions when simulating spectroscopic data. In this post we’ll look at sources of noise and how to simulate noise.</p>
+<div id="sources-of-noise" class="section level1">
+<h1>Sources of Noise</h1>
+<p>Before jumping into the practical aspects of simulating noise, let’s survey some of the sources of noise in spectroscopic instrumentation. After all, we need at least a rudimentary understanding of how noise arises in order to simulate it. Full disclosure: I don’t claim to be an expert on sources of noise. I have enough experience to know some useful information and to know that there is so more to learn. So please feel free to correct, elaborate or clarify anything you read here, via the comments.</p>
+<p>To a large degree noise arises from instrument hardware and electronics, and as such will vary by the type of instrumentation. I’ll try to give a general overview with a few specific examples here and there. <em>Do not</em> take this as a comprehensive treatment of the topic!</p>
+<div id="noise-based-on-counting-discrete-species" class="section level2">
+<h2>Noise Based on Counting Discrete Species</h2>
+<p>Any physical device that counts discrete species such as photons, electrons or other charged particles suffers from <em>shot noise</em>. Examples include <a href="https://en.wikipedia.org/wiki/Charge-coupled_device">CCD</a> detectors, <a href="https://en.wikipedia.org/wiki/Electron_multiplier">electron multipliers</a> and <a href="https://en.wikipedia.org/wiki/Geiger%E2%80%93M%C3%BCller_tube">geiger counters</a>. In addition, electronic devices that involve the storage or movement of charges (in other words, all of them) are also subject to shot noise.</p>
+<p>So what is <a href="https://en.wikipedia.org/wiki/Shot_noise">shot noise</a>? It is noise that can be modeled by the <a href="https://en.wikipedia.org/wiki/Poisson_distribution">Poisson distribution</a>. This distribution is used to describe discrete events that occur in a fixed interval of time<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> and independently from each other. Wikipedia uses the example of letters that arrive in the mail: The number of letters arriving on any given day is <em>independent</em> of the number that arrived the day before or will arrive the day after. And it’s <em>discrete</em>: you can get one letter or two, never 1.5 letters. For a spectroscopic example, consider a CCD device in the absence of any incident light. The micro-meter capacitors that make up a CCD are subject to <em>thermal noise</em> (see below) which means that even in the absence of incident light a small number of them can accidently “fire” and produce a signal (the <em>dark current</em>). Even though thermal noise may be the origin of this signal, the device converts these signals into counts. Thus the dark current represents counts and is shot noise that follows a Poisson distribution.</p>
+<p>An important characteristic of the Poisson distribution is that it is sometimes referred to as the “law of rare events”. This is because when there are just a few events, the distribution is heavily skewed <a href="https://en.wikipedia.org/wiki/Poisson_distribution#/media/File:Poisson_pmf.svg">left</a>. However, as the number of events increases, the Poisson distribution can be approximated by the Gaussian or normal distribution.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> We’ll see how that matters later. Further, shot noise is independent of temperature or the frequency being monitored. This distinguishes it from other types of noise.</p>
+<p>Since all spectroscopic methods employ some kind of physical device as a detector, the net result is that shot noise is always present and is unavoidable in real, imperfect, physical devices.</p>
+</div>
+<div id="noise-based-on-thermal-agitation" class="section level2">
+<h2>Noise Based on Thermal Agitation</h2>
+<p><a href="https://en.wikipedia.org/wiki/Johnson%E2%80%93Nyquist_noise">Thermal noise</a> arises from the intrinsic motion of atoms, which is temperature dependent. It occurs in all electronic circuits, and is frequency and voltage independent. Because it is ultimately related to motion, cooling detectors reduces the thermal noise of the signal.</p>
+</div>
+<div id="noise-based-on-mechanical-motion" class="section level2">
+<h2>Noise Based on Mechanical Motion</h2>
+</div>
+<div id="relative-contribution-of-noise-sources" class="section level2">
+<h2>Relative Contribution of Noise Sources</h2>
+</div>
+<div id="meta-noise" class="section level2">
+<h2>Meta-Noise</h2>
+</div>
+<div id="artifacts" class="section level2">
+<h2>Artifacts</h2>
+<p>stray light
+cosmic raws
+how to simulate</p>
+</div>
+</div>
+<div id="simulation-of-noise" class="section level1">
+<h1>Simulation of Noise</h1>
+<p>vibration
+effect of signal averaging
+simulation of stray light cosmic rays</p>
+<p>Some instruments, like NMR, use antennas as their detectors, and the signal is sent to analog-to-digital converters (ADC). I don’t know how these work on a physical level, and the result is a digital signal to be detected at a certain level rather than formal counting. Conceptually however, the output is discrete (i.e. digitized) and it would logically have an analog to the dark current.</p>
+<p><a href="https://chemistry.stackexchange.com/questions/96064/is-there-a-real-detection-limit-in-nmr-spectroscopy" class="uri">https://chemistry.stackexchange.com/questions/96064/is-there-a-real-detection-limit-in-nmr-spectroscopy</a></p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Or space.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>The Poisson distribution is a discrete distribution. Technically, for a large number of events, the Poisson converges to the Binomial distribution, another discrete distribution. In either case however, the Gaussian distribution, which is a continuous distribution, is a good substitute.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>

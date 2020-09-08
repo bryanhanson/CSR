@@ -2,7 +2,7 @@
 title: "Simulating Spectroscopic Data Part 1"
 author: "Bryan Hanson"
 date: 2020-06-28
-tags: ["R", "Simulated Data", "SpecHelpers"]
+tags: ["R", "Simulated Data", "SpecHelpers", "Baseline"]
 slug: "P15"
 bibliography: REFS.bib
 draft: false
@@ -14,7 +14,7 @@ draft: false
 <p>It is well-recognized that one of the virtues of the <code>R</code> language is the extensive tools it provides for working with distributions. <a href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/Distributions">Functions</a> exist to generate random number draws, determine quantiles, and examine the probability <a href="https://en.wikipedia.org/wiki/Probability_density_function">density</a> and <a href="https://en.wikipedia.org/wiki/Cumulative_distribution_function">cumulative</a> distribution curves that describe each distribution.</p>
 <p>This toolbox gives one the ability to create simulated data sets for testing very easily. If you need a few random numbers from a Gaussian distribution then <code>rnorm</code> is your friend:</p>
 <pre class="r"><code>rnorm(3)</code></pre>
-<pre><code>## [1] -0.4311683 -0.1332959 -2.2088263</code></pre>
+<pre><code>## [1]  0.02660958 -0.25305561  0.11711183</code></pre>
 <p>Imagine you were developing a new technique to determine if two methods of manufacturing widgets produced widgets of the same mass.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> Even before the widgets were manufactured, you could test your code by simulating widget masses using <code>rnorm</code>:</p>
 <pre class="r"><code>widget_1_masses &lt;- rnorm(100, 5.0, 0.5) # mean mass 5.0
 widget_2_masses &lt;- rnorm(100, 4.5, 0.5) # mean mass 4.5</code></pre>
@@ -98,9 +98,9 @@ dim(vdm)</code></pre>
 <pre class="r"><code>coefs &lt;- matrix(runif(nrow(Spec123) * 3), ncol = 3)
 coefs</code></pre>
 <pre><code>##           [,1]      [,2]      [,3]
-## [1,] 0.1818113 0.3404034 0.5446085
-## [2,] 0.5607098 0.1970211 0.1906304
-## [3,] 0.3969756 0.7059979 0.5655593</code></pre>
+## [1,] 0.5239897 0.5575242 0.7435912
+## [2,] 0.3245279 0.2066244 0.2101797
+## [3,] 0.7194225 0.7754570 0.2542913</code></pre>
 <p>If we multiply the coefficients by the tranposed Vandermonde matrix, we get back a set of offsets which are the rows of the Vandermonde matrix modified by the coefficients. We’ll scale things so that <code>Spec123</code> and <code>offsets</code> are on the same overall scale and then further scale so that the spectra are not overwhelmed by the offsets in the next step.</p>
 <pre class="r"><code>offsets &lt;- coefs %*% t(vdm)
 dim(offsets) # same dimensions as Spec123 above</code></pre>

@@ -2,7 +2,7 @@
 title: "Simulating Spectroscopic Data Part 1"
 author: "Bryan Hanson"
 date: 2020-06-28
-tags: ["R", "Simulated Data", "SpecHelpers"]
+tags: ["R", "Simulated Data", "SpecHelpers", "Baseline"]
 slug: "P15"
 bibliography: REFS.bib
 draft: false

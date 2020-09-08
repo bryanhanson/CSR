@@ -1,0 +1,49 @@
+---
+title: "GSOC Wrap Up"
+author: "Guest post by Erick Oduniyi"
+date: 2020-09-08
+tags: ["R", "hyperSpec", "GSOC", "Guest Post"]
+slug: "P16"
+draft: true
+---
+
+<table>
+<tr>
+<td>
+<img src="https://summerofcode.withgoogle.com/static/img/og-image.png" alt="GSOC_logo" style="width:100px;"/>
+</td>
+<td>
+Well, things have been busy lately!  As reported back in [_May_](https://chemospec.org/2020/05/07/p14/), I've been participating in Google Summer of Code which has now wrapped up.  This was very rewarding for me, but today I want to share a guest post by Erick Oduniyi, the very talented student on the project.  Bryan
+</td>
+</tr>
+</table>
+
+---
+Checking in from Kansas!
+
+This past summer (2020) I had the amazing opportunity to participate in the [Google Summer of Code](https://summerofcode.withgoogle.com/) (GSoC or GSOC). As stated on the the GSOC website, GSOC is a “global program focused on bringing more student developers into open source software development. Students work with an open-source organization on a 3-month programming project during their break from school.”
+
+This was a particularly meaningful experience as it was my last undergraduate summer internship. I’m a senior studying computer engineering at the University of Kansas, and at the beginning of the summer I still didn't feel super comfortable working on public (open-source) projects. So, I thought this program would help build my confidence as a computer and software engineer. Moreover:
+
+* I wanted to work with the `R` organization because that is my favorite programming language.
+* I wanted to work with`r-hyperspec` because I thought that would be the most impactful in terms of practicing project management and software ecosystem development.
+
+In the process I hoped to:
+
+* Become proficient using `Git/Github`, including continuous integration
+* Become proficient in using [Trello](https://trello.com/)
+* Become proficient in using `R`
+* Become familiar with the spectroscopy community
+* Become inspired to code more
+* Become inspired to document and write more open source projects.
+* Become excited to collaborate more across various industrial, academic, and community domains.
+
+And through a lot of hard work all of those things came to be! Truthfully, even though the summer project was successful there is still a lot of work to do:
+
+* Fortify `hyperSpec` for `baseline` with bridge packages
+* Fortify `hyperSpec` for `EMSC` with bridge packages
+* Fortify `hyperSpec` for `matrixStats` with bridge packages.
+
+So, I'm excited to continue to work with the team! I think there are a ton of ideas I and the team have and hopefully we will get explore in deeper context. Speaking of the [team](https://github.com/orgs/r-hyperspec/teams/r-hyperspec/members), I have them to thank for an awesome `GSOC 2020` experience. If you are interested in the journey that was the GSoC 2020 experience (perhaps you might be interested in trying the program next year), then please feel free to jump around [here](https://eoduniyi.github.io/hyperSpec.gsoc2020/) to get a feel for the things that I learned and how I worked with the `r-hyperspec` team this summer.
+
+Best, E. Oduniyi
