@@ -10,7 +10,7 @@ draft: false
 <table>
 <tr>
 <td>
-<img src="https://summerofcode.withgoogle.com/static/img/og-image.png" alt="GSOC_logo" style="width:100px;"/>
+<img src="/images/og-image.png" alt="GSOC_logo" style="width:100px;"/>
 </td>
 <td>
 Well, things have been busy lately!  As reported back in [_May_](https://chemospec.org/2020/05/07/p14/), I've been participating in Google Summer of Code which has now wrapped up.  This was very rewarding for me, but today I want to share a guest post by Erick Oduniyi, the very talented student on the project.  Bryan
