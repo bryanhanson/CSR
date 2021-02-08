@@ -1,0 +1,177 @@
+---
+title: "Simulating Spectroscopic Data Part 2"
+author: "Bryan Hanson"
+date: 2020-05-27
+tags: ["R", "Simulated Data", "Noise"]
+bibliography: REFS.bib
+slug: "P17"
+draft: true
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
+<link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
+<link href="/rmarkdown-libs/bsTable/bootstrapTable.min.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/bsTable/bootstrapTable.js"></script>
+
+
+<p>In the first <a href="https://chemospec.org/2020/06/28/p15/">post</a> in this series, we showed how to vary the peak shape and add various baseline distortions when simulating spectroscopic data. In this post we’ll look at types and sources of noise and how to simulate noise. Full disclosure: I don’t claim to be an expert on noise. I have enough experience to know some useful information and to realize that there is much more to learn. So please feel free to correct, elaborate or clarify anything you read here, via the comments.</p>
+<div id="types-sources-of-noise" class="section level2">
+<h2>Types &amp; Sources of Noise</h2>
+<p>Before jumping into the practical aspects of simulating noise, let’s survey some of the types and sources of noise in spectroscopic instrumentation. After all, we need at least a rudimentary understanding of where noise comes from, and how it behaves, in order to simulate it. The literature on noise issues is complex, instrument-specific and the nomenclature a little loose for my tastes. So I’m going to organize this post in my own unique way, reflecting my own journey to a better understanding of this material. I’m going to focus on <em>raw</em> sources of noise, and ignore ways one might abuse the signal at later stages in the acquistion process to create even more noise.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> <em>Do not</em> take this post as a comprehensive treatment of the topic!</p>
+<p>As I have tried to better understand noise, it seems that we need to look at noise in two ways at the same time:</p>
+<ul>
+<li>The <em>type</em> of noise: By “type” I mean the behavior of noise with respect to frequency. Does the noise depend on the frequency in any way? This is primarily a phenomenological description. One encounters <a href="https://en.wikipedia.org/wiki/Colors_of_noise">descriptions</a> of noise as “white”, “pink” etc but to my thinking this is not helpful. Better to simply state the frequency dependency, which is usually expressed as <span class="math inline">\(1/f^\beta\)</span>. In spectroscopy “white” noise is independent of frequency (<span class="math inline">\(\beta = 0\)</span>) while flicker noise has <span class="math inline">\(\beta = 1\)</span> so it is a bigger problem at lower frequencies.</li>
+<li>The <em>source</em> or origin of noise: By what means does the noise come into being? Of course it all comes from instrument hardware and electronics, and as such will vary by the type of instrumentation and circuit design. But can we pinpoint some specifics?</li>
+</ul>
+<p>We’ll try to keep these two dimensions in mind as we look at details.</p>
+<div id="noise-originating-from-thermal-agitation" class="section level3">
+<h3>Noise Originating From Thermal Agitation</h3>
+<p><a href="https://en.wikipedia.org/wiki/Johnson%E2%80%93Nyquist_noise"><em>Thermal noise</em></a> arises from the intrinsic motion of atoms, which is temperature dependent. The thermal motion of atoms, electrons and positive holes in a solid, like a CCD or a wire, is distantly related to the <a href="https://en.wikipedia.org/wiki/Maxwell%E2%80%93Boltzmann_distribution">Maxwell-Boltzmann</a> distribution for gases. At any moment, in the absence of any stimuli other than the temperature, some small fraction of electrons or positive holes will have enough velocity (“wiggle”, or vibration) in the lattice to create a random movement of charge, which will in turn be seen as noise.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></p>
+<p>Thermal noise occurs in all electronic circuits. Because it is ultimately related to charge motion, cooling a detector reduces the thermal noise of the signal. This is the basis for the use of cryo probes in NMR or Raman spectroscopy for example. Thermal noise follows a Gaussian distribution and is frequency and voltage independent.</p>
+<p>I believe that all spectroscopic noise is ultimately thermal noise (read on to see why).</p>
+</div>
+<div id="noise-originating-from-counting-discrete-species" class="section level3">
+<h3>Noise Originating From Counting Discrete Species</h3>
+<p>Any physical device that counts discrete species such as photons, electrons or other charged particles suffers from <em>shot noise</em>. Examples include <a href="https://en.wikipedia.org/wiki/Charge-coupled_device">CCD</a> detectors, <a href="https://en.wikipedia.org/wiki/Electron_multiplier">electron multipliers</a> and <a href="https://en.wikipedia.org/wiki/Geiger%E2%80%93M%C3%BCller_tube">geiger counters</a>. In addition, electronic devices that involve the storage or movement of charges (in other words, all of them) are also subject to shot noise <em>if we are counting charges</em>.</p>
+<p>So what is <a href="https://en.wikipedia.org/wiki/Shot_noise">shot noise</a>? It is noise that can be modeled by the <a href="https://en.wikipedia.org/wiki/Poisson_distribution">Poisson distribution</a>. This distribution is used to describe discrete events that occur in a fixed interval of time<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> and independently from each other. Wikipedia uses the example of letters that arrive in the mail: The number of letters arriving on any given day is <em>independent</em> of the number that arrived the day before or will arrive the day after. And it’s <em>discrete</em>: you can get one letter or two, never 1.5 letters. For a spectroscopic example, consider a CCD device in the absence of any incident light. The tiny capacitors that make up a CCD are subject to <em>thermal noise</em> (see above) which means that even in the absence of incident light a small number of them can accidently “fire” at any time and produce a signal (the <em>dark current</em>). Even though thermal noise may be the origin of this signal, the device converts these signals into counts via its ADC hardware and therefore its nature has changed.<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> Thus the dark current represents counts and is shot noise that follows a Poisson distribution.</p>
+<p>An important characteristic of the Poisson distribution is that it is sometimes referred to as the “law of rare events”. This is because when there are just a few events, the distribution is heavily skewed <a href="https://en.wikipedia.org/wiki/Poisson_distribution#/media/File:Poisson_pmf.svg">left</a>. However, as the number of events increases, the Poisson distribution can be approximated by the Gaussian or normal distribution.<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a> We’ll see how that matters later. Further, shot noise is independent of temperature or frequency. This distinguishes it from other types of noise.</p>
+<p>Since all spectroscopic methods employ some kind of physical device as a detector, the net result is that shot noise is always present and is unavoidable in real, imperfect, physical devices.</p>
+</div>
+<div id="noise-originating-from-imperfect-electronic-circuits" class="section level3">
+<h3>Noise Originating From Imperfect Electronic Circuits</h3>
+<p><a href="https://en.wikipedia.org/wiki/Flicker_noise"><em>Flicker noise</em></a> is noise that depends upon the frequency observed, becoming worse at low frequencies (an inverse relationship, <span class="math inline">\(\beta = 1\)</span>). It’s origin is in electronic devices operating at DC voltages, for instance a laser intensity that varies with frequency (<span class="math inline">\(1/f\)</span>), as well as RF circuits (I’m looking at you NMR). A number of sources state that it’s true origin is unclear but that it does seem related to something fundamental in semi-conductor manufacture <span class="citation">(Carter <a href="#ref-Carter2009" role="doc-biblioref">2009</a>)</span>.</p>
+</div>
+<div id="relative-contribution-of-noise-sources" class="section level3">
+<h3>Relative Contribution of Noise Sources</h3>
+</div>
+<div id="summary-of-noise-sources" class="section level3">
+<h3>Summary of Noise Sources</h3>
+<table class="table table-striped table-bordered" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Type
+</th>
+<th style="text-align:left;">
+Temp Dependent
+</th>
+<th style="text-align:left;">
+Freq Dependent
+</th>
+<th style="text-align:left;">
+Voltage Dependent
+</th>
+<th style="text-align:left;">
+Distribution
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+shot noise
+</td>
+<td style="text-align:left;">
+no
+</td>
+<td style="text-align:left;">
+no
+</td>
+<td style="text-align:left;">
+?
+</td>
+<td style="text-align:left;">
+Poisson
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+thermal noise
+</td>
+<td style="text-align:left;">
+yes
+</td>
+<td style="text-align:left;">
+no
+</td>
+<td style="text-align:left;">
+no
+</td>
+<td style="text-align:left;">
+Gaussian
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+flicker noise
+</td>
+<td style="text-align:left;">
+?
+</td>
+<td style="text-align:left;">
+yes
+</td>
+<td style="text-align:left;">
+no
+</td>
+<td style="text-align:left;">
+Gaussian
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="artifacts" class="section level3">
+<h3>Artifacts</h3>
+<p>The distinction between artifacts and noise might be somewhat arbitrary in practice. At least some artifacts are phenomenon that can in principle be eliminated by better instrument design. Here are a few examples:</p>
+<ul>
+<li><em>Stray light</em> For example, UV-Vis reflection probes are very good about picking up the main emission lines of flourescent lighting in a room.</li>
+<li><em>Cosmic rays</em> Cosmic rays cause strong and sharp peaks in Raman spectra at random frequencies. See <span class="citation">(Ryabchykov et al. <a href="#ref-Ryabchykov2016" role="doc-biblioref">2016</a>)</span> for an algorithm to remove them.</li>
+<li><em>Vibrations</em> Building vibrations can affect instrumentation negatively. In my prior life we had an NMR instrument on the 3rd floor of an extremely solid poured-concrete building. Nevertheless, there were vibrations from unknown sources that degraded the shape near the base of peaks. This was solved by adding a vibration-isolation table under the magnet.</li>
+<li><em>Other Mechanical Sources</em> The interferometer in FT-IR instruments employs a mechanical oscillating movement which is subject to jitter (imperfect positioning). This is discussed in this <a href="https://dsp.stackexchange.com/a/60031/18705">Stack Exchange</a> question.</li>
+<li><em>Interference Fringes</em> These arise in IR from differing refractive indices of the sample and the substrate it sits on. For a good discussion and some methods to eliminate the effect, see <span class="citation">(Mayerhöfer et al. <a href="#ref-Mayerhöfer2020" role="doc-biblioref">2020</a>)</span>.</li>
+</ul>
+<p>Simulating these artifacts will depend on the specific details; some like cosmic rays are easy to simulate while others could be quite complicated. We won’t discuss these further here.</p>
+</div>
+</div>
+<div id="simulation-of-noise" class="section level2">
+<h2>Simulation of Noise</h2>
+<p>heterscedastic</p>
+<div id="additional-resources" class="section level3">
+<h3>Additional Resources</h3>
+<ul>
+<li>An excellent on-line text book about signal processing by <a href="https://terpconnect.umd.edu/~toh/spectrum/TOC.html">Tom O’Haver</a>.</li>
+<li>A good discussion of noise in <a href="https://ibsen.com/technology/detector-tutorial/noise-in-detectors/">CCD detectors</a>.</li>
+<li>A key book on Raman spectroscopy, which includes extensive discussion of noise see <span class="citation">(McCreery <a href="#ref-McCreery2000" role="doc-biblioref">2000</a>)</span>.</li>
+<li>A great discussion of <a href="https://www.desertmuseum.org/kids/oz/long-fact-sheets/Pepsis%20Wasp.php">flicker noise</a> including the mathematics of simulating it (not so easy).</li>
+</ul>
+</div>
+<div id="references" class="section level3 unnumbered">
+<h3>References</h3>
+<div id="refs" class="references hanging-indent">
+<div id="ref-Carter2009">
+<p>Carter, Bruce. 2009. “Chapter 12 - Op Amp Noise Theory and Applications.” In <em>Op Amps for Everyone (Third Edition)</em>, edited by Ron Mancini and Bruce Carter, Third Edition, 163–88. Boston: Newnes. <a href="https://doi.org/https://doi.org/10.1016/B978-1-85617-505-0.00012-0">https://doi.org/https://doi.org/10.1016/B978-1-85617-505-0.00012-0</a>.</p>
+</div>
+<div id="ref-Mayerhöfer2020">
+<p>Mayerhöfer, Thomas G., Susanne Pahlow, Uwe Hübner, and Jürgen Popp. 2020. “Removing Interference-Based Effects from Infrared Spectra – Interference Fringes Revisited.” <em>Analyst</em> 145 (9): 3385–94. <a href="https://doi.org/10.1039/D0AN00062K">https://doi.org/10.1039/D0AN00062K</a>.</p>
+</div>
+<div id="ref-McCreery2000">
+<p>McCreery, Richard L. 2000. <em>Raman Spectroscopy for Chemical Analysis</em>. Wiley Interscience.</p>
+</div>
+<div id="ref-Ryabchykov2016">
+<p>Ryabchykov, Oleg, Thomas Bocklitz, Anuradha Ramoji, Ute Neugebauer, Martin Foerster, Claus Kroegel, Michael Bauer, Michael Kiehntopf, and Juergen Popp. 2016. “Automatization of Spike Correction in Raman Spectra of Biological Samples.” <em>Chemometrics and Intelligent Laboratory Systems</em> 155: 1–6. <a href="https://doi.org/https://doi.org/10.1016/j.chemolab.2016.03.024">https://doi.org/https://doi.org/10.1016/j.chemolab.2016.03.024</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>A raw signal is generally captured by an ADC (analog-to-digital converter), often decays with time, and raw signals are typically time averaged to improve the signal-to-noise ratio. In this post I’m sticking to a discussion of noise surrounding raw signals, mostly ignoring these processing steps.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>A visual example would be the thermal ellipsoids seen in small molecule x-ray crystallography – some atoms have more movement than others.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>Or space.<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p>In many publications the errors associated with the conversion of captured electron counts in CCD devices to digital signals is referred to as “readout noise”.<a href="#fnref4" class="footnote-back">↩︎</a></p></li>
+<li id="fn5"><p>The Poisson distribution is a discrete distribution. Technically, for a large number of events, the Poisson converges to the Binomial distribution, another discrete distribution. In either case however, the Gaussian distribution, which is a continuous distribution, is a good substitute when the number of events is large.<a href="#fnref5" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
