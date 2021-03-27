@@ -1,0 +1,39 @@
+---
+title: "Spectroscopy Suite Update"
+author: "Bryan Hanson"
+date: 2021-03-27
+tags: ["R", "ChemoSpec", "ChemoSpec2D", "ChemoSpecUtils", "readJDX"]
+slug: "P18"
+bibliography: REFS.bib
+draft: false
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<table style="margin-left:auto;margin-right:auto;">
+<tr>
+<td>
+</br>
+</td>
+</tr>
+<tr>
+<td>
+<img src= "/images/emAnnotated.png" alt = "Annotated Electromagnetic Spectrum" style = "width:700px;"/>
+</td>
+</tr>
+</table>
+<p>My suite of spectroscopy <code>R</code> packages has been updated on CRAN. There are only a few small changes, but they will be important to some of you:</p>
+<ul>
+<li><code>ChemoSpecUtils</code> now provides a set of colorblind-friendly colors, see <code>?colorSymbol</code>. These are available for use in <code>ChemoSpec</code> and <code>ChemoSpec2D</code>.</li>
+<li>At the request of several folks, <code>readJDX</code> now includes a function, <a href="https://rdrr.io/cran/readJDX/man/splitMultiblockDX.html"><code>splitMultiblockDX</code></a>, that will split a multiblock JCAMP-DX file into separate files, which can then be imported via the usual functions in the package.</li>
+<li>All packages are built against the upcoming R 4.1 release (due in April).</li>
+</ul>
+<p>Here are the links to the documentation:</p>
+<ul>
+<li><a href="https://bryanhanson.github.io/ChemoSpec/"><code>ChemoSpec</code></a></li>
+<li><a href="https://bryanhanson.github.io/ChemoSpec2D/"><code>ChemSpec2D</code></a></li>
+<li><a href="https://rdrr.io/cran/ChemoSpecUtils/"><code>ChemoSpecUtils</code></a></li>
+<li><a href="https://rdrr.io/cran/readJDX/"><code>readJDX</code></a></li>
+</ul>
+<p>As always, let me know if you discover trouble or have questions.</p>
