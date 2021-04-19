@@ -1,0 +1,106 @@
+---
+title: "Automatically Searching Github Repos by Topic"
+author: "Bryan Hanson"
+date: 2021-04-20
+tags: ["R", "Github", "FOSS", "httr"]
+slug: "P20"
+draft: false
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>One of the projects I maintain is the <a href="https://bryanhanson.github.io/FOSS4Spectroscopy/">FOSS for Spectroscopy web site</a>. The table at that site lists various software for use in spectroscopy. Historically, I have used the Github or Python Package Index search engines to manually search by topic such as “NMR” to find repositories of interest. Recently, I decided to try to automate at least some of this process. In this post I’ll present the code and steps I developed to search Github by topics. Fortunately, I wasn’t starting from scratch, as I had learned some basic web-scraping techniques when I wrote the functions that get the date of the most recent repository update. All the code for this website and project can be viewed <a href="https://github.com/bryanhanson/FOSS4Spectroscopy">here</a>. The steps reported here are current as of the publication of this post, but are subject to change in the future.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+<p>First off, did you know Github allows repository owners to tag their repositories using topical keywords? I didn’t know this for a long time. So add topics to your repositories if you don’t have them already. By the way, <em>the Achilles heel of this project is that good pieces of software may not have any topical tags at all</em>. If you run into this, perhaps you would consider creating an issue to ask the owner to add tags.</p>
+<div id="the-overall-approach" class="section level2">
+<h2>The Overall Approach</h2>
+<p>If you look at the <code>Utilities</code> directory of the project, you’ll see the scripts and functions that power this search process.</p>
+<ul>
+<li><code>Search Repos for Topics Script.R</code> supervises the whole process. It sources:</li>
+<li><code>searchRepos.R</code> (a function)</li>
+<li><code>searchTopic.R</code> (a function)</li>
+</ul>
+<p>First let’s look at the supervising script. First, the necessary preliminaries:</p>
+<pre class="r"><code>library(&quot;jsonlite&quot;)
+library(&quot;httr&quot;)
+library(&quot;stringr&quot;)
+library(&quot;readxl&quot;)
+library(&quot;WriteXLS&quot;)
+
+source(&quot;Utilities/searchTopic.R&quot;)
+source(&quot;Utilities/searchRepos.R&quot;)</code></pre>
+<p>Note that this assumes one has the top level directory, <code>FOSS4Spectroscopy</code>, as the working directory (this is a bit easier than constantly jumping around).</p>
+<p>Next, we pull in the Excel spreadsheet that contains all the basic data about the repositories that we already know about, so we can eventually remove those from the search results.</p>
+<pre class="r"><code>known &lt;- as.data.frame(read_xlsx(&quot;FOSS4Spec.xlsx&quot;))
+known &lt;- known$name</code></pre>
+<p>Now we define some topics and run the search (more on the search functions in a moment):</p>
+<pre class="r"><code>topics &lt;- c(&quot;NMR&quot;, &quot;EPR&quot;, &quot;ESR&quot;)
+res &lt;- searchRepos(topics, &quot;github_token&quot;, known.repos = known)</code></pre>
+<p>We’ll also talk about that <code>github_token</code> in a moment. With the search results in hand, we have a few steps to make a useful file name and save it in the <code>Searches</code> folder for future use.</p>
+<pre class="r"><code>file_name &lt;- paste(topics, collapse = &quot;_&quot;)
+file_name &lt;- paste(&quot;Search&quot;, file_name, sep = &quot;_&quot;)
+file_name &lt;- paste(file_name, &quot;xlsx&quot;, sep = &quot;.&quot;)
+file_name &lt;- paste(&quot;Searches&quot;, file_name, sep = &quot;/&quot;)
+WriteXLS(res, file_name,
+      row.names = FALSE, col.names = TRUE, na = &quot;NA&quot;)</code></pre>
+<p>At this point, one can open the spreadsheet in Excel and check each URL (the links are live in the spreadsheet). After vetting each site,<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> one can append the new results to the existing <code>FOSS4Spec.xlsx</code> data base and refresh the entire site so the table is updated.</p>
+<p>To make this job easier, I like to have the search results spreadsheet open and then open all the URLs using the as follows. Then I can quickly clean up the spreadsheet (it helps to have two monitors for this process).</p>
+<pre class="r"><code>found &lt;- as.data.frame(read_xlsx(file_name))
+for (i in 1:nrow(found)) {
+  if (grepl(&quot;^https?://&quot;, found$url[i], ignore.case = TRUE)) BROWSE(found$url[i])
+}</code></pre>
+</div>
+<div id="authentificating" class="section level2">
+<h2>Authentificating</h2>
+<p>In order to use the Github API, you have to authenticate. Otherwise you will be severely <a href="https://docs.github.com/en/rest/reference/rate-limit">rate-limited</a>. If you are authenticated, you can make up to 5,000 API queries per hour.</p>
+<p>To authenticate, you need to first establish some credentials with Github, by setting up a “key” and a “secret”. You can set these up <a href="https://github.com/settings/developers">here</a> by choosing the “Oauth Apps” tab. Record these items in a secure way, and be certain you don’t actually publish them by pushing.</p>
+<p>Now you are ready to authenticate your <code>R</code> instance using <a href="https://developer.github.com/apps/building-oauth-apps/authorizing-oauth-apps/#web-application-flow">“Web Application Flow”</a>.<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a></p>
+<pre class="r"><code>myapp &lt;- oauth_app(&quot;FOSS&quot;, key = &quot;put_your_key_here&quot;, secret = &quot;put_your_secret_here&quot;)
+github_token &lt;- oauth2.0_token(oauth_endpoints(&quot;github&quot;), myapp)</code></pre>
+<p>If successful, this will open a web page which you can immediately close. In the <code>R</code> console, you’ll need to choose whether to do a one-time authentification, or leave a hidden file behind with authentification details. I use the one-time option, as I don’t want to accidently publish the secrets in the hidden file (since they are easy to overlook, being hidden and all).</p>
+</div>
+<div id="searchtopic" class="section level2">
+<h2><code>searchTopic</code></h2>
+<p><code>searchTopic</code> is a function that accesses the Github API to search for a single topic.<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> This function is “pretty simple” in that it is short, but there are six helper functions defined in the same file. So, “short not short”. This function does all the heavy lifting; the major steps are:</p>
+<ol style="list-style-type: decimal">
+<li><p>Carry out an authenticated query of the topics associated with all Github repositories. This first “hit” returns up to 30 results, and also a header than tells how many more pages of results are out there.</p></li>
+<li><p>Process that first set of results by converting the response to a JSON structure, because nice people have already built functions to handle such things (I’m looking at you <a href="https://httr.r-lib.org/"><code>httr</code></a>).</p>
+<ol style="list-style-type: lower-roman">
+<li><p>Check that structure for a message that will tell us if we got stopped by Github access issues (and if so, report access stats).</p></li>
+<li><p>Extract only the name, description and repository URL from the huge volume of information captured.</p></li>
+</ol></li>
+<li><p>Inspect the first response to see how many more pages there are, then loop over page two (we already have page 1) to the number of pages, basically repeating step 2.</p></li>
+</ol>
+<p>Along the way, all the results are stored in a data.frame.</p>
+</div>
+<div id="searchrepos" class="section level2">
+<h2><code>searchRepos</code></h2>
+<p><code>searchRepos</code> does two simple things:</p>
+<ul>
+<li>Loops over all topics, since <code>searchTopic</code> only handles one topic at a time.</li>
+<li>Optionally, dereplicates the results by excluding any repositories that we already know about.</li>
+</ul>
+</div>
+<div id="other-stuff-to-make-life-easier" class="section level2">
+<h2>Other Stuff to Make Life Easier</h2>
+<p>There are two other scripts in the <code>Utilities</code> folder that streamline maintenance of the project.</p>
+<ul>
+<li><code>mergeSearches.R</code> which will merge several search results into one, removing duplicates along the way.</li>
+<li><code>mergeMaintainers.R</code> which will query CRAN for the maintainers of all packages in <code>FOSS4Spec.xlsx</code>, and add this info to the file.<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a> Maintainers are not currently displayed on the main website. However, I hope to eventually e-mail all maintainers so they can fine-tune the information about their entries.</li>
+</ul>
+</div>
+<div id="future-work-contributing" class="section level2">
+<h2>Future Work / Contributing</h2>
+<p>Clearly it would be good for someone who knows <code>Python</code> to step in and write the analogous search code for PyPi.org. Depending upon time contraints, I may use this as an opportunity to learn more <code>Python</code>, but really, if you want to help that would be quicker!</p>
+<p>And that folks, is how the sausage is made.</p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>This code has been tested on a number of searches and I’ve captured every exception I’ve encountered. If you have problems using this code, please file an issue. It’s nearly impossible that it is perfect at this point!<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>Some search terms produce quite a few false positives. I also review each repository to make sure the project is actually FOSS, is not a student project etc (more details on the main web site).<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>While I link to the documentation for completeness, the steps described next do all the work.<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p>See notes in the file: I have not been able to get the Github API to work with multiple terms, so we search each one individually.<a href="#fnref4" class="footnote-back">↩︎</a></p></li>
+<li id="fn5"><p>Want to contribute? If you know the workings of the PyPi.org API it would be nice to automatically pull the maintainer’s contact info.<a href="#fnref5" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
