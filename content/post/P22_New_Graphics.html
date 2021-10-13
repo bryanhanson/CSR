@@ -1,0 +1,41 @@
+---
+title: "GSOC 2021: New Graphics for ChemoSpec"
+author: "Bryan Hanson"
+date: 2021-10-13
+tags: ["R", "ChemoSpec", "ChemoSpecUtils", "ChemoSpec2D", "GSOC"]
+slug: "P22"
+draft: false
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<table>
+<tr>
+<td>
+<img src="/images/og-image.png" alt="GSOC_logo" style="width:100px;"/>
+</td>
+<td>
+It’s been quiet around this blog because supervising two students for <a href="https://summerofcode.withgoogle.com/">Google Summer of Code</a> has kept me pretty busy! But we have some news…
+</td>
+</tr>
+</table>
+<p>Thanks to Mr. Tejasvi Gupta and the support of GSOC, <a href="https://bryanhanson.github.io/ChemoSpec/"><code>ChemoSpec</code></a> and <a href="https://bryanhanson.github.io/ChemoSpec2D/"><code>ChemoSpec2D</code></a> were extended to produce <code>ggplot2</code> graphics and <code>plotly</code> graphics! <code>ggplot2</code> is now the default output, and the <code>ggplot2</code> object is returned, so if one doesn’t like the choice of theme or any other aspect, one can customize the object to one’s desire. The <code>ggplot2</code> graphics output are generally similar in layout and spirit to the <code>base</code> graphics output, but significant improvements have been made in labeling data points using the <code>ggrepel</code> package. The original <code>base</code> graphics are still available as well. Much of this work required changes in <code>ChemoSpecUtils</code> which supports the common needs of both packages.</p>
+<p>Tejasvi did a really great job with this project, and I think users of these packages will really like the results. We have greatly expanded the pre-release testing of the graphics, and as far as we can see every thing works as intended. Of course, please file an issue if you see any problems or unexpected behavior.</p>
+<p>To see more about how the new graphics options work, take a look at <a href="https://rdrr.io/cran/ChemoSpecUtils/man/GraphicsOptions.html">GraphicsOptions</a>. Here are the functions that were updated:</p>
+<ul>
+<li><code>plotSpectra</code></li>
+<li><code>surveySpectra</code></li>
+<li><code>surveySpectra2</code></li>
+<li><code>reviewAllSpectra</code> (formerly <code>loopThruSpectra</code>)</li>
+<li><code>plotScree</code> (resides in <code>ChemoSpecUtils</code>)</li>
+<li><code>plotScores</code> (resides in <code>ChemoSpecUtils</code>)</li>
+<li><code>plotLoadings</code> (uses <code>patchwork</code> and hence <code>plotly</code> isn’t available)</li>
+<li><code>plot2Loadings</code></li>
+<li><code>sPlotSpectra</code></li>
+<li><code>pcaDiag</code></li>
+<li><code>plotSampleDist</code></li>
+<li><code>aovPCAscores</code></li>
+<li><code>aovPCAloadings</code> (uses <code>patchwork</code> and hence <code>plotly</code> isn’t available)</li>
+</ul>
+<p>Tejasvi and I are looking forward to your feedback. There are many other smaller changes that we’ll let users discover as they work. And there’s more work to be done, but other projects need attention and I need a little rest!</p>
