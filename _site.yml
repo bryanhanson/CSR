@@ -1,0 +1,18 @@
+name: "Chemometrics-&-Spectroscopy-Using-R"
+title: "Chemometrics & Spectroscopy Using R"
+description: Chemometrics & Spectroscopy Using R
+base_url: https://chemospec.org
+output_dir: "_site"
+navbar:
+  right:
+    - text: "Home"
+      href: index.html
+    - text: "About"
+      href: about.html
+    - text: "Contact"
+      href: contact.html
+    - icon: fa fa-rss
+      href: index.xml
+output: distill::distill_article
+rss:
+  full_content: true

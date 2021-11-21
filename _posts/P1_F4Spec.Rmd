@@ -1,0 +1,17 @@
+---
+title: "FOSS for Spectroscopy"
+author: "Bryan Hanson"
+date: 2020-01-01
+categories:
+  - R
+  - Python
+slug: "P1"
+---
+
+For this inaugural blog post, I'm pleased to share a project I have been working on recently: [FOSS4Spectroscopy](https://bryanhanson.github.io/FOSS4Spectroscopy/) is an attempt to catalog FOSS spectroscopy software.  The page is designed to be updated easily with new or edited entries -- see the page for details, and please contribute!
+
+For this initial version, I searched the CRAN ecosystem via [packagefinder](https://CRAN.R-project.org/package=packagefinder) and the `Python` world via [PyPi.org](https://pypi.org/) using spectroscopy-related keywords.  My expertise is in `R` so I'm pretty confident I have most of the `R` packages included.  I'm not so confident about coverage of the `Python` packages (where else should I look?).
+
+Currently, the "status" column in the main table is empty.  I am working on a version which will update the status with a date giving some indication of the age and activity of the repository.  Right now the page is updated when I push to Github, but in the long run I hope to get Travis-CI to run it as a weekly cron job.
+
+I welcome your feedback in any form!
