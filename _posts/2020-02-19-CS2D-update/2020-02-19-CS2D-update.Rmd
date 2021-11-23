@@ -1,0 +1,27 @@
+---
+title: "ChemoSpec2D Update"
+description: Improvements to ChemoSpec2D
+author: "Bryan Hanson"
+date: 2020-02-19
+categories:
+  - R
+  - ChemoSpec2D
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+I'm pleased to announce that `ChemoSpec2D`, a package for exploratory data analysis of 2D NMR spectra, has been updated on CRAN and is coming to a mirror near you.  Barring user reports to the contrary, I feel like the package has pretty much stabilized and is pretty robust.  The main area for future expansion is to add additional data import routines.  Please feel free to ask about your specific use case!
+
+The most noteworthy user-facing improvements are:
+
+* Function `import2DSpectra` can now handle JCAMP-DX files, Bruker files exported via the TopSpin "totxt" command, and JEOL spectra exported as "generic ascii".  The design allows additional formats to be added if I have test files to play with (hint hint).
+* `files2Spectra2DObject` gains a new argument `allowSloppy`.  This *experimental* feature will allow one to import data sets that do not have the same dimensions.  The intent here is to deal with data sets where the number of points in each dimension is similar but not identical.  Additional functions will be needed to handle this kind of data.  See the documentation for details.
+* `files2Spectra2DObject` has also been modified to allow arguments to be passed to `list.files` and `readJDX`.  This means for instance you can specify a path other than the current working directory, and have the function recurse through sub-directories.  This brings `files2Spectra2DObject` into line with `ChemoSpec::files2SpectraObject`.
+* Function `hats_alignSpectra2D` gains new arguments `dist_method` and `maximize` which allows the user to pass their choice of distance measure through to the objective function used to evaluate the overlap of the spectra.  This greatly improves the quality of the alignment.
+* Plotting is simplified with the addition of two new functions to create Lists of Colors, `LofC` and Lists of Levels, `LofL`.
+* The basic color scheme for contours was updated to use a perceptually consistent low/blue -> high/red scheme, based on the principles in the `colorspace` package.  The color-handling infrastructure was also changed to allow easy introduction of different color schemes in the future, though the user cannot yet make changes on the fly.
+
+In addition, a number of small bugs and annoyances were taken care of, arguments tweaked and documentation improved and expanded.  Several functions were rebuilt to make them more robust.
+
+Please see the package [website](https://bryanhanson.github.io/ChemoSpec2D/) for the full changelog and all documentation.

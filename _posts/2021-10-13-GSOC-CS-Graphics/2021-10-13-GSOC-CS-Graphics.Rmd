@@ -1,0 +1,48 @@
+---
+title: "GSOC 2021: New Graphics for ChemoSpec"
+description: Major improvements!
+author: "Bryan Hanson"
+date: 2021-10-13
+categories:
+  - R
+  - ChemoSpec
+  - ChemoSpecUtils
+  - ChemoSpec2D
+  - GSOC
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+<table>
+<tr>
+<td>
+<img src="../images/og-image.png" alt="GSOC_logo" style="width:100px;"/>
+</td>
+<td>
+It's been quiet around this blog because supervising two students for [Google Summer of Code](https://summerofcode.withgoogle.com/) has kept me pretty busy!  But we have some news...
+</td>
+</tr>
+</table>
+
+Thanks to Mr. Tejasvi Gupta and the support of GSOC, [`ChemoSpec`](https://bryanhanson.github.io/ChemoSpec/) and [`ChemoSpec2D`](https://bryanhanson.github.io/ChemoSpec2D/) were extended to produce `ggplot2` graphics and `plotly` graphics!  `ggplot2` is now the default output, and the `ggplot2` object is returned, so if one doesn't like the choice of theme or any other aspect, one can customize the object to one's desire. The `ggplot2` graphics output are generally similar in layout and spirit to the `base` graphics output, but significant improvements have been made in labeling data points using the `ggrepel` package. The original `base` graphics are still available as well. Much of this work required changes in `ChemoSpecUtils` which supports the common needs of both packages.
+
+Tejasvi did a really great job with this project, and I think users of these packages will really like the results.  We have greatly expanded the pre-release testing of the graphics, and as far as we can see every thing works as intended.  Of course, please file an issue if you see any problems or unexpected behavior.
+
+To see more about how the new graphics options work, take a look at [GraphicsOptions](https://rdrr.io/cran/ChemoSpecUtils/man/GraphicsOptions.html).  Here are the functions that were updated:
+
+* `plotSpectra`
+* `surveySpectra`
+* `surveySpectra2`
+*  `reviewAllSpectra` (formerly `loopThruSpectra`)
+* `plotScree` (resides in `ChemoSpecUtils`)
+* `plotScores` (resides in `ChemoSpecUtils`)
+* `plotLoadings` (uses `patchwork` and hence `plotly` isn't available)
+* `plot2Loadings`
+* `sPlotSpectra`
+* `pcaDiag`
+* `plotSampleDist`
+* `aovPCAscores`
+* `aovPCAloadings` (uses `patchwork` and hence `plotly` isn't available)
+
+Tejasvi and I are looking forward to your feedback. There are many other smaller changes that we'll let users discover as they work.  And there's more work to be done, but other projects need attention and I need a little rest!

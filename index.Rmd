@@ -1,3 +1,71 @@
 ---
-site: blogdown:::blogdown_site
+title: "Chemometrics & Spectroscopy Using R"
+site: distill::distill_website
+listing: posts
 ---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  dev.args = list(bg = 'transparent'),
+  cache = FALSE
+)
+```
+
+```{r banner, fig.width = 10, fig.height = 2}
+emBanner <- function() {
+
+	n <- 8 # no. of cycles to be strung together
+	x <- seq(0, n*2*pi, length.out = n*360) # one cycle described by 360 data points
+	x2 <- x*exp(x/20) # Stretch the x-axis
+
+	# Establish the main viewport
+	# Viewport sizes in inches, but positions in npc
+	grid.newpage()
+	mainVP <- viewport()
+	pushViewport(mainVP)
+
+
+	# Draw the visible spectrum as a series of rectangles
+	# in the main viewport
+	# These need to be underneath the other items, so draw first
+	le <- 0.52 # left edge of spectrum
+	w <- 0.007 # width of a particular rectangle
+	speccols <- c("red", "orange", "yellow", "green", "blue", "darkviolet")
+	for (i in 1:length(speccols)) {
+		grid.rect(x = (le + w*(i-1)), y = 0.5,
+		width = w, height = 0.5,
+		gp = gpar(fill = speccols[i], col = "transparent"))
+		}
+
+	# Overlay the data in its own viewport
+	specVP <- viewport(height = 0.5)
+	pushViewport(specVP)
+
+	xx <- 1 - x2/max(x2) # moves long wavelengths to the left side
+	yy <- 0.5*sin(x) + 0.5
+	grid.lines(xx, yy, gp = gpar(lwd = 2.0))
+
+	# Draw the axis in its own viewport
+	# Labeling the ticks based on http://stackoverflow.com/a/33133919/633251
+	# Thanks Josh.
+	upViewport() # back to mainVP
+	axisVP <- viewport(width = unit(10, "inches"), height = unit(0.1, "inches"),
+		y = 0.5)
+	pushViewport(axisVP)
+	## First plot an axis with all ticks and no labels
+	ticks_at <- seq(1/15, 14/15, length.out = 13)
+	grid.xaxis(at = ticks_at, label = FALSE)
+	grid.lines(x = c(0, 1/5), y = c(0, 0))
+	grid.lines(x = c(14/15, 1), y = c(0, 0))
+
+	# Annotations in the main viewport
+	upViewport() # back to mainVP
+	# grid.text(label = "Chemometrics & Spectroscopy using R", gp = gpar(fontface = "italic", cex = 2.0),
+	# 	x = 0.3, y = 0.9)
+	} # end of emBanner
+
+
+library("grid")
+emBanner()
+```
