@@ -50,7 +50,7 @@ Thanks for reading. Let me know if you have any questions, via the comments, e-m
 This portion of the `hyperSpec` GSOC 2020 project was primarily the work of `hyperSpec` team members Erick Oduniyi, Bryan Hanson and Vilmantas Gegzna.  Erick was supported by GSOC in summer 2020.
 
 [^1]: The work continues this summer, hopefully again with the support of GSOC.
-[^2]: Project [background](https://chemospec.org/2020/05/07/p14/) and [results](https://chemospec.org/2020/09/08/p16/).
+[^2]: Project [background](https://chemospec.org/posts/2020-05-07-GSOC-hyperSpec/) and [results](https://chemospec.org/posts/2020-09-08-GSOC-hyperSpec/).
 [^3]: Modified from the recipes [here](https://github.com/r-lib/actions/tree/master/examples#standard-ci-workflow).
 [^4]: The toughest part of writing this workflow was knowing where one was in the directory tree of the Github Actions workspace. We made liberal use of `getwd()`, `list.files()` and related functions during troubleshooting. All of these "helps" have been removed from the mature version of the workflow.  As noted in the workflow, the top directory is `/home/runner/work/${{ REPOSITORY_NAME }}/${{ REPOSITORY_NAME }}`.
 [^5]: It's helpful to understand in a general way what happens during the build and check process (e.g. the directories and files created).

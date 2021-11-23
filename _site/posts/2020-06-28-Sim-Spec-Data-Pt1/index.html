@@ -2506,7 +2506,7 @@ d-appendix d-footnote-list a.footnote-backlink {
 <pre class="sourceCode r"><code class="sourceCode r"><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>3</span><span class='op'>)</span>
 </code></pre>
 </div>
-<pre><code>[1] -0.5849704 -1.7265082  0.6040250</code></pre>
+<pre><code>[1]  0.1440807 -1.6972968 -1.4168098</code></pre>
 </div>
 <p>Imagine you were developing a new technique to determine if two methods of manufacturing widgets produced widgets of the same mass.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Even before the widgets were manufactured, you could test your code by simulating widget masses using <code>rnorm</code>:</p>
 <div class="layout-chunk" data-layout="l-body">
@@ -2607,7 +2607,7 @@ d-appendix d-footnote-list a.footnote-backlink {
 </div>
 <p><img src="2020-06-28-Sim-Spec-Data-Pt1_files/figure-html5/showThree-1.png" width="624" /></p>
 </div>
-<p>One clever way to introduce baseline anomalies is to use a <a href="https://en.wikipedia.org/wiki/Vandermonde_matrix">Vandermonde matrix</a>. This is a trick I learned while working with the team on the <code>hyperSpec</code> overhaul funded by <a href="https://chemospec.org/2020/05/07/p14/">GSOC</a>.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> It’s easiest to explain by an example:</p>
+<p>One clever way to introduce baseline anomalies is to use a <a href="https://en.wikipedia.org/wiki/Vandermonde_matrix">Vandermonde matrix</a>. This is a trick I learned while working with the team on the <code>hyperSpec</code> overhaul funded by <a href="https://chemospec.org/posts/2020-05-07-GSOC-hyperSpec/">GSOC</a>.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> It’s easiest to explain by an example:</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span class='va'>vander</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>order</span><span class='op'>)</span> <span class='fu'><a href='https://rdrr.io/r/base/outer.html'>outer</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='fl'>0</span><span class='op'>:</span><span class='va'>order</span>, <span class='va'>`^`</span><span class='op'>)</span>
@@ -2639,10 +2639,10 @@ d-appendix d-footnote-list a.footnote-backlink {
 <span class='va'>coefs</span>
 </code></pre>
 </div>
-<pre><code>          [,1]       [,2]      [,3]
-[1,] 0.7222221 0.03196865 0.8851842
-[2,] 0.3563052 0.52144529 0.0746463
-[3,] 0.3827119 0.12107791 0.7842279</code></pre>
+<pre><code>          [,1]      [,2]      [,3]
+[1,] 0.1409040 0.3487193 0.3402532
+[2,] 0.4740782 0.8426986 0.8967488
+[3,] 0.9564882 0.4438944 0.6544713</code></pre>
 </div>
 <p>If we multiply the coefficients by the tranposed Vandermonde matrix, we get back a set of offsets which are the rows of the Vandermonde matrix modified by the coefficients. We’ll scale things so that <code>Spec123</code> and <code>offsets</code> are on the same overall scale and then further scale so that the spectra are not overwhelmed by the offsets in the next step.</p>
 <div class="layout-chunk" data-layout="l-body">

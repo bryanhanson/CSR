@@ -13,7 +13,7 @@ output:
 
 [`ChemoSpec`](https://bryanhanson.github.io/ChemoSpec/) has just been updated to version 5.2.12, and should be available on the mirrors shortly.
 
-The most significant user-facing changes are actually in the update to `ChemoSpecUtils` from a [few days ago](https://chemospec.org/2020/01/22/p4/).  In addition, the following documentation changes were made:
+The most significant user-facing changes are actually in the update to `ChemoSpecUtils` from a [few days ago](https://chemospec.org/posts/2020-01-22-CSU-update/).  In addition, the following documentation changes were made:
 
 * Added documentation for `updateGroups` which has been in `ChemoSpecUtils` for a while but effectively hidden from users of `ChemoSpec`.
 * Fixed the example in `mclustSpectra` which had an error and used data that was not a good illustration.

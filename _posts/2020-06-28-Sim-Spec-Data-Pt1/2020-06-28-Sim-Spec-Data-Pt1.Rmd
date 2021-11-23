@@ -129,7 +129,7 @@ lines(wavelengths, Spec123[3,], col = "blue")
 lines(wavelengths, colSums(Spec123) + 0.2, lty = 2)
 ```
 
-One clever way to introduce baseline anomalies is to use a [Vandermonde matrix](https://en.wikipedia.org/wiki/Vandermonde_matrix). This is a trick I learned while working with the team on the `hyperSpec` overhaul funded by [GSOC](https://chemospec.org/2020/05/07/p14/).[^3]  It's easiest to explain by an example:
+One clever way to introduce baseline anomalies is to use a [Vandermonde matrix](https://en.wikipedia.org/wiki/Vandermonde_matrix). This is a trick I learned while working with the team on the `hyperSpec` overhaul funded by [GSOC](https://chemospec.org/posts/2020-05-07-GSOC-hyperSpec/).[^3]  It's easiest to explain by an example:
 
 ```{r vdm1}
 vander <- function(x, order) outer(x, 0:order, `^`)

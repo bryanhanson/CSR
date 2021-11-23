@@ -125,11 +125,10 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <meta name="citation_publication_date" content="2020/03/04"/>
 <meta name="citation_author" content="Bryan Hanson"/>
 <!--/radix_placeholder_meta_tags-->
-  
   <!--radix_placeholder_rmarkdown_metadata-->
 
 <script type="text/json" id="radix-rmarkdown-metadata">
-{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","categories","output","bibliography","citation_url","canonical_url"]}},"value":[{"type":"character","attributes":{},"value":["Aligning 2D NMR Spectra Part 3"]},{"type":"character","attributes":{},"value":["Putting it all together"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name"]}},"value":[{"type":"character","attributes":{},"value":["Bryan Hanson"]}]}]},{"type":"character","attributes":{},"value":["2020-03-04"]},{"type":"character","attributes":{},"value":["R","ChemoSpec2D","Alignment","NMR"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained"]}},"value":[{"type":"logical","attributes":{},"value":[false]}]}]},{"type":"character","attributes":{},"value":["../REFS.bib"]},{"type":"character","attributes":{},"value":["https://chemospec.org/posts/2020-03-04-NMR-Align-Pt3/"]},{"type":"character","attributes":{},"value":["https://chemospec.org/posts/2020-03-04-NMR-Align-Pt3/"]}]}
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","description","author","date","categories","output","citation_url","canonical_url"]}},"value":[{"type":"character","attributes":{},"value":["Aligning 2D NMR Spectra Part 3"]},{"type":"character","attributes":{},"value":["Putting it all together"]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name"]}},"value":[{"type":"character","attributes":{},"value":["Bryan Hanson"]}]}]},{"type":"character","attributes":{},"value":["2020-03-04"]},{"type":"character","attributes":{},"value":["R","ChemoSpec2D","Alignment","NMR"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained"]}},"value":[{"type":"logical","attributes":{},"value":[false]}]}]},{"type":"character","attributes":{},"value":["https://chemospec.org/posts/2020-03-04-NMR-Align-Pt3/"]},{"type":"character","attributes":{},"value":["https://chemospec.org/posts/2020-03-04-NMR-Align-Pt3/"]}]}
 </script>
 <!--/radix_placeholder_rmarkdown_metadata-->
   
@@ -2474,7 +2473,7 @@ d-appendix d-footnote-list a.footnote-backlink {
 </div>
 
 <div class="d-article">
-<p>This is Part 3 of a series on aligning 2D NMR, as implemented in the package <code>ChemoSpec2D</code>. <a href="https://chemospec.org/2020/02/20/p8/">Part 1</a> <a href="https://chemospec.org/2020/03/02/p9/">Part2</a></p>
+<p>This is Part 3 of a series on aligning 2D NMR, as implemented in the package <code>ChemoSpec2D</code>. <a href="https://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/">Part 1</a> <a href="https://chemospec.org/posts/2020-03-02-NMR-Align-Pt2/">Part2</a></p>
 <p>Let’s get to work. The function to carry out alignment is <code>hats_alignSpectra2D</code>. The arguments <code>maxF1</code> and <code>maxF2</code> define the space that will be considered as the two spectra are shifted relative to each other. The space potentially covered is <code>-maxF1</code> to <code>maxF1</code> and similarly for the F2 dimension. <code>dist_method</code>, <code>thres</code> and <code>minimize</code> refer to the objective function, as described in Part 1. In this example we will consider two spectra succcessfully aligned when we get below the threshold. When one shifts one spectrum relative to the other, part of the shifted spectrum gets cutoff and part of it is empty space. <code>fill = "noise"</code> instructs the function to fill the empty space with an estimate of the noise from the original spectrum. We’ll set <code>plot = FALSE</code> here because the output is extensive. I’ll provide sample plotting output in a moment.</p>
 <div class="layout-chunk" data-layout="l-body">
 
@@ -2588,8 +2587,6 @@ d-appendix d-footnote-list a.footnote-backlink {
 <!--/radix_placeholder_site_after_body-->
 <!--radix_placeholder_appendices-->
 <div class="appendix-bottom">
-  <h3 id="references">References</h3>
-  <div id="references-listing"></div>
   <h3 id="citation">Citation</h3>
   <p>For attribution, please cite this work as</p>
   <pre class="citation-appendix short">Hanson (2020, March 4). Chemometrics &amp; Spectroscopy Using R: Aligning 2D NMR Spectra Part 3. Retrieved from https://chemospec.org/posts/2020-03-04-NMR-Align-Pt3/</pre>

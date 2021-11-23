@@ -14,7 +14,7 @@ output:
 bibliography: ../REFS.bib
 ---
 
-This is Part 2 of a series on aligning 2D NMR, as implemented in the package `ChemoSpec2D`. [Part 1](https://chemospec.org/2020/02/20/p8/) [Part 3](https://chemospec.org/2020/03/04/p10/)
+This is Part 2 of a series on aligning 2D NMR, as implemented in the package `ChemoSpec2D`. [Part 1](https://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/) [Part 3](https://chemospec.org/posts/2020-03-04-NMR-Align-Pt3/)
 
 ## The HATS-PR Algorithm
 

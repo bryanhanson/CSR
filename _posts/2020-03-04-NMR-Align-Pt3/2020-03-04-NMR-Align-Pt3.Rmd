@@ -13,7 +13,7 @@ output:
     self_contained: false
 ---
 
-This is Part 3 of a series on aligning 2D NMR, as implemented in the package `ChemoSpec2D`. [Part 1](https://chemospec.org/2020/02/20/p8/) [Part2](https://chemospec.org/2020/03/02/p9/)
+This is Part 3 of a series on aligning 2D NMR, as implemented in the package `ChemoSpec2D`. [Part 1](https://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/) [Part2](https://chemospec.org/posts/2020-03-02-NMR-Align-Pt2/)
 
 Let's get to work.  The function to carry out alignment is `hats_alignSpectra2D`. The arguments `maxF1` and `maxF2` define the space that will be considered as the two spectra are shifted relative to each other.  The space potentially covered is `-maxF1` to `maxF1` and similarly for the F2 dimension.  `dist_method`, `thres` and `minimize` refer to the objective function, as described in Part 1.  In this example we will consider two spectra succcessfully aligned when we get below the threshold.  When one shifts one spectrum relative to the other, part of the shifted spectrum gets cutoff and part of it is empty space. `fill = "noise"` instructs the function to fill the empty space with an estimate of the noise from the original spectrum.  We'll set `plot = FALSE` here because the output is extensive.  I'll provide sample plotting output in a moment.
 
