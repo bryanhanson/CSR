@@ -8,6 +8,8 @@ navbar:
   right:
     - text: "About"
       href: about.html
+    - text: "Projects"
+      href: projects.html
     - icon: fa-solid fa-envelope
       href: mailto:hanson@depauw.edu
     - icon: fab fa-twitter fa-1x

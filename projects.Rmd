@@ -1,0 +1,27 @@
+---
+title: "Selected Projects"
+date: "2021-11-21"
+disable_comments: true
+---
+
+### R Software Packages
+
+All my work can be seen at [Github](https://github.com/bryanhanson?tab=repositories). Here are some highlights:
+
+* [ChemoSpec](https://CRAN.R-project.org/package=ChemoSpec): Exploratory Chemometrics for Spectroscopy
+* [ChemoSpec2D](https://CRAN.R-project.org/package=ChemoSpec2D): Exploratory Chemometrics for 2D Spectroscopy
+* [readJDX](https://CRAN.R-project.org/package=readJDX): Import Data in the JCAMP-DX Format
+* [hyperSpec](https://github.com/r-hyperspec) Tools for Spectroscopy.  Joint project with Claudia Beleites, Vilmantas Gegzna, Erick Oduniyi, Sang Truong, and others.
+* [exCon](https://CRAN.R-project.org/package=exCon): Interactive Exploration of Contour Data [live demo](https://bryanhanson.github.io/exCon/exCon.html)
+* [SpecHelpers](https://CRAN.R-project.org/package=SpecHelpers): Spectroscopy Related Utilities
+* [unmixR](https://gitlab.com/chemometrics/unmixR): Hyperspectral Unmixing with R, with Anton Belov, Conor McManus, Claudia Beleites and Simon Fuller
+* [HiveR](https://CRAN.R-project.org/package=HiveR): Hive Plots in 2D and 3D
+* [LindenmayeR](https://CRAN.R-project.org/package=HiveR): Functions to Explore L-Systems (Lindenmayer Systems)
+
+### Misc Projects
+
+* [FOSS for Spectroscopy](https://bryanhanson.github.io/FOSS4Spectroscopy/) A collection of free and open source spectroscopy projects.
+
+### From The Past!
+
+Over 32 years of teaching at [DePauw University](https::depauw.edu), I was honored to conduct research with a good number of very talented undergraduates.  The last 15 years or so my focus was on plant metabolomics.  Checkout this [page](PlantMetabolomics.html) presenting some of the work conducted by student researchers.
