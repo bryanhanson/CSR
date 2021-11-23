@@ -18,7 +18,10 @@ navbar:
       href: https://github.com/bryanhanson
     - icon: fa fa-rss
       href: index.xml
-output: distill::distill_article
+output:
+  distill::distill_article:
+    includes:
+      in_header: utterances.html
 theme: CSR.css
 rss:
   full_content: true
