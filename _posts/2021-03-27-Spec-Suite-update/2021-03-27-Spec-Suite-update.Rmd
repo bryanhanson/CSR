@@ -14,19 +14,9 @@ output:
     self_contained: false
 ---
 
-<table style="margin-left:auto;margin-right:auto;">
-<tr>
-<td>
-</br>
-</td>
-</tr>
-
-<tr>
-<td>
-<img src= "../images/emAnnotated.png" alt = "Annotated Electromagnetic Spectrum" style = "width:700px;"/>
-</td>
-</tr>
-</table>
+```{r echo = FALSE, out.width = "700px"}
+knitr::include_graphics("emAnnotated.png")
+```
 
 My suite of spectroscopy `R` packages has been updated on CRAN.  There are only a few small changes, but they will be important to some of you:
 

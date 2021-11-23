@@ -61,7 +61,26 @@
       <title>Spectroscopy Suite Update</title>
       <dc:creator>Bryan Hanson</dc:creator>
       <link>https://chemospec.org/posts/2021-03-27-Spec-Suite-update</link>
-      <description>Updates for the new version of R</description>
+      <description>
+
+
+&lt;p&gt;&lt;img src="https://chemospec.org/posts/2021-03-27-Spec-Suite-update/emAnnotated.png" width="700px" /&gt;&lt;/p&gt;
+&lt;p&gt;My suite of spectroscopy &lt;code&gt;R&lt;/code&gt; packages has been updated on CRAN. There are only a few small changes, but they will be important to some of you:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;ChemoSpecUtils&lt;/code&gt; now provides a set of colorblind-friendly colors, see &lt;code&gt;?colorSymbol&lt;/code&gt;. These are available for use in &lt;code&gt;ChemoSpec&lt;/code&gt; and &lt;code&gt;ChemoSpec2D&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;At the request of several folks, &lt;code&gt;readJDX&lt;/code&gt; now includes a function, &lt;a href="https://rdrr.io/cran/readJDX/man/splitMultiblockDX.html"&gt;&lt;code&gt;splitMultiblockDX&lt;/code&gt;&lt;/a&gt;, that will split a multiblock JCAMP-DX file into separate files, which can then be imported via the usual functions in the package.&lt;/li&gt;
+&lt;li&gt;All packages are built against the upcoming R 4.1 release (due in April).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Here are the links to the documentation:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://bryanhanson.github.io/ChemoSpec/"&gt;&lt;code&gt;ChemoSpec&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://bryanhanson.github.io/ChemoSpec2D/"&gt;&lt;code&gt;ChemSpec2D&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://rdrr.io/cran/ChemoSpecUtils/"&gt;&lt;code&gt;ChemoSpecUtils&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://rdrr.io/cran/readJDX/"&gt;&lt;code&gt;readJDX&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;As always, let me know if you discover trouble or have questions.&lt;/p&gt;
+&lt;pre class="r distill-force-highlighting-css"&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;</description>
+      <distill:md5>acce39057512ea99209b2dde1b428ae7</distill:md5>
       <category>R</category>
       <category>ChemoSpec</category>
       <category>ChemoSpec2D</category>
@@ -69,6 +88,7 @@
       <category>readJDX</category>
       <guid>https://chemospec.org/posts/2021-03-27-Spec-Suite-update</guid>
       <pubDate>Sat, 27 Mar 2021 00:00:00 +0000</pubDate>
+      <media:content url="https://chemospec.org/posts/2021-03-27-Spec-Suite-update/emAnnotated.png" medium="image" type="image/png" width="1512" height="432"/>
     </item>
     <item>
       <title>Interfacing ChemoSpec to PLS</title>
