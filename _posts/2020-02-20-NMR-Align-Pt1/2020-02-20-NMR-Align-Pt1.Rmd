@@ -18,7 +18,7 @@ bibliography: ../REFS.bib
 
 In this series of posts, I'll discuss the alignment process for the case of 2D NMR, as implemented in the package `ChemoSpec2D`. This is Part 1.  [Part 2](https://chemospec.org/posts/2020-03-02-NMR-Align-Pt2/). [Part 3](https://chemospec.org/posts/2020-03-04-NMR-Align-Pt3/).
 
-<img src="../images/P8_Manual_Alignment.png" alt="Manual Alignment" style="width:400px;"/>
+<img src="P8_Manual_Alignment.png" alt="Manual Alignment" style="width:400px;"/>
 
 In one-dimensional $^1$H NMR spectroscopy, particularly biomolecular NMR, it is frequently necessary to align spectra before chemometric or metabolomics analysis.  Poor alignment arises largely from pH and ionic strength induced shifts in aqueous samples.  There are a number of published alignment algorithms for the one-dimensional case.  The same issue presumably exists for 2D NMR spectra, but alignment options are limited.  Instead, for 2D NMR people often work with tables of peaks.  Creating these tables is an extra step and decisions about what to include may leave useful information behind.
 

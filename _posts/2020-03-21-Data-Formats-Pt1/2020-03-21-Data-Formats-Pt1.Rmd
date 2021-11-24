@@ -84,7 +84,7 @@ The JCAMP-DX format and standard began at a time when hard drive space was expen
 
 Another goal for the format was to have the format be both human and machine readible.  The format is composed of metadata describing the data and then the compressed data.  There are several compression formats possible; some are more human readible than others! Here is a simple example of a JCAMP-DX file containing part of an IR spectrum. The blue box contains the metadata, which is clearly human readible and indeed, most meanings are immediately obvious.  The orange box contains the compressed data in the "DIFFDUP" format.  In another post we might dissect how that works, but for now, we can clearly read the characters but they need to be translated into actual numerical values.
 
-<img src="../images/P11_Sample_DX.png" alt="Sample JCAMP-DX File" style="width:700px;"/>
+<img src="P11_Sample_DX.png" alt="Sample JCAMP-DX File" style="width:700px;"/>
 
 ### Pros & Cons of the JCAMP-DX Format
 

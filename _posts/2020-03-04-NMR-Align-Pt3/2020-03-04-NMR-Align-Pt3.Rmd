@@ -40,7 +40,7 @@ MUD2a <- hats_alignSpectra2D(MUD2,
 As the alignment proceeds, updates from the function are prefixed with `[ChemoSpec2D]`.  In the first step we get a message that row  1  of  9 of the guide tree is being processed, in which sample 7 is being aligned with sample 4.  The guide tree is shown below.  One can see that samples 7 and 4 are very similar, so they are aligned first.  If you inspect the output above, you can see that the four most similar pairs of spectra are aligned first, followed by groups of spectra according to similarity.  For each alignment the needed shifts are reported.  The last part of the output is a summary of all the alignments carried out.  Note that the vertical scale on the guide tree is the same as the scale on the `sampleDist` plot in Part 1 (using the Euclidean distance).
 
 
-<img src="../images/P10_Dendrogram.png" alt="X Space" style="width:600px;"/>
+<img src="P10_Dendrogram.png" alt="X Space" style="width:600px;"/>
 
 ## Diagnostics on Space
 
@@ -48,13 +48,13 @@ To save space, I suppressed the plotting of the results.  However, there are plo
 
 The lower plot represents the progress of the search over time.  Axis "dob" stands for "date of birth" which is basically the time index of when the test point was added.
 
-<img src="../images/P10_X_Space.png" alt="X Space" style="width:600px;"/>
+<img src="P10_X_Space.png" alt="X Space" style="width:600px;"/>
 
 ## Diagnostics on the Objective Function
 
 This second set of plots deals with what `mlrMBO` considers the Y-Space, which concerns the values of the objective function.  The top plot is a histogram of the distance (objective function) values; in this case most of them were pretty bad (high, meaning a larger distance between the spectra).  The middle plot is the value of the distance over time (dob). In this example the optimal alignment is found at dob = 4, but there is no particular significance to *when* the optimum is found.  The lower plot shows the *expected improvement* (ei) at each dob.  It is lowest when the optimum has been found.  For more details about what's going on under the hood, see the [Arxiv paper](https://arxiv.org/abs/1703.03373).
 
-<img src="../images/P10_Y_Space.png" alt="Y Space" style="width:600px;"/>
+<img src="P10_Y_Space.png" alt="Y Space" style="width:600px;"/>
 
 ## The Aligned Spectra
 

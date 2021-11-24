@@ -224,7 +224,200 @@
       <title>Exploring Github Topics</title>
       <dc:creator>Bryan Hanson</dc:creator>
       <link>https://chemospec.org/posts/2020-01-25-GH-Topics</link>
-      <description>Scrape Github for Repos of Interest</description>
+      <description>
+
+
+&lt;p&gt;As the code driving &lt;a href="https://bryanhanson.github.io/FOSS4Spectroscopy/"&gt;FOSS for Spectroscopy&lt;/a&gt; has matured, I began to think about how to explore Github in a systematic way for additional repositories with tools for spectroscopy. It turns out that a Github repo can have topics assigned to it, and you can use the Github API to search them. Wait, &lt;em&gt;what?&lt;/em&gt; I didn’t know one could add topics to a repo, even though there is a little invite right there under the repo name:&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://chemospec.org/posts/2020-01-25-GH-Topics/P6_Repo_Topics.png" alt="Repo Topics" style="width:400px;"/&gt;&lt;/p&gt;
+&lt;p&gt;Naturally I turned to StackOverflow to find out how to do this, and quickly encountered this &lt;a href="https://stackoverflow.com/a/48412541/633251"&gt;question&lt;/a&gt;. It was asked when the topics feature was new, so one needs to do things just a bit differently now, but there is a way forward.&lt;/p&gt;
+&lt;p&gt;Before we get to implementation, let’s think about limitations:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;This will only find repositories where topics have been set. I don’t know how broadly people use this feature, I had missed it when it was added.&lt;/li&gt;
+&lt;li&gt;Github topics are essentially tags with a controlled vocabulary, so for the best results you’ll need to manually explore the tags and then use these as your search terms.&lt;/li&gt;
+&lt;li&gt;The Github API only returns &lt;a href="https://developer.github.com/v3/#pagination"&gt;30 results&lt;/a&gt; at a time for most types of queries. For our purposes this probably doesn’t matter much. The &lt;a href="https://developer.github.com/v3/guides/traversing-with-pagination/"&gt;documentation&lt;/a&gt; explains how to iterate to get all possible results.&lt;/li&gt;
+&lt;li&gt;The Github API also limits the &lt;a href="https://developer.github.com/v3/#rate-limiting"&gt;number of queries&lt;/a&gt; you can make to 60/hr unless you authenticate, in which case the limit goes to 6000/hr.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Let’s get to it! First, create a Github access token on your local machine using the instructions in this &lt;a href="https://gist.github.com/bryanhanson/5d02c55b8e1178e84b7c119a7c6ca92b"&gt;gist&lt;/a&gt;. Next, load the needed libraries:&lt;/p&gt;
+&lt;pre class="r"&gt;&lt;code&gt;set.seed(123)
+library(&amp;quot;httr&amp;quot;)
+library(&amp;quot;knitr&amp;quot;)
+library(&amp;quot;kableExtra&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Specify your desired search terms, and create a list structure to hold the results:&lt;/p&gt;
+&lt;pre class="r"&gt;&lt;code&gt;search_terms &amp;lt;- c(&amp;quot;NMR&amp;quot;, &amp;quot;infrared&amp;quot;, &amp;quot;raman&amp;quot;, &amp;quot;ultraviolet&amp;quot;, &amp;quot;visible&amp;quot;, &amp;quot;XRF&amp;quot;, &amp;quot;spectroscopy&amp;quot;)
+results &amp;lt;- list()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Create the string needed to access the Github API, then &lt;code&gt;GET&lt;/code&gt; the results, and stash them in the list we created:&lt;/p&gt;
+&lt;pre class="r"&gt;&lt;code&gt;nt &amp;lt;- length(search_terms) # nt = no. of search terms
+for (i in 1:nt) {
+  search_string &amp;lt;- paste0(&amp;quot;https://api.github.com/search/repositories?q=topic:&amp;quot;, search_terms[i])
+    request &amp;lt;- GET(search_string, config(token = github_token))
+  stop_for_status(request) # converts http errors to R errors or warnings
+  results[[i]] &amp;lt;- content(request)
+}
+names(results) &amp;lt;- search_terms&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Figure out how many results we have found, set up a data frame and then put the results into the table. The &lt;code&gt;i&lt;/code&gt;, &lt;code&gt;j&lt;/code&gt;, and &lt;code&gt;k&lt;/code&gt; counters required a little experimentation to get right, as &lt;code&gt;content(request)&lt;/code&gt; returns a deeply nested list and only certain items are desired.&lt;/p&gt;
+&lt;pre class="r"&gt;&lt;code&gt;nr &amp;lt;- 0L # nr = no. of responses
+for (i in 1:nt) { # compute total number of results/items found
+    nr &amp;lt;- nr + length(results[[i]]$items)
+}
+
+DF &amp;lt;- data.frame(term = rep(NA_character_, nr),
+  repo_name = rep(NA_character_, nr),
+  repo_url = rep(NA_character_, nr),
+  stringsAsFactors = FALSE)
+
+k &amp;lt;- 1L
+for (i in 1:nt) {
+    ni &amp;lt;- length(results[[i]]$items) # ni = no. of items
+    for (j in 1:ni) {
+        DF$term[k] &amp;lt;- names(results)[[i]]
+        DF$repo_name[k] &amp;lt;- results[[i]]$items[[j]]$name
+        DF$repo_url[k] &amp;lt;- results[[i]]$items[[j]]$html_url
+        k &amp;lt;- k + 1L
+    }
+}
+# remove duplicated repos which result when repos have several of our
+# search terms of interest.
+DF &amp;lt;- DF[-which(duplicated(DF$repo_name)),]&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now put it all in a table we can inspect manually, send to a web page so it’s clickable, or potentially write it out as a csv (If you want this as a csv you should probably write the results out a bit differently). In this case I want the results as a table in web page so I can click the repo links and go straight to them.&lt;/p&gt;
+&lt;pre class="r"&gt;&lt;code&gt;namelink &amp;lt;- paste0(&amp;quot;[&amp;quot;, DF$repo_name, &amp;quot;](&amp;quot;, DF$repo_url, &amp;quot;)&amp;quot;)
+DF2 &amp;lt;- data.frame(DF$term, namelink, stringsAsFactors = FALSE)
+names(DF2) &amp;lt;- c(&amp;quot;Search Term&amp;quot;, &amp;quot;Link to Repo&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We’ll show just 10 random rows as an example:&lt;/p&gt;
+&lt;pre class="r"&gt;&lt;code&gt;keep &amp;lt;- sample(1:nrow(DF2), 10)
+options(knitr.kable.NA = &amp;#39;&amp;#39;)
+kable(DF2[keep, ]) %&amp;gt;%
+  kable_styling(c(&amp;quot;striped&amp;quot;, &amp;quot;bordered&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;!-- Since authenticating to Github in the Hugo + Netlify environment is tricky, we'll insert the results of running the code above next.  That way the page looks correct w/o running the code. --&gt;
+&lt;table class="table table-striped table-bordered" style="margin-left: auto; margin-right: auto;"&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style="text-align:left;"&gt;
+&lt;/th&gt;
+&lt;th style="text-align:left;"&gt;
+Search Term
+&lt;/th&gt;
+&lt;th style="text-align:left;"&gt;
+Link to Repo
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style="text-align:left;"&gt;
+31
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+infrared
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+&lt;a href="https://github.com/pycroscopy/pycroscopy"&gt;pycroscopy&lt;/a&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:left;"&gt;
+79
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+ultraviolet
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+&lt;a href="https://github.com/woudc/woudc-data-registry"&gt;woudc-data-registry&lt;/a&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:left;"&gt;
+51
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+infrared
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+&lt;a href="https://github.com/eddyyanto/ir-repeater"&gt;ir-repeater&lt;/a&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:left;"&gt;
+14
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+NMR
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+&lt;a href="https://github.com/cheminfo-js/spectra-data"&gt;spectra-data&lt;/a&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:left;"&gt;
+67
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+raman
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+&lt;a href="https://github.com/professordeng/Raman-spectra"&gt;Raman-spectra&lt;/a&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:left;"&gt;
+42
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+infrared
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+&lt;a href="https://github.com/furrtek/PrecIR"&gt;PrecIR&lt;/a&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:left;"&gt;
+50
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+infrared
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+&lt;a href="https://github.com/jrsmile/esp32-room-control-panel"&gt;esp32-room-control-panel&lt;/a&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:left;"&gt;
+118
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+spectroscopy
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+&lt;a href="https://github.com/nasa-jpl/LiveViewLegacy"&gt;LiveViewLegacy&lt;/a&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:left;"&gt;
+43
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+infrared
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+&lt;a href="https://github.com/federicosanna/arduino-primo-tutorials"&gt;arduino-primo-tutorials&lt;/a&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:left;"&gt;
+101
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+XRF
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+&lt;a href="https://github.com/archaeological-research-facility/web_geochemistry"&gt;web_geochemistry&lt;/a&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Obviously, these results must be inspected carefully as terms like “infrared” will pick up projects that deal with infrared remote control of robots and so forth. As far as my case goes, I have a lot of new material to look through…&lt;/p&gt;
+&lt;p&gt;A complete &lt;code&gt;.Rmd&lt;/code&gt; file that carries out the search described above, and has a few enhancements, can be found at this &lt;a href="https://gist.github.com/bryanhanson/e7736f4493571087438c6dfb353c6343"&gt;gist&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class="r distill-force-highlighting-css"&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;</description>
+      <distill:md5>a638712775b0267bdaa3da986c025587</distill:md5>
       <category>R</category>
       <category>Github</category>
       <guid>https://chemospec.org/posts/2020-01-25-GH-Topics</guid>

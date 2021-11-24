@@ -17,7 +17,7 @@ output:
 <table>
 <tr>
 <td>
-<img src="../images/og-image.png" alt="GSOC_logo" style="width:100px;"/>
+<img src="og-image.png" alt="GSOC_logo" style="width:100px;"/>
 </td>
 <td>
 It's been quiet around this blog because supervising two students for [Google Summer of Code](https://summerofcode.withgoogle.com/) has kept me pretty busy!  But we have some news...
