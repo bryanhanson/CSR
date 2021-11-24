@@ -1,7 +1,7 @@
 name: "Chemometrics-&-Spectroscopy-Using-R"
 title: "Chemometrics & Spectroscopy Using R"
 description: Chemometrics & Spectroscopy Using R
-output_dir: "_site"
+output_dir: "docs"
 base_url: https://chemospec.org
 navbar:
   search: true
