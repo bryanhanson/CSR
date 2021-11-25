@@ -2,7 +2,8 @@
 title: "Plant Metabolomics: Where Spectroscopy Meets Evolution & Ecology"
 date: "2021-11-21"
 output:
-  distill::distill_article
+  distill::distill_article:
+    - self_contained: true
 disable_comments: true
 ---
 
