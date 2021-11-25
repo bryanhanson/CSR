@@ -18,7 +18,9 @@ Our plant of choice is <em>Portulaca oleracea</em>, a weed more commonly known a
 
 Our approach is to blend metabolomic and ecological methods. Metabolomics is the study of an organism's metabolites under a controlled set of conditions, in our case, normal versus stressful conditions. As far as possible, one tries to measure all the metabolites at once, in a holistic fashion, which is not an easy feat. Typically, this is done with NMR, MS, IR, or other forms of spectroscopy. We also supplement these instrumental techniques with more traditional single point chemical measurements such as antioxidant levels. From the ecological perspective, we record parameters of plant growth that represent measures of fitness, such as biomass produced, the number of flowers, and so forth. To be meaningful, we need to conduct these experiments on large numbers of plants. The resulting data sets, composed of very different sorts of measurements, represent the state of the plant under the conditions tested. We use various statistical methods to figure out which treatments have produced an interesting response, and whether those responses vary with genotype. Our statistical analyses are done with the open source computational statistical program [R]("http://www.r-project.org/") and in the case of spectroscopic data, with the [ChemoSpec](https://CRAN.R-project.org/package=ChemoSpec) package for R, written by Bryan.
 
-<img src="../Documents/PM/KristinaMulry.jpg" alt = "Kristina Mulry" style="width:500px;"/>
+```{r, echo = FALSE, out.width = "500px"}
+knitr::include_graphics("images/KristinaMulry.jpg")
+```
 <img src="../Documents/PM/DaGroup.jpg" style="width:500px;"/>
 
 The following students have carried out this research.  Click on their names to download the posters they prepared about their work:
