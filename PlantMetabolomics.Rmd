@@ -67,6 +67,6 @@ knitr::include_graphics("images/Matt.jpg")
 knitr::include_graphics("images/ShannonBrian.jpg")
 ```
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, layout = "l-body"}
 knitr::include_graphics("images/CourtneyPosterSession.jpg")
 ```

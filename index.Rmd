@@ -12,7 +12,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r banner, fig.width = 10, fig.height = 2}
+```{r banner, fig.width = 10, fig.height = 2, layout = "l-screen-inset"}
 emBanner <- function() {
 
 	n <- 8 # no. of cycles to be strung together
