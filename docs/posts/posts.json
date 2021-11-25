@@ -455,11 +455,11 @@
     "categories": [
       "R",
       "readJDX",
-      "data formats"
+      "Data Formats"
     ],
     "contents": "\nreadJDX reads files in the JCAMP-DX format used in the field of spectroscopy. A recent overhaul has made it much more robust, and as such the version is now at 0.4.29.1 Most of the changes were internal, but three important user-facing changes are:\nimproved documentation\nthe addition of more vignettes\nimproved output when debug > 0\n2D NMR files are now handled\nYou can see more about the package here. As always, if you use the package and have troubles, please file an issue. The JCAMP-DX standard is challenging and vendors have a lot of flexibility, so please do share any problematic files you encounter.\nThe current version also includes changes in an unreleased version (0.3.372) in which several bugs were squashed.\n\n↩︎\n",
     "preview": {},
-    "last_modified": "2021-11-22T18:35:33-06:00",
+    "last_modified": "2021-11-24T19:15:48-06:00",
     "input_file": {}
   },
   {
