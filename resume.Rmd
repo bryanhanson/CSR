@@ -4,7 +4,7 @@ date: "2021-11-21"
 disable_comments: true
 ---
 
-*This is a summary of my professional experience related to software development projects.  In prior times I taught chemistry and biochemistry for 32 years at [DePauw University](https://depauw.edu). If you would like a more traditional CV covering that phase, please click [here](../Documents/Hanson_CV_Thru_2018.pdf). My research into plant metabolomics is featured [here](PlantMetabolomics.html).*
+*This is a summary of my professional experience related to software development projects.  In prior times I taught chemistry and biochemistry for 32 years at [DePauw University](https://depauw.edu). If you would like a more traditional CV covering that phase, please click [here](pdfs/Hanson_CV_Thru_2018.pdf). My research into plant metabolomics is featured [here](PlantMetabolomics.html).*
 
 Expertise in:
 

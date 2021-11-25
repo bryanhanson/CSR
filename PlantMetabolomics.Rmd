@@ -31,27 +31,27 @@ knitr::include_graphics("images/DaGroup.jpg")
 The following students have carried out this research.  Click on their names to download the posters they prepared about their work:
 
 * Academic year 2016-2017
-    + [Emma Veon](pdfs/EVposter2017.pdf)
+    + [Emma Veon](pdfs/Emma_2017_Poster.pdf)
 * Summer 2015
-    + [Shannon Jager](pdfs/SJBS2015.pdf)
-    + [Brian Saulnier](pdfs/BSSJ2015.pdf)
+    + [Shannon Jager](pdfs/Jagger_Saulnier_2015_Poster_1.pdf)
+    + [Brian Saulnier](pdfs/Jagger_Saulnier_2015_Poster_2.pdf)
 * Summer 2013
-    + [Kristina Mulry](pdfs/KMposter2013.pdf) Kristina's work has been [published](http://journals.plos.org/plosone/article?id=10.1371/)
+    + [Kristina Mulry](pdfs/Kristina_2013_Poster.pdf) Kristina's work has been [published](http://journals.plos.org/plosone/article?id=10.1371/)
 * Fall 2012
-    + [Polly Haight](pdfs/ACS2013poster.pdf)
+    + [Polly Haight](pdfs/ACS_2013_Poster.pdf)
 * Summer 2011
-    + [Matt Kukurugya](pdfs/KukPoster2011.pdf)
-    + [Polly Haight](pdfs/PollyPoster2011.pdf)
-    + [Vincent Guzzetta](pdfs/VincePoster2011.pdf)
-    + [Matt Keinsley](pdfs/aovPCAposter2011.pdf)
+    + [Matt Kukurugya](pdfs/Kuk_2011_Poster.pdf)
+    + [Polly Haight](pdfs/Polly_2011_Poster.pdf)
+    + [Vincent Guzzetta](pdfs/Vince_2011_Poster.pdf)
+    + [Matt Keinsley](pdfs/Matt_2011_Poster.pdf)
     + [Poster](pdfs/SEB_2011_Poster.pdf) presented at the joint annual meeting of the Society for Economic Botany and The Botanical Society of America in St. Louis.
  * Summer 2010
     + Elizabeth Botts
     + Matt Keinsley
 * Summer 2009 (The Pioneers!)
-    + [Tanner Miller](pdfs/TannerPosterSummer2009.pdf)
-    + [Courtney Brimmer](pdfs/CourtneyPosterSummer2009.pdf)
-    + [Kelly Summers](pdfs/KellyPosterSummer2009.pdf)
+    + [Tanner Miller](pdfs/Tanner_2009_Poster.pdf)
+    + [Courtney Brimmer](pdfs/Courtney_2009_Poster.pdf)
+    + [Kelly Summers](pdfs/Kelly_2009_Poster.pdf)
 * 2008 (Bryan's first metabolomics work!)
     + [Poster](pdfs/SrEPoster.pdf) evaluating various brands of Saw Palmetto (*Serenoa repens*) by NMR and IR.  Presented at the Society for Economic Botany meeting, July 2008.
 
