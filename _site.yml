@@ -10,6 +10,8 @@ navbar:
       href: about.html
     - text: "Projects"
       href: projects.html
+    - text: "R-Bloggers"
+      href: https://www.r-bloggers.com/
     - icon: fa-solid fa-envelope
       href: mailto:hanson@depauw.edu
     - icon: fab fa-twitter fa-1x

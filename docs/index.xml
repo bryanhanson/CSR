@@ -6,7 +6,18 @@
     <atom:link href="https://chemospec.org/index.xml" rel="self" type="application/rss+xml"/>
     <description>Chemometrics &amp; Spectroscopy Using R</description>
     <generator>Distill</generator>
-    <lastBuildDate>Wed, 13 Oct 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 01 Feb 2022 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Metabolic Phenotyping Protocol Part 1</title>
+      <dc:creator>Bryan Hanson</dc:creator>
+      <link>https://chemospec.org/posts/2022-02-01-Protocol-Pt1</link>
+      <description>Implementing the Statistical Analysis in Metabolic Phenotyping Protocol of Blaise *et al.*</description>
+      <category>R</category>
+      <category>ChemoSpec</category>
+      <guid>https://chemospec.org/posts/2022-02-01-Protocol-Pt1</guid>
+      <pubDate>Tue, 01 Feb 2022 00:00:00 +0000</pubDate>
+      <media:content url="https://chemospec.org/posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1_files/figure-html5/samplePlot-1.png" medium="image" type="image/png" width="1152" height="672"/>
+    </item>
     <item>
       <title>GSOC 2021: New Graphics for ChemoSpec</title>
       <dc:creator>Bryan Hanson</dc:creator>

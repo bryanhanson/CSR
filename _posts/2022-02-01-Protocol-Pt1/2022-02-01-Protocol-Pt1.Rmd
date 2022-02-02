@@ -1,0 +1,219 @@
+---
+title: "Metabolic Phenotyping Protocol Part 1"
+description: Implementing the Statistical Analysis in Metabolic Phenotyping Protocol of Blaise *et al.*
+author: "Bryan Hanson"
+date: 2022-02-01
+categories:
+  - R
+  - ChemoSpec
+output:
+  distill::distill_article:
+    self_contained: false
+bibliography: ../REFS.bib
+---
+
+```{r SetUp, echo = FALSE, eval = TRUE, results = "hide", warning = FALSE, message = FALSE}
+
+# R options & configuration:
+set.seed(9)
+rm(list = ls())
+suppressPackageStartupMessages(library("ChemoSpec"))
+suppressPackageStartupMessages(library("ggplot2"))
+suppressPackageStartupMessages(library("patchwork"))
+suppressPackageStartupMessages(library("httr"))
+suppressPackageStartupMessages(library("RCurl"))
+suppressPackageStartupMessages(library("knitr"))
+
+descCS <- packageDescription("ChemoSpec")
+descCSU <- packageDescription("ChemoSpecUtils")
+
+options(ChemoSpecGraphics = "ggplot2")
+
+# Stuff specifically for knitr:
+
+# Create a temp bib file w/citations of installed pkgs, on the fly
+# Both of these packages have problems with authors@R formatting
+# so skip automated writing
+#knitr::write_bib(c("mixOmics", "bootsPLS"), file = "manuals.bib", prefix = "R_")
+
+# Hook for figure size control
+knitr::opts_hooks$set(sq.fig = function(options) {
+
+  if (isFALSE(options$sq.fig)) {
+    # custom fig dimensions given, use w/o further delay
+    if ((!is.null(options$fig.width)) & (!is.null(options$fig.height))) return(options)
+    # otherwise set the default wide aspect ratio
+    if ((is.null(options$fig.width)) & (is.null(options$fig.height))) {
+      options$fig.width = 6
+      options$fig.height = 3.5
+    }
+  }
+
+  if (isTRUE(options$sq.fig)) {
+    options$fig.width = 5
+    options$fig.height = 5
+  }
+  options
+})
+
+# choices here are designed to work with the hook
+knitr::opts_chunk$set(fig.align = "center", sq.fig = FALSE, tidy = TRUE,
+  fig.width = NULL, fig.height = NULL, out.width = "80%")
+
+```
+
+```{r helperFunctions, echo = FALSE}
+#'
+#' Download a Single CSV File from Github
+#' From https://stackoverflow.com/a/14441835
+#' @param url Character.  A valid url to a Github *raw* csv file.
+#' @param dots Additional arguments to be passed to `read.table`.
+#' @return A data frame, unless the url is unreachable, in which case `NA`.
+#'
+
+get_one_csv_from_github <- function(url, ...) {
+  code <- status_code(GET(url))
+  if (code != 200L) {
+    warning("Can't reach the url")
+    return(NA)
+  }
+  raw <- getURL(url)
+  data <- read.table(text = raw, ...)
+}
+
+#'
+#' Download Multiple CSV Files from Github
+#'
+#' @param url Character.  A vector of valid urls to Github *raw* csv files.
+#' @param dots Additional arguments to be passed to `read.table`.
+#' @return A list of data frames, unless the url is unreachable, in which the element is `NULL`.
+#'
+get_csvs_from_github <- function(urls, ...) {
+  require("RCurl")
+  require("httr")
+  nurl <- length(urls)
+  ans <- vector("list", nurl)
+  for (i in 1:nurl) ans[[i]] <- get_one_csv_from_github(urls[i], ...)
+  names(ans) <- basename(urls)
+  ans
+}
+```
+
+
+If you aren't familiar with `ChemoSpec`, you might wish to look at the introductory [vignette](https://bryanhanson.github.io/ChemoSpec/articles/ChemoSpec.html) first.
+
+# Background
+
+@Blaise2021 have published a detailed protocol for metabolomic phenotyping.  They illustrate the protocol using a data set composed of 139 ^1^H HR-MAS SS-NMR spectra [@Blaise2007] of the model organism *Caenorhabditis elegans*.  There are two genotypes, wild type and a mutant, and worms from two life stages.
+
+**This series of posts follows the published protocol closely in order to illustrate how to implement the protocol using `ChemoSpec`. As in any chemometric analysis, there are decisions to be made about how to process the data. In these posts we are interested in which functions to use, and how to examine the results.  We are not exploring all possible data processing choices, and argument choices are not necessarily optimized. **
+
+# Import the Data
+
+The data set is large, over 30 Mb, so we will grab it directly from the Github repo where it is stored.  We will use a custom function to grab the data (you can see the function in the source for this document if interested).  The URLs given below point to the frequency scale, the raw data matrix and the variables that describe the sample classification by genotype and life stage (L2 are gravid adults, L4 are larvae).
+
+```{r getData}
+urls <- c("https://raw.githubusercontent.com/Gscorreia89/chemometrics-tutorials/master/data/ppm.csv", "https://raw.githubusercontent.com/Gscorreia89/chemometrics-tutorials/master/data/X_spectra.csv", "https://raw.githubusercontent.com/Gscorreia89/chemometrics-tutorials/master/data/worm_yvars.csv")
+raw <- get_csvs_from_github(urls, sep = ",") # a list of data sets
+names(raw)
+```
+
+```{r checkRaw, echo = FALSE}
+proceed <- TRUE
+if (any(is.na(raw))) proceed <- FALSE
+```
+
+# Construct the Spectra Object
+
+The format of the data as provided in Github is not really suited to using either of the built-in import functions in `ChemoSpec`.  Therefore we will construct the `Spectra` object by hand, a useful exercise in its own right.  The requirements for a `Spectra` object are described in `?Spectra`.
+
+## Process the Raw Data
+
+First, we'll take the results in `raw` and convert them to the proper form.  Each element of `raw` is a data frame.
+
+```{r processRaw}
+# frequencies are in the 1st list element
+freq <- unlist(raw[[1]], use.names = FALSE)
+
+# intensities are in the 2nd list element
+data <- as.matrix(raw[[2]])
+dimnames(data) <- NULL # remove the default data frame col names
+ns <- nrow(data) # ns = number of samples - used later
+
+# get genotype & lifestage, recode into something more readible
+yvars <- raw[[3]]
+names(yvars) <- c("genotype", "stage")
+yvars$genotype <- ifelse(yvars$genotype == 1L, "WT", "Mut")
+yvars$stage <- ifelse(yvars$stage == 1L, "L2", "L4")
+table(yvars) # quick look at how many in each group
+```
+
+## Assemble the Spectra Object by Hand
+
+Next we'll construct some useful sample names, create the groups vector, assign the colors and symbols, and finally put it all together into a `Spectra` object.
+
+```{r assemble}
+# build up sample names to include the group membership
+sample_names <- as.character(1:ns)
+sample_names <- paste(sample_names, yvars$genotype, sep = "_")
+sample_names <- paste(sample_names, yvars$stage, sep = "_")
+head(sample_names)
+
+# use the sample names to create the groups vector
+grp <- gsub("[0-9]+_", "", sample_names) # remove 1_ etc, leaving WT_L2 etc
+groups <- as.factor(grp)
+levels(groups)
+
+# set up the colors based on group membership
+data(Col12) # see ?colorSymbol for a swatch
+colors <- grp
+colors <- ifelse(colors == "WT_L2", Col12[1], colors)
+colors <- ifelse(colors == "WT_L4", Col12[2], colors)
+colors <- ifelse(colors == "Mut_L2", Col12[3], colors)
+colors <- ifelse(colors == "Mut_L4", Col12[4], colors)
+
+# set up the symbols based on group membership
+sym <- grp # see ?points for the symbol codes
+sym <- ifelse(sym == "WT_L2", 1, sym)
+sym <- ifelse(sym == "WT_L4", 16, sym)
+sym <- ifelse(sym == "Mut_L2", 0, sym)
+sym <- ifelse(sym == "Mut_L4", 15, sym)
+sym <- as.integer(sym)
+
+# set up the alt symbols based on group membership
+alt.sym <- grp
+alt.sym <- ifelse(alt.sym == "WT_L2", "w2", alt.sym)
+alt.sym <- ifelse(alt.sym == "WT_L4", "w4", alt.sym)
+alt.sym <- ifelse(alt.sym == "Mut_L2", "m2", alt.sym)
+alt.sym <- ifelse(alt.sym == "Mut_L4", "m4", alt.sym)
+
+# put it all together; see ?Spectra for requirements
+Worms <- list()
+Worms$freq <- freq
+Worms$data <- data
+Worms$names <- sample_names
+Worms$groups <- groups
+Worms$colors <- colors
+Worms$sym <- sym
+Worms$alt.sym <- alt.sym
+Worms$unit <- c("ppm", "intensity")
+Worms$desc <- "C. elegans metabolic phenotyping study (Blaise 2007)"
+class(Worms) <- "Spectra"
+chkSpectra(Worms) # verify we have everything correct
+sumSpectra(Worms)
+```
+
+## Plot it to check it
+
+Let's look at one sample from each group to make sure everything looks reasonable (Figure \@ref(fig:samplePlot)).  At least these four spectra look good. Note that we are using the latest `ChemoSpec` that uses `ggplot2` graphics by default (announced [here](https://chemospec.org/posts/2021-10-13-GSOC-CS-Graphics/)).
+
+```{r samplePlot, fig.cap = "Sample spectra from each group."}
+p <- plotSpectra(Worms, which = c(35, 1, 34, 2), lab.pos = 7.5, offset = 0.008, amplify = 35, yrange = c(-0.05, 1.1))
+p
+```
+
+In the next post we'll continue with some basic exploratory data analysis.
+
+---
+
+This post was created using `ChemoSpec` version `r descCS$Version` and `ChemoSpecUtils` version `r descCSU$Version`.
