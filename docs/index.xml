@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:distill="https://distill.pub/journal/" version="2.0">
+  <channel>
+    <title>Chemometrics &amp; Spectroscopy Using R</title>
+    <link>https://chemospec.org</link>
+    <atom:link href="https://chemospec.org/index.xml" rel="self" type="application/rss+xml"/>
+    <description>Chemometrics &amp; Spectroscopy Using R</description>
+    <generator>Distill</generator>
+    <lastBuildDate>Tue, 01 Feb 2022 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Metabolic Phenotyping Protocol Part 1</title>
+      <dc:creator>Bryan Hanson</dc:creator>
+      <link>https://chemospec.org/posts/2022-02-01-Protocol-Pt1</link>
+      <description>Implementing the Statistical Analysis in Metabolic Phenotyping Protocol of Blaise *et al.*</description>
+      <category>R</category>
+      <category>ChemoSpec</category>
+      <guid>https://chemospec.org/posts/2022-02-01-Protocol-Pt1</guid>
+      <pubDate>Tue, 01 Feb 2022 00:00:00 +0000</pubDate>
+      <media:content url="https://chemospec.org/posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1_files/figure-html5/samplePlot-1.png" medium="image" type="image/png" width="1152" height="672"/>
+    </item>
+    <item>
+      <title>Test</title>
+      <dc:creator>Bryan Hanson</dc:creator>
+      <link>https://chemospec.org/posts/2022-02-01-Test</link>
+      <description>Test</description>
+      <category>R</category>
+      <category>ChemoSpec</category>
+      <guid>https://chemospec.org/posts/2022-02-01-Test</guid>
+      <pubDate>Tue, 01 Feb 2022 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>GSOC 2021: New Graphics for ChemoSpec</title>
+      <dc:creator>Bryan Hanson</dc:creator>
+      <link>https://chemospec.org/posts/2021-10-13-GSOC-CS-Graphics</link>
+      <description>Major improvements!</description>
+      <category>R</category>
+      <category>ChemoSpec</category>
+      <category>ChemoSpecUtils</category>
+      <category>ChemoSpec2D</category>
+      <category>GSOC</category>
+      <guid>https://chemospec.org/posts/2021-10-13-GSOC-CS-Graphics</guid>
+      <pubDate>Wed, 13 Oct 2021 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>GSOC 2021: hyperSpec and ChemoSpec!</title>
+      <dc:creator>Bryan Hanson</dc:creator>
+      <link>https://chemospec.org/posts/2021-05-22-GSOC-hyperSpec-ChemoSpec</link>
+      <description>I'm gonna be busy!</description>
+      <category>R</category>
+      <category>hyperSpec</category>
+      <category>ChemoSpec</category>
+      <category>GSOC</category>
+      <guid>https://chemospec.org/posts/2021-05-22-GSOC-hyperSpec-ChemoSpec</guid>
+      <pubDate>Sat, 22 May 2021 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Automatically Searching Github Repos by Topic</title>
+      <dc:creator>Bryan Hanson</dc:creator>
+      <link>https://chemospec.org/posts/2021-04-19-Search-GH-Topics</link>
+      <description>How to find packages of interest</description>
+      <category>R</category>
+      <category>Github</category>
+      <category>FOSS</category>
+      <category>httr</category>
+      <guid>https://chemospec.org/posts/2021-04-19-Search-GH-Topics</guid>
+      <pubDate>Mon, 19 Apr 2021 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Using Github Actions &amp; drat to Deploy R Packages</title>
+      <dc:creator>Bryan Hanson</dc:creator>
+      <link>https://chemospec.org/posts/2021-04-11-GHA-drat</link>
+      <description>Automating a tedious task</description>
+      <category>R</category>
+      <category>Github Actions</category>
+      <category>drat</category>
+      <category>GSOC</category>
+      <category>hyperSpec</category>
+      <guid>https://chemospec.org/posts/2021-04-11-GHA-drat</guid>
+      <pubDate>Sun, 11 Apr 2021 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Spectroscopy Suite Update</title>
+      <dc:creator>Bryan Hanson</dc:creator>
+      <link>https://chemospec.org/posts/2021-03-27-Spec-Suite-update</link>
+      <description>Updates for the new version of R</description>
+      <category>R</category>
+      <category>ChemoSpec</category>
+      <category>ChemoSpec2D</category>
+      <category>ChemoSpecUtils</category>
+      <category>readJDX</category>
+      <guid>https://chemospec.org/posts/2021-03-27-Spec-Suite-update</guid>
+      <pubDate>Sat, 27 Mar 2021 00:00:00 +0000</pubDate>
+      <media:content url="https://chemospec.org/posts/2021-03-27-Spec-Suite-update/emAnnotated.png" medium="image" type="image/png" width="1512" height="432"/>
+    </item>
+    <item>
+      <title>Interfacing ChemoSpec to PLS</title>
+      <dc:creator>Bryan Hanson</dc:creator>
+      <link>https://chemospec.org/posts/2021-02-08-PLS</link>
+      <description>It's easy to connect the two packages</description>
+      <category>R</category>
+      <category>PLS</category>
+      <category>ChemoSpec</category>
+      <guid>https://chemospec.org/posts/2021-02-08-PLS</guid>
+      <pubDate>Mon, 08 Feb 2021 00:00:00 +0000</pubDate>
+      <media:content url="https://chemospec.org/posts/2021-02-08-PLS/2021-02-08-PLS_files/figure-html5/showSpectra-1.png" medium="image" type="image/png" width="1248" height="768"/>
+    </item>
+    <item>
+      <title>GSOC Wrap Up</title>
+      <dc:creator>Erick Oduniyi</dc:creator>
+      <link>https://chemospec.org/posts/2020-09-08-GSOC-hyperSpec</link>
+      <description>Guest post by Erick Oduniyi</description>
+      <category>R</category>
+      <category>hyperSpec</category>
+      <category>GSOC</category>
+      <category>Guest Post</category>
+      <guid>https://chemospec.org/posts/2020-09-08-GSOC-hyperSpec</guid>
+      <pubDate>Tue, 08 Sep 2020 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Simulating Spectroscopic Data Part 1</title>
+      <dc:creator>Bryan Hanson</dc:creator>
+      <link>https://chemospec.org/posts/2020-06-28-Sim-Spec-Data-Pt1</link>
+      <description>Faking it...</description>
+      <category>R</category>
+      <category>Simulated Data</category>
+      <category>SpecHelpers</category>
+      <category>Baseline</category>
+      <guid>https://chemospec.org/posts/2020-06-28-Sim-Spec-Data-Pt1</guid>
+      <pubDate>Sun, 28 Jun 2020 00:00:00 +0000</pubDate>
+      <media:content url="https://chemospec.org/posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1_files/figure-html5/widgetPlot-1.png" medium="image" type="image/png" width="1248" height="768"/>
+    </item>
+    <item>
+      <title>Fortifying hyperSpec: Getting Ready for GSOC</title>
+      <dc:creator>Bryan Hanson</dc:creator>
+      <link>https://chemospec.org/posts/2020-05-07-GSOC-hyperSpec</link>
+      <description>Re-factoring hyperSpec</description>
+      <category>R</category>
+      <category>hyperSpec</category>
+      <category>GSOC</category>
+      <guid>https://chemospec.org/posts/2020-05-07-GSOC-hyperSpec</guid>
+      <pubDate>Thu, 07 May 2020 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>ChemoSpecUtils Update</title>
+      <dc:creator>Bryan Hanson</dc:creator>
+      <link>https://chemospec.org/posts/2020-04-27-CSU-update</link>
+      <description>Improvments to ChemoSpecUtils</description>
+      <category>R</category>
+      <category>ChemoSpecUtils</category>
+      <guid>https://chemospec.org/posts/2020-04-27-CSU-update</guid>
+      <pubDate>Mon, 27 Apr 2020 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Spectral Heatmaps</title>
+      <dc:creator>Bryan Hanson</dc:creator>
+      <link>https://chemospec.org/posts/2020-04-25-Heatmaps</link>
+      <description>Insights into how samples and frequencies affect clustering</description>
+      <category>R</category>
+      <category>heatmap</category>
+      <category>seriation</category>
+      <category>ChemoSpec</category>
+      <guid>https://chemospec.org/posts/2020-04-25-Heatmaps</guid>
+      <pubDate>Sat, 25 Apr 2020 00:00:00 +0000</pubDate>
+      <media:content url="https://chemospec.org/posts/2020-04-25-Heatmaps/2020-04-25-Heatmaps_files/figure-html5/showSpectra-1.png" medium="image" type="image/png" width="1248" height="768"/>
+    </item>
+    <item>
+      <title>Data Sharing in the Age of Coronavirus, Part 1</title>
+      <dc:creator>Bryan Hanson</dc:creator>
+      <link>https://chemospec.org/posts/2020-03-21-Data-Formats-Pt1</link>
+      <description>ASCII &amp; JCAMP-DX formats</description>
+      <category>Data Formats</category>
+      <category>JCAMP-DX</category>
+      <category>ASCII</category>
+      <guid>https://chemospec.org/posts/2020-03-21-Data-Formats-Pt1</guid>
+      <pubDate>Sat, 21 Mar 2020 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Aligning 2D NMR Spectra Part 3</title>
+      <dc:creator>Bryan Hanson</dc:creator>
+      <link>https://chemospec.org/posts/2020-03-04-NMR-Align-Pt3</link>
+      <description>Putting it all together</description>
+      <category>R</category>
+      <category>ChemoSpec2D</category>
+      <category>Alignment</category>
+      <category>NMR</category>
+      <guid>https://chemospec.org/posts/2020-03-04-NMR-Align-Pt3</guid>
+      <pubDate>Wed, 04 Mar 2020 00:00:00 +0000</pubDate>
+      <media:content url="https://chemospec.org/posts/2020-03-04-NMR-Align-Pt3/2020-03-04-NMR-Align-Pt3_files/figure-html5/plotMUD2a-1.png" medium="image" type="image/png" width="1248" height="768"/>
+    </item>
+    <item>
+      <title>Aligning 2D NMR Spectra Part 2</title>
+      <dc:creator>Bryan Hanson</dc:creator>
+      <link>https://chemospec.org/posts/2020-03-02-NMR-Align-Pt2</link>
+      <description>Implementing the HATS-PR algorithm</description>
+      <category>R</category>
+      <category>ChemoSpec2D</category>
+      <category>Alignment</category>
+      <category>NMR</category>
+      <guid>https://chemospec.org/posts/2020-03-02-NMR-Align-Pt2</guid>
+      <pubDate>Mon, 02 Mar 2020 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Aligning 2D NMR Spectra Part 1</title>
+      <dc:creator>Bryan Hanson</dc:creator>
+      <link>https://chemospec.org/posts/2020-02-20-NMR-Align-Pt1</link>
+      <description>Quantifying the mis-alignment</description>
+      <category>ChemoSpec</category>
+      <category>R</category>
+      <category>Alignment</category>
+      <category>NMR</category>
+      <guid>https://chemospec.org/posts/2020-02-20-NMR-Align-Pt1</guid>
+      <pubDate>Thu, 20 Feb 2020 00:00:00 +0000</pubDate>
+      <media:content url="https://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1_files/figure-html5/MUD2-1.png" medium="image" type="image/png" width="1248" height="768"/>
+    </item>
+    <item>
+      <title>ChemoSpec2D Update</title>
+      <dc:creator>Bryan Hanson</dc:creator>
+      <link>https://chemospec.org/posts/2020-02-19-CS2D-update</link>
+      <description>Improvements to ChemoSpec2D</description>
+      <category>R</category>
+      <category>ChemoSpec2D</category>
+      <guid>https://chemospec.org/posts/2020-02-19-CS2D-update</guid>
+      <pubDate>Wed, 19 Feb 2020 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Exploring Github Topics</title>
+      <dc:creator>Bryan Hanson</dc:creator>
+      <link>https://chemospec.org/posts/2020-01-25-GH-Topics</link>
+      <description>Scrape Github for Repos of Interest</description>
+      <category>R</category>
+      <category>Github</category>
+      <guid>https://chemospec.org/posts/2020-01-25-GH-Topics</guid>
+      <pubDate>Sat, 25 Jan 2020 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>ChemoSpec Update</title>
+      <dc:creator>Bryan Hanson</dc:creator>
+      <link>https://chemospec.org/posts/2020-01-24-CS-update</link>
+      <description>Improvements to ChemoSpec</description>
+      <category>R</category>
+      <category>ChemoSpec</category>
+      <guid>https://chemospec.org/posts/2020-01-24-CS-update</guid>
+      <pubDate>Fri, 24 Jan 2020 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>ChemoSpecUtils Update</title>
+      <dc:creator>Bryan Hanson</dc:creator>
+      <link>https://chemospec.org/posts/2020-01-22-CSU-update</link>
+      <description>New version of ChemoSpecUtils</description>
+      <category>R</category>
+      <category>ChemoSpecUtils</category>
+      <guid>https://chemospec.org/posts/2020-01-22-CSU-update</guid>
+      <pubDate>Wed, 22 Jan 2020 00:00:00 +0000</pubDate>
+      <media:content url="https://chemospec.org/posts/2020-01-22-CSU-update/2020-01-22-CSU-update_files/figure-html5/colors-1.png" medium="image" type="image/png" width="1248" height="1344"/>
+    </item>
+    <item>
+      <title>FOSS for Spectroscopy Update</title>
+      <dc:creator>Bryan Hanson</dc:creator>
+      <link>https://chemospec.org/posts/2020-01-22-F4S-update</link>
+      <description>Improvements to FOSS for Spectroscopy</description>
+      <category>R</category>
+      <category>Python</category>
+      <guid>https://chemospec.org/posts/2020-01-22-F4S-update</guid>
+      <pubDate>Wed, 22 Jan 2020 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>readJDX Overhaul</title>
+      <dc:creator>Bryan Hanson</dc:creator>
+      <link>https://chemospec.org/posts/2020-01-02-readJDX-update</link>
+      <description>Improvements to readJDX</description>
+      <category>R</category>
+      <category>readJDX</category>
+      <category>Data Formats</category>
+      <guid>https://chemospec.org/posts/2020-01-02-readJDX-update</guid>
+      <pubDate>Thu, 02 Jan 2020 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>FOSS for Spectroscopy</title>
+      <dc:creator>Bryan Hanson</dc:creator>
+      <link>https://chemospec.org/posts/2020-01-01-Intro-F4S</link>
+      <description>A Collection of Free &amp; Open Source Spectroscopy Resources</description>
+      <category>R</category>
+      <category>Python</category>
+      <guid>https://chemospec.org/posts/2020-01-01-Intro-F4S</guid>
+      <pubDate>Wed, 01 Jan 2020 00:00:00 +0000</pubDate>
+    </item>
+  </channel>
+</rss>
