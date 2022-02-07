@@ -1,0 +1,15 @@
+---
+title: "Test"
+description: Test
+author: "Bryan Hanson"
+date: 2022-02-01
+categories:
+  - R
+  - ChemoSpec
+output:
+  distill::distill_article:
+    self_contained: false
+bibliography: ../REFS.bib
+---
+
+Content content Content content Content content Content content Content content Content content Content content Content content Content content Content content Content content Content content Content content 
