@@ -8,7 +8,7 @@ categories:
   - Simulated Data
   - SpecHelpers
   - Baseline
-bibliography: ../REFS.bib
+bibliography: REFS.bib
 output:
   distill::distill_article:
     self_contained: false

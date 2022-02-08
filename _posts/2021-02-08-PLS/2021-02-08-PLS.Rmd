@@ -7,7 +7,7 @@ categories:
   - R
   - PLS
   - ChemoSpec
-bibliography: ../REFS.bib
+bibliography: REFS.bib
 output:
   distill::distill_article:
     self_contained: false

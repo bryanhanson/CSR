@@ -19,16 +19,6 @@
       <media:content url="https://chemospec.org/posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1_files/figure-html5/samplePlot-1.png" medium="image" type="image/png" width="1152" height="672"/>
     </item>
     <item>
-      <title>Test</title>
-      <dc:creator>Bryan Hanson</dc:creator>
-      <link>https://chemospec.org/posts/2022-02-01-Test</link>
-      <description>Test</description>
-      <category>R</category>
-      <category>ChemoSpec</category>
-      <guid>https://chemospec.org/posts/2022-02-01-Test</guid>
-      <pubDate>Tue, 01 Feb 2022 00:00:00 +0000</pubDate>
-    </item>
-    <item>
       <title>GSOC 2021: New Graphics for ChemoSpec</title>
       <dc:creator>Bryan Hanson</dc:creator>
       <link>https://chemospec.org/posts/2021-10-13-GSOC-CS-Graphics</link>
@@ -216,7 +206,23 @@
       <title>ChemoSpec2D Update</title>
       <dc:creator>Bryan Hanson</dc:creator>
       <link>https://chemospec.org/posts/2020-02-19-CS2D-update</link>
-      <description>Improvements to ChemoSpec2D</description>
+      <description>
+
+
+&lt;p&gt;I’m pleased to announce that &lt;code&gt;ChemoSpec2D&lt;/code&gt;, a package for exploratory data analysis of 2D NMR spectra, has been updated on CRAN and is coming to a mirror near you. Barring user reports to the contrary, I feel like the package has pretty much stabilized and is pretty robust. The main area for future expansion is to add additional data import routines. Please feel free to ask about your specific use case!&lt;/p&gt;
+&lt;p&gt;The most noteworthy user-facing improvements are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Function &lt;code&gt;import2DSpectra&lt;/code&gt; can now handle JCAMP-DX files, Bruker files exported via the TopSpin “totxt” command, and JEOL spectra exported as “generic ascii”. The design allows additional formats to be added if I have test files to play with (hint hint).&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;files2Spectra2DObject&lt;/code&gt; gains a new argument &lt;code&gt;allowSloppy&lt;/code&gt;. This &lt;em&gt;experimental&lt;/em&gt; feature will allow one to import data sets that do not have the same dimensions. The intent here is to deal with data sets where the number of points in each dimension is similar but not identical. Additional functions will be needed to handle this kind of data. See the documentation for details.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;files2Spectra2DObject&lt;/code&gt; has also been modified to allow arguments to be passed to &lt;code&gt;list.files&lt;/code&gt; and &lt;code&gt;readJDX&lt;/code&gt;. This means for instance you can specify a path other than the current working directory, and have the function recurse through sub-directories. This brings &lt;code&gt;files2Spectra2DObject&lt;/code&gt; into line with &lt;code&gt;ChemoSpec::files2SpectraObject&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Function &lt;code&gt;hats_alignSpectra2D&lt;/code&gt; gains new arguments &lt;code&gt;dist_method&lt;/code&gt; and &lt;code&gt;maximize&lt;/code&gt; which allows the user to pass their choice of distance measure through to the objective function used to evaluate the overlap of the spectra. This greatly improves the quality of the alignment.&lt;/li&gt;
+&lt;li&gt;Plotting is simplified with the addition of two new functions to create Lists of Colors, &lt;code&gt;LofC&lt;/code&gt; and Lists of Levels, &lt;code&gt;LofL&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;The basic color scheme for contours was updated to use a perceptually consistent low/blue -&amp;gt; high/red scheme, based on the principles in the &lt;code&gt;colorspace&lt;/code&gt; package. The color-handling infrastructure was also changed to allow easy introduction of different color schemes in the future, though the user cannot yet make changes on the fly.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In addition, a number of small bugs and annoyances were taken care of, arguments tweaked and documentation improved and expanded. Several functions were rebuilt to make them more robust.&lt;/p&gt;
+&lt;p&gt;Please see the package &lt;a href="https://bryanhanson.github.io/ChemoSpec2D/"&gt;website&lt;/a&gt; for the full changelog and all documentation.&lt;/p&gt;
+&lt;pre class="r distill-force-highlighting-css"&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;</description>
+      <distill:md5>b462b80a96e4eab16aa304c4a9a6773e</distill:md5>
       <category>R</category>
       <category>ChemoSpec2D</category>
       <guid>https://chemospec.org/posts/2020-02-19-CS2D-update</guid>
@@ -226,7 +232,200 @@
       <title>Exploring Github Topics</title>
       <dc:creator>Bryan Hanson</dc:creator>
       <link>https://chemospec.org/posts/2020-01-25-GH-Topics</link>
-      <description>Scrape Github for Repos of Interest</description>
+      <description>
+
+
+&lt;p&gt;As the code driving &lt;a href="https://bryanhanson.github.io/FOSS4Spectroscopy/"&gt;FOSS for Spectroscopy&lt;/a&gt; has matured, I began to think about how to explore Github in a systematic way for additional repositories with tools for spectroscopy. It turns out that a Github repo can have topics assigned to it, and you can use the Github API to search them. Wait, &lt;em&gt;what?&lt;/em&gt; I didn’t know one could add topics to a repo, even though there is a little invite right there under the repo name:&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://chemospec.org/posts/2020-01-25-GH-Topics/P6_Repo_Topics.png" alt="Repo Topics" style="width:400px;"/&gt;&lt;/p&gt;
+&lt;p&gt;Naturally I turned to StackOverflow to find out how to do this, and quickly encountered this &lt;a href="https://stackoverflow.com/a/48412541/633251"&gt;question&lt;/a&gt;. It was asked when the topics feature was new, so one needs to do things just a bit differently now, but there is a way forward.&lt;/p&gt;
+&lt;p&gt;Before we get to implementation, let’s think about limitations:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;This will only find repositories where topics have been set. I don’t know how broadly people use this feature, I had missed it when it was added.&lt;/li&gt;
+&lt;li&gt;Github topics are essentially tags with a controlled vocabulary, so for the best results you’ll need to manually explore the tags and then use these as your search terms.&lt;/li&gt;
+&lt;li&gt;The Github API only returns &lt;a href="https://developer.github.com/v3/#pagination"&gt;30 results&lt;/a&gt; at a time for most types of queries. For our purposes this probably doesn’t matter much. The &lt;a href="https://developer.github.com/v3/guides/traversing-with-pagination/"&gt;documentation&lt;/a&gt; explains how to iterate to get all possible results.&lt;/li&gt;
+&lt;li&gt;The Github API also limits the &lt;a href="https://developer.github.com/v3/#rate-limiting"&gt;number of queries&lt;/a&gt; you can make to 60/hr unless you authenticate, in which case the limit goes to 6000/hr.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Let’s get to it! First, create a Github access token on your local machine using the instructions in this &lt;a href="https://gist.github.com/bryanhanson/5d02c55b8e1178e84b7c119a7c6ca92b"&gt;gist&lt;/a&gt;. Next, load the needed libraries:&lt;/p&gt;
+&lt;pre class="r"&gt;&lt;code&gt;set.seed(123)
+library(&amp;quot;httr&amp;quot;)
+library(&amp;quot;knitr&amp;quot;)
+library(&amp;quot;kableExtra&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Specify your desired search terms, and create a list structure to hold the results:&lt;/p&gt;
+&lt;pre class="r"&gt;&lt;code&gt;search_terms &amp;lt;- c(&amp;quot;NMR&amp;quot;, &amp;quot;infrared&amp;quot;, &amp;quot;raman&amp;quot;, &amp;quot;ultraviolet&amp;quot;, &amp;quot;visible&amp;quot;, &amp;quot;XRF&amp;quot;, &amp;quot;spectroscopy&amp;quot;)
+results &amp;lt;- list()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Create the string needed to access the Github API, then &lt;code&gt;GET&lt;/code&gt; the results, and stash them in the list we created:&lt;/p&gt;
+&lt;pre class="r"&gt;&lt;code&gt;nt &amp;lt;- length(search_terms) # nt = no. of search terms
+for (i in 1:nt) {
+  search_string &amp;lt;- paste0(&amp;quot;https://api.github.com/search/repositories?q=topic:&amp;quot;, search_terms[i])
+    request &amp;lt;- GET(search_string, config(token = github_token))
+  stop_for_status(request) # converts http errors to R errors or warnings
+  results[[i]] &amp;lt;- content(request)
+}
+names(results) &amp;lt;- search_terms&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Figure out how many results we have found, set up a data frame and then put the results into the table. The &lt;code&gt;i&lt;/code&gt;, &lt;code&gt;j&lt;/code&gt;, and &lt;code&gt;k&lt;/code&gt; counters required a little experimentation to get right, as &lt;code&gt;content(request)&lt;/code&gt; returns a deeply nested list and only certain items are desired.&lt;/p&gt;
+&lt;pre class="r"&gt;&lt;code&gt;nr &amp;lt;- 0L # nr = no. of responses
+for (i in 1:nt) { # compute total number of results/items found
+    nr &amp;lt;- nr + length(results[[i]]$items)
+}
+
+DF &amp;lt;- data.frame(term = rep(NA_character_, nr),
+  repo_name = rep(NA_character_, nr),
+  repo_url = rep(NA_character_, nr),
+  stringsAsFactors = FALSE)
+
+k &amp;lt;- 1L
+for (i in 1:nt) {
+    ni &amp;lt;- length(results[[i]]$items) # ni = no. of items
+    for (j in 1:ni) {
+        DF$term[k] &amp;lt;- names(results)[[i]]
+        DF$repo_name[k] &amp;lt;- results[[i]]$items[[j]]$name
+        DF$repo_url[k] &amp;lt;- results[[i]]$items[[j]]$html_url
+        k &amp;lt;- k + 1L
+    }
+}
+# remove duplicated repos which result when repos have several of our
+# search terms of interest.
+DF &amp;lt;- DF[-which(duplicated(DF$repo_name)),]&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now put it all in a table we can inspect manually, send to a web page so it’s clickable, or potentially write it out as a csv (If you want this as a csv you should probably write the results out a bit differently). In this case I want the results as a table in web page so I can click the repo links and go straight to them.&lt;/p&gt;
+&lt;pre class="r"&gt;&lt;code&gt;namelink &amp;lt;- paste0(&amp;quot;[&amp;quot;, DF$repo_name, &amp;quot;](&amp;quot;, DF$repo_url, &amp;quot;)&amp;quot;)
+DF2 &amp;lt;- data.frame(DF$term, namelink, stringsAsFactors = FALSE)
+names(DF2) &amp;lt;- c(&amp;quot;Search Term&amp;quot;, &amp;quot;Link to Repo&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We’ll show just 10 random rows as an example:&lt;/p&gt;
+&lt;pre class="r"&gt;&lt;code&gt;keep &amp;lt;- sample(1:nrow(DF2), 10)
+options(knitr.kable.NA = &amp;#39;&amp;#39;)
+kable(DF2[keep, ]) %&amp;gt;%
+  kable_styling(c(&amp;quot;striped&amp;quot;, &amp;quot;bordered&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;!-- Since authenticating to Github in the Hugo + Netlify environment is tricky, we'll insert the results of running the code above next.  That way the page looks correct w/o running the code. --&gt;
+&lt;table class="table table-striped table-bordered" style="margin-left: auto; margin-right: auto;"&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style="text-align:left;"&gt;
+&lt;/th&gt;
+&lt;th style="text-align:left;"&gt;
+Search Term
+&lt;/th&gt;
+&lt;th style="text-align:left;"&gt;
+Link to Repo
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style="text-align:left;"&gt;
+31
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+infrared
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+&lt;a href="https://github.com/pycroscopy/pycroscopy"&gt;pycroscopy&lt;/a&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:left;"&gt;
+79
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+ultraviolet
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+&lt;a href="https://github.com/woudc/woudc-data-registry"&gt;woudc-data-registry&lt;/a&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:left;"&gt;
+51
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+infrared
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+&lt;a href="https://github.com/eddyyanto/ir-repeater"&gt;ir-repeater&lt;/a&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:left;"&gt;
+14
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+NMR
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+&lt;a href="https://github.com/cheminfo-js/spectra-data"&gt;spectra-data&lt;/a&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:left;"&gt;
+67
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+raman
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+&lt;a href="https://github.com/professordeng/Raman-spectra"&gt;Raman-spectra&lt;/a&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:left;"&gt;
+42
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+infrared
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+&lt;a href="https://github.com/furrtek/PrecIR"&gt;PrecIR&lt;/a&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:left;"&gt;
+50
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+infrared
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+&lt;a href="https://github.com/jrsmile/esp32-room-control-panel"&gt;esp32-room-control-panel&lt;/a&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:left;"&gt;
+118
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+spectroscopy
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+&lt;a href="https://github.com/nasa-jpl/LiveViewLegacy"&gt;LiveViewLegacy&lt;/a&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:left;"&gt;
+43
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+infrared
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+&lt;a href="https://github.com/federicosanna/arduino-primo-tutorials"&gt;arduino-primo-tutorials&lt;/a&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:left;"&gt;
+101
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+XRF
+&lt;/td&gt;
+&lt;td style="text-align:left;"&gt;
+&lt;a href="https://github.com/archaeological-research-facility/web_geochemistry"&gt;web_geochemistry&lt;/a&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Obviously, these results must be inspected carefully as terms like “infrared” will pick up projects that deal with infrared remote control of robots and so forth. As far as my case goes, I have a lot of new material to look through…&lt;/p&gt;
+&lt;p&gt;A complete &lt;code&gt;.Rmd&lt;/code&gt; file that carries out the search described above, and has a few enhancements, can be found at this &lt;a href="https://gist.github.com/bryanhanson/e7736f4493571087438c6dfb353c6343"&gt;gist&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class="r distill-force-highlighting-css"&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;</description>
+      <distill:md5>a638712775b0267bdaa3da986c025587</distill:md5>
       <category>R</category>
       <category>Github</category>
       <guid>https://chemospec.org/posts/2020-01-25-GH-Topics</guid>
@@ -236,7 +435,17 @@
       <title>ChemoSpec Update</title>
       <dc:creator>Bryan Hanson</dc:creator>
       <link>https://chemospec.org/posts/2020-01-24-CS-update</link>
-      <description>Improvements to ChemoSpec</description>
+      <description>
+
+
+&lt;p&gt;&lt;a href="https://bryanhanson.github.io/ChemoSpec/"&gt;&lt;code&gt;ChemoSpec&lt;/code&gt;&lt;/a&gt; has just been updated to version 5.2.12, and should be available on the mirrors shortly.&lt;/p&gt;
+&lt;p&gt;The most significant user-facing changes are actually in the update to &lt;code&gt;ChemoSpecUtils&lt;/code&gt; from a &lt;a href="https://chemospec.org/posts/2020-01-22-CSU-update/"&gt;few days ago&lt;/a&gt;. In addition, the following documentation changes were made:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Added documentation for &lt;code&gt;updateGroups&lt;/code&gt; which has been in &lt;code&gt;ChemoSpecUtils&lt;/code&gt; for a while but effectively hidden from users of &lt;code&gt;ChemoSpec&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Fixed the example in &lt;code&gt;mclustSpectra&lt;/code&gt; which had an error and used data that was not a good illustration.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre class="r distill-force-highlighting-css"&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;</description>
+      <distill:md5>b5017a15989613e60afd88bf95807533</distill:md5>
       <category>R</category>
       <category>ChemoSpec</category>
       <guid>https://chemospec.org/posts/2020-01-24-CS-update</guid>
@@ -246,7 +455,19 @@
       <title>ChemoSpecUtils Update</title>
       <dc:creator>Bryan Hanson</dc:creator>
       <link>https://chemospec.org/posts/2020-01-22-CSU-update</link>
-      <description>New version of ChemoSpecUtils</description>
+      <description>
+
+
+&lt;p&gt;&lt;code&gt;ChemoSpecUtils&lt;/code&gt;, a package that supports the common needs of &lt;a href="https://bryanhanson.github.io/ChemoSpec/"&gt;ChemoSpec&lt;/a&gt; and &lt;a href="https://bryanhanson.github.io/ChemoSpec2D/"&gt;ChemoSpec2D&lt;/a&gt;, has been updated on CRAN and is coming to a mirror near you. Noteworthy changes:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;There are new color options available in addition to the &lt;code&gt;auto&lt;/code&gt; color scheme used during data importing. These should be useful to normal-vision individuals when there are a lot of categories. The &lt;code&gt;auto&lt;/code&gt; option remains the default to avoid breaking anyone’s code. All the built-in color schemes are shown below. They can be used in any of the import functions in either package. The code used to make the figure below is in &lt;code&gt;?colorSymbol&lt;/code&gt;. &lt;em&gt;Note: you probably should get the &lt;code&gt;devel&lt;/code&gt; version to &lt;code&gt;ChemoSpec&lt;/code&gt; in order to see the documentation about how to use the new colors.&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;The function &lt;code&gt;removeFreq&lt;/code&gt; in &lt;code&gt;ChemoSpec&lt;/code&gt; now accepts a formula for the specification of the frequencies to remove. This brings it in line with the corresponding function in &lt;code&gt;ChemoSpec2D&lt;/code&gt;. This should be a lot easier to use.&lt;/li&gt;
+&lt;li&gt;The function &lt;code&gt;sampleDist&lt;/code&gt; is now available and replaces &lt;code&gt;sampleDistSpectra&lt;/code&gt;. Again the functions in the two overlying packages are essentially as similar as they can be.&lt;/li&gt;
+&lt;li&gt;This version is compatible with the upcoming release of &lt;code&gt;R&lt;/code&gt; 4.0.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src="file467246e7355e_files/figure-html/colors-1.png" width="672" /&gt;&lt;/p&gt;
+&lt;pre class="r distill-force-highlighting-css"&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;</description>
+      <distill:md5>a9333887ebeb6d2b0e83e6745fc62b6d</distill:md5>
       <category>R</category>
       <category>ChemoSpecUtils</category>
       <guid>https://chemospec.org/posts/2020-01-22-CSU-update</guid>
@@ -257,7 +478,19 @@
       <title>FOSS for Spectroscopy Update</title>
       <dc:creator>Bryan Hanson</dc:creator>
       <link>https://chemospec.org/posts/2020-01-22-F4S-update</link>
-      <description>Improvements to FOSS for Spectroscopy</description>
+      <description>
+
+
+&lt;p&gt;&lt;a href="https://bryanhanson.github.io/FOSS4Spectroscopy/"&gt;FOSS for Spectroscopy&lt;/a&gt; has had a significant update! It’s really quite surprising how many projects are out there. There is a lot of variety and not too much overlap.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;After a lot of &lt;a href="https://stackoverflow.com/q/59632173/633251"&gt;wrestling&lt;/a&gt; with Github access issues, the &lt;code&gt;Status&lt;/code&gt; column in the table now gives the date of the most recent update to the project that I can find in an automated way.&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;Notes&lt;/code&gt; column is now called &lt;code&gt;Focus&lt;/code&gt; and reflects the focus of the projects as far as I can determine things. I’m using a more-or-less controlled vocabulary here, so sorting on the &lt;code&gt;Focus&lt;/code&gt; column should bring related projects together.&lt;/li&gt;
+&lt;li&gt;The number of entries is greatly expanded (and I have more in the hopper).&lt;/li&gt;
+&lt;li&gt;The page is now automatically updated weekly, which will keep the links and dates fresh.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;As always, I welcome your feedback in any form. You can use the comments below, or if you have additions/corrections to the page itself, there is info there about how to submit updates.&lt;/p&gt;
+&lt;pre class="r distill-force-highlighting-css"&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;</description>
+      <distill:md5>ae7b996e0eb7667f41f47c39f9d8e3b7</distill:md5>
       <category>R</category>
       <category>Python</category>
       <guid>https://chemospec.org/posts/2020-01-22-F4S-update</guid>
@@ -267,7 +500,26 @@
       <title>readJDX Overhaul</title>
       <dc:creator>Bryan Hanson</dc:creator>
       <link>https://chemospec.org/posts/2020-01-02-readJDX-update</link>
-      <description>Improvements to readJDX</description>
+      <description>
+
+
+&lt;p&gt;&lt;code&gt;readJDX&lt;/code&gt; reads files in the &lt;a href="http://www.jcamp-dx.org/"&gt;JCAMP-DX&lt;/a&gt; format used in the field of spectroscopy. A recent overhaul has made it much more robust, and as such the version is now at 0.4.29.&lt;a href="#fn1" class="footnote-ref" id="fnref1"&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; Most of the changes were internal, but three important user-facing changes are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;improved documentation&lt;/li&gt;
+&lt;li&gt;the addition of more vignettes&lt;/li&gt;
+&lt;li&gt;improved output when &lt;code&gt;debug &amp;gt; 0&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;2D NMR files are now handled&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;You can see more about the package &lt;a href="https://CRAN.R-project.org/package=readJDX"&gt;here&lt;/a&gt;. As always, if you use the package and have troubles, please file an &lt;a href="https://github.com/bryanhanson/readJDX/issues"&gt;issue&lt;/a&gt;. The JCAMP-DX standard is challenging and vendors have a lot of flexibility, so please do share any problematic files you encounter.&lt;/p&gt;
+&lt;div class="footnotes footnotes-end-of-document"&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id="fn1"&gt;&lt;p&gt;The current version also includes changes in an unreleased version (0.3.372) in which several bugs were squashed.&lt;/p&gt;
+&lt;pre class="r distill-force-highlighting-css"&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;a href="#fnref1" class="footnote-back"&gt;↩︎&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;</description>
+      <distill:md5>e94bcef272f4f45c8f6e166a60c89398</distill:md5>
       <category>R</category>
       <category>readJDX</category>
       <category>Data Formats</category>
@@ -278,7 +530,15 @@
       <title>FOSS for Spectroscopy</title>
       <dc:creator>Bryan Hanson</dc:creator>
       <link>https://chemospec.org/posts/2020-01-01-Intro-F4S</link>
-      <description>A Collection of Free &amp; Open Source Spectroscopy Resources</description>
+      <description>
+
+
+&lt;p&gt;For this inaugural blog post, I’m pleased to share a project I have been working on recently: &lt;a href="https://bryanhanson.github.io/FOSS4Spectroscopy/"&gt;FOSS4Spectroscopy&lt;/a&gt; is an attempt to catalog FOSS spectroscopy software. The page is designed to be updated easily with new or edited entries – see the page for details, and please contribute!&lt;/p&gt;
+&lt;p&gt;For this initial version, I searched the CRAN ecosystem via &lt;a href="https://CRAN.R-project.org/package=packagefinder"&gt;packagefinder&lt;/a&gt; and the &lt;code&gt;Python&lt;/code&gt; world via &lt;a href="https://pypi.org/"&gt;PyPi.org&lt;/a&gt; using spectroscopy-related keywords. My expertise is in &lt;code&gt;R&lt;/code&gt; so I’m pretty confident I have most of the &lt;code&gt;R&lt;/code&gt; packages included. I’m not so confident about coverage of the &lt;code&gt;Python&lt;/code&gt; packages (where else should I look?).&lt;/p&gt;
+&lt;p&gt;Currently, the “status” column in the main table is empty. I am working on a version which will update the status with a date giving some indication of the age and activity of the repository. Right now the page is updated when I push to Github, but in the long run I hope to get Travis-CI to run it as a weekly cron job.&lt;/p&gt;
+&lt;p&gt;I welcome your feedback in any form!&lt;/p&gt;
+&lt;pre class="r distill-force-highlighting-css"&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;</description>
+      <distill:md5>df10504344ec28d6c407b331332c1f72</distill:md5>
       <category>R</category>
       <category>Python</category>
       <guid>https://chemospec.org/posts/2020-01-01-Intro-F4S</guid>

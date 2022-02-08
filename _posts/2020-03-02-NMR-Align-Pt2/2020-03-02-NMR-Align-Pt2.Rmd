@@ -11,7 +11,7 @@ categories:
 output:
   distill::distill_article:
     self_contained: false
-bibliography: ../REFS.bib
+bibliography: REFS.bib
 ---
 
 This is Part 2 of a series on aligning 2D NMR, as implemented in the package `ChemoSpec2D`. [Part 1](https://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/) [Part 3](https://chemospec.org/posts/2020-03-04-NMR-Align-Pt3/)
