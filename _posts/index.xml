@@ -6,7 +6,261 @@
     <atom:link href="https://chemospec.org/index.xml" rel="self" type="application/rss+xml"/>
     <description>Chemometrics &amp; Spectroscopy Using R</description>
     <generator>Distill</generator>
-    <lastBuildDate>Tue, 01 Feb 2022 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 09 Feb 2022 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Do You have Stale Imports or Suggests?</title>
+      <dc:creator>Bryan Hanson</dc:creator>
+      <link>https://chemospec.org/posts/2022-02-09-Imports-Suggests</link>
+      <description>
+
+
+
+I’ve been developing packages in R for over a decade
+now. When adding new features to a package, I often import functions
+from another package, and of course that package goes in the
+Imports: field of the DESCRIPTION file. Later,
+I might change my approach entirely and no longer need that package. Do
+I remember to remove it from DESCRIPTION? Generally not.
+The same thing happens when writing a new vignette, and it can happen
+with the Suggests: field as well. It can also happen when
+one splits a packages into several smaller packages. If one forgets to
+delete a package from the DESCRIPTION file, the
+dependencies become bloated, because all the imported and suggested
+packages have to be available to install the package. This adds overhead
+to the project, and increases the possibility of a namespace
+conflict.
+In fact this just happened to me again! The author of a
+package I had in Suggests: wrote to me and let me know
+their package would be archived. It was an easy enough fix for me, as it
+was a “stale” package in that I was no longer using it. I had added it
+for a vignette which I later deleted, as I decided a series of blog
+posts was a better approach.
+So I decided to write a little function to check for such stale
+Suggests: and Import: entries. This post is
+about that function. As far as I can tell there is no built-in function
+for this purpose, and CRAN does not check for stale entries. So it was
+worth my time to automate the process.1
+The first step is to read in the DESCRIPTION file for
+the package (so we want our working directory to be the top level of the
+package). There is a built in function for this. We’ll use the
+DESCRIPTION file from the ChemoSpec package as
+a demonstration.
+
+
+# setwd("...") # set to the top level of the package
+desc &lt;- read.dcf("DESCRIPTION", all = TRUE)
+
+
+
+The argument all = TRUE is a bit odd in that it has a
+particular purpose (see ?read.dcf) which isn’t really
+important here, but has the side effect of returning a data frame, which
+makes our job simpler. Let’s look at what is returned.
+
+
+str(desc)
+
+
+'data.frame':   1 obs. of  18 variables:
+ $ Package         : chr "ChemoSpec"
+ $ Type            : chr "Package"
+ $ Title           : chr "Exploratory Chemometrics for Spectroscopy"
+ $ Version         : chr "6.1.2"
+ $ Date            : chr "2022-02-08"
+ $ Authors@R       : chr "c(\nperson(\"Bryan A.\", \"Hanson\",\nrole = c(\"aut\", \"cre\"), email =\n\"hanson@depauw.edu\",\ncomment = c("| __truncated__
+ $ Description     : chr "A collection of functions for top-down exploratory data analysis\nof spectral data including nuclear magnetic r"| __truncated__
+ $ License         : chr "GPL-3"
+ $ Depends         : chr "R (&gt;= 3.5),\nChemoSpecUtils (&gt;= 1.0)"
+ $ Imports         : chr "plyr,\nstats,\nutils,\ngrDevices,\nreshape2,\nreadJDX (&gt;= 0.6),\npatchwork,\nggplot2,\nplotly,\nmagrittr"
+ $ Suggests        : chr "IDPmisc,\nknitr,\njs,\nNbClust,\nlattice,\nbaseline,\nmclust,\npls,\nclusterCrit,\nR.utils,\nRColorBrewer,\nser"| __truncated__
+ $ URL             : chr "https://bryanhanson.github.io/ChemoSpec/"
+ $ BugReports      : chr "https://github.com/bryanhanson/ChemoSpec/issues"
+ $ ByteCompile     : chr "TRUE"
+ $ VignetteBuilder : chr "knitr"
+ $ Encoding        : chr "UTF-8"
+ $ RoxygenNote     : chr "7.1.2"
+ $ NeedsCompilation: chr "no"
+
+We are interested in the Imports and
+Suggests elements. Let’s look more closely.
+
+
+head(desc$Imports)
+
+
+[1] "plyr,\nstats,\nutils,\ngrDevices,\nreshape2,\nreadJDX (&gt;= 0.6),\npatchwork,\nggplot2,\nplotly,\nmagrittr"
+
+You can see there are a bunch of newlines in there (\n),
+along with some version specifications, in parentheses. We need to clean
+this up so we have a simple list of the packages as a vector. For clean
+up we’ll use the following helper function.
+
+
+clean_up &lt;- function(string) {
+  string &lt;- gsub("\n", "", string) # remove newlines
+  string &lt;- gsub("\\(.+\\)", "", string) # remove parens &amp; anything within them
+  string &lt;- unlist(strsplit(string, ",")) # split the long string into pieces
+  string &lt;- trimws(string) # remove any white space around words
+}
+
+
+
+After we apply this to the raw results, we have what we are after, a
+clean list of imported packages.
+
+
+imp &lt;- clean_up(desc$Imports)
+imp
+
+
+ [1] "plyr"      "stats"     "utils"     "grDevices" "reshape2" 
+ [6] "readJDX"   "patchwork" "ggplot2"   "plotly"    "magrittr" 
+
+Next, we can search the entire package looking for these package
+names to see if they are used in the package. They might appear in
+import statements, vignettes, code and so forth, so it’s not sufficient
+to just look at code. This is a job for grep, but we’ll
+call grep from within R so that we don’t have
+to use the command line and transfer the results to R, that
+gets messy and is error-prone.
+
+
+if (length(imp) &gt;= 1) { # Note 1
+  imp_res &lt;- rep("FALSE", length(imp)) # Boolean to keep track of whether we found a package or not
+  for (i in 1:length(imp)) {
+    args &lt;- paste("-r -e '", imp[i], "' *", sep = "") # assemble arguments for grep
+    g_imp &lt;- system2("grep", args, stdout = TRUE)
+    if (length(g_imp) &gt; 1L) imp_res[i] &lt;- TRUE # Note 2
+  }
+}
+
+
+
+Note 1: We ought to check if there are any imports at all. It would
+be a bit unusual, but it’s possible to have zero imports.
+Note 2: g_imp contains the results of the grep process.
+If there are imports in the package, each imported package name
+will be found by grep in the DESCRIPTION file. That’s not
+so interesting, so we don’t count it. For a package to be stale, it will
+be found in DESCRIPTION but no where else.
+We can do the same process for the Suggests: field of
+DESCRIPTION. And then it would be nice to present the
+results in a more useable form. At this point we can put it all togther
+in an easy-to-use function.2
+
+
+# run from the package top level
+check_stale_imports_suggests &lt;- function() {
+
+  # helper function: removes extra characters
+  # from strings read by read.dcf
+  clean_up &lt;- function(string) {
+    string &lt;- gsub("\n", "", string)
+    string &lt;- gsub("\\(.+\\)", "", string)
+    string &lt;- unlist(strsplit(string, ","))
+    string &lt;- trimws(string)
+  }
+
+  desc &lt;- read.dcf("DESCRIPTION", all = TRUE)
+
+  # look for use of imported packages
+  imp &lt;- clean_up(desc$Imports)
+  if (length(imp) == 0L) message("No Imports: entries found")
+  if (length(imp) &gt;= 1) {
+    imp_res &lt;- rep("FALSE", length(imp))
+    for (i in 1:length(imp)) {
+      args &lt;- paste("-r -e '", imp[i], "' *", sep = "")
+      g_imp &lt;- system2("grep", args, stdout = TRUE)
+      # always found once in DESCRIPTION, hence &gt; 1
+      if (length(g_imp) &gt; 1L) imp_res[i] &lt;- TRUE
+    }
+  }
+
+  # look for use of suggested packages
+  sug &lt;- clean_up(desc$Suggests)
+  if (length(sug) == 0L) message("No Suggests: entries found")
+  if (length(sug) &gt;= 1) {
+    sug_res &lt;- rep("FALSE", length(sug))
+    for (i in 1:length(sug)) {
+      args &lt;- paste("-r -e '", sug[i], "' *", sep = "")
+      g_sug &lt;- system2("grep", args, stdout = TRUE)
+      # always found once in DESCRIPTION, hence &gt; 1
+      if (length(g_sug) &gt; 1L) sug_res[i] &lt;- TRUE
+    }
+  }
+
+  # arrange output in easy to read format
+  role &lt;- c(rep("Imports", length(imp)), rep("Suggests", length(sug)))
+
+  return(data.frame(
+    pkg = c(imp, sug),
+    role = role,
+    found = c(imp_res, sug_res)))
+}
+
+
+
+Applying this function to my ChemoSpec2D package (as of
+the date of this post), we see the following output. You can see a bunch
+of packages are imported but never used, so I have some work to do. This
+was the result of copying the DESCRIPTION file from
+ChemoSpec when I started ChemoSpec2D and
+obviously I never went back and cleaned things up.
+
+            pkg     role found
+1          plyr  Imports  TRUE
+2         stats  Imports  TRUE
+3         utils  Imports  TRUE
+4     grDevices  Imports  TRUE
+5      reshape2  Imports  TRUE
+6       readJDX  Imports  TRUE
+7     patchwork  Imports  TRUE
+8       ggplot2  Imports  TRUE
+9        plotly  Imports  TRUE
+10     magrittr  Imports  TRUE
+11      IDPmisc Suggests  TRUE
+12        knitr Suggests  TRUE
+13           js Suggests  TRUE
+14      NbClust Suggests  TRUE
+15      lattice Suggests  TRUE
+16     baseline Suggests  TRUE
+17       mclust Suggests  TRUE
+18          pls Suggests  TRUE
+19  clusterCrit Suggests  TRUE
+20      R.utils Suggests  TRUE
+21 RColorBrewer Suggests  TRUE
+22    seriation Suggests FALSE
+23         MASS Suggests FALSE
+24   robustbase Suggests FALSE
+25         grid Suggests  TRUE
+26        pcaPP Suggests FALSE
+27     jsonlite Suggests FALSE
+28       gsubfn Suggests FALSE
+29       signal Suggests  TRUE
+30        speaq Suggests FALSE
+31     tinytest Suggests FALSE
+32   elasticnet Suggests FALSE
+33        irlba Suggests FALSE
+34         amap Suggests FALSE
+35    rmarkdown Suggests  TRUE
+36     bookdown Suggests FALSE
+37 chemometrics Suggests FALSE
+38    hyperSpec Suggests FALSE
+
+As you will see in a moment, during
+testing I found a bunch of stale entries I need to remove from several
+packages!↩︎
+In easy to use form as a Gist.
+
+↩︎
+</description>
+      <distill:md5>fb10bb3ea001248513b3854a7c2875a1</distill:md5>
+      <category>R</category>
+      <category>Utilities</category>
+      <category>Developers</category>
+      <guid>https://chemospec.org/posts/2022-02-09-Imports-Suggests</guid>
+      <pubDate>Wed, 09 Feb 2022 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>Metabolic Phenotyping Protocol Part 1</title>
       <dc:creator>Bryan Hanson</dc:creator>
@@ -1584,83 +1838,6 @@ Fixed the example in mclustSpectra which had an error and used data that was not
       <category>ChemoSpec</category>
       <guid>https://chemospec.org/posts/2020-01-24-CS-update</guid>
       <pubDate>Fri, 24 Jan 2020 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>ChemoSpecUtils Update</title>
-      <dc:creator>Bryan Hanson</dc:creator>
-      <link>https://chemospec.org/posts/2020-01-22-CSU-update</link>
-      <description>
-ChemoSpecUtils, a package that supports the common needs of ChemoSpec and ChemoSpec2D, has been updated on CRAN and is coming to a mirror near you. Noteworthy changes:
-There are new color options available in addition to the auto color scheme used during data importing. These should be useful to normal-vision individuals when there are a lot of categories. The auto option remains the default to avoid breaking anyone’s code. All the built-in color schemes are shown below. They can be used in any of the import functions in either package. The code used to make the figure below is in ?colorSymbol. Note: you probably should get the devel version to ChemoSpec in order to see the documentation about how to use the new colors.
-The function removeFreq in ChemoSpec now accepts a formula for the specification of the frequencies to remove. This brings it in line with the corresponding function in ChemoSpec2D. This should be a lot easier to use.
-The function sampleDist is now available and replaces sampleDistSpectra. Again the functions in the two overlying packages are essentially as similar as they can be.
-This version is compatible with the upcoming release of R 4.0.
-
-
-
-
-
-
-</description>
-      <distill:md5>a9333887ebeb6d2b0e83e6745fc62b6d</distill:md5>
-      <category>R</category>
-      <category>ChemoSpecUtils</category>
-      <guid>https://chemospec.org/posts/2020-01-22-CSU-update</guid>
-      <pubDate>Wed, 22 Jan 2020 00:00:00 +0000</pubDate>
-      <media:content url="https://chemospec.org/posts/2020-01-22-CSU-update/2020-01-22-CSU-update_files/figure-html5/colors-1.png" medium="image" type="image/png" width="1248" height="1344"/>
-    </item>
-    <item>
-      <title>FOSS for Spectroscopy Update</title>
-      <dc:creator>Bryan Hanson</dc:creator>
-      <link>https://chemospec.org/posts/2020-01-22-F4S-update</link>
-      <description>
-FOSS for Spectroscopy has had a significant update! It’s really quite surprising how many projects are out there. There is a lot of variety and not too much overlap.
-After a lot of wrestling with Github access issues, the Status column in the table now gives the date of the most recent update to the project that I can find in an automated way.
-The Notes column is now called Focus and reflects the focus of the projects as far as I can determine things. I’m using a more-or-less controlled vocabulary here, so sorting on the Focus column should bring related projects together.
-The number of entries is greatly expanded (and I have more in the hopper).
-The page is now automatically updated weekly, which will keep the links and dates fresh.
-As always, I welcome your feedback in any form. You can use the comments below, or if you have additions/corrections to the page itself, there is info there about how to submit updates.
-
-
-
-</description>
-      <distill:md5>ae7b996e0eb7667f41f47c39f9d8e3b7</distill:md5>
-      <category>R</category>
-      <category>Python</category>
-      <guid>https://chemospec.org/posts/2020-01-22-F4S-update</guid>
-      <pubDate>Wed, 22 Jan 2020 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>readJDX Overhaul</title>
-      <dc:creator>Bryan Hanson</dc:creator>
-      <link>https://chemospec.org/posts/2020-01-02-readJDX-update</link>
-      <description>
-readJDX reads files in the JCAMP-DX format used in the field of spectroscopy. A recent overhaul has made it much more robust, and as such the version is now at 0.4.29.1 Most of the changes were internal, but three important user-facing changes are:
-improved documentation
-the addition of more vignettes
-improved output when debug &gt; 0
-2D NMR files are now handled
-You can see more about the package here. As always, if you use the package and have troubles, please file an issue. The JCAMP-DX standard is challenging and vendors have a lot of flexibility, so please do share any problematic files you encounter.
-The current version also includes changes in an unreleased version (0.3.372) in which several bugs were squashed.
-
-↩︎
-</description>
-      <distill:md5>e94bcef272f4f45c8f6e166a60c89398</distill:md5>
-      <category>R</category>
-      <category>readJDX</category>
-      <category>Data Formats</category>
-      <guid>https://chemospec.org/posts/2020-01-02-readJDX-update</guid>
-      <pubDate>Thu, 02 Jan 2020 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>FOSS for Spectroscopy</title>
-      <dc:creator>Bryan Hanson</dc:creator>
-      <link>https://chemospec.org/posts/2020-01-01-Intro-F4S</link>
-      <description>A Collection of Free &amp; Open Source Spectroscopy Resources</description>
-      <category>R</category>
-      <category>Python</category>
-      <guid>https://chemospec.org/posts/2020-01-01-Intro-F4S</guid>
-      <pubDate>Wed, 01 Jan 2020 00:00:00 +0000</pubDate>
     </item>
   </channel>
 </rss>
