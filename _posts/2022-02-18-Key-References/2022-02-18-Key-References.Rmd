@@ -1,0 +1,19 @@
+---
+title: "Chemometrics in Spectroscopy: Key References"
+description: Keep coming back to these sources
+author: "Bryan Hanson"
+date: 2022-02-18
+categories:
+  - Literature
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+Jerome Workman Jr. and Howard Mark have published a very useful series of articles in [Spectroscopy Online](https://www.spectroscopyonline.com), summarizing common chemometric methods in spectroscopy, and giving the key publications on each.  These are a great resource if one is learning about a technique, or if one wants to check out the fundamentals of a method you think you already know.  Posting here for convenience!
+
+*Protip: These pages load slowly in some browsers.  I had the best luck with Chrome. Try the reader view for a user-friendly version that prints well (if you are in to that).*
+
+* [Survey of Chemometric Methods in Spectroscopy](https://www.spectroscopyonline.com/view/a-survey-of-chemometric-methods-used-in-spectroscopy)
+* [Key References Part 1](https://www.spectroscopyonline.com/view/survey-of-key-descriptive-references-for-chemometric-methods-used-for-spectroscopy-part-i)
+* [Key References Part 2](https://www.spectroscopyonline.com/view/survey-of-key-descriptive-references-for-chemometric-methods-used-for-spectroscopy-part-ii)

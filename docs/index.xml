@@ -6,7 +6,36 @@
     <atom:link href="https://chemospec.org/index.xml" rel="self" type="application/rss+xml"/>
     <description>Chemometrics &amp; Spectroscopy Using R</description>
     <generator>Distill</generator>
-    <lastBuildDate>Wed, 09 Feb 2022 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 18 Feb 2022 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Chemometrics in Spectroscopy: Key References</title>
+      <dc:creator>Bryan Hanson</dc:creator>
+      <link>https://chemospec.org/posts/2022-02-18-Key-References</link>
+      <description>
+Jerome Workman Jr. and Howard Mark have published a very useful
+series of articles in Spectroscopy Online,
+summarizing common chemometric methods in spectroscopy, and giving the
+key publications on each. These are a great resource if one is learning
+about a technique, or if one wants to check out the fundamentals of a
+method you think you already know. Posting here for convenience!
+Protip: These pages load slowly in some browsers. I had the best
+luck with Chrome. Try the reader view for a user-friendly version that
+prints well (if you are in to that).
+Survey
+of Chemometric Methods in Spectroscopy
+Key
+References Part 1
+Key
+References Part 2
+
+
+
+</description>
+      <distill:md5>cb9974d7054faa5f539c0e5102c795b3</distill:md5>
+      <category>Literature</category>
+      <guid>https://chemospec.org/posts/2022-02-18-Key-References</guid>
+      <pubDate>Fri, 18 Feb 2022 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>Do You have Stale Imports or Suggests?</title>
       <dc:creator>Bryan Hanson</dc:creator>
@@ -1819,25 +1848,6 @@ A complete .Rmd file that carries out the search described above, and has a few 
       <category>Github</category>
       <guid>https://chemospec.org/posts/2020-01-25-GH-Topics</guid>
       <pubDate>Sat, 25 Jan 2020 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>ChemoSpec Update</title>
-      <dc:creator>Bryan Hanson</dc:creator>
-      <link>https://chemospec.org/posts/2020-01-24-CS-update</link>
-      <description>
-ChemoSpec has just been updated to version 5.2.12, and should be available on the mirrors shortly.
-The most significant user-facing changes are actually in the update to ChemoSpecUtils from a few days ago. In addition, the following documentation changes were made:
-Added documentation for updateGroups which has been in ChemoSpecUtils for a while but effectively hidden from users of ChemoSpec.
-Fixed the example in mclustSpectra which had an error and used data that was not a good illustration.
-
-
-
-</description>
-      <distill:md5>b5017a15989613e60afd88bf95807533</distill:md5>
-      <category>R</category>
-      <category>ChemoSpec</category>
-      <guid>https://chemospec.org/posts/2020-01-24-CS-update</guid>
-      <pubDate>Fri, 24 Jan 2020 00:00:00 +0000</pubDate>
     </item>
   </channel>
 </rss>

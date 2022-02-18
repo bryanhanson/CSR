@@ -1,5 +1,24 @@
 [
   {
+    "path": "posts/2022-02-18-Key-References/",
+    "title": "Chemometrics in Spectroscopy: Key References",
+    "description": "Keep coming back to these sources",
+    "author": [
+      {
+        "name": "Bryan Hanson",
+        "url": {}
+      }
+    ],
+    "date": "2022-02-18",
+    "categories": [
+      "Literature"
+    ],
+    "contents": "\nJerome Workman Jr. and Howard Mark have published a very useful\nseries of articles in Spectroscopy Online,\nsummarizing common chemometric methods in spectroscopy, and giving the\nkey publications on each. These are a great resource if one is learning\nabout a technique, or if one wants to check out the fundamentals of a\nmethod you think you already know. Posting here for convenience!\nProtip: These pages load slowly in some browsers. I had the best\nluck with Chrome. Try the reader view for a user-friendly version that\nprints well (if you are in to that).\nSurvey\nof Chemometric Methods in Spectroscopy\nKey\nReferences Part 1\nKey\nReferences Part 2\n\n\n\n",
+    "preview": {},
+    "last_modified": "2022-02-18T10:05:47-07:00",
+    "input_file": {}
+  },
+  {
     "path": "posts/2022-02-09-Imports-Suggests/",
     "title": "Do You have Stale Imports or Suggests?",
     "description": "Hints For Package Developers",
