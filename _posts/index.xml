@@ -6,7 +6,295 @@
     <atom:link href="https://chemospec.org/index.xml" rel="self" type="application/rss+xml"/>
     <description>Chemometrics &amp; Spectroscopy Using R</description>
     <generator>Distill</generator>
-    <lastBuildDate>Fri, 18 Feb 2022 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 24 Mar 2022 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Metabolic Phenotyping Protocol Part 2</title>
+      <dc:creator>Bryan Hanson</dc:creator>
+      <link>https://chemospec.org/posts/2022-03-24-Protocol-Pt2</link>
+      <description>
+
+
+
+Part 1 of this series is here.
+If you aren’t familiar with ChemoSpec, you might wish to
+look at the introductory vignette
+first.
+In this series of posts we are following the protocol as
+described in the printed publication closely (Blaise et al. 2021). The authors have
+also provided a Jupyter
+notebook. This is well worth your time, even if Python is not your
+preferred lanaguage, as there are additional examples and discussion for
+study.
+Read in the Data
+I saved the Spectra object we created in Part 1 so we
+can read it and remind ourselves of what’s in it. Due to the compression
+in R’s save function the data takes up 4.9 Mb on disk. The
+original csv files total about 62 Mb.
+
+
+library("ChemoSpec")
+load("Worms.Rdata")  # restores the 'Worms' Spectra object
+sumSpectra(Worms)
+
+
+
+ C. elegans metabolic phenotyping study (Blaise 2007) 
+
+    There are 139 spectra in this set.
+    The y-axis unit is intensity.
+
+    The frequency scale runs from
+    8.9995 to 5e-04 ppm
+    There are 8600 frequency values.
+    The frequency resolution is
+    0.001 ppm/point.
+
+    This data set is not continuous
+    along the frequency axis.
+    Here are the data chunks:
+
+  beg.freq end.freq   size beg.indx end.indx
+1   8.9995   5.0005 -3.999        1     4000
+2   4.5995   0.0005 -4.599     4001     8600
+
+    The spectra are divided into 4 groups: 
+
+   group no.     color symbol alt.sym
+1 Mut_L2  32 #FB0D16FF      0      m2
+2 Mut_L4  33 #FFC0CBFF     15      m4
+3  WT_L2  34 #511CFCFF      1      w2
+4  WT_L4  40 #2E94E9FF     16      w4
+
+
+*** Note: this is an S3 object
+of class 'Spectra'
+
+Exploratory Data Analysis
+We will follow the steps described in the published protocol
+closely.
+Normalization &amp; Scaling
+Apply PQN normalization; scaling in ChemoSpec is applied
+at the PCA stage (next).
+
+
+Worms &lt;- normSpectra(Worms)  # PQN is the default
+
+
+
+PCA
+Conduct classical PCA using autoscaling.1
+Note that ChemoSpec includes several different variants of
+PCA, each with scaling options. See the introductory vignette for more
+details. For more about what PCA is and how it works, please see the LearnPCA package.
+
+
+c_pca &lt;- c_pcaSpectra(Worms, choice = "autoscale")  # no scaling is the default
+
+
+
+Components to Retain
+A key question at this stage is how many components are needed to
+describe the data set. Keep in mind that this depends on the choice of
+scaling. Figures 1 and 2 are two
+different types of scree plots, which show the residual variance. This
+is the R2x value in the protocol (see protocol
+Figure 7a). Another approach to answering this question is to do a
+cross-validated PCA.2 The results are shown in Figure
+3. These are the Q2x values in
+protocol Figure 7a. All of these ways of looking at the variance
+explained suggest that retaining three or possibly four PCs is
+adequate.
+
+
+plotScree(c_pca)
+
+
+
+
+Figure 1: Scree plot (recommended style).
+
+
+
+
+
+plotScree(c_pca, style = "trad")
+
+
+
+
+Figure 2: Scree plot (traditional style).
+
+
+
+
+
+cv_pcaSpectra(Worms, choice = "autoscale", pcs = 10)
+
+
+
+
+Figure 3: Scree plot using cross validation.
+
+
+
+Score Plots
+Next, examine the score plots (Figures 4,
+5). In these plots, each data point is colored by its
+group membership (keep in mind this is completely independent of the PCA
+calculation). In addition, robust confidence ellipses are shown for each
+group. Inspection of these plots is one way to identify potential
+outliers. The other use is of course to see if the sample classes
+separate, and by how much.
+Examination of these plots shows that separation by classes has not
+really been achieved using autoscaling. In Figure 4 we
+see four clear outlier candidates (samples 37, 101, 107, and 118). In
+Figure 5 we see some of these samples and should
+probably add sample 114 for a total of five candidates.
+
+
+p &lt;- plotScores(Worms, c_pca, pcs = 1:2, ellipse = "rob", tol = 0.02)
+p
+
+
+
+
+Figure 4: Score plot for PCs 1 and 2. Compare to protocol figure
+7a.
+
+
+
+
+
+p &lt;- plotScores(Worms, c_pca, pcs = 2:3, ellipse = "rob", leg.loc = "topright",
+    tol = 0.02)
+p
+
+
+
+
+Figure 5: Score plot for PCS 2 and 3.
+
+
+
+To label more sample points, you can increase the value of the
+argument tol.
+Outliers
+The protocol recommends plotting Hotelling’s T2
+ellipse for the entire data set; this is not implemented in
+ChemoSpec but we can easily do it if we are using
+ggplot2 plots (which is the default in
+ChemoSpec). We need the ellipseCoord function
+from the HotellingsEllipse package.3
+
+
+source("ellipseCoord.R")
+xy_coord &lt;- ellipseCoord(as.data.frame(c_pca$x), pcx = 1, pcy = 2, conf.limit = 0.95,
+    pts = 500)
+p &lt;- plotScores(Worms, c_pca, which = 1:2, ellipse = "none", tol = 0.02)
+p &lt;- p + geom_path(data = xy_coord, aes(x = x, y = y)) + scale_color_manual(values = "black")
+p
+
+
+
+
+Figure 6: Score plot for PCs 1 and 2 with Hotelling’s
+T2 ellipse. Compare to protocol figure 7a.
+
+
+
+We can see many of the same outliers by this approach as we saw in
+Figures 4 and 5.
+Another way to identify outliers is to use the approach described in
+Varmuza and Filzmoser
+(2009)
+section 3.7.3. Figures 7 and 8 give the
+plots. Please see Filzmoser for the details, but any samples that are
+above the plotted threshold line are candidate outliers, and any samples
+above the threshold in both plots should be looked at very
+carefully. Though we are using classical PCA, Filzmoser recommends using
+these plots with robust PCA. These plots are a better approach than “eye
+balling it” on the score plots.
+
+
+p &lt;- pcaDiag(Worms, c_pca, plot = "OD")
+p
+
+
+
+
+Figure 7: Orthogonal distance plot based on the first three PCs.
+
+
+
+
+
+p &lt;- pcaDiag(Worms, c_pca, plot = "SD")
+p
+
+
+
+
+Figure 8: Score distance plot based on the first three PCs.
+
+
+
+Comparison of these plots suggest that samples 37, 101, 107, 114 and
+118 are likely outliers. These spectra should be examined to see if the
+reason for their outlyingness can be deduced. If good reason can be
+found, they can be removed as follows.4
+
+
+Worms2 &lt;- removeSample(Worms, rem.sam = c("37_", "101_", "107_", "114_",
+    "118_"))
+
+
+
+At this point one should repeat the PCA, score plots and diagnostic
+plots to get a good look at how removing these samples affected the
+results. Those tasks are left to the reader.
+
+
+
+
+We will continue in the next post with a discussion of loadings.
+
+
+
+This post was created using ChemoSpec version 6.1.3 and
+ChemoSpecUtils version 1.0.0.
+
+
+Blaise, Benjamin J., Gonçalo D. S. Correia, Gordon A. Haggart, Izabella
+Surowiec, Caroline Sands, Matthew R. Lewis, Jake T. M. Pearce, et al.
+2021. “Statistical Analysis in Metabolic Phenotyping.”
+Nature Protocols 16: 4299–4326. https://doi.org/10.1038/s41596-021-00579-1.
+
+
+Varmuza, K., and P. Filzmoser. 2009. Introduction to Multivariate
+Statistical Analysis in Chemometrics. CRC Press.
+
+
+Without scaling, the largest peaks
+will drive the separation in the scores plot.↩︎
+Be sure you have
+ChemoSpec 6.1.3 or higher, as cv_pcaSpectra
+had a bug in it! One benefit of writing these posts is finding lame
+bugs…↩︎
+We are sourcing in a corrected
+version of the function, as the CRAN version has a small error
+in it.↩︎
+The Jupyter
+notebook has details about this.
+
+↩︎
+</description>
+      <distill:md5>ee9b58781335e9385924227e0c4924a6</distill:md5>
+      <category>R</category>
+      <category>ChemoSpec</category>
+      <guid>https://chemospec.org/posts/2022-03-24-Protocol-Pt2</guid>
+      <pubDate>Thu, 24 Mar 2022 00:00:00 +0000</pubDate>
+      <media:content url="https://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html5/screeAlt-1.png" medium="image" type="image/png" width="1152" height="672"/>
+    </item>
     <item>
       <title>Chemometrics in Spectroscopy: Key References</title>
       <dc:creator>Bryan Hanson</dc:creator>
@@ -1641,213 +1929,6 @@ Please see the package website for the full changelog and all documentation.
       <category>ChemoSpec2D</category>
       <guid>https://chemospec.org/posts/2020-02-19-CS2D-update</guid>
       <pubDate>Wed, 19 Feb 2020 00:00:00 +0000</pubDate>
-    </item>
-    <item>
-      <title>Exploring Github Topics</title>
-      <dc:creator>Bryan Hanson</dc:creator>
-      <link>https://chemospec.org/posts/2020-01-25-GH-Topics</link>
-      <description>
-As the code driving FOSS for Spectroscopy has matured, I began to think about how to explore Github in a systematic way for additional repositories with tools for spectroscopy. It turns out that a Github repo can have topics assigned to it, and you can use the Github API to search them. Wait, what? I didn’t know one could add topics to a repo, even though there is a little invite right there under the repo name:
-
-Naturally I turned to StackOverflow to find out how to do this, and quickly encountered this question. It was asked when the topics feature was new, so one needs to do things just a bit differently now, but there is a way forward.
-Before we get to implementation, let’s think about limitations:
-This will only find repositories where topics have been set. I don’t know how broadly people use this feature, I had missed it when it was added.
-Github topics are essentially tags with a controlled vocabulary, so for the best results you’ll need to manually explore the tags and then use these as your search terms.
-The Github API only returns 30 results at a time for most types of queries. For our purposes this probably doesn’t matter much. The documentation explains how to iterate to get all possible results.
-The Github API also limits the number of queries you can make to 60/hr unless you authenticate, in which case the limit goes to 6000/hr.
-Let’s get to it! First, create a Github access token on your local machine using the instructions in this gist. Next, load the needed libraries:
-
-
-
-
-
-set.seed(123)
-library("httr")
-library("knitr")
-library("kableExtra")
-
-
-
-Specify your desired search terms, and create a list structure to hold the results:
-
-
-search_terms &lt;- c("NMR", "infrared", "raman", "ultraviolet", "visible", "XRF", "spectroscopy")
-results &lt;- list()
-
-
-
-Create the string needed to access the Github API, then GET the results, and stash them in the list we created:
-
-
-nt &lt;- length(search_terms) # nt = no. of search terms
-for (i in 1:nt) {
-  search_string &lt;- paste0("https://api.github.com/search/repositories?q=topic:", search_terms[i])
-  request &lt;- GET(search_string, config(token = github_token))
-  stop_for_status(request) # converts http errors to R errors or warnings
-  results[[i]] &lt;- content(request)
-}
-names(results) &lt;- search_terms
-
-
-
-Figure out how many results we have found, set up a data frame and then put the results into the table. The i, j, and k counters required a little experimentation to get right, as content(request) returns a deeply nested list and only certain items are desired.
-
-
-nr &lt;- 0L # nr = no. of responses
-for (i in 1:nt) { # compute total number of results/items found
-  nr &lt;- nr + length(results[[i]]$items)
-}
-
-DF &lt;- data.frame(term = rep(NA_character_, nr),
-  repo_name = rep(NA_character_, nr),
-  repo_url = rep(NA_character_, nr),
-  stringsAsFactors = FALSE)
-
-k &lt;- 1L
-for (i in 1:nt) {
-  ni &lt;- length(results[[i]]$items) # ni = no. of items
-  for (j in 1:ni) {
-    DF$term[k] &lt;- names(results)[[i]]
-    DF$repo_name[k] &lt;- results[[i]]$items[[j]]$name
-    DF$repo_url[k] &lt;- results[[i]]$items[[j]]$html_url
-    k &lt;- k + 1L
-  }
-}
-# remove duplicated repos which result when repos have several of our
-# search terms of interest.
-DF &lt;- DF[-which(duplicated(DF$repo_name)),]
-
-
-
-Now put it all in a table we can inspect manually, send to a web page so it’s clickable, or potentially write it out as a csv (If you want this as a csv you should probably write the results out a bit differently). In this case I want the results as a table in web page so I can click the repo links and go straight to them.
-
-
-namelink &lt;- paste0("[", DF$repo_name, "](", DF$repo_url, ")")
-DF2 &lt;- data.frame(DF$term, namelink, stringsAsFactors = FALSE)
-names(DF2) &lt;- c("Search Term", "Link to Repo")
-
-
-
-We’ll show just 10 random rows as an example:
-
-
-keep &lt;- sample(1:nrow(DF2), 10)
-options(knitr.kable.NA = '')
-kable(DF2[keep, ]) %&gt;%
-  kable_styling(c("striped", "bordered"))
-
-
-
-
-
-
-
-Search Term
-
-
-Link to Repo
-
-
-31
-
-
-infrared
-
-
-pycroscopy
-
-
-79
-
-
-ultraviolet
-
-
-woudc-data-registry
-
-
-51
-
-
-infrared
-
-
-ir-repeater
-
-
-14
-
-
-NMR
-
-
-spectra-data
-
-
-67
-
-
-raman
-
-
-Raman-spectra
-
-
-42
-
-
-infrared
-
-
-PrecIR
-
-
-50
-
-
-infrared
-
-
-esp32-room-control-panel
-
-
-118
-
-
-spectroscopy
-
-
-LiveViewLegacy
-
-
-43
-
-
-infrared
-
-
-arduino-primo-tutorials
-
-
-101
-
-
-XRF
-
-
-web_geochemistry
-
-Obviously, these results must be inspected carefully as terms like “infrared” will pick up projects that deal with infrared remote control of robots and so forth. As far as my case goes, I have a lot of new material to look through…
-A complete .Rmd file that carries out the search described above, and has a few enhancements, can be found at this gist.
-
-
-
-</description>
-      <distill:md5>a638712775b0267bdaa3da986c025587</distill:md5>
-      <category>R</category>
-      <category>Github</category>
-      <guid>https://chemospec.org/posts/2020-01-25-GH-Topics</guid>
-      <pubDate>Sat, 25 Jan 2020 00:00:00 +0000</pubDate>
     </item>
   </channel>
 </rss>
