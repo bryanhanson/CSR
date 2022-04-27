@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss  xmlns:atom="http://www.w3.org/2005/Atom" 
+      xmlns:media="http://search.yahoo.com/mrss/" 
+      xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+      xmlns:dc="http://purl.org/dc/elements/1.1/" 
+      version="2.0">
+<channel>
+<title>Chemometrics and Spectroscopy Using R</title>
+<link>http://chemospec.org/index.html</link>
+<atom:link href="http://chemospec.org/index.xml" rel="self" type="application/rss+xml"/>
+<description>Applying chemometrics to spectroscopy using R</description>
+<generator>quarto-0.9.312</generator>
+<lastBuildDate>Wed, 01 Jan 2020 07:00:00 GMT</lastBuildDate>
+<item>
+  <title>FOSS for Spectroscopy</title>
+  <dc:creator>Bryan Hanson</dc:creator>
+  <link>http://chemospec.org/posts/2020-01-01-Intro-F4S/2021-01-01-Intro-F4S.html</link>
+  <description><![CDATA[ 
+
+
+
+<p>For this inaugural blog post, I’m pleased to share a project I have been working on recently: <a href="https://bryanhanson.github.io/FOSS4Spectroscopy/">FOSS4Spectroscopy</a> is an attempt to catalog FOSS spectroscopy software. The page is designed to be updated easily with new or edited entries – see the page for details, and please contribute!</p>
+<p>For this initial version, I searched the CRAN ecosystem via <a href="https://CRAN.R-project.org/package=packagefinder">packagefinder</a> and the <code>Python</code> world via <a href="https://pypi.org/">PyPi.org</a> using spectroscopy-related keywords. My expertise is in <code>R</code> so I’m pretty confident I have most of the <code>R</code> packages included. I’m not so confident about coverage of the <code>Python</code> packages (where else should I look?).</p>
+<p>Currently, the “status” column in the main table is empty. I am working on a version which will update the status with a date giving some indication of the age and activity of the repository. Right now the page is updated when I push to Github, but in the long run I hope to get Travis-CI to run it as a weekly cron job.</p>
+<p>I welcome your feedback in any form!</p>
+
+
+
+ ]]></description>
+  <category>R</category>
+  <category>Python</category>
+  <guid>http://chemospec.org/posts/2020-01-01-Intro-F4S/2021-01-01-Intro-F4S.html</guid>
+  <pubDate>Wed, 01 Jan 2020 07:00:00 GMT</pubDate>
+</item>
+</channel>
+</rss>
