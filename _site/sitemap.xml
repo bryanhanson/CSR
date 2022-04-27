@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>http://chemospec.org/index.html</loc>
-    <lastmod>2022-04-27T16:18:30.815Z</lastmod>
+    <lastmod>2022-04-27T16:53:32.491Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/about.html</loc>
@@ -11,5 +11,37 @@
   <url>
     <loc>http://chemospec.org/posts/2020-01-01-Intro-F4S/2021-01-01-Intro-F4S.html</loc>
     <lastmod>2022-04-27T16:23:27.986Z</lastmod>
+  </url>
+  <url>
+    <loc>http://chemospec.org/posts/2020-04-25-Heatmaps/2020-04-25-Heatmaps.html</loc>
+    <lastmod>2022-04-27T16:53:21.003Z</lastmod>
+  </url>
+  <url>
+    <loc>http://chemospec.org/posts/2020-01-02-readJDX-update/2020-01-02-readJDX-update.html</loc>
+    <lastmod>2022-04-27T16:53:08.240Z</lastmod>
+  </url>
+  <url>
+    <loc>http://chemospec.org/posts/2020-01-22-CSU-update/2020-01-22-CSU-update.html</loc>
+    <lastmod>2022-04-27T16:53:09.039Z</lastmod>
+  </url>
+  <url>
+    <loc>http://chemospec.org/posts/2020-01-22-F4S-update/2020-01-22-F4S-update.html</loc>
+    <lastmod>2022-04-27T16:53:09.626Z</lastmod>
+  </url>
+  <url>
+    <loc>http://chemospec.org/posts/2020-01-25-GH-Topics/2020-01-25-GH-Topics.html</loc>
+    <lastmod>2022-04-27T16:53:10.691Z</lastmod>
+  </url>
+  <url>
+    <loc>http://chemospec.org/posts/2020-01-24-CS-update/2020-01-24-CS-update.html</loc>
+    <lastmod>2022-04-27T16:53:11.275Z</lastmod>
+  </url>
+  <url>
+    <loc>http://chemospec.org/posts/2020-02-19-CS2D-update/2020-02-19-CS2D-update.html</loc>
+    <lastmod>2022-04-27T16:53:11.806Z</lastmod>
+  </url>
+  <url>
+    <loc>http://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1.html</loc>
+    <lastmod>2022-04-27T16:54:21.154Z</lastmod>
   </url>
 </urlset>

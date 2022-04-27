@@ -10,7 +10,650 @@
 <atom:link href="http://chemospec.org/index.xml" rel="self" type="application/rss+xml"/>
 <description>Applying chemometrics to spectroscopy using R</description>
 <generator>quarto-0.9.312</generator>
-<lastBuildDate>Wed, 01 Jan 2020 07:00:00 GMT</lastBuildDate>
+<lastBuildDate>Sat, 25 Apr 2020 07:00:00 GMT</lastBuildDate>
+<item>
+  <title>Spectral Heatmaps</title>
+  <link>http://chemospec.org/posts/2020-04-25-Heatmaps/2020-04-25-Heatmaps.html</link>
+  <description><![CDATA[ 
+
+
+
+<div class="cell">
+
+</div>
+<p>Most everyone is familiar with heatmaps in a general way. It’s hard not to run into them. Let’s consider some variations:</p>
+<ul>
+<li>A heatmap is a 2D array of rectangular cells colored by value. Generally, the rows and columns are ordered in some purposeful manner. These are very commonly encountered in microarrays for example.</li>
+<li>An image is a type of heatmap in which the ordering of the rows and columns is defined spatially – it would not make sense to reorder them. This kind of data arises from the physical dimensions of a sensor, for instance the sensor on a digital camera or a raman microscope. An image might also arise by a decision to subset and present data in a “square” format. An example would be the topographic maps provided by the US government which cover a rectangular latitude/longitude range. This type of data can also be presented as a contour plot. See the examples in <code>?image</code> for image and contour plots of the classic Maunga Whau volcano data, as well as an overlay of the contours on the image plot.</li>
+<li>A chloropleth is a map with irregular geographic boundaries and regions colored by some value. These are typically used in presenting social or political data. A chloropleth is not really a heatmap but it is often mis-characterized as one.</li>
+</ul>
+<p>These three types of plots are conceptually unified in that they require a 3D data set. In the case of the heatmap and the image, the underlying data are on a regular x, y grid of values; mathematically, a matrix. The row and column indices are mapped to the x, y values, and the matrix entries are the z values. A chloropleth can be thought of as a very warped matrix where the cells are not on a regular grid but instead a series of arbitrary connected paths, namely the geographic boundaries. There is a value inside each connected path (the z value), but naturally the specification of the paths requires a completely different data structure. An intermediate type would be the cartogram heatmap described by <a href="https://serialmentor.com/dataviz/geospatial-data.html#cartograms">Wilke</a>.</p>
+<section id="heatmaps-in-spectroscopy" class="level1">
+<h1>Heatmaps in Spectroscopy</h1>
+<p>The <code>hmapSpectra</code> function in <code>ChemoSpec</code> displays a heatmap to help you focus on which frequencies drive the separation of your samples.<sup>1</sup> We’ll use the example from <code>?hmapSpectra</code> which uses the built-in <code>SrE.IR</code> data set. This data set is a series of IR spectra of commercial <em>Serenoa repens</em> oils which are composed of mixtures of triglycerides and free fatty acids (see <code>?SrE.IR</code> for more information). Thus the carbonyl region is of particular interest. The example narrows the frequency range to the carbonyl region for easy interpretation. Let’s look first at the spectra.</p>
+<p><em>Note: rather than link every mention of a help page in this post, remember you can see all the documentation at this <a href="https://bryanhanson.github.io/ChemoSpec/reference/index.html">site</a>.</em></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;">library</span>(<span class="st" style="color: #20794D;">"ChemoSpec"</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: ChemoSpecUtils</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+As of version 6, ChemoSpec offers new graphics output options</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>For details, please see ?GraphicsOptions</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+The ChemoSpec graphics option is set to 'ggplot2'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>To change it, do
+    options(ChemoSpecGraphics = 'option'),
+    where 'option' is one of 'base' or 'ggplot2' or'plotly'.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><span class="fu" style="color: #4758AB;">data</span>(SrE.IR) <span class="co" style="color: #5E5E5E;"># load the data set</span></span>
+<span id="cb7-2"><span class="co" style="color: #5E5E5E;"># limit to the carbonyl region</span></span>
+<span id="cb7-3">IR <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">removeFreq</span>(SrE.IR, <span class="at" style="color: #657422;">rem.freq =</span> SrE.IR<span class="sc" style="color: #5E5E5E;">$</span>freq <span class="sc" style="color: #5E5E5E;">&gt;</span> <span class="dv" style="color: #AD0000;">1775</span> <span class="sc" style="color: #5E5E5E;">|</span> SrE.IR<span class="sc" style="color: #5E5E5E;">$</span>freq <span class="sc" style="color: #5E5E5E;">&lt;</span> <span class="dv" style="color: #AD0000;">1660</span>)</span>
+<span id="cb7-4"><span class="fu" style="color: #4758AB;">plotSpectra</span>(IR, <span class="at" style="color: #657422;">which =</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">16</span>, <span class="at" style="color: #657422;">lab.pos =</span> <span class="st" style="color: #20794D;">"none"</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="http://chemospec.org/posts/2020-04-25-Heatmaps/2020-04-25-Heatmaps_files/figure-html/showSpectra-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The blue and green spectra are samples composed only of triglycerides, and hence the ester carbonyl is the primary feature. All other samples are clearly mixtures of ester and carboxylic acid stretching peaks. And now for the heatmap, using defaults:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1">res <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">hmapSpectra</span>(IR)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="http://chemospec.org/posts/2020-04-25-Heatmaps/2020-04-25-Heatmaps_files/figure-html/defaultMap-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>In this default display, you’ll notice that the rows and column labels are indices to the underlying sample names and frequency list. This is not so helpful. The color scheme is not so exciting either. <code>hmapSpectra</code> uses the package <code>seriation</code> which in turn uses the <code>heatmap.2</code> function in package <code>gplots</code>. Fortunately we can use the <code>...</code> argument to pass additional arguments to <code>heatmap.2</code> to get a much more useful plot.</p>
+</section>
+<section id="customizing-the-hmapspectra-display" class="level1">
+<h1>Customizing the hmapSpectra Display</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><span class="co" style="color: #5E5E5E;"># Label samples and frequencies by passing arguments to heatmap.2</span></span>
+<span id="cb9-2"><span class="co" style="color: #5E5E5E;"># Also make a few other nice plot adjustments</span></span>
+<span id="cb9-3">res <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">hmapSpectra</span>(IR,</span>
+<span id="cb9-4">  <span class="at" style="color: #657422;">col =</span> <span class="fu" style="color: #4758AB;">heat.colors</span>(<span class="dv" style="color: #AD0000;">5</span>),</span>
+<span id="cb9-5">  <span class="at" style="color: #657422;">row_labels =</span> IR<span class="sc" style="color: #5E5E5E;">$</span>names, <span class="at" style="color: #657422;">col_labels =</span> <span class="fu" style="color: #4758AB;">as.character</span>(<span class="fu" style="color: #4758AB;">round</span>(IR<span class="sc" style="color: #5E5E5E;">$</span>freq)),</span>
+<span id="cb9-6">  <span class="at" style="color: #657422;">margins =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">4</span>, <span class="dv" style="color: #AD0000;">6</span>)</span>
+<span id="cb9-7">)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="http://chemospec.org/posts/2020-04-25-Heatmaps/2020-04-25-Heatmaps_files/figure-html/betterMap-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>This is a lot nicer plot, since the rows are labeled with the sample names, and the columns with frequencies. Note that not every column is labeled, only every few frequencies. If you need the actual frequencies, which you probably will, they can be obtained from the returned object (<code>res</code> in this case; see the end of this post for an example).</p>
+</section>
+<section id="interpreting-the-plot" class="level1">
+<h1>Interpreting the Plot</h1>
+<p>How do we interpret this plot? This is a <em>seriated</em> heatmap, which means the rows and columns have been re-ordered according to some algorithm (more on this in a moment). The ordering puts the frequencies most important in distinguishing the samples in the upper left and lower right (the yellow regions). In the lower right corner, we see the two outlier samples TJ_OO and SV_EPO grouped together. On the frequency axis, we see that ester stretching peaks around 1740 <img src="https://latex.codecogs.com/png.latex?%5Cmathrm%7Bcm%7D%5E1"> are characteristic for these samples. In the upper left corner, we see several samples grouped together, and associated with the fatty acid carboxylic acid peak around 1710 <img src="https://latex.codecogs.com/png.latex?%5Cmathrm%7Bcm%7D%5E1">. From these two observations, we can conclude that these two peak ranges are most important in separating the samples. Of course, in this simple example using a small part of the spectrum, this answer was already clear by simple inspection. Using a simple/limited range of data helps us to be sure we understand what’s happening when we try a new technique.</p>
+</section>
+<section id="using-a-different-distance-measure-seriation-method" class="level1">
+<h1>Using a Different Distance Measure &amp; Seriation Method</h1>
+<p>The default data treatments for <code>hmapSpectra</code> are inherited from <code>hmap</code> in package <code>seriation</code>. The default distance between the samples is the Euclidean distance. The default seriation method is “OLO” or “optimal leaf ordering”. The full list of seriation methods is described in <code>?seriate</code>. There are more than 20 options. As with the display details, we can change these defaults via the <code>...</code> arguments. Let’s use the cosine distance (the same as the Pearson distance), and seriate using the Gruvaeus-Wainer algorithm (there’s a brief explanation of this algorithm at <code>?seriate</code>).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1">cosine_dist <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="cf" style="color: #003B4F;">function</span>(x) <span class="fu" style="color: #4758AB;">as.dist</span>(<span class="dv" style="color: #AD0000;">1</span> <span class="sc" style="color: #5E5E5E;">-</span> <span class="fu" style="color: #4758AB;">cor</span>(<span class="fu" style="color: #4758AB;">t</span>(x)))</span>
+<span id="cb10-2">res <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">hmapSpectra</span>(IR,</span>
+<span id="cb10-3">  <span class="at" style="color: #657422;">col =</span> <span class="fu" style="color: #4758AB;">heat.colors</span>(<span class="dv" style="color: #AD0000;">5</span>),</span>
+<span id="cb10-4">  <span class="at" style="color: #657422;">row_labels =</span> IR<span class="sc" style="color: #5E5E5E;">$</span>names, <span class="at" style="color: #657422;">col_labels =</span> <span class="fu" style="color: #4758AB;">as.character</span>(<span class="fu" style="color: #4758AB;">round</span>(IR<span class="sc" style="color: #5E5E5E;">$</span>freq)),</span>
+<span id="cb10-5">  <span class="at" style="color: #657422;">margins =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">4</span>, <span class="dv" style="color: #AD0000;">6</span>),</span>
+<span id="cb10-6">    <span class="at" style="color: #657422;">distfun =</span> cosine_dist,</span>
+<span id="cb10-7">    <span class="at" style="color: #657422;">method =</span> <span class="st" style="color: #20794D;">"GW"</span></span>
+<span id="cb10-8">)</span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Registered S3 method overwritten by 'gclus':
+  method         from     
+  reorder.hclust seriation</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="http://chemospec.org/posts/2020-04-25-Heatmaps/2020-04-25-Heatmaps_files/figure-html/bestMap-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>You can see that using different distance measures and seriation algorithms gives a rather different result: the ester “hot spots” which were in the lower right corner are now almost in the lower left corner. Which settings are best will depend on your data set, the goal of your analysis, and there are a lot of options from which to choose. The settings used here are simply for demonstration purposes, I make no claim these settings are appropriate!</p>
+<p>Finally, if you want to capture the re-ordered frequencies, you can access them in the returned object:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><span class="fu" style="color: #4758AB;">round</span>(IR<span class="sc" style="color: #5E5E5E;">$</span>freq[res<span class="sc" style="color: #5E5E5E;">$</span>colInd<span class="sc" style="color: #5E5E5E;">$</span>order])</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 1767 1765 1763 1761 1759 1757 1755 1753 1751 1749 1747 1745 1743 1741 1740
+[16] 1738 1736 1734 1732 1730 1768 1774 1770 1772 1728 1726 1724 1722 1720 1718
+[31] 1716 1714 1713 1711 1709 1707 1705 1703 1701 1699 1697 1695 1693 1691 1689
+[46] 1687 1660 1664 1666 1678 1680 1686 1682 1676 1674 1672 1662 1668 1670 1684</code></pre>
+</div>
+</div>
+
+
+</section>
+
+
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Other functions in <code>ChemoSpec</code> that can help you explore which frequencies are important are <code>plotLoadings</code>, <code>plot2Loadings</code> and <code>sPlotSpectra</code>.↩︎</p></li>
+</ol>
+</section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
+  author = {Bryan Hanson},
+  title = {Spectral {Heatmaps}},
+  date = {2020-04-25},
+  url = {http://chemospec.org/posts/2020-04-25-Heatmaps/2020-04-25-Heatmaps.html},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2020" class="csl-entry quarto-appendix-citeas">
+Bryan Hanson. 2020. <span>“Spectral Heatmaps.”</span> April 25, 2020. <a href="http://chemospec.org/posts/2020-04-25-Heatmaps/2020-04-25-Heatmaps.html">http://chemospec.org/posts/2020-04-25-Heatmaps/2020-04-25-Heatmaps.html</a>.
+</div></div></section></div> ]]></description>
+  <category>R</category>
+  <category>Heatmap</category>
+  <category>Seriation</category>
+  <category>ChemoSpec</category>
+  <guid>http://chemospec.org/posts/2020-04-25-Heatmaps/2020-04-25-Heatmaps.html</guid>
+  <pubDate>Sat, 25 Apr 2020 07:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Aligning 2D NMR Spectra Part 1</title>
+  <link>http://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1.html</link>
+  <description><![CDATA[ 
+
+
+
+<p>In this series of posts, I’ll discuss the alignment process for the case of 2D NMR, as implemented in the package <code>ChemoSpec2D</code>. This is Part 1. <a href="https://chemospec.org/posts/2020-03-02-NMR-Align-Pt2/">Part 2</a>. <a href="https://chemospec.org/posts/2020-03-04-NMR-Align-Pt3/">Part 3</a>.</p>
+<p><img src="http://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/P8_Manual_Alignment.png" alt="Manual Alignment" style="width:400px;"></p>
+<p>In one-dimensional <img src="https://latex.codecogs.com/png.latex?%5E1">H NMR spectroscopy, particularly biomolecular NMR, it is frequently necessary to align spectra before chemometric or metabolomics analysis. Poor alignment arises largely from pH and ionic strength induced shifts in aqueous samples. There are a number of published alignment algorithms for the one-dimensional case. The same issue presumably exists for 2D NMR spectra, but alignment options are limited. Instead, for 2D NMR people often work with tables of peaks. Creating these tables is an extra step and decisions about what to include may leave useful information behind.</p>
+<p>No doubt you’ve compared two spectra by overlaying them on the screen, or printing them out, placing them on top of each other, and holding them up to the light. Conceptually, one can “align” spectra by a similar method: just slide one of the pieces of paper up/down and left/right until the spectra are optimally aligned. But how would one do this algorithmically? A literature searched turned up only a few publications on this topic. Among these, there was only one that I felt I could implement using the description in the paper: the HATS-PR algorithm of Robinette <em>et al.</em> <span class="citation" data-cites="Robinette2011">(Robinette et al. 2011)</span>.</p>
+<p>We’ll discuss the HATS algorithm in a future post. As a first step however, we need to consider how we know when two spectra are properly aligned. Visual inspection won’t work, as we will encounter cases where peaks in one region align, but only at the expense of peaks in another region. How would we rank such cases? To automate this process, we need to use an <em>objective function</em>, basically some kind of equation, that we evaluate as we explore the alignment space. A simple but effective option is to compute the distance between the two spectra. This is done by concatenating each row of the 2D spectra to give a long vector of intensities. The distance between these vectors can then be computed using any of the standard distance definitions. Let’s illustrate, starting by taking a look at some mis-aligned data. <code>ChemoSpec2D</code> contains a mis-aligned data set, <code>MUD2</code>, for just this purpose. Here are two spectra from <code>MUD2</code>; note we are using the new convenience functions <code>LofC</code> and <code>LofL</code> to make it easy to overlay the spectra.</p>
+<div class="cell">
+
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;">library</span>(<span class="st" style="color: #20794D;">"ChemoSpec2D"</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: ChemoSpecUtils</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+As of version 6, ChemoSpec2D offers new graphics output options</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Functions plotScores and plotScree will work with the new options</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>For details, please see ?GraphicsOptions</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+The ChemoSpec graphics option is set to 'ggplot2'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>To change it, do
+    options(ChemoSpecGraphics = 'option'),
+    where 'option' is one of 'base' or 'ggplot2' or'plotly'.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="fu" style="color: #4758AB;">data</span>(MUD2)</span>
+<span id="cb8-2">mylvls <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">seq</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">30</span>, <span class="at" style="color: #657422;">length.out =</span> <span class="dv" style="color: #AD0000;">10</span>)</span>
+<span id="cb8-3"><span class="fu" style="color: #4758AB;">plotSpectra2D</span>(MUD2, <span class="at" style="color: #657422;">which =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">1</span>, <span class="dv" style="color: #AD0000;">6</span>), <span class="at" style="color: #657422;">showGrid =</span> <span class="cn" style="color: #8f5902;">TRUE</span>,</span>
+<span id="cb8-4">  <span class="at" style="color: #657422;">lvls =</span> <span class="fu" style="color: #4758AB;">LofL</span>(mylvls, <span class="dv" style="color: #AD0000;">2</span>),</span>
+<span id="cb8-5">  <span class="at" style="color: #657422;">cols =</span> <span class="fu" style="color: #4758AB;">LofC</span>(<span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"red"</span>, <span class="st" style="color: #20794D;">"black"</span>), <span class="dv" style="color: #AD0000;">2</span>, <span class="fu" style="color: #4758AB;">length</span>(mylvls), <span class="dv" style="color: #AD0000;">2</span>),</span>
+<span id="cb8-6">  <span class="at" style="color: #657422;">main =</span> <span class="st" style="color: #20794D;">"MUD2 Spectra 1 &amp; 6"</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="http://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1_files/figure-html/MUD2-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The function <code>sampleDist</code> allows us to compute the distance between every pair of spectra in the <code>MUD2</code> data set, and present the results as a heat map. Here are the results using cosine as the distance measure.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1">cos_dist <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">sampleDist</span>(MUD2, <span class="at" style="color: #657422;">method =</span> <span class="st" style="color: #20794D;">"cosine"</span>,</span>
+<span id="cb9-2">  <span class="at" style="color: #657422;">main =</span> <span class="st" style="color: #20794D;">"Cosine Distance"</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="http://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1_files/figure-html/cosine-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The actual numerical values are in <code>cos_dist</code>, a matrix. Looking at the heatmap, there are some modest differences among the spectra. However, if one looks at the scale, cosine distances are only defined on [-1 … 1]. While the cosine distance is popular in many spectroscopic contexts, it’s not the best objective function for our purpose because there is little absolute difference between -1 and 1 (and for <code>MUD2</code> the absolute differences are even smaller, as the range is only 0, 0.99). This limited range affects the alignment process in a subtle way that we won’t cover here (alignment is still successful, however).</p>
+<p>Let’s consider instead the Euclidean distance.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1">eu_dist <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">sampleDist</span>(MUD2, <span class="at" style="color: #657422;">method =</span> <span class="st" style="color: #20794D;">"euclidean"</span>,</span>
+<span id="cb10-2">  <span class="at" style="color: #657422;">main =</span> <span class="st" style="color: #20794D;">"Euclidean Distance"</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="http://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1_files/figure-html/euclid-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>It turns of that the Euclidean distance gives a wider span of distances, which will serve us well in the next steps. Here, the range is roughly 80, 150. Note that in this plot the distance between identical spectra is zero, plotted as a white squares along the diagonal. When we used cosine as the distance, identical spectra were perfectly correlated and hence the diagonal in that plot was red.</p>
+<p>In the next post I’ll discuss the general flow of the HATS algorithm, and how to carry it out using <code>ChemoSpec2D</code>.</p>
+
+
+
+
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-Robinette2011" class="csl-entry">
+Robinette, Steven L., Ramadan Ajredini, Hasan Rasheed, Abdulrahman Zeinomar, Frank C. Schroeder, Aaron T. Dossey, and Arthur S. Edison. 2011. <span>“Hierarchical Alignment and Full Resolution Pattern Recognition of 2d NMR Spectra: Application to Nematode Chemical Ecology.”</span> <em>Analytical Chemistry</em> 83 (5): 1649–57. <a href="https://doi.org/10.1021/ac102724x">https://doi.org/10.1021/ac102724x</a>.
+</div>
+</div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
+  author = {Bryan Hanson},
+  title = {Aligning {2D} {NMR} {Spectra} {Part} 1},
+  date = {2020-02-20},
+  url = {http://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1.html},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2020" class="csl-entry quarto-appendix-citeas">
+Bryan Hanson. 2020. <span>“Aligning 2d NMR Spectra Part 1.”</span>
+February 20, 2020. <a href="http://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1.html">http://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1.html</a>.
+</div></div></section></div> ]]></description>
+  <category>R</category>
+  <category>ChemoSpec</category>
+  <category>Alignment</category>
+  <category>NMR</category>
+  <guid>http://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1.html</guid>
+  <pubDate>Thu, 20 Feb 2020 07:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>ChemoSpec2D Update</title>
+  <link>http://chemospec.org/posts/2020-02-19-CS2D-update/2020-02-19-CS2D-update.html</link>
+  <description><![CDATA[ 
+
+
+
+<p>I’m pleased to announce that <code>ChemoSpec2D</code>, a package for exploratory data analysis of 2D NMR spectra, has been updated on CRAN and is coming to a mirror near you. Barring user reports to the contrary, I feel like the package has pretty much stabilized and is pretty robust. The main area for future expansion is to add additional data import routines. Please feel free to ask about your specific use case!</p>
+<p>The most noteworthy user-facing improvements are:</p>
+<ul>
+<li>Function <code>import2DSpectra</code> can now handle JCAMP-DX files, Bruker files exported via the TopSpin “totxt” command, and JEOL spectra exported as “generic ascii”. The design allows additional formats to be added if I have test files to play with (hint hint).</li>
+<li><code>files2Spectra2DObject</code> gains a new argument <code>allowSloppy</code>. This <em>experimental</em> feature will allow one to import data sets that do not have the same dimensions. The intent here is to deal with data sets where the number of points in each dimension is similar but not identical. Additional functions will be needed to handle this kind of data. See the documentation for details.</li>
+<li><code>files2Spectra2DObject</code> has also been modified to allow arguments to be passed to <code>list.files</code> and <code>readJDX</code>. This means for instance you can specify a path other than the current working directory, and have the function recurse through sub-directories. This brings <code>files2Spectra2DObject</code> into line with <code>ChemoSpec::files2SpectraObject</code>.</li>
+<li>Function <code>hats_alignSpectra2D</code> gains new arguments <code>dist_method</code> and <code>maximize</code> which allows the user to pass their choice of distance measure through to the objective function used to evaluate the overlap of the spectra. This greatly improves the quality of the alignment.</li>
+<li>Plotting is simplified with the addition of two new functions to create Lists of Colors, <code>LofC</code> and Lists of Levels, <code>LofL</code>.</li>
+<li>The basic color scheme for contours was updated to use a perceptually consistent low/blue -&gt; high/red scheme, based on the principles in the <code>colorspace</code> package. The color-handling infrastructure was also changed to allow easy introduction of different color schemes in the future, though the user cannot yet make changes on the fly.</li>
+</ul>
+<p>In addition, a number of small bugs and annoyances were taken care of, arguments tweaked and documentation improved and expanded. Several functions were rebuilt to make them more robust.</p>
+<p>Please see the package <a href="https://bryanhanson.github.io/ChemoSpec2D/">website</a> for the full changelog and all documentation.</p>
+
+
+
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
+  author = {Bryan Hanson},
+  title = {ChemoSpec2D {Update}},
+  date = {2020-02-19},
+  url = {http://chemospec.org/posts/2020-02-19-CS2D-update/2020-02-19-CS2D-update.html},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2020" class="csl-entry quarto-appendix-citeas">
+Bryan Hanson. 2020. <span>“ChemoSpec2D Update.”</span> February 19,
+2020. <a href="http://chemospec.org/posts/2020-02-19-CS2D-update/2020-02-19-CS2D-update.html">http://chemospec.org/posts/2020-02-19-CS2D-update/2020-02-19-CS2D-update.html</a>.
+</div></div></section></div> ]]></description>
+  <category>R</category>
+  <category>ChemoSpec2D</category>
+  <guid>http://chemospec.org/posts/2020-02-19-CS2D-update/2020-02-19-CS2D-update.html</guid>
+  <pubDate>Wed, 19 Feb 2020 07:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Exploring Github Topics</title>
+  <link>http://chemospec.org/posts/2020-01-25-GH-Topics/2020-01-25-GH-Topics.html</link>
+  <description><![CDATA[ 
+
+
+
+<p>As the code driving <a href="https://bryanhanson.github.io/FOSS4Spectroscopy/">FOSS for Spectroscopy</a> has matured, I began to think about how to explore Github in a systematic way for additional repositories with tools for spectroscopy. It turns out that a Github repo can have topics assigned to it, and you can use the Github API to search them. Wait, <em>what?</em> I didn’t know one could add topics to a repo, even though there is a little invite right there under the repo name:</p>
+<p><img src="http://chemospec.org/posts/2020-01-25-GH-Topics/P6_Repo_Topics.png" alt="Repo Topics" style="width:400px;"></p>
+<p>Naturally I turned to StackOverflow to find out how to do this, and quickly encountered this <a href="https://stackoverflow.com/a/48412541/633251">question</a>. It was asked when the topics feature was new, so one needs to do things just a bit differently now, but there is a way forward.</p>
+<p>Before we get to implementation, let’s think about limitations:</p>
+<ul>
+<li>This will only find repositories where topics have been set. I don’t know how broadly people use this feature, I had missed it when it was added.</li>
+<li>Github topics are essentially tags with a controlled vocabulary, so for the best results you’ll need to manually explore the tags and then use these as your search terms.</li>
+<li>The Github API only returns <a href="https://developer.github.com/v3/#pagination">30 results</a> at a time for most types of queries. For our purposes this probably doesn’t matter much. The <a href="https://developer.github.com/v3/guides/traversing-with-pagination/">documentation</a> explains how to iterate to get all possible results.</li>
+<li>The Github API also limits the <a href="https://developer.github.com/v3/#rate-limiting">number of queries</a> you can make to 60/hr unless you authenticate, in which case the limit goes to 6000/hr.</li>
+</ul>
+<p>Let’s get to it! First, create a Github access token on your local machine using the instructions in this <a href="https://gist.github.com/bryanhanson/5d02c55b8e1178e84b7c119a7c6ca92b">gist</a>. Next, load the needed libraries:</p>
+<div class="cell">
+
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;">set.seed</span>(<span class="dv" style="color: #AD0000;">123</span>)</span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;">library</span>(<span class="st" style="color: #20794D;">"httr"</span>)</span>
+<span id="cb1-3"><span class="fu" style="color: #4758AB;">library</span>(<span class="st" style="color: #20794D;">"knitr"</span>)</span>
+<span id="cb1-4"><span class="fu" style="color: #4758AB;">library</span>(<span class="st" style="color: #20794D;">"kableExtra"</span>)</span></code></pre></div>
+</div>
+<p>Specify your desired search terms, and create a list structure to hold the results:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1">search_terms <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"NMR"</span>, <span class="st" style="color: #20794D;">"infrared"</span>, <span class="st" style="color: #20794D;">"raman"</span>, <span class="st" style="color: #20794D;">"ultraviolet"</span>, <span class="st" style="color: #20794D;">"visible"</span>, <span class="st" style="color: #20794D;">"XRF"</span>, <span class="st" style="color: #20794D;">"spectroscopy"</span>)</span>
+<span id="cb2-2">results <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">list</span>()</span></code></pre></div>
+</div>
+<p>Create the string needed to access the Github API, then <code>GET</code> the results, and stash them in the list we created:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1">nt <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">length</span>(search_terms) <span class="co" style="color: #5E5E5E;"># nt = no. of search terms</span></span>
+<span id="cb3-2"><span class="cf" style="color: #003B4F;">for</span> (i <span class="cf" style="color: #003B4F;">in</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span>nt) {</span>
+<span id="cb3-3">  search_string <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">paste0</span>(<span class="st" style="color: #20794D;">"https://api.github.com/search/repositories?q=topic:"</span>, search_terms[i])</span>
+<span id="cb3-4">    request <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">GET</span>(search_string, <span class="fu" style="color: #4758AB;">config</span>(<span class="at" style="color: #657422;">token =</span> github_token))</span>
+<span id="cb3-5">  <span class="fu" style="color: #4758AB;">stop_for_status</span>(request) <span class="co" style="color: #5E5E5E;"># converts http errors to R errors or warnings</span></span>
+<span id="cb3-6">  results[[i]] <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">content</span>(request)</span>
+<span id="cb3-7">}</span>
+<span id="cb3-8"><span class="fu" style="color: #4758AB;">names</span>(results) <span class="ot" style="color: #003B4F;">&lt;-</span> search_terms</span></code></pre></div>
+</div>
+<p>Figure out how many results we have found, set up a data frame and then put the results into the table. The <code>i</code>, <code>j</code>, and <code>k</code> counters required a little experimentation to get right, as <code>content(request)</code> returns a deeply nested list and only certain items are desired.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1">nr <span class="ot" style="color: #003B4F;">&lt;-</span> 0L <span class="co" style="color: #5E5E5E;"># nr = no. of responses</span></span>
+<span id="cb4-2"><span class="cf" style="color: #003B4F;">for</span> (i <span class="cf" style="color: #003B4F;">in</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span>nt) { <span class="co" style="color: #5E5E5E;"># compute total number of results/items found</span></span>
+<span id="cb4-3">    nr <span class="ot" style="color: #003B4F;">&lt;-</span> nr <span class="sc" style="color: #5E5E5E;">+</span> <span class="fu" style="color: #4758AB;">length</span>(results[[i]]<span class="sc" style="color: #5E5E5E;">$</span>items)</span>
+<span id="cb4-4">}</span>
+<span id="cb4-5"></span>
+<span id="cb4-6">DF <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">data.frame</span>(<span class="at" style="color: #657422;">term =</span> <span class="fu" style="color: #4758AB;">rep</span>(<span class="cn" style="color: #8f5902;">NA_character_</span>, nr),</span>
+<span id="cb4-7">  <span class="at" style="color: #657422;">repo_name =</span> <span class="fu" style="color: #4758AB;">rep</span>(<span class="cn" style="color: #8f5902;">NA_character_</span>, nr),</span>
+<span id="cb4-8">  <span class="at" style="color: #657422;">repo_url =</span> <span class="fu" style="color: #4758AB;">rep</span>(<span class="cn" style="color: #8f5902;">NA_character_</span>, nr),</span>
+<span id="cb4-9">  <span class="at" style="color: #657422;">stringsAsFactors =</span> <span class="cn" style="color: #8f5902;">FALSE</span>)</span>
+<span id="cb4-10"></span>
+<span id="cb4-11">k <span class="ot" style="color: #003B4F;">&lt;-</span> 1L</span>
+<span id="cb4-12"><span class="cf" style="color: #003B4F;">for</span> (i <span class="cf" style="color: #003B4F;">in</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span>nt) {</span>
+<span id="cb4-13">    ni <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">length</span>(results[[i]]<span class="sc" style="color: #5E5E5E;">$</span>items) <span class="co" style="color: #5E5E5E;"># ni = no. of items</span></span>
+<span id="cb4-14">    <span class="cf" style="color: #003B4F;">for</span> (j <span class="cf" style="color: #003B4F;">in</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span>ni) {</span>
+<span id="cb4-15">        DF<span class="sc" style="color: #5E5E5E;">$</span>term[k] <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">names</span>(results)[[i]]</span>
+<span id="cb4-16">        DF<span class="sc" style="color: #5E5E5E;">$</span>repo_name[k] <span class="ot" style="color: #003B4F;">&lt;-</span> results[[i]]<span class="sc" style="color: #5E5E5E;">$</span>items[[j]]<span class="sc" style="color: #5E5E5E;">$</span>name</span>
+<span id="cb4-17">        DF<span class="sc" style="color: #5E5E5E;">$</span>repo_url[k] <span class="ot" style="color: #003B4F;">&lt;-</span> results[[i]]<span class="sc" style="color: #5E5E5E;">$</span>items[[j]]<span class="sc" style="color: #5E5E5E;">$</span>html_url</span>
+<span id="cb4-18">        k <span class="ot" style="color: #003B4F;">&lt;-</span> k <span class="sc" style="color: #5E5E5E;">+</span> 1L</span>
+<span id="cb4-19">    }</span>
+<span id="cb4-20">}</span>
+<span id="cb4-21"><span class="co" style="color: #5E5E5E;"># remove duplicated repos which result when repos have several of our</span></span>
+<span id="cb4-22"><span class="co" style="color: #5E5E5E;"># search terms of interest.</span></span>
+<span id="cb4-23">DF <span class="ot" style="color: #003B4F;">&lt;-</span> DF[<span class="sc" style="color: #5E5E5E;">-</span><span class="fu" style="color: #4758AB;">which</span>(<span class="fu" style="color: #4758AB;">duplicated</span>(DF<span class="sc" style="color: #5E5E5E;">$</span>repo_name)),]</span></code></pre></div>
+</div>
+<p>Now put it all in a table we can inspect manually, send to a web page so it’s clickable, or potentially write it out as a csv (If you want this as a csv you should probably write the results out a bit differently). In this case I want the results as a table in web page so I can click the repo links and go straight to them.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1">namelink <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">paste0</span>(<span class="st" style="color: #20794D;">"["</span>, DF<span class="sc" style="color: #5E5E5E;">$</span>repo_name, <span class="st" style="color: #20794D;">"]("</span>, DF<span class="sc" style="color: #5E5E5E;">$</span>repo_url, <span class="st" style="color: #20794D;">")"</span>)</span>
+<span id="cb5-2">DF2 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">data.frame</span>(DF<span class="sc" style="color: #5E5E5E;">$</span>term, namelink, <span class="at" style="color: #657422;">stringsAsFactors =</span> <span class="cn" style="color: #8f5902;">FALSE</span>)</span>
+<span id="cb5-3"><span class="fu" style="color: #4758AB;">names</span>(DF2) <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"Search Term"</span>, <span class="st" style="color: #20794D;">"Link to Repo"</span>)</span></code></pre></div>
+</div>
+<p>We’ll show just 10 random rows as an example:</p>
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1">keep <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">sample</span>(<span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="fu" style="color: #4758AB;">nrow</span>(DF2), <span class="dv" style="color: #AD0000;">10</span>)</span>
+<span id="cb6-2"><span class="fu" style="color: #4758AB;">options</span>(<span class="at" style="color: #657422;">knitr.kable.NA =</span> <span class="st" style="color: #20794D;">''</span>)</span>
+<span id="cb6-3"><span class="fu" style="color: #4758AB;">kable</span>(DF2[keep, ]) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb6-4">  <span class="fu" style="color: #4758AB;">kable_styling</span>(<span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"striped"</span>, <span class="st" style="color: #20794D;">"bordered"</span>))</span></code></pre></div>
+<!-- Since authenticating to Github in the Hugo + Netlify environment is tricky, we'll insert the results of running the code above next.  That way the page looks correct w/o running the code. -->
+<table class="table table-striped table-bordered" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:left;">
+Search Term
+</th>
+<th style="text-align:left;">
+Link to Repo
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+31
+</td>
+<td style="text-align:left;">
+infrared
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/pycroscopy/pycroscopy">pycroscopy</a>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+79
+</td>
+<td style="text-align:left;">
+ultraviolet
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/woudc/woudc-data-registry">woudc-data-registry</a>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+51
+</td>
+<td style="text-align:left;">
+infrared
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/eddyyanto/ir-repeater">ir-repeater</a>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+14
+</td>
+<td style="text-align:left;">
+NMR
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/cheminfo-js/spectra-data">spectra-data</a>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+67
+</td>
+<td style="text-align:left;">
+raman
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/professordeng/Raman-spectra">Raman-spectra</a>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+42
+</td>
+<td style="text-align:left;">
+infrared
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/furrtek/PrecIR">PrecIR</a>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+50
+</td>
+<td style="text-align:left;">
+infrared
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/jrsmile/esp32-room-control-panel">esp32-room-control-panel</a>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+118
+</td>
+<td style="text-align:left;">
+spectroscopy
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/nasa-jpl/LiveViewLegacy">LiveViewLegacy</a>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+43
+</td>
+<td style="text-align:left;">
+infrared
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/federicosanna/arduino-primo-tutorials">arduino-primo-tutorials</a>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+101
+</td>
+<td style="text-align:left;">
+XRF
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/archaeological-research-facility/web_geochemistry">web_geochemistry</a>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Obviously, these results must be inspected carefully as terms like “infrared” will pick up projects that deal with infrared remote control of robots and so forth. As far as my case goes, I have a lot of new material to look through…</p>
+<p>A complete <code>.Rmd</code> file that carries out the search described above, and has a few enhancements, can be found at this <a href="https://gist.github.com/bryanhanson/e7736f4493571087438c6dfb353c6343">gist</a>.</p>
+
+
+
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
+  author = {Bryan Hanson},
+  title = {Exploring {Github} {Topics}},
+  date = {2020-01-25},
+  url = {http://chemospec.org/posts/2020-01-25-GH-Topics/2020-01-25-GH-Topics.html},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2020" class="csl-entry quarto-appendix-citeas">
+Bryan Hanson. 2020. <span>“Exploring Github Topics.”</span> January 25,
+2020. <a href="http://chemospec.org/posts/2020-01-25-GH-Topics/2020-01-25-GH-Topics.html">http://chemospec.org/posts/2020-01-25-GH-Topics/2020-01-25-GH-Topics.html</a>.
+</div></div></section></div> ]]></description>
+  <category>R</category>
+  <category>Github</category>
+  <guid>http://chemospec.org/posts/2020-01-25-GH-Topics/2020-01-25-GH-Topics.html</guid>
+  <pubDate>Sat, 25 Jan 2020 07:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>ChemoSpec Update</title>
+  <link>http://chemospec.org/posts/2020-01-24-CS-update/2020-01-24-CS-update.html</link>
+  <description><![CDATA[ 
+
+
+
+<p><a href="https://bryanhanson.github.io/ChemoSpec/"><code>ChemoSpec</code></a> has just been updated to version 5.2.12, and should be available on the mirrors shortly.</p>
+<p>The most significant user-facing changes are actually in the update to <code>ChemoSpecUtils</code> from a <a href="https://chemospec.org/posts/2020-01-22-CSU-update/">few days ago</a>. In addition, the following documentation changes were made:</p>
+<ul>
+<li>Added documentation for <code>updateGroups</code> which has been in <code>ChemoSpecUtils</code> for a while but effectively hidden from users of <code>ChemoSpec</code>.</li>
+<li>Fixed the example in <code>mclustSpectra</code> which had an error and used data that was not a good illustration.</li>
+</ul>
+
+
+
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
+  author = {Bryan Hanson},
+  title = {ChemoSpec {Update}},
+  date = {2020-01-24},
+  url = {http://chemospec.org/posts/2020-01-24-CS-update/2020-01-24-CS-update.html},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2020" class="csl-entry quarto-appendix-citeas">
+Bryan Hanson. 2020. <span>“ChemoSpec Update.”</span> January 24, 2020.
+<a href="http://chemospec.org/posts/2020-01-24-CS-update/2020-01-24-CS-update.html">http://chemospec.org/posts/2020-01-24-CS-update/2020-01-24-CS-update.html</a>.
+</div></div></section></div> ]]></description>
+  <category>R</category>
+  <category>ChemoSpec</category>
+  <guid>http://chemospec.org/posts/2020-01-24-CS-update/2020-01-24-CS-update.html</guid>
+  <pubDate>Fri, 24 Jan 2020 07:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>ChemoSpecUtils Update</title>
+  <link>http://chemospec.org/posts/2020-01-22-CSU-update/2020-01-22-CSU-update.html</link>
+  <description><![CDATA[ 
+
+
+
+<p><code>ChemoSpecUtils</code>, a package that supports the common needs of <a href="https://bryanhanson.github.io/ChemoSpec/">ChemoSpec</a> and <a href="https://bryanhanson.github.io/ChemoSpec2D/">ChemoSpec2D</a>, has been updated on CRAN and is coming to a mirror near you. Noteworthy changes:</p>
+<ul>
+<li>There are new color options available in addition to the <code>auto</code> color scheme used during data importing. These should be useful to normal-vision individuals when there are a lot of categories. The <code>auto</code> option remains the default to avoid breaking anyone’s code. All the built-in color schemes are shown below. They can be used in any of the import functions in either package. The code used to make the figure below is in <code>?colorSymbol</code>. <em>Note: you probably should get the <code>devel</code> version to <code>ChemoSpec</code> in order to see the documentation about how to use the new colors.</em></li>
+<li>The function <code>removeFreq</code> in <code>ChemoSpec</code> now accepts a formula for the specification of the frequencies to remove. This brings it in line with the corresponding function in <code>ChemoSpec2D</code>. This should be a lot easier to use.</li>
+<li>The function <code>sampleDist</code> is now available and replaces <code>sampleDistSpectra</code>. Again the functions in the two overlying packages are essentially as similar as they can be.</li>
+<li>This version is compatible with the upcoming release of <code>R</code> 4.0.</li>
+</ul>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="http://chemospec.org/posts/2020-01-22-CSU-update/2020-01-22-CSU-update_files/figure-html/colors-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+
+
+
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
+  author = {Bryan Hanson},
+  title = {ChemoSpecUtils {Update}},
+  date = {2020-01-22},
+  url = {http://chemospec.org/posts/2020-01-22-CSU-update/2020-01-22-CSU-update.html},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2020" class="csl-entry quarto-appendix-citeas">
+Bryan Hanson. 2020. <span>“ChemoSpecUtils Update.”</span> January 22,
+2020. <a href="http://chemospec.org/posts/2020-01-22-CSU-update/2020-01-22-CSU-update.html">http://chemospec.org/posts/2020-01-22-CSU-update/2020-01-22-CSU-update.html</a>.
+</div></div></section></div> ]]></description>
+  <category>R</category>
+  <category>ChemoSpecUtils</category>
+  <guid>http://chemospec.org/posts/2020-01-22-CSU-update/2020-01-22-CSU-update.html</guid>
+  <pubDate>Wed, 22 Jan 2020 07:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>FOSS for Spectroscopy Update</title>
+  <link>http://chemospec.org/posts/2020-01-22-F4S-update/2020-01-22-F4S-update.html</link>
+  <description><![CDATA[ 
+
+
+
+<p><a href="https://bryanhanson.github.io/FOSS4Spectroscopy/">FOSS for Spectroscopy</a> has had a significant update! It’s really quite surprising how many projects are out there. There is a lot of variety and not too much overlap.</p>
+<ul>
+<li>After a lot of <a href="https://stackoverflow.com/q/59632173/633251">wrestling</a> with Github access issues, the <code>Status</code> column in the table now gives the date of the most recent update to the project that I can find in an automated way.</li>
+<li>The <code>Notes</code> column is now called <code>Focus</code> and reflects the focus of the projects as far as I can determine things. I’m using a more-or-less controlled vocabulary here, so sorting on the <code>Focus</code> column should bring related projects together.</li>
+<li>The number of entries is greatly expanded (and I have more in the hopper).</li>
+<li>The page is now automatically updated weekly, which will keep the links and dates fresh.</li>
+</ul>
+<p>As always, I welcome your feedback in any form. You can use the comments below, or if you have additions/corrections to the page itself, there is info there about how to submit updates.</p>
+
+
+
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
+  author = {Bryan Hanson},
+  title = {FOSS for {Spectroscopy} {Update}},
+  date = {2020-01-22},
+  url = {http://chemospec.org/posts/2020-01-22-F4S-update/2020-01-22-F4S-update.html},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2020" class="csl-entry quarto-appendix-citeas">
+Bryan Hanson. 2020. <span>“FOSS for Spectroscopy Update.”</span> January
+22, 2020. <a href="http://chemospec.org/posts/2020-01-22-F4S-update/2020-01-22-F4S-update.html">http://chemospec.org/posts/2020-01-22-F4S-update/2020-01-22-F4S-update.html</a>.
+</div></div></section></div> ]]></description>
+  <category>R</category>
+  <category>Python</category>
+  <guid>http://chemospec.org/posts/2020-01-22-F4S-update/2020-01-22-F4S-update.html</guid>
+  <pubDate>Wed, 22 Jan 2020 07:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>readJDX Overhaul</title>
+  <link>http://chemospec.org/posts/2020-01-02-readJDX-update/2020-01-02-readJDX-update.html</link>
+  <description><![CDATA[ 
+
+
+
+<p><code>readJDX</code> reads files in the <a href="http://www.jcamp-dx.org/">JCAMP-DX</a> format used in the field of spectroscopy. A recent overhaul has made it much more robust, and as such the version is now at 0.4.29.<sup>1</sup> Most of the changes were internal, but three important user-facing changes are:</p>
+<ul>
+<li>improved documentation</li>
+<li>the addition of more vignettes</li>
+<li>improved output when <code>debug &gt; 0</code></li>
+<li>2D NMR files are now handled</li>
+</ul>
+<p>You can see more about the package <a href="https://CRAN.R-project.org/package=readJDX">here</a>. As always, if you use the package and have troubles, please file an <a href="https://github.com/bryanhanson/readJDX/issues">issue</a>. The JCAMP-DX standard is challenging and vendors have a lot of flexibility, so please do share any problematic files you encounter.</p>
+
+
+
+
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>The current version also includes changes in an unreleased version (0.3.372) in which several bugs were squashed.↩︎</p></li>
+</ol>
+</section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
+  author = {Bryan Hanson},
+  title = {readJDX {Overhaul}},
+  date = {2020-01-02},
+  url = {http://chemospec.org/posts/2020-01-02-readJDX-update/2020-01-02-readJDX-update.html},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2020" class="csl-entry quarto-appendix-citeas">
+Bryan Hanson. 2020. <span>“readJDX Overhaul.”</span> January 2, 2020. <a href="http://chemospec.org/posts/2020-01-02-readJDX-update/2020-01-02-readJDX-update.html">http://chemospec.org/posts/2020-01-02-readJDX-update/2020-01-02-readJDX-update.html</a>.
+</div></div></section></div> ]]></description>
+  <category>R</category>
+  <category>readJDX</category>
+  <category>Data Formats</category>
+  <guid>http://chemospec.org/posts/2020-01-02-readJDX-update/2020-01-02-readJDX-update.html</guid>
+  <pubDate>Thu, 02 Jan 2020 07:00:00 GMT</pubDate>
+</item>
 <item>
   <title>FOSS for Spectroscopy</title>
   <link>http://chemospec.org/posts/2020-01-01-Intro-F4S/2021-01-01-Intro-F4S.html</link>

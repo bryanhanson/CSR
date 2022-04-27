@@ -1,0 +1,129 @@
+---
+title: "Automatically Searching Github Repos by Topic"
+description: "How to find packages of interest"
+date: "2021-04-19"
+categories: [R, Github, FOSS, httr]
+---
+
+```{r setup, echo = FALSE}
+library("knitr")
+```
+
+One of the projects I maintain is the [FOSS for Spectroscopy web site](https://bryanhanson.github.io/FOSS4Spectroscopy/).  The table at that site lists various software for use in spectroscopy.  Historically, I have used the Github or Python Package Index search engines to manually search by topic such as "NMR" to find repositories of interest.  Recently, I decided to try to automate at least some of this process.  In this post I'll present the code and steps I developed to search Github by topics.  Fortunately, I wasn't starting from scratch, as I had learned some basic web-scraping techniques when I wrote the functions that get the date of the most recent repository update.  All the code for this website and project can be viewed [here](https://github.com/bryanhanson/FOSS4Spectroscopy).  The steps reported here are current as of the publication of this post, but are subject to change in the future.[^2]
+
+First off, did you know Github allows repository owners to tag their repositories using topical keywords?  I didn't know this for a long time.  So add topics to your repositories if you don't have them already.  By the way, *the Achilles heel of this project is that good pieces of software may not have any topical tags at all*.  If you run into this, perhaps you would consider creating an issue to ask the owner to add tags.
+
+## The Overall Approach
+
+If you look at the `Utilities` directory of the project, you'll see the scripts and functions that power this search process.
+
+* `Search Repos for Topics Script.R` supervises the whole process.  It sources:
+* `searchRepos.R` (a function)
+* `searchTopic.R` (a function)
+
+First let's look at the supervising script.  First, the necessary preliminaries:
+
+```{r prelim, eval = FALSE}
+library("jsonlite")
+library("httr")
+library("stringr")
+library("readxl")
+library("WriteXLS")
+
+source("Utilities/searchTopic.R")
+source("Utilities/searchRepos.R")
+```
+
+Note that this assumes one has the top level directory, `FOSS4Spectroscopy`, as the working directory (this is a bit easier than constantly jumping around).
+
+Next, we pull in the Excel spreadsheet that contains all the basic data about the repositories that we already know about, so we can eventually remove those from the search results.
+
+```{r known, eval = FALSE}
+known <- as.data.frame(read_xlsx("FOSS4Spec.xlsx"))
+known <- known$name
+```
+
+Now we define some topics and run the search (more on the search functions in a moment):
+
+```{r search, eval = FALSE}
+topics <- c("NMR", "EPR", "ESR")
+res <- searchRepos(topics, "github_token", known.repos = known)
+```
+
+We'll also talk about that `github_token` in a moment.  With the search results in hand, we have a few steps to make a useful file name and save it in the `Searches` folder for future use.
+
+```{r save, eval = FALSE}
+file_name <- paste(topics, collapse = "_")
+file_name <- paste("Search", file_name, sep = "_")
+file_name <- paste(file_name, "xlsx", sep = ".")
+file_name <- paste("Searches", file_name, sep = "/")
+WriteXLS(res, file_name,
+      row.names = FALSE, col.names = TRUE, na = "NA")
+```
+
+At this point, one can open the spreadsheet in Excel and check each URL (the links are live in the spreadsheet).  After vetting each site,[^1] one can append the new results to the existing `FOSS4Spec.xlsx` data base and refresh the entire site so the table is updated.
+
+To make this job easier, I like to have the search results spreadsheet open and then open all the URLs using the as follows.  Then I can quickly clean up the spreadsheet (it helps to have two monitors for this process).
+
+```{r browse, eval = FALSE}
+found <- as.data.frame(read_xlsx(file_name))
+for (i in 1:nrow(found)) {
+  if (grepl("^https?://", found$url[i], ignore.case = TRUE)) BROWSE(found$url[i])
+}
+```
+
+## Authentificating
+
+In order to use the Github API, you have to authenticate.  Otherwise you will be severely [rate-limited](https://docs.github.com/en/rest/reference/rate-limit).  If you are authenticated, you can make up to 5,000 API queries per hour.
+
+To authenticate, you need to first establish some credentials with Github, by setting up a "key" and a "secret". You can set these up [here](https://github.com/settings/developers) by choosing the "Oauth Apps" tab. Record these items in a secure way, and be certain you don't actually publish them by pushing.
+
+Now you are ready to authenticate your `R` instance using ["Web Application Flow"](https://developer.github.com/apps/building-oauth-apps/authorizing-oauth-apps/#web-application-flow).[^5]
+
+```{r auth, eval = FALSE}
+myapp <- oauth_app("FOSS", key = "put_your_key_here", secret = "put_your_secret_here")
+github_token <- oauth2.0_token(oauth_endpoints("github"), myapp)
+```
+
+If successful, this will open a web page which you can immediately close.  In the `R` console, you'll need to choose whether to do a one-time authentification, or leave a hidden file behind with authentification details.  I use the one-time option, as I don't want to accidently publish the secrets in the hidden file (since they are easy to overlook, being hidden and all).
+
+## `searchTopic`
+
+`searchTopic` is a function that accesses the Github API to search for a single topic.[^4] This function is "pretty simple" in that it is short, but there are six helper functions defined in the same file.  So, "short not short". This function does all the heavy lifting; the major steps are:
+
+1. Carry out an authenticated query of the topics associated with all Github repositories.  This first "hit" returns up to 30 results, and also a header than tells how many more pages of results are out there.
+2. Process that first set of results by converting the response to a JSON structure, because nice people have already built functions to handle such things (I'm looking at you [`httr`](https://httr.r-lib.org/)).
+
+    i) Check that structure for a message that will tell us if we got stopped by Github access issues (and if so, report access stats).
+
+    ii) Extract only the name, description and repository URL from the huge volume of information captured.
+
+3. Inspect the first response to see how many more pages there are, then loop over page two (we already have page 1) to the number of pages, basically repeating step 2.
+
+Along the way, all the results are stored in a data.frame.
+
+## `searchRepos`
+
+`searchRepos` does two simple things:
+
+* Loops over all topics, since `searchTopic` only handles one topic at a time.
+* Optionally, dereplicates the results by excluding any repositories that we already know about.
+
+## Other Stuff to Make Life Easier
+
+There are two other scripts in the `Utilities` folder that streamline maintenance of the project.
+
+* `mergeSearches.R` which will merge several search results into one, removing duplicates along the way.
+* `mergeMaintainers.R` which will query CRAN for the maintainers of all packages in `FOSS4Spec.xlsx`, and add this info to the file.[^3]  Maintainers are not currently displayed on the main website.  However, I hope to eventually e-mail all maintainers so they can fine-tune the information about their entries.
+
+## Future Work / Contributing
+
+Clearly it would be good for someone who knows `Python` to step in and write the analogous search code for PyPi.org.  Depending upon time contraints, I may use this as an opportunity to learn more `Python`, but really, if you want to help that would be quicker!
+
+And that folks, is how the sausage is made.
+
+[^1]: Some search terms produce quite a few false positives.   I also review each repository to make sure the project is actually FOSS, is not a student project etc (more details on the main web site).
+[^2]: This code has been tested on a number of searches and I've captured every exception I've encountered.  If you have problems using this code, please file an issue.  It's nearly impossible that it is perfect at this point!
+[^3]: Want to contribute?  If you know the workings of the PyPi.org API it would be nice to automatically pull the maintainer's contact info.
+[^4]: See notes in the file: I have not been able to get the Github API to work with multiple terms, so we search each one individually.
+[^5]: While I link to the documentation for completeness, the steps described next do all the work.

@@ -1,0 +1,113 @@
+---
+title: "Metabolic Phenotyping Protocol Part 3"
+description: "Implementing the Statistical Analysis in Metabolic Phenotyping Protocol of Blaise *et al.*"
+date: "2022-03-25"
+categories: [R, ChemoSpec, Metabolomics]
+bibliography: REFS.bib
+draft: true
+---
+
+```{r SetUp, echo = FALSE, eval = TRUE, results = "hide", warning = FALSE, message = FALSE}
+
+# R options & configuration:
+set.seed(9)
+rm(list = ls())
+suppressPackageStartupMessages(library("ChemoSpec"))
+suppressPackageStartupMessages(library("ggplot2"))
+suppressPackageStartupMessages(library("knitr"))
+
+descCS <- packageDescription("ChemoSpec")
+descCSU <- packageDescription("ChemoSpecUtils")
+
+options(ChemoSpecGraphics = "ggplot2")
+
+# Stuff specifically for knitr:
+
+# Hook for figure size control
+knitr::opts_hooks$set(sq.fig = function(options) {
+
+  if (isFALSE(options$sq.fig)) {
+    # custom fig dimensions given, use w/o further delay
+    if ((!is.null(options$fig.width)) & (!is.null(options$fig.height))) return(options)
+    # otherwise set the default wide aspect ratio
+    if ((is.null(options$fig.width)) & (is.null(options$fig.height))) {
+      options$fig.width = 6
+      options$fig.height = 3.5
+    }
+  }
+
+  if (isTRUE(options$sq.fig)) {
+    options$fig.width = 5
+    options$fig.height = 5
+  }
+  options
+})
+
+# choices here are designed to work with the hook
+knitr::opts_chunk$set(fig.align = "center", sq.fig = FALSE, tidy = TRUE,
+  fig.width = NULL, fig.height = NULL, out.width = "80%")
+```
+
+* Part 1 of this series is [here](https://chemospec.org/posts/2022-02-01-Protocol-Pt1/).
+* Part 2 of this series is [here](https://chemospec.org/posts/2022-03-24-Protocol-Pt2/).
+
+If you aren't familiar with `ChemoSpec`, you might wish to look at the introductory [vignette](https://bryanhanson.github.io/ChemoSpec/articles/ChemoSpec.html) first.
+
+**In this series of posts we are following the protocol as described in the printed publication closely [@Blaise2021].  The authors have also provided a [Jupyter notebook](https://github.com/Gscorreia89/chemometrics-tutorials).  This is well worth your time, even if Python is not your preferred lanaguage, as there are additional examples and discussion for study.**
+
+# Read in the Data
+
+Load the `Spectra` object we created in Part 2 so we can summarize it.
+
+```{r getData}
+library("ChemoSpec")
+load("Worms2.RData") # restores the "Worms2" Spectra object
+sumSpectra(Worms2)
+```
+
+# Exploratory Data Analysis, Con't.
+
+If you recall in Part 2 we removed five samples.  Let's re-run PCA without these samples and show the key plots.  We will simply report these here without much discussion; they are pretty much as expected.
+
+```{r pca}
+c_pca <- c_pcaSpectra(Worms2, choice = "autoscale")
+```
+
+```{r screeAlt, fig.cap = "Scree plot (recommended style)."}
+plotScree(c_pca)
+```
+
+```{r scores12, sq.fig = TRUE, fig.cap = "Score plot for PCs 1 and 2. Compare to protocol figure 7d."}
+p <- plotScores(Worms2, c_pca, pcs = 1:2, ellipse = "rob", tol = 0.02)
+p
+```
+
+```{r scores23, sq.fig = TRUE, fig.cap = "Score plot for PCS 2 and 3."}
+p <- plotScores(Worms2, c_pca, pcs = 2:3, ellipse = "rob", leg.loc = "topright", tol = 0.02)
+p
+```
+
+One thing the published protocol does not explicitly discuss is an inspection of the loadings, but it is covered in the [Jupyter notebook](https://github.com/Gscorreia89/chemometrics-tutorials).  This is useful in order to see if any particular frequencies are driving the separation of the samples in the score plot. Let's plot the loadings (Figure \@ref(fig:loadings)). Remember that these data were autoscaled, and hence all frequencies, including noisy frequencies, will contribute to the separation.
+
+```{r loadings, sq.fig = TRUE, fig.cap = "Loadings for PC1 and PC2."}
+p <- plotLoadings(Worms2, c_pca, loads = 1:2)
+p
+```
+
+```{r sps, sq.fig = TRUE, fig.cap = "s-Plot for PC1."}
+p <- sPlotSpectra(Worms2, c_pca, tol = 0.001)
+```
+
+From Figure \@ref(fig:sps) we can see that the peaks around $\delta$ 1.30 - 1.32, 1.47-1.48, and 3.03 - 3.07 are important drivers of the separation in the score plot.  As an illustration, let's look at the loadings around $\delta$ 1.3 a bit more closely.
+
+```{r loadingsDetail, sq.fig = TRUE, fig.cap = "Loadings for PC1 and PC2."}
+p <- plotLoadings(Worms2, c_pca, loads = 1)
+p <- p & coord_cartesian(xlim = c(2.05, 2.10)) # why & not +
+p <- p & geom_vline(xintercept = seq(0.1, 5.0, by = 0.05))
+p
+```
+
+
+---
+
+This post was created using `ChemoSpec` version `r descCS$Version` and `ChemoSpecUtils` version `r descCSU$Version`.

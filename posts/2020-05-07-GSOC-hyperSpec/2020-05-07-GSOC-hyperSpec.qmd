@@ -1,0 +1,24 @@
+---
+title: "Fortifying hyperSpec: Getting Ready for GSOC"
+description: "Re-factoring hyperSpec"
+date: "2020-05-07"
+categories: [R, hyperSpec, GSOC]
+---
+
+[`hyperSpec`](https://cran.r-project.org/web/packages/hyperSpec/index.html) is an `R` package for working with hyperspectral data sets.  Hyperspectral data can take many forms, but a common application is a series of spectra collected over an x, y grid, for instance Raman imaging of medical specimens.  `hyperSpec` was originally written by Claudia Beleites and she currently guides a core group of contributors.[^1]
+
+Claudia, regular `hyperSpec` contributor Roman Kiselev and myself have joined forces this summer in a [Google Summer of Code](https://summerofcode.withgoogle.com/) project to fortify `hyperSpec`.  We are pleased to report that the project was accepted by [R-GSOC](https://github.com/rstats-gsoc/gsoc2020/wiki) administrators, and, as of a few days ago, the excellent proposal written by Erick Oduniyi was approved by Google.  Erick is a senior computer engineering major at Wichita State University in Kansas.  Erick gravitates toward interdisciplinary projects.  This, and his experience with `R`, `Python` and related skills gives him an excellent background for this project.
+
+The focus of this project is to fortify the infrastructure of `hyperSpec`. Over the years, keeping `hyperSpec` up-to-date has grown a bit unwieldy. While to-do lists always evolve, the current *interrelated* goals include:
+
+* **Distill**[^2] `hyperSpec`: Prune `hyperSpec` back to it's core functionality to keep it lightweight.  Relocate portions, such as importing data, into their own dedicated packages.
+* **Shield** `hyperSpec`: Analyze the ecosystem of `hyperSpec` with an eye to reducing dependencies as much as possible and ensuring that necessary dependencies are the best choices.  Avoid "re-inventing the wheel", as long as the available "wheels" are computationally efficient and stable (code base and API).
+* **Bridge** `hyperSpec`: Having decided on how to reorganize `hyperSpec` and which dependencies are necessary and optimal, ensure that `hyperSpec`, the constellation of new sub-packages, and all dependencies are integrated efficiently.  There are a number of data pre-processing and plotting functions that need to be streamlined and interfaced to external packages more consistently. Some portions may need substantial refactoring.
+
+Addressing each of these goals will make `hyperSpec` much easier to maintain, less fragile, and easier for others to contribute.  Every step will bring enhanced documentation and vignettes, along with new unit tests.  Work will begin in earnest on June 1st, and we are looking forward to a very productive summer.
+
+Finally, on behalf of all participants, let me just say how grateful we are to Google for establishing the GSOC program and for supporting Erick's work this summer!
+
+[^1]: A little history for the curious: the `hyperSpec` and `ChemoSpec` packages were written around the same time, independent of each other (~2009).  Eventually, Claudia and I became aware of each other's work, and we have collaborated in ways large and small ever since (I like working with Claudia because I always learn from her!).  We have jointly mentored GSOC students twice before.  One side project is [`hyperChemoBridge`](https://github.com/Chathurga/HyperChemoBridge), a small package that converts `hyperSpec` objects into `Spectra` objects (the native `ChemoSpec` format) and vice-versa.
+
+[^2]: The descriptors here are Erick's clever choice of words.

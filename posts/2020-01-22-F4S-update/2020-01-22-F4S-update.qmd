@@ -1,0 +1,15 @@
+---
+title: "FOSS for Spectroscopy Update"
+description: "Improvements to FOSS for Spectroscopy"
+date: "2020-01-22"
+categories: [R, Python]
+---
+
+[FOSS for Spectroscopy](https://bryanhanson.github.io/FOSS4Spectroscopy/) has had a significant update! It's really quite surprising how many projects are out there.  There is a lot of variety and not too much overlap.
+
+* After a lot of [wrestling](https://stackoverflow.com/q/59632173/633251) with Github access issues, the `Status` column in the table now gives the date of the most recent update to the project that I can find in an automated way.
+* The `Notes` column is now called `Focus` and reflects the focus of the projects as far as I can determine things.  I'm using a more-or-less controlled vocabulary here, so sorting on the `Focus` column should bring related projects together.
+* The number of entries is greatly expanded (and I have more in the hopper).
+* The page is now automatically updated weekly, which will keep the links and dates fresh.
+
+As always, I welcome your feedback in any form.  You can use the comments below, or if you have additions/corrections to the page itself, there is info there about how to submit updates.

@@ -1,0 +1,63 @@
+---
+title: "ChemoSpecUtils Update"
+description: "New version of ChemoSpecUtils"
+date: "2020-01-22"
+categories: [R, ChemoSpecUtils]
+---
+
+`ChemoSpecUtils`, a package that supports the common needs of [ChemoSpec](https://bryanhanson.github.io/ChemoSpec/) and [ChemoSpec2D](https://bryanhanson.github.io/ChemoSpec2D/), has been updated on CRAN and is coming to a mirror near you.  Noteworthy changes:
+
+* There are new color options available in addition to the `auto` color scheme used during data importing. These should be useful to normal-vision individuals when there are a lot of categories.  The `auto` option remains the default to avoid breaking anyone's code.  All the built-in color schemes are shown below.  They can be used in any of the import functions in either package.  The code used to make the figure below is in `?colorSymbol`.  *Note: you probably should get the `devel` version to `ChemoSpec` in order to see the documentation about how to use the new colors.*
+* The function `removeFreq` in `ChemoSpec` now accepts a formula for the specification of the frequencies to remove.  This brings it in line with the corresponding function in `ChemoSpec2D`.  This should be a lot easier to use.
+* The function `sampleDist` is now available and replaces `sampleDistSpectra`.  Again the functions in the two overlying packages are essentially as similar as they can be.
+* This version is compatible with the upcoming release of `R` 4.0.
+
+```{r colors, echo = FALSE, fig.height = 7}
+library("ChemoSpecUtils")
+data(Col12)
+data(Sym12)
+data(Col8)
+data(Sym8)
+auto <- RColorBrewer::brewer.pal(8, "Set1")
+
+sp <- 0.75 # space between major plot elements
+tsp <- 0.1 # additional space between points and color swatches/descriptive text
+h <- 0.25 # height of the swatch
+y <- 0.0 # bottom of the plot, the reference point
+
+# empty plot
+plot(1:12, rep(0.0, 12),
+  type = "n", yaxt = "n", xaxt = "n", bty = "n",
+  xlab = "", ylab = "", ylim = c(0, 2.5)
+)
+text(6.5, y + h + tsp * 4 + sp * 2,
+  labels = "Color & Symbol Options", cex = 1.25, font = 2
+)
+
+# Col12
+for (i in 1:12) {
+  rect(i - 0.5, y, i + 0.5, y + h, border = NA, col = Col12[i])
+}
+points(1:12, rep(y + h + tsp, 12), pch = Sym12)
+text(6.5, y + h + tsp * 2,
+  labels = "gr.cols = 'Col12'     12 mostly paired distinct colors/symbols"
+)
+
+# Col8
+for (i in 1:8) {
+  rect(i - 0.5, y + sp, i + 0.5, y + sp + h, border = NA, col = Col8[i])
+}
+points(1:8, rep(y + h + tsp + sp, 8), pch = Sym8)
+text(4.5, y + h + tsp * 2 + sp,
+  labels = "gr.cols = 'Col8'     8 distinct colors/symbols"
+)
+
+# auto (original)
+for (i in 1:8) {
+  rect(i - 0.5, y + sp * 2, i + 0.5, y + sp * 2 + h, border = NA, col = auto[i])
+}
+points(1:8, rep(y + h + tsp + sp * 2, 8), pch = Sym8)
+text(4.5, y + h + tsp * 2 + sp * 2,
+  labels = "gr.cols = 'auto'     8 distinct colors/symbols"
+)
+```
