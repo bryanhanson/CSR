@@ -2,10 +2,14 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>http://chemospec.org/index.html</loc>
-    <lastmod>2022-04-27T15:43:48.647Z</lastmod>
+    <lastmod>2022-04-27T16:18:30.815Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/about.html</loc>
     <lastmod>2022-04-27T15:32:45.703Z</lastmod>
+  </url>
+  <url>
+    <loc>http://chemospec.org/posts/2020-01-01-Intro-F4S/2021-01-01-Intro-F4S.html</loc>
+    <lastmod>2022-04-27T16:23:27.986Z</lastmod>
   </url>
 </urlset>

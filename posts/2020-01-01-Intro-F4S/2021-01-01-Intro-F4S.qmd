@@ -1,14 +1,8 @@
 ---
 title: "FOSS for Spectroscopy"
 description: "A Collection of Free & Open Source Spectroscopy Resources"
-author: "Bryan Hanson"
 date: "2020-01-01"
-categories:
-  - R
-  - Python
-format:
-  html:
-    code-line-numbers: true
+categories: [R, Python]
 ---
 
 For this inaugural blog post, I'm pleased to share a project I have been working on recently: [FOSS4Spectroscopy](https://bryanhanson.github.io/FOSS4Spectroscopy/) is an attempt to catalog FOSS spectroscopy software.  The page is designed to be updated easily with new or edited entries -- see the page for details, and please contribute!

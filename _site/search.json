@@ -4,7 +4,7 @@
     "href": "index.html",
     "title": "Chemometrics and Spectroscopy Using R",
     "section": "",
-    "text": "FOSS for Spectroscopy\n\n\n\n\n\n\n\nR\n\n\nPython\n\n\n\n\nA Collection of Free & Open Source Spectroscopy Resources\n\n\n\n\n\n\nJan 1, 2020\n\n\nBryan Hanson\n\n\n\n\n\n\nNo matching items"
+    "text": "FOSS for Spectroscopy\n\n\n\n\n\n\n\nR\n\n\nPython\n\n\n\n\nA Collection of Free & Open Source Spectroscopy Resources\n\n\n\n\n\n\nJan 1, 2020\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "about.html",
@@ -25,7 +25,7 @@
     "href": "posts/2020-01-01-Intro-F4S/2021-01-01-Intro-F4S.html",
     "title": "FOSS for Spectroscopy",
     "section": "",
-    "text": "For this initial version, I searched the CRAN ecosystem via packagefinder and the Python world via PyPi.org using spectroscopy-related keywords. My expertise is in R so I’m pretty confident I have most of the R packages included. I’m not so confident about coverage of the Python packages (where else should I look?).\nCurrently, the “status” column in the main table is empty. I am working on a version which will update the status with a date giving some indication of the age and activity of the repository. Right now the page is updated when I push to Github, but in the long run I hope to get Travis-CI to run it as a weekly cron job.\nI welcome your feedback in any form!"
+    "text": "For this initial version, I searched the CRAN ecosystem via packagefinder and the Python world via PyPi.org using spectroscopy-related keywords. My expertise is in R so I’m pretty confident I have most of the R packages included. I’m not so confident about coverage of the Python packages (where else should I look?).\nCurrently, the “status” column in the main table is empty. I am working on a version which will update the status with a date giving some indication of the age and activity of the repository. Right now the page is updated when I push to Github, but in the long run I hope to get Travis-CI to run it as a weekly cron job.\nI welcome your feedback in any form!\n\n\n\nReusehttps://creativecommons.org/licenses/by/4.0/CitationBibTeX citation:@online{hanson2020,\n  author = {Bryan Hanson},\n  title = {FOSS for {Spectroscopy}},\n  date = {2020-01-01},\n  url = {http://chemospec.org/posts/2020-01-01-Intro-F4S/2021-01-01-Intro-F4S.html},\n  langid = {en}\n}\nFor attribution, please cite this work as:\nBryan Hanson. 2020. “FOSS for Spectroscopy.” January 1,\n2020. http://chemospec.org/posts/2020-01-01-Intro-F4S/2021-01-01-Intro-F4S.html."
   },
   {
     "objectID": "projects.html",
