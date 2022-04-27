@@ -4,6 +4,9 @@ website:
   title: "Chemometrics and Spectroscopy Using R"
   site-url: http://chemospec.org
   description: "Applying chemometrics to spectroscopy using R"
+  cookie-consent: true
+  prefs-text: "Cookies are used to track visits only"
+  body-footer: <script data-goatcounter="https://chemospec.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   navbar:
     background: primary
     search: true
