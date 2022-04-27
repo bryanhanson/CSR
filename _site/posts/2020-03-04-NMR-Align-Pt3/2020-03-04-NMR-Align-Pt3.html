@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-0.9.309">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Bryan Hanson">
+<meta name="dcterms.date" content="2020-03-04">
+<meta name="description" content="Putting it all together">
+
+<title>Chemometrics &amp; Spectroscopy Using R - Aligning 2D NMR Spectra Part 3</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link id="quarto-text-highlighting-styles" href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Aligning 2D NMR Spectra Part 3</h1>
+                          <div class="quarto-categories">
+                <div class="quarto-category">R</div>
+                <div class="quarto-category">ChemoSpec2D</div>
+                <div class="quarto-category">Alignment</div>
+                <div class="quarto-category">NMR</div>
+              </div>
+                  </div>
+  </div>
+    
+  <div>
+    <div class="description">
+      Putting it all together
+    </div>
+  </div>
+
+
+
+
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Bryan Hanson </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">March 4, 2020</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<p>This is Part 3 of a series on aligning 2D NMR, as implemented in the package <code>ChemoSpec2D</code>. <a href="https://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/">Part 1</a> <a href="https://chemospec.org/posts/2020-03-02-NMR-Align-Pt2/">Part2</a></p>
+<p>Let’s get to work. The function to carry out alignment is <code>hats_alignSpectra2D</code>. The arguments <code>maxF1</code> and <code>maxF2</code> define the space that will be considered as the two spectra are shifted relative to each other. The space potentially covered is <code>-maxF1</code> to <code>maxF1</code> and similarly for the F2 dimension. <code>dist_method</code>, <code>thres</code> and <code>minimize</code> refer to the objective function, as described in Part 1. In this example we will consider two spectra succcessfully aligned when we get below the threshold. When one shifts one spectrum relative to the other, part of the shifted spectrum gets cutoff and part of it is empty space. <code>fill = "noise"</code> instructs the function to fill the empty space with an estimate of the noise from the original spectrum. We’ll set <code>plot = FALSE</code> here because the output is extensive. I’ll provide sample plotting output in a moment.</p>
+<div class="cell">
+
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"ChemoSpec2D"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Loading required package: ChemoSpecUtils</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="do">## As of version 6, ChemoSpec2D offers new graphics output options</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="do">## Functions plotScores and plotScree will work with the new options</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="do">## For details, please see ?GraphicsOptions</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="do">## The ChemoSpec graphics option is set to 'ggplot2'</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="do">## To change it, do</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="do">##  options(ChemoSpecGraphics = 'option'),</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="do">##  where 'option' is one of 'base' or 'ggplot2' or'plotly'.</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(MUD2)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>MUD2a <span class="ot">&lt;-</span> <span class="fu">hats_alignSpectra2D</span>(MUD2,</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">maxF1 =</span> <span class="dv">5</span>, <span class="at">maxF2 =</span> <span class="dv">5</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">dist_method =</span> <span class="st">"euclidean"</span>, <span class="at">thres =</span> <span class="dv">40</span>, <span class="at">minimize =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"noise"</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>This is a beta version of hats_alignSpectra2D.
+    You should set the seed for reproducible results.
+    Please check your results carefully, and consider sharing your data
+    for additional testing.  Contact Bryan Hanson via hanson@depauw.edu</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[ChemoSpec2D] Processing row  1  of  9  from the guide tree:
+[ChemoSpec2D] Starting alignment of sample(s) 7 
+    with sample(s) 4 
+[ChemoSpec2D] Best alignment is to shift F2 by  0  and F1 by  -1 
+
+[ChemoSpec2D] Processing row  2  of  9  from the guide tree:
+[ChemoSpec2D] Starting alignment of sample(s) 6 
+    with sample(s) 3 
+[ChemoSpec2D] Best alignment is to shift F2 by  0  and F1 by  -1 
+
+[ChemoSpec2D] Processing row  3  of  9  from the guide tree:
+[ChemoSpec2D] Starting alignment of sample(s) 5 
+    with sample(s) 2 
+[ChemoSpec2D] Best alignment is to shift F2 by  0  and F1 by  -1 
+
+[ChemoSpec2D] Processing row  4  of  9  from the guide tree:
+[ChemoSpec2D] Starting alignment of sample(s) 8 
+    with sample(s) 1 
+[ChemoSpec2D] Best alignment is to shift F2 by  0  and F1 by  -1 
+
+[ChemoSpec2D] Processing row  5  of  9  from the guide tree:
+[ChemoSpec2D] Starting alignment of sample(s) 1, 8 
+    with sample(s) 9 
+[ChemoSpec2D] Best alignment is to shift F2 by  2  and F1 by  1 
+
+[ChemoSpec2D] Processing row  6  of  9  from the guide tree:
+[ChemoSpec2D] Starting alignment of sample(s) 2, 5 
+    with sample(s) 3, 6 
+[ChemoSpec2D] Best alignment is to shift F2 by  2  and F1 by  0 
+
+[ChemoSpec2D] Processing row  7  of  9  from the guide tree:
+[ChemoSpec2D] Starting alignment of sample(s) 4, 7 
+    with sample(s) 10 
+[ChemoSpec2D] Best alignment is to shift F2 by  0  and F1 by  3 
+
+[ChemoSpec2D] Processing row  8  of  9  from the guide tree:
+[ChemoSpec2D] Starting alignment of sample(s) 2, 3, 5, 6 
+    with sample(s) 1, 8, 9 
+[ChemoSpec2D] Best alignment is to shift F2 by  0  and F1 by  3 
+
+[ChemoSpec2D] Processing row  9  of  9  from the guide tree:
+[ChemoSpec2D] Starting alignment of sample(s) 1, 2, 3, 5, 6, 8, 9 
+    with sample(s) 4, 7, 10 
+[ChemoSpec2D] Best alignment is to shift F2 by  -5  and F1 by  0 
+
+[ChemoSpec2D] Alignment steps and results:
+       Ref                Mask F2shift F1shift
+1        4                   7       0      -1
+2        3                   6       0      -1
+3        2                   5       0      -1
+4        1                   8       0      -1
+5        9                1, 8       2       1
+6     3, 6                2, 5       2       0
+7       10                4, 7       0       3
+8  1, 8, 9          2, 3, 5, 6       0       3
+9 4, 7, 10 1, 2, 3, 5, 6, 8, 9      -5       0</code></pre>
+</div>
+</div>
+<p>As the alignment proceeds, updates from the function are prefixed with <code>[ChemoSpec2D]</code>. In the first step we get a message that row 1 of 9 of the guide tree is being processed, in which sample 7 is being aligned with sample 4. The guide tree is shown below. One can see that samples 7 and 4 are very similar, so they are aligned first. If you inspect the output above, you can see that the four most similar pairs of spectra are aligned first, followed by groups of spectra according to similarity. For each alignment the needed shifts are reported. The last part of the output is a summary of all the alignments carried out. Note that the vertical scale on the guide tree is the same as the scale on the <code>sampleDist</code> plot in Part 1 (using the Euclidean distance).</p>
+<p><img src="P10_Dendrogram.png" alt="X Space" style="width:600px;"></p>
+<section id="diagnostics-on-space" class="level2">
+<h2 class="anchored" data-anchor-id="diagnostics-on-space">Diagnostics on Space</h2>
+<p>To save space, I suppressed the plotting of the results. However, there are plots! In fact there is a set of plots for each alignment step. Here are two of the plots produced if <code>plot = TRUE</code>; these deal with the X-Space which is the search space (the terminology comes from the <code>mlrMBO</code> package which is designed to handle many types of optimization). This plot is for Step 7. The upper plot shows the search space. Axis x1 corresponds to the F1 dimension, and axis x2 the F2 dimension. The red squares represent the initial experimental design, using the results from the objective function. The blue circles represent additional points added as the search proceeds. These represent new points on the response surface defined by the surrogate function (see Part 2 for background). The orange diamond is the best alignment, which in this case has no shift along F2 but a three data point shift along F1; this corresponds to the output above. The green triangle is the last position tested.</p>
+<p>The lower plot represents the progress of the search over time. Axis “dob” stands for “date of birth” which is basically the time index of when the test point was added.</p>
+<p><img src="P10_X_Space.png" alt="X Space" style="width:600px;"></p>
+</section>
+<section id="diagnostics-on-the-objective-function" class="level2">
+<h2 class="anchored" data-anchor-id="diagnostics-on-the-objective-function">Diagnostics on the Objective Function</h2>
+<p>This second set of plots deals with what <code>mlrMBO</code> considers the Y-Space, which concerns the values of the objective function. The top plot is a histogram of the distance (objective function) values; in this case most of them were pretty bad (high, meaning a larger distance between the spectra). The middle plot is the value of the distance over time (dob). In this example the optimal alignment is found at dob = 4, but there is no particular significance to <em>when</em> the optimum is found. The lower plot shows the <em>expected improvement</em> (ei) at each dob. It is lowest when the optimum has been found. For more details about what’s going on under the hood, see the <a href="https://arxiv.org/abs/1703.03373">Arxiv paper</a>.</p>
+<p><img src="P10_Y_Space.png" alt="Y Space" style="width:600px;"></p>
+</section>
+<section id="the-aligned-spectra" class="level2">
+<h2 class="anchored" data-anchor-id="the-aligned-spectra">The Aligned Spectra</h2>
+<p>Did this process work? This final plot shows that it did. Let’s be clear that the task here was not terribly hard: <code>MUD2</code> is an artificial example in which the shifts are pretty modest and global in nature. But still, it’s satisfying. I welcome everyone to give <code>hats_alignSpectra2D</code> a try and report any problems or suggestions.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>mylvls <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">30</span>, <span class="at">length.out =</span> <span class="dv">10</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plotSpectra2D</span>(MUD2a, <span class="at">which =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">6</span>), <span class="at">showGrid =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">lvls =</span> <span class="fu">LofL</span>(mylvls, <span class="dv">2</span>),</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">LofC</span>(<span class="fu">c</span>(<span class="st">"red"</span>, <span class="st">"black"</span>), <span class="dv">2</span>, <span class="fu">length</span>(mylvls), <span class="dv">2</span>),</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">"Aligned MUD2 Spectra 1 &amp; 6"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="2020-03-04-NMR-Align-Pt3_files/figure-html/plotMUD2a-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

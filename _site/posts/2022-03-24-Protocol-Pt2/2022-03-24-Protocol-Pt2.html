@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-0.9.309">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Bryan Hanson">
+<meta name="dcterms.date" content="2022-03-24">
+<meta name="description" content="Implementing the Statistical Analysis in Metabolic Phenotyping Protocol of Blaise et al.">
+
+<title>Chemometrics &amp; Spectroscopy Using R - Metabolic Phenotyping Protocol Part 2</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link id="quarto-text-highlighting-styles" href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Metabolic Phenotyping Protocol Part 2</h1>
+                          <div class="quarto-categories">
+                <div class="quarto-category">R</div>
+                <div class="quarto-category">ChemoSpec</div>
+              </div>
+                  </div>
+  </div>
+    
+  <div>
+    <div class="description">
+      Implementing the Statistical Analysis in Metabolic Phenotyping Protocol of Blaise <em>et al.</em>
+    </div>
+  </div>
+
+
+
+
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Bryan Hanson </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">March 24, 2022</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<div class="cell">
+
+</div>
+<p>Part 1 of this series is <a href="https://chemospec.org/posts/2022-02-01-Protocol-Pt1/">here</a>.</p>
+<p>If you aren’t familiar with <code>ChemoSpec</code>, you might wish to look at the introductory <a href="https://bryanhanson.github.io/ChemoSpec/articles/ChemoSpec.html">vignette</a> first.</p>
+<p><strong>In this series of posts we are following the protocol as described in the printed publication closely <span class="citation" data-cites="Blaise2021">(<a href="#ref-Blaise2021" role="doc-biblioref">Blaise et al. 2021</a>)</span>. The authors have also provided a <a href="https://github.com/Gscorreia89/chemometrics-tutorials">Jupyter notebook</a>. This is well worth your time, even if Python is not your preferred lanaguage, as there are additional examples and discussion for study.</strong></p>
+<section id="read-in-the-data" class="level1">
+<h1>Read in the Data</h1>
+<p>I saved the <code>Spectra</code> object we created in Part 1 so we can read it and remind ourselves of what’s in it. Due to the compression in R’s <code>save</code> function the data takes up 4.9 Mb on disk. The original csv files total about 62 Mb.</p>
+<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/getData_5c76d8f7c10699917b5f7feda26b160b">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"ChemoSpec"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"Worms.Rdata"</span>)  <span class="co"># restores the 'Worms' Spectra object</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sumSpectra</span>(Worms)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ C. elegans metabolic phenotyping study (Blaise 2007) 
+
+    There are 139 spectra in this set.
+    The y-axis unit is intensity.
+
+    The frequency scale runs from
+    8.9995 to 5e-04 ppm
+    There are 8600 frequency values.
+    The frequency resolution is
+    0.001 ppm/point.
+
+    This data set is not continuous
+    along the frequency axis.
+    Here are the data chunks:
+
+  beg.freq end.freq   size beg.indx end.indx
+1   8.9995   5.0005 -3.999        1     4000
+2   4.5995   0.0005 -4.599     4001     8600
+
+    The spectra are divided into 4 groups: 
+
+   group no.     color symbol alt.sym
+1 Mut_L2  32 #FB0D16FF      0      m2
+2 Mut_L4  33 #FFC0CBFF     15      m4
+3  WT_L2  34 #511CFCFF      1      w2
+4  WT_L4  40 #2E94E9FF     16      w4
+
+
+*** Note: this is an S3 object
+of class 'Spectra'</code></pre>
+</div>
+</div>
+</section>
+<section id="exploratory-data-analysis" class="level1">
+<h1>Exploratory Data Analysis</h1>
+<p>We will follow the steps described in the published protocol closely.</p>
+<section id="normalization-scaling" class="level2">
+<h2 class="anchored" data-anchor-id="normalization-scaling">Normalization &amp; Scaling</h2>
+<p>Apply PQN normalization; scaling in <code>ChemoSpec</code> is applied at the PCA stage (next).</p>
+<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/norm_56aa7b023a689faf5f4672ad1706bd85">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Worms <span class="ot">&lt;-</span> <span class="fu">normSpectra</span>(Worms)  <span class="co"># PQN is the default</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="pca" class="level2">
+<h2 class="anchored" data-anchor-id="pca">PCA</h2>
+<p>Conduct classical PCA using autoscaling.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Note that <code>ChemoSpec</code> includes several different variants of PCA, each with scaling options. See the introductory vignette for more details. For more about what PCA is and how it works, please see the <a href="https://bryanhanson.github.io/LearnPCA/">LearnPCA</a> package.</p>
+<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/pca_1a1da64fbdebcc58e9e3bb45e7af0a25">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>c_pca <span class="ot">&lt;-</span> <span class="fu">c_pcaSpectra</span>(Worms, <span class="at">choice =</span> <span class="st">"autoscale"</span>)  <span class="co"># no scaling is the default</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="components-to-retain" class="level3">
+<h3 class="anchored" data-anchor-id="components-to-retain">Components to Retain</h3>
+<p>A key question at this stage is how many components are needed to describe the data set. Keep in mind that this depends on the choice of scaling. Figures @ref(fig:screeAlt) and @ref(fig:screeTrad) are two different types of scree plots, which show the residual variance. This is the R<sup>2</sup><sub>x</sub> value in the protocol (see protocol Figure 7a). Another approach to answering this question is to do a cross-validated PCA.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> The results are shown in Figure @ref(fig:cv-pca). These are the Q<sup>2</sup><sub>x</sub> values in protocol Figure 7a. All of these ways of looking at the variance explained suggest that retaining three or possibly four PCs is adequate.</p>
+<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/screeAlt_369e9c60f38afa2078046b1347182bbf">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotScree</span>(c_pca)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2022-03-24-Protocol-Pt2_files/figure-html/screeAlt-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Scree plot (recommended style).</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/screeTrad_225c8fd5d79364a56ef15efa04fe1f2f">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotScree</span>(c_pca, <span class="at">style =</span> <span class="st">"trad"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2022-03-24-Protocol-Pt2_files/figure-html/screeTrad-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Scree plot (traditional style).</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/cv-pca_6ae9110fe4d82a3790f82fc73c2a7a86">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cv_pcaSpectra</span>(Worms, <span class="at">choice =</span> <span class="st">"autoscale"</span>, <span class="at">pcs =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2022-03-24-Protocol-Pt2_files/figure-html/cv-pca-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Scree plot using cross validation.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="score-plots" class="level3">
+<h3 class="anchored" data-anchor-id="score-plots">Score Plots</h3>
+<p>Next, examine the score plots (Figures @ref(fig:scores12), @ref(fig:scores23)). In these plots, each data point is colored by its group membership (keep in mind this is completely independent of the PCA calculation). In addition, robust confidence ellipses are shown for each group. Inspection of these plots is one way to identify potential outliers. The other use is of course to see if the sample classes separate, and by how much.</p>
+<p>Examination of these plots shows that separation by classes has not really been achieved using autoscaling. In Figure @ref(fig:scores12) we see four clear outlier candidates (samples 37, 101, 107, and 118). In Figure @ref(fig:scores23) we see some of these samples and should probably add sample 114 for a total of five candidates.</p>
+<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/scores12_37d56700349b4a02d183774d55fa77ac">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">plotScores</span>(Worms, c_pca, <span class="at">pcs =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="at">ellipse =</span> <span class="st">"rob"</span>, <span class="at">tol =</span> <span class="fl">0.02</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2022-03-24-Protocol-Pt2_files/figure-html/scores12-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Score plot for PCs 1 and 2. Compare to protocol figure 7a.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/scores23_db4b144372bcf165e6b5df22c17c3b69">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">plotScores</span>(Worms, c_pca, <span class="at">pcs =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">ellipse =</span> <span class="st">"rob"</span>, <span class="at">leg.loc =</span> <span class="st">"topright"</span>, <span class="at">tol =</span> <span class="fl">0.02</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2022-03-24-Protocol-Pt2_files/figure-html/scores23-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Score plot for PCS 2 and 3.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>To label more sample points, you can increase the value of the argument <code>tol</code>.</p>
+</section>
+<section id="outliers" class="level3">
+<h3 class="anchored" data-anchor-id="outliers">Outliers</h3>
+<p>The protocol recommends plotting Hotelling’s <em>T</em><sup>2</sup> ellipse for the entire data set; this is not implemented in <code>ChemoSpec</code> but we can easily do it if we are using <code>ggplot2</code> plots (which is the default in <code>ChemoSpec</code>). We need the <code>ellipseCoord</code> function from the <code>HotellingsEllipse</code> package.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
+<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/hotelling1_62a6c0411cd441951152933b0a1302d2">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"ellipseCoord.R"</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>xy_coord <span class="ot">&lt;-</span> <span class="fu">ellipseCoord</span>(<span class="fu">as.data.frame</span>(c_pca<span class="sc">$</span>x), <span class="at">pcx =</span> <span class="dv">1</span>, <span class="at">pcy =</span> <span class="dv">2</span>, <span class="at">conf.limit =</span> <span class="fl">0.95</span>,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">pts =</span> <span class="dv">500</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">plotScores</span>(Worms, c_pca, <span class="at">which =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="at">ellipse =</span> <span class="st">"none"</span>, <span class="at">tol =</span> <span class="fl">0.02</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> p <span class="sc">+</span> <span class="fu">geom_path</span>(<span class="at">data =</span> xy_coord, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y)) <span class="sc">+</span> <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="st">"black"</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2022-03-24-Protocol-Pt2_files/figure-html/hotelling1-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Score plot for PCs 1 and 2 with Hotelling’s <em>T</em><sup>2</sup> ellipse. Compare to protocol figure 7a.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We can see many of the same outliers by this approach as we saw in Figures @ref(fig:scores12) and @ref(fig:scores23).</p>
+<p>Another way to identify outliers is to use the approach described in <span class="citation" data-cites="Filzmoser2009">Varmuza and Filzmoser (<a href="#ref-Filzmoser2009" role="doc-biblioref">2009</a>)</span> section 3.7.3. Figures @ref(fig:diagOD) and @ref(fig:diagSD) give the plots. Please see Filzmoser for the details, but any samples that are above the plotted threshold line are candidate outliers, and any samples above the threshold in <em>both</em> plots should be looked at very carefully. Though we are using classical PCA, Filzmoser recommends using these plots with robust PCA. These plots are a better approach than “eye balling it” on the score plots.</p>
+<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/diagOD_38dfefcc084f8429e4cecf83f91f3842">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">pcaDiag</span>(Worms, c_pca, <span class="at">plot =</span> <span class="st">"OD"</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2022-03-24-Protocol-Pt2_files/figure-html/diagOD-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Orthogonal distance plot based on the first three PCs.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/diagSD_d9be7a1ce1108a36a805702fa51e9339">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">pcaDiag</span>(Worms, c_pca, <span class="at">plot =</span> <span class="st">"SD"</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="2022-03-24-Protocol-Pt2_files/figure-html/diagSD-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Score distance plot based on the first three PCs.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Comparison of these plots suggest that samples 37, 101, 107, 114 and 118 are likely outliers. These spectra should be examined to see if the reason for their outlyingness can be deduced. If good reason can be found, they can be removed as follows.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
+<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/removeOutliers_7e075fd15a434d1645e31807799fe6c2">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>Worms2 <span class="ot">&lt;-</span> <span class="fu">removeSample</span>(Worms, <span class="at">rem.sam =</span> <span class="fu">c</span>(<span class="st">"37_"</span>, <span class="st">"101_"</span>, <span class="st">"107_"</span>, <span class="st">"114_"</span>, <span class="st">"118_"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>At this point one should repeat the PCA, score plots and diagnostic plots to get a good look at how removing these samples affected the results. Those tasks are left to the reader.</p>
+<!-- One thing the protocol does not explicitly discuss is an inspection of the loadings.  This is useful in order to see if any particular frequencies are driving the separation of the samples in the score plot. For the sake of completeness, we'll go ahead and plot the loadings. See Figure \@ref(fig:loadings). From this plot it is clear that the peaks above $\delta$ 5.0 are not contributing much to differentiating the samples.  One could consider removing these peaks from the analysis, but we'll leave them for now. -->
+<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/loadings_d6ef35bf4c5ea40a24116c5a0a75157b">
+
+</div>
+<p>We will continue in the next post with a discussion of loadings.</p>
+<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/saveResults_aaa0bfc31d5d7bfe5377174c43f0014f">
+
+</div>
+<hr>
+<p>This post was created using <code>ChemoSpec</code> version 6.1.3 and <code>ChemoSpecUtils</code> version 1.0.0.</p>
+
+
+
+</section>
+</section>
+</section>
+
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-Blaise2021" class="csl-entry" role="doc-biblioentry">
+Blaise, Benjamin J., Gonçalo D. S. Correia, Gordon A. Haggart, Izabella Surowiec, Caroline Sands, Matthew R. Lewis, Jake T. M. Pearce, et al. 2021. <span>“Statistical Analysis in Metabolic Phenotyping.”</span> <em>Nature Protocols</em> 16: 4299–4326. <a href="https://doi.org/10.1038/s41596-021-00579-1">https://doi.org/10.1038/s41596-021-00579-1</a>.
+</div>
+<div id="ref-Filzmoser2009" class="csl-entry" role="doc-biblioentry">
+Varmuza, K., and P. Filzmoser. 2009. <em>Introduction to Multivariate Statistical Analysis in Chemometrics</em>. CRC Press.
+</div>
+</div></section><section class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1" role="doc-endnote"><p>Without scaling, the largest peaks will drive the separation in the scores plot.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>Be sure you have <code>ChemoSpec</code> 6.1.3 or higher, as <code>cv_pcaSpectra</code> had a bug in it! One benefit of writing these posts is finding lame bugs…<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3" role="doc-endnote"><p>We are sourcing in a corrected version of the function, as the CRAN version has a small <a href="https://github.com/ChristianGoueguel/HotellingEllipse/issues/2">error</a> in it.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4" role="doc-endnote"><p>The <a href="https://github.com/Gscorreia89/chemometrics-tutorials">Jupyter notebook</a> has details about this.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

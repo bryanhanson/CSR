@@ -1,0 +1,26 @@
+project:
+  type: website
+website:
+  title: "Chemometrics & Spectroscopy Using R"
+  navbar:
+    background: primary
+    search: true
+    right:
+      - text: "About"
+        file: about.qmd
+      - text: "Projects"
+        file: projects.qmd
+      - text: "R-Bloggers"
+        href: https://www.r-bloggers.com/
+      - icon: envelope-fill
+        href: mailto:hanson@depauw.edu
+      - icon: twitter
+        href: https://twitter.com/profbryanhanson
+      - icon: git
+        href: https://github.com/bryanhanson
+      - icon: rss
+        file: index.xml
+format:
+  html:
+    theme: simplex
+    css: styles.css

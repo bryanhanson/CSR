@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-0.9.309">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Bryan Hanson">
+<meta name="dcterms.date" content="2021-04-19">
+<meta name="description" content="How to find packages of interest">
+
+<title>Chemometrics &amp; Spectroscopy Using R - Automatically Searching Github Repos by Topic</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link id="quarto-text-highlighting-styles" href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Automatically Searching Github Repos by Topic</h1>
+                          <div class="quarto-categories">
+                <div class="quarto-category">R</div>
+                <div class="quarto-category">Github</div>
+                <div class="quarto-category">FOSS</div>
+                <div class="quarto-category">httr</div>
+              </div>
+                  </div>
+  </div>
+    
+  <div>
+    <div class="description">
+      How to find packages of interest
+    </div>
+  </div>
+
+
+
+
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Bryan Hanson </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">April 19, 2021</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<div class="cell">
+
+</div>
+<p>One of the projects I maintain is the <a href="https://bryanhanson.github.io/FOSS4Spectroscopy/">FOSS for Spectroscopy web site</a>. The table at that site lists various software for use in spectroscopy. Historically, I have used the Github or Python Package Index search engines to manually search by topic such as “NMR” to find repositories of interest. Recently, I decided to try to automate at least some of this process. In this post I’ll present the code and steps I developed to search Github by topics. Fortunately, I wasn’t starting from scratch, as I had learned some basic web-scraping techniques when I wrote the functions that get the date of the most recent repository update. All the code for this website and project can be viewed <a href="https://github.com/bryanhanson/FOSS4Spectroscopy">here</a>. The steps reported here are current as of the publication of this post, but are subject to change in the future.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<p>First off, did you know Github allows repository owners to tag their repositories using topical keywords? I didn’t know this for a long time. So add topics to your repositories if you don’t have them already. By the way, <em>the Achilles heel of this project is that good pieces of software may not have any topical tags at all</em>. If you run into this, perhaps you would consider creating an issue to ask the owner to add tags.</p>
+<section id="the-overall-approach" class="level2">
+<h2 class="anchored" data-anchor-id="the-overall-approach">The Overall Approach</h2>
+<p>If you look at the <code>Utilities</code> directory of the project, you’ll see the scripts and functions that power this search process.</p>
+<ul>
+<li><code>Search Repos for Topics Script.R</code> supervises the whole process. It sources:</li>
+<li><code>searchRepos.R</code> (a function)</li>
+<li><code>searchTopic.R</code> (a function)</li>
+</ul>
+<p>First let’s look at the supervising script. First, the necessary preliminaries:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"jsonlite"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"httr"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"stringr"</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"readxl"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"WriteXLS"</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"Utilities/searchTopic.R"</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"Utilities/searchRepos.R"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Note that this assumes one has the top level directory, <code>FOSS4Spectroscopy</code>, as the working directory (this is a bit easier than constantly jumping around).</p>
+<p>Next, we pull in the Excel spreadsheet that contains all the basic data about the repositories that we already know about, so we can eventually remove those from the search results.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>known <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">read_xlsx</span>(<span class="st">"FOSS4Spec.xlsx"</span>))</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>known <span class="ot">&lt;-</span> known<span class="sc">$</span>name</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now we define some topics and run the search (more on the search functions in a moment):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>topics <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"NMR"</span>, <span class="st">"EPR"</span>, <span class="st">"ESR"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">searchRepos</span>(topics, <span class="st">"github_token"</span>, <span class="at">known.repos =</span> known)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We’ll also talk about that <code>github_token</code> in a moment. With the search results in hand, we have a few steps to make a useful file name and save it in the <code>Searches</code> folder for future use.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="fu">paste</span>(topics, <span class="at">collapse =</span> <span class="st">"_"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">"Search"</span>, file_name, <span class="at">sep =</span> <span class="st">"_"</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="fu">paste</span>(file_name, <span class="st">"xlsx"</span>, <span class="at">sep =</span> <span class="st">"."</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">"Searches"</span>, file_name, <span class="at">sep =</span> <span class="st">"/"</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">WriteXLS</span>(res, file_name,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">row.names =</span> <span class="cn">FALSE</span>, <span class="at">col.names =</span> <span class="cn">TRUE</span>, <span class="at">na =</span> <span class="st">"NA"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>At this point, one can open the spreadsheet in Excel and check each URL (the links are live in the spreadsheet). After vetting each site,<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> one can append the new results to the existing <code>FOSS4Spec.xlsx</code> data base and refresh the entire site so the table is updated.</p>
+<p>To make this job easier, I like to have the search results spreadsheet open and then open all the URLs using the as follows. Then I can quickly clean up the spreadsheet (it helps to have two monitors for this process).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>found <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">read_xlsx</span>(file_name))</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(found)) {</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">grepl</span>(<span class="st">"^https?://"</span>, found<span class="sc">$</span>url[i], <span class="at">ignore.case =</span> <span class="cn">TRUE</span>)) <span class="fu">BROWSE</span>(found<span class="sc">$</span>url[i])</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="authentificating" class="level2">
+<h2 class="anchored" data-anchor-id="authentificating">Authentificating</h2>
+<p>In order to use the Github API, you have to authenticate. Otherwise you will be severely <a href="https://docs.github.com/en/rest/reference/rate-limit">rate-limited</a>. If you are authenticated, you can make up to 5,000 API queries per hour.</p>
+<p>To authenticate, you need to first establish some credentials with Github, by setting up a “key” and a “secret”. You can set these up <a href="https://github.com/settings/developers">here</a> by choosing the “Oauth Apps” tab. Record these items in a secure way, and be certain you don’t actually publish them by pushing.</p>
+<p>Now you are ready to authenticate your <code>R</code> instance using <a href="https://developer.github.com/apps/building-oauth-apps/authorizing-oauth-apps/#web-application-flow">“Web Application Flow”</a>.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>myapp <span class="ot">&lt;-</span> <span class="fu">oauth_app</span>(<span class="st">"FOSS"</span>, <span class="at">key =</span> <span class="st">"put_your_key_here"</span>, <span class="at">secret =</span> <span class="st">"put_your_secret_here"</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>github_token <span class="ot">&lt;-</span> <span class="fu">oauth2.0_token</span>(<span class="fu">oauth_endpoints</span>(<span class="st">"github"</span>), myapp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>If successful, this will open a web page which you can immediately close. In the <code>R</code> console, you’ll need to choose whether to do a one-time authentification, or leave a hidden file behind with authentification details. I use the one-time option, as I don’t want to accidently publish the secrets in the hidden file (since they are easy to overlook, being hidden and all).</p>
+</section>
+<section id="searchtopic" class="level2">
+<h2 class="anchored" data-anchor-id="searchtopic"><code>searchTopic</code></h2>
+<p><code>searchTopic</code> is a function that accesses the Github API to search for a single topic.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> This function is “pretty simple” in that it is short, but there are six helper functions defined in the same file. So, “short not short”. This function does all the heavy lifting; the major steps are:</p>
+<ol type="1">
+<li><p>Carry out an authenticated query of the topics associated with all Github repositories. This first “hit” returns up to 30 results, and also a header than tells how many more pages of results are out there.</p></li>
+<li><p>Process that first set of results by converting the response to a JSON structure, because nice people have already built functions to handle such things (I’m looking at you <a href="https://httr.r-lib.org/"><code>httr</code></a>).</p>
+<ol type="i">
+<li><p>Check that structure for a message that will tell us if we got stopped by Github access issues (and if so, report access stats).</p></li>
+<li><p>Extract only the name, description and repository URL from the huge volume of information captured.</p></li>
+</ol></li>
+<li><p>Inspect the first response to see how many more pages there are, then loop over page two (we already have page 1) to the number of pages, basically repeating step 2.</p></li>
+</ol>
+<p>Along the way, all the results are stored in a data.frame.</p>
+</section>
+<section id="searchrepos" class="level2">
+<h2 class="anchored" data-anchor-id="searchrepos"><code>searchRepos</code></h2>
+<p><code>searchRepos</code> does two simple things:</p>
+<ul>
+<li>Loops over all topics, since <code>searchTopic</code> only handles one topic at a time.</li>
+<li>Optionally, dereplicates the results by excluding any repositories that we already know about.</li>
+</ul>
+</section>
+<section id="other-stuff-to-make-life-easier" class="level2">
+<h2 class="anchored" data-anchor-id="other-stuff-to-make-life-easier">Other Stuff to Make Life Easier</h2>
+<p>There are two other scripts in the <code>Utilities</code> folder that streamline maintenance of the project.</p>
+<ul>
+<li><code>mergeSearches.R</code> which will merge several search results into one, removing duplicates along the way.</li>
+<li><code>mergeMaintainers.R</code> which will query CRAN for the maintainers of all packages in <code>FOSS4Spec.xlsx</code>, and add this info to the file.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> Maintainers are not currently displayed on the main website. However, I hope to eventually e-mail all maintainers so they can fine-tune the information about their entries.</li>
+</ul>
+</section>
+<section id="future-work-contributing" class="level2">
+<h2 class="anchored" data-anchor-id="future-work-contributing">Future Work / Contributing</h2>
+<p>Clearly it would be good for someone who knows <code>Python</code> to step in and write the analogous search code for PyPi.org. Depending upon time contraints, I may use this as an opportunity to learn more <code>Python</code>, but really, if you want to help that would be quicker!</p>
+<p>And that folks, is how the sausage is made.</p>
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1" role="doc-endnote"><p>This code has been tested on a number of searches and I’ve captured every exception I’ve encountered. If you have problems using this code, please file an issue. It’s nearly impossible that it is perfect at this point!<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>Some search terms produce quite a few false positives. I also review each repository to make sure the project is actually FOSS, is not a student project etc (more details on the main web site).<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3" role="doc-endnote"><p>While I link to the documentation for completeness, the steps described next do all the work.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4" role="doc-endnote"><p>See notes in the file: I have not been able to get the Github API to work with multiple terms, so we search each one individually.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5" role="doc-endnote"><p>Want to contribute? If you know the workings of the PyPi.org API it would be nice to automatically pull the maintainer’s contact info.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

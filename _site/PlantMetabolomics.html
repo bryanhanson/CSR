@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-0.9.312">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2021-11-21">
+
+<title>Chemometrics &amp; Spectroscopy Using R - Plant Metabolomics: Where Spectroscopy Meets Evolution &amp; Ecology</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link id="quarto-text-highlighting-styles" href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Chemometrics &amp; Spectroscopy Using R</span>
+  </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./about.html">About</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./projects.html">Projects</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://www.r-bloggers.com/">R-Bloggers</a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="mailto:hanson@depauw.edu"><i class="bi bi-envelope-fill" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/profbryanhanson"><i class="bi bi-twitter" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/bryanhanson"><i class="bi bi-git" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="./index.xml"><i class="bi bi-rss" role="img">
+</i> 
+ </a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Plant Metabolomics: Where Spectroscopy Meets Evolution &amp; Ecology</h1>
+</div>
+
+
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">November 21, 2021</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+</header>
+
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="images/Bkgnd.jpg" class="img-fluid" width="750"></p>
+</div>
+</div>
+<p><em>This page honors and makes available the research of my students. However, it is no longer being updated, as I retired in June 2018.</em></p>
+<p>In my group, we conduct research on how plants respond to the stress of climate change. Such stress can take the form of too much heat, too much salt in the soil, or too little water. We use methods from metabolomics, chemistry and ecology, and benefit from collaboration with Prof.&nbsp;Dana Dudle in the Biology Department. We greatly appreciate support from DePauw’s Science Research Fellows program (now discontinued), the Faculty Development Committee, and the Mellon Foundation (through FDC).</p>
+<p>Our plant of choice is <em>Portulaca oleracea</em>, a weed more commonly known as purslane. We have chosen purslane because it is easy to grow and is interesting from a medicinal/nutritional perspective - it has the most omega-3 fatty acids of any plant. Our original objective was to determine whether purslane’s response to stress has a genetic component which also contributes to reproductive fitness. We have been able to confirm this, and we are now focussed on understanding the molecular nature of purslane’s response: What pathways are activated? What molecules are involved?</p>
+<p>Our approach is to blend metabolomic and ecological methods. Metabolomics is the study of an organism’s metabolites under a controlled set of conditions, in our case, normal versus stressful conditions. As far as possible, one tries to measure all the metabolites at once, in a holistic fashion, which is not an easy feat. Typically, this is done with NMR, MS, IR, or other forms of spectroscopy. We also supplement these instrumental techniques with more traditional single point chemical measurements such as antioxidant levels. From the ecological perspective, we record parameters of plant growth that represent measures of fitness, such as biomass produced, the number of flowers, and so forth. To be meaningful, we need to conduct these experiments on large numbers of plants. The resulting data sets, composed of very different sorts of measurements, represent the state of the plant under the conditions tested. We use various statistical methods to figure out which treatments have produced an interesting response, and whether those responses vary with genotype. Our statistical analyses are done with the open source computational statistical program <a href="http://www.r-project.org/">R</a> and in the case of spectroscopic data, with the <a href="https://CRAN.R-project.org/package=ChemoSpec">ChemoSpec</a> package for R, written by Bryan.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="images/KristinaMulry.jpg" class="img-fluid" width="2010"></p>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="images/DaGroup.jpg" class="img-fluid" width="1870"></p>
+</div>
+</div>
+<p>The following students have carried out this research. Click on their names to download the posters they prepared about their work:</p>
+<ul>
+<li>Academic year 2016-2017
+<ul>
+<li><a href="pdfs/Emma_2017_Poster.pdf">Emma Veon</a></li>
+</ul></li>
+<li>Summer 2015
+<ul>
+<li><a href="pdfs/Jagger_Saulnier_2015_Poster_1.pdf">Shannon Jager</a></li>
+<li><a href="pdfs/Jagger_Saulnier_2015_Poster_2.pdf">Brian Saulnier</a></li>
+</ul></li>
+<li>Summer 2013
+<ul>
+<li><a href="pdfs/Kristina_2013_Poster.pdf">Kristina Mulry</a> Kristina’s work has been <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0138723">published</a></li>
+</ul></li>
+<li>Fall 2012
+<ul>
+<li><a href="pdfs/ACS_2013_Poster.pdf">Polly Haight</a></li>
+</ul></li>
+<li>Summer 2011
+<ul>
+<li><a href="pdfs/Kuk_2011_Poster.pdf">Matt Kukurugya</a></li>
+<li><a href="pdfs/Polly_2011_Poster.pdf">Polly Haight</a></li>
+<li><a href="pdfs/Vince_2011_Poster.pdf">Vincent Guzzetta</a></li>
+<li><a href="pdfs/Matt_2011_Poster.pdf">Matt Keinsley</a></li>
+<li><a href="pdfs/SEB_2011_Poster.pdf">Poster</a> presented at the joint annual meeting of the Society for Economic Botany and The Botanical Society of America in St.&nbsp;Louis.</li>
+</ul></li>
+<li>Summer 2010
+<ul>
+<li>Elizabeth Botts</li>
+<li>Matt Keinsley</li>
+</ul></li>
+<li>Summer 2009 (The Pioneers!)
+<ul>
+<li><a href="pdfs/Tanner_2009_Poster.pdf">Tanner Miller</a></li>
+<li><a href="pdfs/Courtney_2009_Poster.pdf">Courtney Brimmer</a></li>
+<li><a href="pdfs/Kelly_2009_Poster.pdf">Kelly Summers</a></li>
+</ul></li>
+<li>2008 (Bryan’s first metabolomics work!)
+<ul>
+<li><a href="pdfs/SrEPoster.pdf">Poster</a> evaluating various brands of Saw Palmetto (<em>Serenoa repens</em>) by NMR and IR. Presented at the Society for Economic Botany meeting, July 2008.</li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="images/Elizabeth.jpg" class="img-fluid" width="752"></p>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="images/Matt.jpg" class="img-fluid" width="720"></p>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="images/ShannonBrian.jpg" class="img-fluid" width="1824"></p>
+</div>
+</div>
+
+
+
+</main> <!-- /main -->
+<script type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

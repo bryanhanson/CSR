@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-0.9.309">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Erick Oduniyi">
+<meta name="dcterms.date" content="2020-09-08">
+<meta name="description" content="Guest post by Erick Oduniyi">
+
+<title>Chemometrics &amp; Spectroscopy Using R - GSOC Wrap Up</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link id="quarto-text-highlighting-styles" href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">GSOC Wrap Up</h1>
+                          <div class="quarto-categories">
+                <div class="quarto-category">R</div>
+                <div class="quarto-category">hyperSpec</div>
+                <div class="quarto-category">GSOC</div>
+                <div class="quarto-category">Guest Post</div>
+              </div>
+                  </div>
+  </div>
+    
+  <div>
+    <div class="description">
+      Guest post by Erick Oduniyi
+    </div>
+  </div>
+
+
+
+
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Erick Oduniyi </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">September 8, 2020</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<table>
+<tbody><tr>
+<td>
+<img src="og-image.png" alt="GSOC_logo" style="width:100px;">
+</td>
+<td>
+Well, things have been busy lately! As reported back in <a href="https://chemospec.org/posts/2020-05-07-GSOC-hyperSpec/"><em>May</em></a>, I’ve been participating in Google Summer of Code which has now wrapped up. This was very rewarding for me, but today I want to share a guest post by Erick Oduniyi, the very talented student on the project. Bryan
+</td>
+</tr>
+</tbody></table>
+<hr>
+<p>Checking in from Kansas!</p>
+<p>This past summer (2020) I had the amazing opportunity to participate in the <a href="https://summerofcode.withgoogle.com/">Google Summer of Code</a> (GSoC or GSOC). As stated on the the GSOC website, GSOC is a “global program focused on bringing more student developers into open source software development. Students work with an open-source organization on a 3-month programming project during their break from school.”</p>
+<p>This was a particularly meaningful experience as it was my last undergraduate summer internship. I’m a senior studying computer engineering at the University of Kansas, and at the beginning of the summer I still didn’t feel super comfortable working on public (open-source) projects. So, I thought this program would help build my confidence as a computer and software engineer. Moreover:</p>
+<ul>
+<li>I wanted to work with the <code>R</code> organization because that is my favorite programming language.</li>
+<li>I wanted to work with <code>r-hyperspec</code> because I thought that would be the most impactful in terms of practicing project management and software ecosystem development.</li>
+</ul>
+<p>In the process I hoped to:</p>
+<ul>
+<li>Become proficient using <code>Git/Github</code>, including continuous integration</li>
+<li>Become proficient in using <a href="https://trello.com/">Trello</a></li>
+<li>Become proficient in using <code>R</code></li>
+<li>Become familiar with the spectroscopy community</li>
+<li>Become inspired to code more</li>
+<li>Become inspired to document and write more open source projects.</li>
+<li>Become excited to collaborate more across various industrial, academic, and community domains.</li>
+</ul>
+<p>And through a lot of hard work all of those things came to be! Truthfully, even though the summer project was successful there is still a lot of work to do:</p>
+<ul>
+<li>Fortify <code>hyperSpec</code> for <code>baseline</code> with bridge packages</li>
+<li>Fortify <code>hyperSpec</code> for <code>EMSC</code> with bridge packages</li>
+<li>Fortify <code>hyperSpec</code> for <code>matrixStats</code> with bridge packages.</li>
+</ul>
+<p>So, I’m excited to continue to work with the team! I think there are a ton of ideas I and the team have and hopefully we will get to explore them in deeper context. Speaking of the <a href="https://github.com/orgs/r-hyperspec/teams/r-hyperspec/members">team</a>, I have them to thank for an awesome <code>GSOC 2020</code> experience. If you are interested in the journey that was the GSoC 2020 experience (perhaps you might be interested in trying the program next year), then please feel free to jump around <a href="https://eoduniyi.github.io/hyperSpec.gsoc2020/">here</a> to get a feel for the things that I learned and how I worked with the <code>r-hyperspec</code> team this summer.</p>
+<p>Best, E. Oduniyi</p>
+
+
+
+</main> <!-- /main -->
+<script type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-0.9.309">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Bryan Hanson">
+<meta name="dcterms.date" content="2020-04-25">
+<meta name="description" content="Insights into how samples and frequencies affect clustering">
+
+<title>Chemometrics &amp; Spectroscopy Using R - Spectral Heatmaps</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link id="quarto-text-highlighting-styles" href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Spectral Heatmaps</h1>
+                          <div class="quarto-categories">
+                <div class="quarto-category">R</div>
+                <div class="quarto-category">Heatmap</div>
+                <div class="quarto-category">Seriation</div>
+                <div class="quarto-category">ChemoSpec</div>
+              </div>
+                  </div>
+  </div>
+    
+  <div>
+    <div class="description">
+      Insights into how samples and frequencies affect clustering
+    </div>
+  </div>
+
+
+
+
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Bryan Hanson </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">April 25, 2020</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<div class="cell">
+
+</div>
+<p>Most everyone is familiar with heatmaps in a general way. It’s hard not to run into them. Let’s consider some variations:</p>
+<ul>
+<li>A heatmap is a 2D array of rectangular cells colored by value. Generally, the rows and columns are ordered in some purposeful manner. These are very commonly encountered in microarrays for example.</li>
+<li>An image is a type of heatmap in which the ordering of the rows and columns is defined spatially – it would not make sense to reorder them. This kind of data arises from the physical dimensions of a sensor, for instance the sensor on a digital camera or a raman microscope. An image might also arise by a decision to subset and present data in a “square” format. An example would be the topographic maps provided by the US government which cover a rectangular latitude/longitude range. This type of data can also be presented as a contour plot. See the examples in <code>?image</code> for image and contour plots of the classic Maunga Whau volcano data, as well as an overlay of the contours on the image plot.</li>
+<li>A chloropleth is a map with irregular geographic boundaries and regions colored by some value. These are typically used in presenting social or political data. A chloropleth is not really a heatmap but it is often mis-characterized as one.</li>
+</ul>
+<p>These three types of plots are conceptually unified in that they require a 3D data set. In the case of the heatmap and the image, the underlying data are on a regular x, y grid of values; mathematically, a matrix. The row and column indices are mapped to the x, y values, and the matrix entries are the z values. A chloropleth can be thought of as a very warped matrix where the cells are not on a regular grid but instead a series of arbitrary connected paths, namely the geographic boundaries. There is a value inside each connected path (the z value), but naturally the specification of the paths requires a completely different data structure. An intermediate type would be the cartogram heatmap described by <a href="https://serialmentor.com/dataviz/geospatial-data.html#cartograms">Wilke</a>.</p>
+<section id="heatmaps-in-spectroscopy" class="level1">
+<h1>Heatmaps in Spectroscopy</h1>
+<p>The <code>hmapSpectra</code> function in <code>ChemoSpec</code> displays a heatmap to help you focus on which frequencies drive the separation of your samples.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> We’ll use the example from <code>?hmapSpectra</code> which uses the built-in <code>SrE.IR</code> data set. This data set is a series of IR spectra of commercial <em>Serenoa repens</em> oils which are composed of mixtures of triglycerides and free fatty acids (see <code>?SrE.IR</code> for more information). Thus the carbonyl region is of particular interest. The example narrows the frequency range to the carbonyl region for easy interpretation. Let’s look first at the spectra.</p>
+<p><em>Note: rather than link every mention of a help page in this post, remember you can see all the documentation at this <a href="https://bryanhanson.github.io/ChemoSpec/reference/index.html">site</a>.</em></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"ChemoSpec"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: ChemoSpecUtils</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+As of version 6, ChemoSpec offers new graphics output options</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>For details, please see ?GraphicsOptions</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+The ChemoSpec graphics option is set to 'ggplot2'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>To change it, do
+    options(ChemoSpecGraphics = 'option'),
+    where 'option' is one of 'base' or 'ggplot2' or'plotly'.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(SrE.IR) <span class="co"># load the data set</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># limit to the carbonyl region</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>IR <span class="ot">&lt;-</span> <span class="fu">removeFreq</span>(SrE.IR, <span class="at">rem.freq =</span> SrE.IR<span class="sc">$</span>freq <span class="sc">&gt;</span> <span class="dv">1775</span> <span class="sc">|</span> SrE.IR<span class="sc">$</span>freq <span class="sc">&lt;</span> <span class="dv">1660</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plotSpectra</span>(IR, <span class="at">which =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">16</span>, <span class="at">lab.pos =</span> <span class="dv">1800</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="2020-04-25-Heatmaps_files/figure-html/showSpectra-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The blue and green spectra are samples composed only of triglycerides, and hence the ester carbonyl is the primary feature. All other samples are clearly mixtures of ester and carboxylic acid stretching peaks. And now for the heatmap, using defaults:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">hmapSpectra</span>(IR)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="2020-04-25-Heatmaps_files/figure-html/defaultMap-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>In this default display, you’ll notice that the rows and column labels are indices to the underlying sample names and frequency list. This is not so helpful. The color scheme is not so exciting either. <code>hmapSpectra</code> uses the package <code>seriation</code> which in turn uses the <code>heatmap.2</code> function in package <code>gplots</code>. Fortunately we can use the <code>...</code> argument to pass additional arguments to <code>heatmap.2</code> to get a much more useful plot.</p>
+</section>
+<section id="customizing-the-hmapspectra-display" class="level1">
+<h1>Customizing the hmapSpectra Display</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Label samples and frequencies by passing arguments to heatmap.2</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Also make a few other nice plot adjustments</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">hmapSpectra</span>(IR,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> <span class="fu">heat.colors</span>(<span class="dv">5</span>),</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">row_labels =</span> IR<span class="sc">$</span>names, <span class="at">col_labels =</span> <span class="fu">as.character</span>(<span class="fu">round</span>(IR<span class="sc">$</span>freq)),</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">margins =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">6</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="2020-04-25-Heatmaps_files/figure-html/betterMap-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>This is a lot nicer plot, since the rows are labeled with the sample names, and the columns with frequencies. Note that not every column is labeled, only every few frequencies. If you need the actual frequencies, which you probably will, they can be obtained from the returned object (<code>res</code> in this case; see the end of this post for an example).</p>
+</section>
+<section id="interpreting-the-plot" class="level1">
+<h1>Interpreting the Plot</h1>
+<p>How do we interpret this plot? This is a <em>seriated</em> heatmap, which means the rows and columns have been re-ordered according to some algorithm (more on this in a moment). The ordering puts the frequencies most important in distinguishing the samples in the upper left and lower right (the yellow regions). In the lower right corner, we see the two outlier samples TJ_OO and SV_EPO grouped together. On the frequency axis, we see that ester stretching peaks around 1740 <span class="math inline">\(\mathrm{cm}^1\)</span> are characteristic for these samples. In the upper left corner, we see several samples grouped together, and associated with the fatty acid carboxylic acid peak around 1710 <span class="math inline">\(\mathrm{cm}^1\)</span>. From these two observations, we can conclude that these two peak ranges are most important in separating the samples. Of course, in this simple example using a small part of the spectrum, this answer was already clear by simple inspection. Using a simple/limited range of data helps us to be sure we understand what’s happening when we try a new technique.</p>
+</section>
+<section id="using-a-different-distance-measure-seriation-method" class="level1">
+<h1>Using a Different Distance Measure &amp; Seriation Method</h1>
+<p>The default data treatments for <code>hmapSpectra</code> are inherited from <code>hmap</code> in package <code>seriation</code>. The default distance between the samples is the Euclidean distance. The default seriation method is “OLO” or “optimal leaf ordering”. The full list of seriation methods is described in <code>?seriate</code>. There are more than 20 options. As with the display details, we can change these defaults via the <code>...</code> arguments. Let’s use the cosine distance (the same as the Pearson distance), and seriate using the Gruvaeus-Wainer algorithm (there’s a brief explanation of this algorithm at <code>?seriate</code>).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>cosine_dist <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">as.dist</span>(<span class="dv">1</span> <span class="sc">-</span> <span class="fu">cor</span>(<span class="fu">t</span>(x)))</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">hmapSpectra</span>(IR,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> <span class="fu">heat.colors</span>(<span class="dv">5</span>),</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">row_labels =</span> IR<span class="sc">$</span>names, <span class="at">col_labels =</span> <span class="fu">as.character</span>(<span class="fu">round</span>(IR<span class="sc">$</span>freq)),</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">margins =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">6</span>),</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">distfun =</span> cosine_dist,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">"GW"</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Registered S3 method overwritten by 'gclus':
+  method         from     
+  reorder.hclust seriation</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="2020-04-25-Heatmaps_files/figure-html/bestMap-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>You can see that using different distance measures and seriation algorithms gives a rather different result: the ester “hot spots” which were in the lower right corner are now almost in the lower left corner. Which settings are best will depend on your data set, the goal of your analysis, and there are a lot of options from which to choose. The settings used here are simply for demonstration purposes, I make no claim these settings are appropriate!</p>
+<p>Finally, if you want to capture the re-ordered frequencies, you can access them in the returned object:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(IR<span class="sc">$</span>freq[res<span class="sc">$</span>colInd<span class="sc">$</span>order])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 1767 1765 1763 1761 1759 1757 1755 1753 1751 1749 1747 1745 1743 1741 1740
+[16] 1738 1736 1734 1732 1730 1768 1774 1770 1772 1728 1726 1724 1722 1720 1718
+[31] 1716 1714 1713 1711 1709 1707 1705 1703 1701 1699 1697 1695 1693 1691 1689
+[46] 1687 1660 1664 1666 1678 1680 1686 1682 1676 1674 1672 1662 1668 1670 1684</code></pre>
+</div>
+</div>
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1" role="doc-endnote"><p>Other functions in <code>ChemoSpec</code> that can help you explore which frequencies are important are <code>plotLoadings</code>, <code>plot2Loadings</code> and <code>sPlotSpectra</code>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
