@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-0.9.312">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Bryan Hanson">
+<meta name="dcterms.date" content="2020-03-21">
+<meta name="description" content="ASCII &amp; JCAMP-DX formats">
+
+<title>Chemometrics and Spectroscopy Using R - Data Sharing in the Age of Coronavirus, Part 1</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<script src="../../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link id="quarto-text-highlighting-styles" href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({
+  "notice_banner_type":"simple",
+  "consent_type":"implied",
+  "palette":"light",
+  "language":"en",
+  "page_load_consent_levels":["strictly-necessary","functionality","tracking","targeting"],
+  "notice_banner_reject_button_hide":false,
+  "preferences_center_close_button_hide":false,
+  "website_name":""
+  });
+});
+</script> 
+  
+<script src="../../site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="../../site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<link href="../../site_libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet">
+<script src="../../site_libs/bsTable-3.3.7/bootstrapTable.js"></script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+<meta name="twitter:title" content="Chemometrics and Spectroscopy Using R - Data Sharing in the Age of Coronavirus, Part 1">
+<meta name="twitter:description" content="ASCII &amp; JCAMP-DX formats">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-fixed fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Chemometrics and Spectroscopy Using R</span>
+  </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">About</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../projects.html">Projects</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://www.r-bloggers.com/">R-Bloggers</a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="mailto:hanson@depauw.edu"><i class="bi bi-envelope-fill" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/profbryanhanson"><i class="bi bi-twitter" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/bryanhanson"><i class="bi bi-git" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml"><i class="bi bi-rss" role="img">
+</i> 
+ </a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Data Sharing in the Age of Coronavirus, Part 1</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Data Formats</div>
+    <div class="quarto-category">JCAMP-DX</div>
+    <div class="quarto-category">ASCII</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    ASCII &amp; JCAMP-DX formats
+  </div>
+</div>
+
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Bryan Hanson </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">March 21, 2020</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+</header>
+
+<div class="cell">
+
+</div>
+<p>This is Part 1 of a series of posts about data formats for sharing spectroscopic data. Many folks are working from home due to a certain global pandemic. I hope you are all healthy and practicing proper social distancing!</p>
+<p>Sharing data is intrinsic to any spectroscopic work. For many tasks, the data need never leave the instrument’s native format. Nowadays the data often goes immediately to some type of shared server, to be available for multiple users. So much of the time we don’t need to worry about format at all, especially if the acquisition software can do the chemometric analysis you need.</p>
+<p>Increasingly however, publishers want all data deposited and documented somewhere in machine-readable, vendor-neutral form. This is one aspect of <a href="https://en.wikipedia.org/wiki/Reproducibility#Reproducible_research"><em>reproducible research</em></a>, where all data and the scripts or steps needed to analyze them are provided electronically with every paper. Or, your data may be headed to one of the many databases out there, where specific formats are required for submission. And while most data acquisition softwares provide some analysis options, if you need to do serious chemometric analysis you likely need to get the data off the machine in a vendor-neutral form. So there are several reasons one should be familiar with the various means of sharing spectroscopic data.</p>
+<p>Data sharing/exchange is admittedly a potentially mundane topic. After all, we just want to get on with the scientific question. However, it’s worth knowing something about the options and considering the future of the field. In general I’d say things are a bit of a mess with no clear path to a common format. This series of posts will cover several different vendor-neutral data sharing formats, their pros and cons and their future prospects.</p>
+<section id="ascii-files" class="level1">
+<h1>ASCII Files</h1>
+<p>Almost all spectroscopic instruments have some means of exporting data as simple <a href="https://en.wikipedia.org/wiki/ASCII">ASCII</a> format files. For 1D data, these usually take the form of columns of wavelengths (or the equivalent) and some form of intensity values. There may or may not be metadata and/or headers in the file. The resolution of the data in the file is usually sufficient, but it can be as low as 8-bit precision. Simple inspection is usually enough to understand these files, and eventually, read them in with <code>R</code> or <code>Python</code>, since other than the metadata these files are simply x and y values in columns.</p>
+<p>2D NMR data in ASCII format are a bit more tedious to decipher. Assuming we are talking about data that has been processed, there are choices to be made about ordering the data and no standardization is evident in the wild. Do you export the data by rows (F2 values at fixed F1 value), by columns (F1 values at fixed F2 value), or an entire matrix? Do you export in a format that mirrors how we typically look at the data, namely the lowest F1 values are first and the lowest F2 values last? 2D NMR is unique among 2D plots in not having 0,0 in any corner. Or do you export in an increasing order, as though you were starting from 0,0? While there are a lot of combinations possible, through trial-and-error one can determine how the data was exported. This is naturally easier if you have a reference spectrum for comparison. I can say from experience that this task is do-able but annoying. Some vendors also export hypercomplex data, in which there is a copy of the data that has been transformed only along F2 and a copy in which transformation has occurred on both dimensions.</p>
+<p>In addition to deciphering how the data is stored in an exported ASCII file, one needs to keep in mind file size, because ASCII values are not compressed. If one is dealing with IR or UV-Vis data, the typically small number of data points means the files are not large, making ASCII export a good option. For 1D NMR data with typically &gt; 16K data points, the size of the files begins to matter a bit, especially if you have large collections of spectra, which are becoming increasingly common with autosamplers. With 2D NMR, spectra in ASCII format begin to take up some serious space, and the time needed to read in the data becomes noticable.</p>
+<section id="pros-cons-of-the-ascii-format" class="level3">
+<h3 class="anchored" data-anchor-id="pros-cons-of-the-ascii-format">Pros &amp; Cons of the ASCII Format</h3>
+<div class="cell">
+
+</div>
+<div class="cell-output-display">
+<table class="table table-striped table-bordered" style="margin-left: auto; margin-right: auto;">
+<tbody>
+  <tr>
+   <td style="text-align:left;border-right:3px solid black;font-weight: bold;"> Pros </td>
+   <td style="text-align:left;font-weight: bold;"> Cons </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;border-right:3px solid black;"> Near-universal availability </td>
+   <td style="text-align:left;"> Rarely any metadata </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;border-right:3px solid black;"> Human readible </td>
+   <td style="text-align:left;"> Rarely any documentation </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;border-right:3px solid black;">  </td>
+   <td style="text-align:left;"> Slow to parse for large data sets </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;border-right:3px solid black;">  </td>
+   <td style="text-align:left;"> For 2D NMR, internal order must be deciphered </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</section>
+<section id="the-future-of-the-ascii-format" class="level3">
+<h3 class="anchored" data-anchor-id="the-future-of-the-ascii-format">The Future of the ASCII Format</h3>
+<p>Because of it’s relative simplicity, and near-universal implementation in vendor software, ASCII formatted export files are here to stay.</p>
+</section>
+</section>
+<section id="jcamp-dx-files" class="level1">
+<h1>JCAMP-DX Files</h1>
+<section id="the-history-of-jcamp-dx-format" class="level3">
+<h3 class="anchored" data-anchor-id="the-history-of-jcamp-dx-format">The History of JCAMP-DX Format</h3>
+<p>The JCAMP-DX format and standard began at a time when hard drive space was expensive and read/write/transmission errors by hardware were a real issue. This was way before the internet: we are talking about transferring data via telephone/modem, magnetic tape and simple OCR. Hence, three key concerns were to compress the data, to build in data integrity checks and to be flexible for future expansion. Two spectroscopists working with IR data, Robert McDonald and Paul Wilks Jr., published the first standard in 1988 <span class="citation" data-cites="McDonald1988">(<a href="#ref-McDonald1988" role="doc-biblioref">McDonald and Wilks 1988</a>)</span>, with input from instrument manufacturers. From the begininng JCAMP-DX was a project of JCAMP, the <em>Joint Committee on Atomic and Physical Data</em>, a committee of the IUPAC. Refinements were published in 1991 <span class="citation" data-cites="Grasselli1991">(<a href="#ref-Grasselli1991" role="doc-biblioref">Grasselli 1991</a>)</span>, support for NMR was added in 1993 <span class="citation" data-cites="Davies1993">(<a href="#ref-Davies1993" role="doc-biblioref">A. Davies and Lampen 1993</a>)</span>, and MS in 1994 <span class="citation" data-cites="Lampen1994">(<a href="#ref-Lampen1994" role="doc-biblioref">Lampen et al. 1994</a>)</span> by which time the standard was at version 5 <span class="citation" data-cites="Lampen1999">(<a href="#ref-Lampen1999" role="doc-biblioref">Lampen et al. 1999</a>)</span>. Extensions for CD <span class="citation" data-cites="Woollett2012">(<a href="#ref-Woollett2012" role="doc-biblioref">Woollett et al. 2012</a>)</span>, ion mobility spectrometry <span class="citation" data-cites="Bumbach2001">(<a href="#ref-Bumbach2001" role="doc-biblioref">Baumbach et al. 2001</a>)</span> and electron magnetic resonance have been proposed <span class="citation" data-cites="Cammack2006">(<a href="#ref-Cammack2006" role="doc-biblioref">Cammack et al. 2006</a>)</span>. Interestingly, there was also an attempt to describe structure (connectivity) using the format <span class="citation" data-cites="Gasteiger1991">(<a href="#ref-Gasteiger1991" role="doc-biblioref">Gasteiger et al. 1991</a>)</span>. In 2001 a JCAMP-DX standard for NMR pulse sequences was published <span class="citation" data-cites="Davies2001">(<a href="#ref-Davies2001" role="doc-biblioref">A. N. Davies et al. 2001</a>)</span>.</p>
+</section>
+<section id="an-example" class="level3">
+<h3 class="anchored" data-anchor-id="an-example">An Example</h3>
+<p>Another goal for the format was to have the format be both human and machine readible. The format is composed of metadata describing the data and then the compressed data. There are several compression formats possible; some are more human readible than others! Here is a simple example of a JCAMP-DX file containing part of an IR spectrum. The blue box contains the metadata, which is clearly human readible and indeed, most meanings are immediately obvious. The orange box contains the compressed data in the “DIFFDUP” format. In another post we might dissect how that works, but for now, we can clearly read the characters but they need to be translated into actual numerical values.</p>
+<p><img src="P11_Sample_DX.png" alt="Sample JCAMP-DX File" style="width:700px;"></p>
+</section>
+<section id="pros-cons-of-the-jcamp-dx-format" class="level3">
+<h3 class="anchored" data-anchor-id="pros-cons-of-the-jcamp-dx-format">Pros &amp; Cons of the JCAMP-DX Format</h3>
+<div class="cell-output-display">
+<table class="table table-striped table-bordered" style="margin-left: auto; margin-right: auto;">
+<tbody>
+  <tr>
+   <td style="text-align:left;border-right:3px solid black;font-weight: bold;"> Pros </td>
+   <td style="text-align:left;font-weight: bold;"> Cons </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;border-right:3px solid black;"> Near-universal availability </td>
+   <td style="text-align:left;"> Minimal compression by modern standards </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;border-right:3px solid black;"> Metadata human readible </td>
+   <td style="text-align:left;"> Error checking makes parsing slow </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;border-right:3px solid black;"> Compression formats can be manually detangled for checking </td>
+   <td style="text-align:left;"> Error checking probably no longer needed </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;border-right:3px solid black;">  </td>
+   <td style="text-align:left;"> Vendors do not always follow the standard exactly </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</section>
+<section id="future-of-the-jcamp-dx-format" class="level3">
+<h3 class="anchored" data-anchor-id="future-of-the-jcamp-dx-format">Future of the JCAMP-DX Format</h3>
+<p>Because of its long history and universal availability, the JCAMP-DX format appears to be here for the long-haul in spite of its limitations. Future posts in this series will cover data sharing formats that may eventually replace JCAMP-DX.</p>
+
+
+
+</section>
+</section>
+
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-Bumbach2001" class="csl-entry" role="doc-biblioentry">
+Baumbach, JI, AN Davies, P Lampen, and H Schmidt. 2001. <span>“<span class="nocase">JCAMP-DX. A Standard Format for the Exchange of Ion Mobility Spectrometry Data - (IUPAC recommendations 2001)</span>.”</span> <em><span>Pure and Applied Chemistry</span></em> 73 (11): 1765–82. <a href="https://doi.org/10.1351/pac200173111765">https://doi.org/10.1351/pac200173111765</a>.
+</div>
+<div id="ref-Cammack2006" class="csl-entry" role="doc-biblioentry">
+Cammack, R, Y Fann, RJ Lancashire, JP Maher, PS McIntyre, and R Morse. 2006. <span>“<span class="nocase">JCAMP-DX for electron magnetic resonance(EMR)</span>.”</span> <em><span>Pure and Applied Chemistry</span></em> 78 (3): 613–31. <a href="https://doi.org/10.1351/pac200678030613">https://doi.org/10.1351/pac200678030613</a>.
+</div>
+<div id="ref-Davies1993" class="csl-entry" role="doc-biblioentry">
+Davies, AN, and P Lampen. 1993. <span>“<span class="nocase">JCAMP-DX for NMR</span>.”</span> <em><span>Applied Spectroscopy</span></em> 47 (8): 1093–99. <a href="https://doi.org/10.1366/0003702934067874">https://doi.org/10.1366/0003702934067874</a>.
+</div>
+<div id="ref-Davies2001" class="csl-entry" role="doc-biblioentry">
+Davies, Antony N., Jörg Lambert, Robert J. Lancashire, and Peter Lampen. 2001. <span>“<span class="nocase">Guidelines for the Representation of Pulse Sequences for Solution-State Nuclear Magnetic Resonance Spectroscopy</span>.”</span> <em><span>Pure and Applied Chemistry</span></em> 73 (11): 1749–64.
+</div>
+<div id="ref-Gasteiger1991" class="csl-entry" role="doc-biblioentry">
+Gasteiger, J., B. M. P. Hendricks, Hoever P., Jochum C., and Somberg H. 1991. <span>“<span class="nocase">JCAMP-CS: A Standard Exchange Format for Chemical Structure Information in a Computer-Readible Form</span>.”</span> <em><span>Applied Spectroscopy</span></em> 45 (1): 4–11.
+</div>
+<div id="ref-Grasselli1991" class="csl-entry" role="doc-biblioentry">
+Grasselli, JG. 1991. <span>“<span class="nocase">JCAMP-DX, A Standard Format for Exchange of Infrared-Spectra in Computer Readible Form</span>.”</span> <em><span>Pure and Applied Chemistry</span></em> 63 (12): 1781–92. <a href="https://doi.org/10.1351/pac199163121781">https://doi.org/10.1351/pac199163121781</a>.
+</div>
+<div id="ref-Lampen1994" class="csl-entry" role="doc-biblioentry">
+Lampen, P, H Hillig, AN Davies, and M Linscheid. 1994. <span>“<span class="nocase">JCAMP-DX for Mass Spectrometry</span>.”</span> <em><span>Applied Spectroscopy</span></em> 48 (12): 1545–52.
+</div>
+<div id="ref-Lampen1999" class="csl-entry" role="doc-biblioentry">
+Lampen, P, J Lambert, RJ Lancashire, RS McDonald, PS McIntyre, DN Rutledge, T Frohlich, and AN Davies. 1999. <span>“<span class="nocase">An Extension to the JCAMP-DX Standard File Format, JCAMP-DX V.5.01 (IUPAC Recommendations 1999)</span>.”</span> <em><span>Pure and Applied Chemistry</span></em> 71 (8): 1549–56. <a href="https://doi.org/10.1351/pac199971081549">https://doi.org/10.1351/pac199971081549</a>.
+</div>
+<div id="ref-McDonald1988" class="csl-entry" role="doc-biblioentry">
+McDonald, RS, and PA Wilks. 1988. <span>“<span class="nocase">JCAMP-DX, A Standard Format for Exchange of Infrared-Spectra in Computer Readible Form</span>.”</span> <em><span>Applied Spectroscopy</span></em> 42 (1): 151–62. <a href="https://doi.org/10.1366/0003702884428734">https://doi.org/10.1366/0003702884428734</a>.
+</div>
+<div id="ref-Woollett2012" class="csl-entry" role="doc-biblioentry">
+Woollett, Benjamin, Daniel Klose, Richard Cammack, Robert W. Janes, and B. A. Wallace. 2012. <span>“<span class="nocase">JCAMP-DX for circular dichroism spectra and metadata (IUPAC Recommendations 2012)</span>.”</span> <em><span>Pure and Applied Chemistry</span></em> 84 (10): 2171–82. <a href="https://doi.org/10.1351/PAC-REC-12-02-03">https://doi.org/10.1351/PAC-REC-12-02-03</a>.
+</div>
+</div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
+  author = {Bryan Hanson},
+  title = {Data {Sharing} in the {Age} of {Coronavirus,} {Part} 1},
+  date = {2020-03-21},
+  url = {http://chemospec.org/posts/2020-03-21-Data-Formats-Pt1/2020-03-21-Data-Formats-Pt1.html},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2020" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
+Bryan Hanson. 2020. <span>“Data Sharing in the Age of Coronavirus, Part
+1.”</span> March 21, 2020. <a href="http://chemospec.org/posts/2020-03-21-Data-Formats-Pt1/2020-03-21-Data-Formats-Pt1.html">http://chemospec.org/posts/2020-03-21-Data-Formats-Pt1/2020-03-21-Data-Formats-Pt1.html</a>.
+</div></div></section></div></main> <!-- /main -->
+<script type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<script src="https://utteranc.es/client.js" repo="bryanhanson/CSR" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+      <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+  </div>
+</footer>
+
+
+
+</body></html>

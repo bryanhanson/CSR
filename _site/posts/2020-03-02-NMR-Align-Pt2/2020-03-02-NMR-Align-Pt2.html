@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-0.9.312">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Bryan Hanson">
+<meta name="dcterms.date" content="2020-03-02">
+<meta name="description" content="Implementing the HATS-PR algorithm">
+
+<title>Chemometrics and Spectroscopy Using R - Aligning 2D NMR Spectra Part 2</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<script src="../../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link id="quarto-text-highlighting-styles" href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({
+  "notice_banner_type":"simple",
+  "consent_type":"implied",
+  "palette":"light",
+  "language":"en",
+  "page_load_consent_levels":["strictly-necessary","functionality","tracking","targeting"],
+  "notice_banner_reject_button_hide":false,
+  "preferences_center_close_button_hide":false,
+  "website_name":""
+  });
+});
+</script> 
+  
+
+
+<link rel="stylesheet" href="../../styles.css">
+<meta name="twitter:title" content="Chemometrics and Spectroscopy Using R - Aligning 2D NMR Spectra Part 2">
+<meta name="twitter:description" content="Implementing the HATS-PR algorithm">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-fixed fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Chemometrics and Spectroscopy Using R</span>
+  </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">About</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../projects.html">Projects</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://www.r-bloggers.com/">R-Bloggers</a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="mailto:hanson@depauw.edu"><i class="bi bi-envelope-fill" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/profbryanhanson"><i class="bi bi-twitter" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/bryanhanson"><i class="bi bi-git" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml"><i class="bi bi-rss" role="img">
+</i> 
+ </a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Aligning 2D NMR Spectra Part 2</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">ChemoSpec2D</div>
+    <div class="quarto-category">Alignment</div>
+    <div class="quarto-category">NMR</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Implementing the HATS-PR algorithm
+  </div>
+</div>
+
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Bryan Hanson </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">March 2, 2020</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+</header>
+
+<p>This is Part 2 of a series on aligning 2D NMR, as implemented in the package <code>ChemoSpec2D</code>. <a href="https://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/">Part 1</a> <a href="https://chemospec.org/posts/2020-03-04-NMR-Align-Pt3/">Part 3</a></p>
+<section id="the-hats-pr-algorithm" class="level2">
+<h2 class="anchored" data-anchor-id="the-hats-pr-algorithm">The HATS-PR Algorithm</h2>
+<p>In Part 1 I briefly mentioned that we would be using the HATS-PR algorithm of Robinette <em>et al.</em> <span class="citation" data-cites="Robinette2011">(<a href="#ref-Robinette2011" role="doc-biblioref">Robinette et al. 2011</a>)</span>. I also discussed the choice of objective function which is used to report on the quality of the alignment. HATS-PR stands for “Hierachical Alignment of Two-Dimensional Spectra - Pattern Recognition”. In <code>ChemoSpec2D</code> the algorithm is implemented in the <code>hats_alignSpectra2D</code> function. Here are the major steps of the HATS-PR algorithm:</p>
+<ol type="1">
+<li>Contruct a <em>guide tree</em> using hierarchical clustering (HCA): compute the distance between the spectra, and use these distances to construct a dendrogram (the guide tree). As the name suggests, this tree is used to guide the alignment. The most similar spectra are aligned first, then the next most similar, and so on. In later rounds one applies the alignment procedure to sets of spectra that have already been aligned. In Robinette <em>et al.</em> they use the Pearson correlation coefficient as the distance measure. In <code>ChemoSpec2D</code> you can choose from a number of distance measures. I encourage you to experiment with the choices and see how they affect the alignment process for your data sets.</li>
+<li>For each alignment event, check the alignment using the objective function, which recall is a distance measure. If the objective function is below the threshold, no alignment is needed (“below” assumes we are minimizing the objective function, but we might also be maximizing and hence trying to exceed the threshold). If alignment is necessary, move one of the spectra relative to the other <em>in some fashion</em>, checking each new postion with the objective function until the best alignment is found. This is an exercise in optimization.</li>
+</ol>
+</section>
+<section id="finding-the-optimal-alignment" class="level2">
+<h2 class="anchored" data-anchor-id="finding-the-optimal-alignment">Finding the Optimal Alignment</h2>
+<p>The heart of the task is in the phrase <em>in some fashion</em>. At one extreme, one can imagine holding one spectrum fixed, and sliding the other spectrum left and right, up and down, over some range of values – essentially a grid of data points. At each position on the virtual grid, evaluate the objective function and keep track of the results. This will always find the answer, but such a brute force search will be very time-consuming and undesirable, especially if the search space is large. Alternatively, do something more efficient! Robinette <em>et al.</em> use a “simple gradient ascent” approach, but there is a vast literature on optimization strategies that we can consider. In <code>ChemoSpec2D</code> we use a machine learning approach (details next), but the function is written in such a way that one can add other optimization approaches seamlessly. <em>Anything</em> is better than a brute force approach.</p>
+</section>
+<section id="optimizing-with-mlrmbo" class="level2">
+<h2 class="anchored" data-anchor-id="optimizing-with-mlrmbo">Optimizing with <code>mlrMBO</code></h2>
+<p>The name <code>mlrMBO</code> comes from “machine learning with R model-based optimization.” <code>mlrMBO</code> is a powerful and flexible package for general purpose optimization, especially in the cases where the objective function is computationally expensive. There is a nice <a href="https://cran.r-project.org/web/packages/mlrMBO/vignettes/mlrMBO.html">introductory vignette</a>.</p>
+<p>The basic steps in the model-based optimization using <code>mlrMBO</code> as implemented in <code>hats_alignSpectra2D</code> in package <code>ChemoSpec2D</code> are as follows:</p>
+<ol type="1">
+<li>Define your objective function. Our choice of the Euclidean distance was described in Part 1, along with other options. Most distance measures are not computationally expensive in terms of code. However, the huge number of data points in a typical 2D NMR spectrum bogs things down considerably. The approach taken in model-based optimation mitigates this to a great deal, since the objective function is only used for the initial response surface.</li>
+<li>Generate an “initial design”, by which we mean a strategy to search the possible optimization space. <code>hats_alignSpectra2D</code> takes arguments <code>maxF1</code> and <code>maxF2</code> which define the space that will be considered as the two spectra are shifted relative to each other. The space potentially covered is <code>-maxF1</code> to <code>maxF1</code> and similarly for the F2 dimension. We take advantage of concepts from the design of experiments field, and use the <a href="https://cran.r-project.org/web/packages/lhs/vignettes/lhs_basics.html">lhs package</a> to generate a Latin Hypercube Sample of our space.</li>
+<li>The sample points selected by <code>lhs</code> are evaluated using the objective function.</li>
+<li>The values of the objective function at the sample points are used to create a surrogate model, essentially a response surface. The key here is that the surrogate model is computationally fast and will stand in for the actual objective function during the optimization. <code>mlrMBO</code> provides many <a href="https://mlr.mlr-org.com/articles/tutorial/integrated_learners.html">options</a> for the surrogate model. For <code>hats_alignSpectra2D</code> we use a response surface based on kriging, which is a means of interpolating values that was originally developed in the geospatial statistics world.</li>
+<li>New samples points are suggested by the kriging algorithm, evaluated using the surrogate function, and used to update (improve) the model. Each iteration improves the quality of the model.</li>
+<li>After reaching the designated threshold or the number of iterations specified, the best answer is returned. In this case the best answer is the optimal shift of one spectrum relative to the other, in each dimension.</li>
+</ol>
+</section>
+<section id="other-details" class="level2">
+<h2 class="anchored" data-anchor-id="other-details">Other Details</h2>
+<p>In addition to the differences noted above, the implementation of HATS-PR in <code>ChemoSpec2D</code> carries out only <em>global</em> alignment. The algorithm described by Robinette <em>et al.</em> includes <em>local</em> alignment steps which I have not implemented. Local alignment is a possible future addition.</p>
+</section>
+<section id="configure-your-workspace" class="level2">
+<h2 class="anchored" data-anchor-id="configure-your-workspace">Configure Your Workspace</h2>
+<p>If you are going to actually execute the code here (as opposed to just reading along), you’ll need the development version of <code>ChemoSpec2D</code> (I improved some of the plots that track the alignment progress since the last CRAN release). And you’ll need certain packages. Here are the steps to install everything:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">chooseCRANmirror</span>() <span class="co"># choose a CRAN mirror</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">install.packages</span>(<span class="st">"remotes"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">library</span>(<span class="st">"remotes"</span>)</span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="co"># devel branch -- you need 0.4.156 or higher</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="fu">install_github</span>(<span class="at">repo =</span> <span class="st">"bryanhanson/ChemoSpec2D@devel"</span>)</span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="fu">library</span>(<span class="st">"ChemoSpec2D"</span>)</span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="co"># other packages needed</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="fu">install.packages</span>(<span class="st">"mlrMBO"</span>) <span class="co"># will also install mlr, smoof, ParamHelpers</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="fu">install.packages</span>(<span class="st">"lhs"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now you are ready for the main event! <a href="https://chemospec.org/2020/03/04/p10/">Part 3</a></p>
+
+
+
+</section>
+
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-Robinette2011" class="csl-entry" role="doc-biblioentry">
+Robinette, Steven L., Ramadan Ajredini, Hasan Rasheed, Abdulrahman Zeinomar, Frank C. Schroeder, Aaron T. Dossey, and Arthur S. Edison. 2011. <span>“Hierarchical Alignment and Full Resolution Pattern Recognition of 2d NMR Spectra: Application to Nematode Chemical Ecology.”</span> <em>Analytical Chemistry</em> 83 (5): 1649–57. <a href="https://doi.org/10.1021/ac102724x">https://doi.org/10.1021/ac102724x</a>.
+</div>
+</div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
+  author = {Bryan Hanson},
+  title = {Aligning {2D} {NMR} {Spectra} {Part} 2},
+  date = {2020-03-02},
+  url = {http://chemospec.org/posts/2020-03-02-NMR-Align-Pt2/2020-03-02-NMR-Align-Pt2.html},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2020" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
+Bryan Hanson. 2020. <span>“Aligning 2d NMR Spectra Part 2.”</span> March
+2, 2020. <a href="http://chemospec.org/posts/2020-03-02-NMR-Align-Pt2/2020-03-02-NMR-Align-Pt2.html">http://chemospec.org/posts/2020-03-02-NMR-Align-Pt2/2020-03-02-NMR-Align-Pt2.html</a>.
+</div></div></section></div></main> <!-- /main -->
+<script type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<script src="https://utteranc.es/client.js" repo="bryanhanson/CSR" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+      <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+  </div>
+</footer>
+
+
+
+</body></html>

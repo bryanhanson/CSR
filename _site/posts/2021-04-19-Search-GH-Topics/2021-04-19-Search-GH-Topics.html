@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-0.9.309">
+<meta name="generator" content="quarto-0.9.312">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2021-04-19">
 <meta name="description" content="How to find packages of interest">
 
-<title>Chemometrics &amp; Spectroscopy Using R - Automatically Searching Github Repos by Topic</title>
+<title>Chemometrics and Spectroscopy Using R - Automatically Searching Github Repos by Topic</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -84,11 +84,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </style>
 
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../../site_libs/clipboard/clipboard.min.js"></script>
 <meta name="quarto:offset" content="../../">
 <script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<script src="../../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
 <script src="../../site_libs/quarto-html/quarto.js"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -99,11 +102,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
-  "location": "sidebar",
+  "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
-  "panel-placement": "start",
-  "type": "textbox",
+  "panel-placement": "end",
+  "type": "overlay",
   "limit": 20,
   "language": {
     "search-no-results-text": "No results",
@@ -118,64 +121,126 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   }
 }</script>
 
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({
+  "notice_banner_type":"simple",
+  "consent_type":"implied",
+  "palette":"light",
+  "language":"en",
+  "page_load_consent_levels":["strictly-necessary","functionality","tracking","targeting"],
+  "notice_banner_reject_button_hide":false,
+  "preferences_center_close_button_hide":false,
+  "website_name":""
+  });
+});
+</script> 
+  
+
 
 <link rel="stylesheet" href="../../styles.css">
+<meta name="twitter:title" content="Chemometrics and Spectroscopy Using R - Automatically Searching Github Repos by Topic">
+<meta name="twitter:description" content="How to find packages of interest">
+<meta name="twitter:card" content="summary">
 </head>
 
-<body class="fullcontent">
+<body class="nav-fixed fullcontent">
 
 <div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Chemometrics and Spectroscopy Using R</span>
+  </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">About</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../projects.html">Projects</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://www.r-bloggers.com/">R-Bloggers</a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="mailto:hanson@depauw.edu"><i class="bi bi-envelope-fill" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/profbryanhanson"><i class="bi bi-twitter" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/bryanhanson"><i class="bi bi-git" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml"><i class="bi bi-rss" role="img">
+</i> 
+ </a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
 <!-- content -->
-<header id="title-block-header" class="quarto-title-block default page-columns page-full">
-  <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-body">
-      <h1 class="title">Automatically Searching Github Repos by Topic</h1>
-                          <div class="quarto-categories">
-                <div class="quarto-category">R</div>
-                <div class="quarto-category">Github</div>
-                <div class="quarto-category">FOSS</div>
-                <div class="quarto-category">httr</div>
-              </div>
-                  </div>
-  </div>
-    
-  <div>
-    <div class="description">
-      How to find packages of interest
-    </div>
-  </div>
-
-
-
-
-  <div class="quarto-title-meta">
-
-      <div>
-      <div class="quarto-title-meta-heading">Author</div>
-      <div class="quarto-title-meta-contents">
-               <p>Bryan Hanson </p>
-            </div>
-    </div>
-      
-      <div>
-      <div class="quarto-title-meta-heading">Published</div>
-      <div class="quarto-title-meta-contents">
-        <p class="date">April 19, 2021</p>
-      </div>
-    </div>
-      
-    </div>
-    
-  
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Automatically Searching Github Repos by Topic</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">Github</div>
+    <div class="quarto-category">FOSS</div>
+    <div class="quarto-category">httr</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    How to find packages of interest
+  </div>
+</div>
 
 
 
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Bryan Hanson </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 19, 2021</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+</header>
 
 <div class="cell">
 
@@ -192,42 +257,42 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <p>First let’s look at the supervising script. First, the necessary preliminaries:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"jsonlite"</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"httr"</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"stringr"</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"readxl"</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"WriteXLS"</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"Utilities/searchTopic.R"</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"Utilities/searchRepos.R"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(<span class="st">"jsonlite"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">library</span>(<span class="st">"httr"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">library</span>(<span class="st">"stringr"</span>)</span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="fu">library</span>(<span class="st">"readxl"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="fu">library</span>(<span class="st">"WriteXLS"</span>)</span>
+<span id="cb1-6"><a href="#cb1-6"></a></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="fu">source</span>(<span class="st">"Utilities/searchTopic.R"</span>)</span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="fu">source</span>(<span class="st">"Utilities/searchRepos.R"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Note that this assumes one has the top level directory, <code>FOSS4Spectroscopy</code>, as the working directory (this is a bit easier than constantly jumping around).</p>
 <p>Next, we pull in the Excel spreadsheet that contains all the basic data about the repositories that we already know about, so we can eventually remove those from the search results.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>known <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">read_xlsx</span>(<span class="st">"FOSS4Spec.xlsx"</span>))</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>known <span class="ot">&lt;-</span> known<span class="sc">$</span>name</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>known <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">read_xlsx</span>(<span class="st">"FOSS4Spec.xlsx"</span>))</span>
+<span id="cb2-2"><a href="#cb2-2"></a>known <span class="ot">&lt;-</span> known<span class="sc">$</span>name</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now we define some topics and run the search (more on the search functions in a moment):</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>topics <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"NMR"</span>, <span class="st">"EPR"</span>, <span class="st">"ESR"</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">searchRepos</span>(topics, <span class="st">"github_token"</span>, <span class="at">known.repos =</span> known)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>topics <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"NMR"</span>, <span class="st">"EPR"</span>, <span class="st">"ESR"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2"></a>res <span class="ot">&lt;-</span> <span class="fu">searchRepos</span>(topics, <span class="st">"github_token"</span>, <span class="at">known.repos =</span> known)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We’ll also talk about that <code>github_token</code> in a moment. With the search results in hand, we have a few steps to make a useful file name and save it in the <code>Searches</code> folder for future use.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="fu">paste</span>(topics, <span class="at">collapse =</span> <span class="st">"_"</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">"Search"</span>, file_name, <span class="at">sep =</span> <span class="st">"_"</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="fu">paste</span>(file_name, <span class="st">"xlsx"</span>, <span class="at">sep =</span> <span class="st">"."</span>)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>file_name <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">"Searches"</span>, file_name, <span class="at">sep =</span> <span class="st">"/"</span>)</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">WriteXLS</span>(res, file_name,</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">row.names =</span> <span class="cn">FALSE</span>, <span class="at">col.names =</span> <span class="cn">TRUE</span>, <span class="at">na =</span> <span class="st">"NA"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>file_name <span class="ot">&lt;-</span> <span class="fu">paste</span>(topics, <span class="at">collapse =</span> <span class="st">"_"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2"></a>file_name <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">"Search"</span>, file_name, <span class="at">sep =</span> <span class="st">"_"</span>)</span>
+<span id="cb4-3"><a href="#cb4-3"></a>file_name <span class="ot">&lt;-</span> <span class="fu">paste</span>(file_name, <span class="st">"xlsx"</span>, <span class="at">sep =</span> <span class="st">"."</span>)</span>
+<span id="cb4-4"><a href="#cb4-4"></a>file_name <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">"Searches"</span>, file_name, <span class="at">sep =</span> <span class="st">"/"</span>)</span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="fu">WriteXLS</span>(res, file_name,</span>
+<span id="cb4-6"><a href="#cb4-6"></a>      <span class="at">row.names =</span> <span class="cn">FALSE</span>, <span class="at">col.names =</span> <span class="cn">TRUE</span>, <span class="at">na =</span> <span class="st">"NA"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>At this point, one can open the spreadsheet in Excel and check each URL (the links are live in the spreadsheet). After vetting each site,<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> one can append the new results to the existing <code>FOSS4Spec.xlsx</code> data base and refresh the entire site so the table is updated.</p>
 <p>To make this job easier, I like to have the search results spreadsheet open and then open all the URLs using the as follows. Then I can quickly clean up the spreadsheet (it helps to have two monitors for this process).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>found <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">read_xlsx</span>(file_name))</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(found)) {</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">grepl</span>(<span class="st">"^https?://"</span>, found<span class="sc">$</span>url[i], <span class="at">ignore.case =</span> <span class="cn">TRUE</span>)) <span class="fu">BROWSE</span>(found<span class="sc">$</span>url[i])</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>found <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">read_xlsx</span>(file_name))</span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(found)) {</span>
+<span id="cb5-3"><a href="#cb5-3"></a>  <span class="cf">if</span> (<span class="fu">grepl</span>(<span class="st">"^https?://"</span>, found<span class="sc">$</span>url[i], <span class="at">ignore.case =</span> <span class="cn">TRUE</span>)) <span class="fu">BROWSE</span>(found<span class="sc">$</span>url[i])</span>
+<span id="cb5-4"><a href="#cb5-4"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="authentificating" class="level2">
@@ -236,8 +301,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>To authenticate, you need to first establish some credentials with Github, by setting up a “key” and a “secret”. You can set these up <a href="https://github.com/settings/developers">here</a> by choosing the “Oauth Apps” tab. Record these items in a secure way, and be certain you don’t actually publish them by pushing.</p>
 <p>Now you are ready to authenticate your <code>R</code> instance using <a href="https://developer.github.com/apps/building-oauth-apps/authorizing-oauth-apps/#web-application-flow">“Web Application Flow”</a>.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>myapp <span class="ot">&lt;-</span> <span class="fu">oauth_app</span>(<span class="st">"FOSS"</span>, <span class="at">key =</span> <span class="st">"put_your_key_here"</span>, <span class="at">secret =</span> <span class="st">"put_your_secret_here"</span>)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>github_token <span class="ot">&lt;-</span> <span class="fu">oauth2.0_token</span>(<span class="fu">oauth_endpoints</span>(<span class="st">"github"</span>), myapp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>myapp <span class="ot">&lt;-</span> <span class="fu">oauth_app</span>(<span class="st">"FOSS"</span>, <span class="at">key =</span> <span class="st">"put_your_key_here"</span>, <span class="at">secret =</span> <span class="st">"put_your_secret_here"</span>)</span>
+<span id="cb6-2"><a href="#cb6-2"></a>github_token <span class="ot">&lt;-</span> <span class="fu">oauth2.0_token</span>(<span class="fu">oauth_endpoints</span>(<span class="st">"github"</span>), myapp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>If successful, this will open a web page which you can immediately close. In the <code>R</code> console, you’ll need to choose whether to do a one-time authentification, or leave a hidden file behind with authentification details. I use the one-time option, as I don’t want to accidently publish the secrets in the hidden file (since they are easy to overlook, being hidden and all).</p>
 </section>
@@ -280,7 +345,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 
 
-<div id="quarto-appendix" class="default"><section class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1" role="doc-endnote"><p>This code has been tested on a number of searches and I’ve captured every exception I’ve encountered. If you have problems using this code, please file an issue. It’s nearly impossible that it is perfect at this point!<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
@@ -289,7 +354,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li id="fn4" role="doc-endnote"><p>See notes in the file: I have not been able to get the Github API to work with multiple terms, so we search each one individually.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn5" role="doc-endnote"><p>Want to contribute? If you know the workings of the PyPi.org API it would be nice to automatically pull the maintainer’s contact info.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
-</section></div></main> <!-- /main -->
+</section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2021,
+  author = {Bryan Hanson},
+  title = {Automatically {Searching} {Github} {Repos} by {Topic}},
+  date = {2021-04-19},
+  url = {http://chemospec.org/posts/2021-04-19-Search-GH-Topics/2021-04-19-Search-GH-Topics.html},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2021" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
+Bryan Hanson. 2021. <span>“Automatically Searching Github Repos by
+Topic.”</span> April 19, 2021. <a href="http://chemospec.org/posts/2021-04-19-Search-GH-Topics/2021-04-19-Search-GH-Topics.html">http://chemospec.org/posts/2021-04-19-Search-GH-Topics/2021-04-19-Search-GH-Topics.html</a>.
+</div></div></section></div></main> <!-- /main -->
 <script type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const icon = "";
@@ -369,7 +444,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
+<script src="https://utteranc.es/client.js" repo="bryanhanson/CSR" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
 </div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+      <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+  </div>
+</footer>
 
 
 

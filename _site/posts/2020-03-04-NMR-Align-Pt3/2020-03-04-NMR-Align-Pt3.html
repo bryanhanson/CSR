@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-0.9.309">
+<meta name="generator" content="quarto-0.9.312">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2020-03-04">
 <meta name="description" content="Putting it all together">
 
-<title>Chemometrics &amp; Spectroscopy Using R - Aligning 2D NMR Spectra Part 3</title>
+<title>Chemometrics and Spectroscopy Using R - Aligning 2D NMR Spectra Part 3</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -84,11 +84,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </style>
 
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../../site_libs/clipboard/clipboard.min.js"></script>
 <meta name="quarto:offset" content="../../">
 <script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<script src="../../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
 <script src="../../site_libs/quarto-html/quarto.js"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -99,11 +102,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
-  "location": "sidebar",
+  "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
-  "panel-placement": "start",
-  "type": "textbox",
+  "panel-placement": "end",
+  "type": "overlay",
   "limit": 20,
   "language": {
     "search-no-results-text": "No results",
@@ -118,64 +121,126 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   }
 }</script>
 
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({
+  "notice_banner_type":"simple",
+  "consent_type":"implied",
+  "palette":"light",
+  "language":"en",
+  "page_load_consent_levels":["strictly-necessary","functionality","tracking","targeting"],
+  "notice_banner_reject_button_hide":false,
+  "preferences_center_close_button_hide":false,
+  "website_name":""
+  });
+});
+</script> 
+  
+
 
 <link rel="stylesheet" href="../../styles.css">
+<meta name="twitter:title" content="Chemometrics and Spectroscopy Using R - Aligning 2D NMR Spectra Part 3">
+<meta name="twitter:description" content="Putting it all together">
+<meta name="twitter:card" content="summary">
 </head>
 
-<body class="fullcontent">
+<body class="nav-fixed fullcontent">
 
 <div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Chemometrics and Spectroscopy Using R</span>
+  </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">About</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../projects.html">Projects</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://www.r-bloggers.com/">R-Bloggers</a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="mailto:hanson@depauw.edu"><i class="bi bi-envelope-fill" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/profbryanhanson"><i class="bi bi-twitter" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/bryanhanson"><i class="bi bi-git" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml"><i class="bi bi-rss" role="img">
+</i> 
+ </a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
 <!-- content -->
-<header id="title-block-header" class="quarto-title-block default page-columns page-full">
-  <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-body">
-      <h1 class="title">Aligning 2D NMR Spectra Part 3</h1>
-                          <div class="quarto-categories">
-                <div class="quarto-category">R</div>
-                <div class="quarto-category">ChemoSpec2D</div>
-                <div class="quarto-category">Alignment</div>
-                <div class="quarto-category">NMR</div>
-              </div>
-                  </div>
-  </div>
-    
-  <div>
-    <div class="description">
-      Putting it all together
-    </div>
-  </div>
-
-
-
-
-  <div class="quarto-title-meta">
-
-      <div>
-      <div class="quarto-title-meta-heading">Author</div>
-      <div class="quarto-title-meta-contents">
-               <p>Bryan Hanson </p>
-            </div>
-    </div>
-      
-      <div>
-      <div class="quarto-title-meta-heading">Published</div>
-      <div class="quarto-title-meta-contents">
-        <p class="date">March 4, 2020</p>
-      </div>
-    </div>
-      
-    </div>
-    
-  
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Aligning 2D NMR Spectra Part 3</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">ChemoSpec2D</div>
+    <div class="quarto-category">Alignment</div>
+    <div class="quarto-category">NMR</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Putting it all together
+  </div>
+</div>
 
 
 
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Bryan Hanson </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">March 4, 2020</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+</header>
 
 <p>This is Part 3 of a series on aligning 2D NMR, as implemented in the package <code>ChemoSpec2D</code>. <a href="https://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/">Part 1</a> <a href="https://chemospec.org/posts/2020-03-02-NMR-Align-Pt2/">Part2</a></p>
 <p>Let’s get to work. The function to carry out alignment is <code>hats_alignSpectra2D</code>. The arguments <code>maxF1</code> and <code>maxF2</code> define the space that will be considered as the two spectra are shifted relative to each other. The space potentially covered is <code>-maxF1</code> to <code>maxF1</code> and similarly for the F2 dimension. <code>dist_method</code>, <code>thres</code> and <code>minimize</code> refer to the objective function, as described in Part 1. In this example we will consider two spectra succcessfully aligned when we get below the threshold. When one shifts one spectrum relative to the other, part of the shifted spectrum gets cutoff and part of it is empty space. <code>fill = "noise"</code> instructs the function to fill the empty space with an estimate of the noise from the original spectrum. We’ll set <code>plot = FALSE</code> here because the output is extensive. I’ll provide sample plotting output in a moment.</p>
@@ -183,27 +248,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"ChemoSpec2D"</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Loading required package: ChemoSpecUtils</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="do">## As of version 6, ChemoSpec2D offers new graphics output options</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="do">## Functions plotScores and plotScree will work with the new options</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="do">## For details, please see ?GraphicsOptions</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="do">## The ChemoSpec graphics option is set to 'ggplot2'</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="do">## To change it, do</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="do">##  options(ChemoSpecGraphics = 'option'),</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="do">##  where 'option' is one of 'base' or 'ggplot2' or'plotly'.</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(MUD2)</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(<span class="st">"ChemoSpec2D"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="do">## Loading required package: ChemoSpecUtils</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="do">## </span></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="do">## As of version 6, ChemoSpec2D offers new graphics output options</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="do">## </span></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="do">## Functions plotScores and plotScree will work with the new options</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="do">## For details, please see ?GraphicsOptions</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="do">## </span></span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="do">## The ChemoSpec graphics option is set to 'ggplot2'</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="do">## To change it, do</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="do">##  options(ChemoSpecGraphics = 'option'),</span></span>
+<span id="cb1-12"><a href="#cb1-12"></a><span class="do">##  where 'option' is one of 'base' or 'ggplot2' or'plotly'.</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a><span class="fu">data</span>(MUD2)</span>
+<span id="cb1-14"><a href="#cb1-14"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>MUD2a <span class="ot">&lt;-</span> <span class="fu">hats_alignSpectra2D</span>(MUD2,</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">maxF1 =</span> <span class="dv">5</span>, <span class="at">maxF2 =</span> <span class="dv">5</span>,</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">dist_method =</span> <span class="st">"euclidean"</span>, <span class="at">thres =</span> <span class="dv">40</span>, <span class="at">minimize =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"noise"</span>,</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>MUD2a <span class="ot">&lt;-</span> <span class="fu">hats_alignSpectra2D</span>(MUD2,</span>
+<span id="cb2-2"><a href="#cb2-2"></a>    <span class="at">maxF1 =</span> <span class="dv">5</span>, <span class="at">maxF2 =</span> <span class="dv">5</span>,</span>
+<span id="cb2-3"><a href="#cb2-3"></a>    <span class="at">dist_method =</span> <span class="st">"euclidean"</span>, <span class="at">thres =</span> <span class="dv">40</span>, <span class="at">minimize =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb2-4"><a href="#cb2-4"></a>    <span class="at">fill =</span> <span class="st">"noise"</span>,</span>
+<span id="cb2-5"><a href="#cb2-5"></a>    <span class="at">plot =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>This is a beta version of hats_alignSpectra2D.
     You should set the seed for reproducible results.
@@ -286,11 +351,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2 class="anchored" data-anchor-id="the-aligned-spectra">The Aligned Spectra</h2>
 <p>Did this process work? This final plot shows that it did. Let’s be clear that the task here was not terribly hard: <code>MUD2</code> is an artificial example in which the shifts are pretty modest and global in nature. But still, it’s satisfying. I welcome everyone to give <code>hats_alignSpectra2D</code> a try and report any problems or suggestions.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>mylvls <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">30</span>, <span class="at">length.out =</span> <span class="dv">10</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plotSpectra2D</span>(MUD2a, <span class="at">which =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">6</span>), <span class="at">showGrid =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">lvls =</span> <span class="fu">LofL</span>(mylvls, <span class="dv">2</span>),</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">LofC</span>(<span class="fu">c</span>(<span class="st">"red"</span>, <span class="st">"black"</span>), <span class="dv">2</span>, <span class="fu">length</span>(mylvls), <span class="dv">2</span>),</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">"Aligned MUD2 Spectra 1 &amp; 6"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>mylvls <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">30</span>, <span class="at">length.out =</span> <span class="dv">10</span>)</span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="fu">plotSpectra2D</span>(MUD2a, <span class="at">which =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">6</span>), <span class="at">showGrid =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb5-3"><a href="#cb5-3"></a>    <span class="at">lvls =</span> <span class="fu">LofL</span>(mylvls, <span class="dv">2</span>),</span>
+<span id="cb5-4"><a href="#cb5-4"></a>    <span class="at">cols =</span> <span class="fu">LofC</span>(<span class="fu">c</span>(<span class="st">"red"</span>, <span class="st">"black"</span>), <span class="dv">2</span>, <span class="fu">length</span>(mylvls), <span class="dv">2</span>),</span>
+<span id="cb5-5"><a href="#cb5-5"></a>  <span class="at">main =</span> <span class="st">"Aligned MUD2 Spectra 1 &amp; 6"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="2020-03-04-NMR-Align-Pt3_files/figure-html/plotMUD2a-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -299,7 +364,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </section>
 
-</main> <!-- /main -->
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
+  author = {Bryan Hanson},
+  title = {Aligning {2D} {NMR} {Spectra} {Part} 3},
+  date = {2020-03-04},
+  url = {http://chemospec.org/posts/2020-03-04-NMR-Align-Pt3/2020-03-04-NMR-Align-Pt3.html},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2020" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
+Bryan Hanson. 2020. <span>“Aligning 2d NMR Spectra Part 3.”</span> March
+4, 2020. <a href="http://chemospec.org/posts/2020-03-04-NMR-Align-Pt3/2020-03-04-NMR-Align-Pt3.html">http://chemospec.org/posts/2020-03-04-NMR-Align-Pt3/2020-03-04-NMR-Align-Pt3.html</a>.
+</div></div></section></div></main> <!-- /main -->
 <script type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const icon = "";
@@ -379,7 +454,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
+<script src="https://utteranc.es/client.js" repo="bryanhanson/CSR" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
 </div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+      <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+  </div>
+</footer>
 
 
 

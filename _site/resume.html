@@ -8,7 +8,7 @@
 
 <meta name="dcterms.date" content="2021-11-21">
 
-<title>Chemometrics &amp; Spectroscopy Using R - Bryan A. Hanson</title>
+<title>Chemometrics and Spectroscopy Using R - Bryan A. Hanson</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -25,6 +25,8 @@ ul.task-list{list-style: none;}
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
+<script src="site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -54,9 +56,27 @@ ul.task-list{list-style: none;}
   }
 }</script>
 
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({
+  "notice_banner_type":"simple",
+  "consent_type":"implied",
+  "palette":"light",
+  "language":"en",
+  "page_load_consent_levels":["strictly-necessary","functionality","tracking","targeting"],
+  "notice_banner_reject_button_hide":false,
+  "preferences_center_close_button_hide":false,
+  "website_name":""
+  });
+});
+</script> 
+  
+
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="styles.css">
+<meta name="twitter:title" content="Chemometrics and Spectroscopy Using R - Bryan A. Hanson">
+<meta name="twitter:card" content="summary">
 </head>
 
 <body class="nav-fixed fullcontent">
@@ -66,7 +86,7 @@ ul.task-list{list-style: none;}
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
       <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">Chemometrics &amp; Spectroscopy Using R</span>
+    <span class="navbar-title">Chemometrics and Spectroscopy Using R</span>
   </a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
@@ -206,42 +226,49 @@ October 1981
 <section id="r-software-packages-authored" class="level2">
 <h2 class="anchored" data-anchor-id="r-software-packages-authored">R Software Packages Authored</h2>
 <p>All my work can be seen at <a href="https://github.com/bryanhanson?tab=repositories">Github</a>. Here are some highlights:</p>
-<p><a href="https://CRAN.R-project.org/package=ChemoSpec">ChemoSpec</a>: Exploratory Chemometrics for Spectroscopy</p>
-<p><a href="https://CRAN.R-project.org/package=ChemoSpec2D">ChemoSpec2D</a>: Exploratory Chemometrics for 2D Spectroscopy</p>
-<p><a href="https://CRAN.R-project.org/package=exCon">exCon</a>: Interactive Exploration of Contour Data <a href="https://bryanhanson.github.io/exCon/exCon.html">live demo</a></p>
-<p><a href="https://CRAN.R-project.org/package=readJDX">readJDX</a>: Import Data in the JCAMP-DX Format</p>
-<p><a href="https://CRAN.R-project.org/package=SpecHelpers">SpecHelpers</a>: Spectroscopy Related Utilities</p>
-<p><a href="https://gitlab.com/chemometrics/unmixR">unmixR</a>: Hyperspectral Unmixing with R, with Anton Belov, Conor McManus, Claudia Beleites and Simon Fuller</p>
-<p><a href="https://CRAN.R-project.org/package=HiveR">HiveR</a>: Hive Plots in 2D and 3D</p>
-<p><a href="https://CRAN.R-project.org/package=HiveR">LindenmayeR</a>: Functions to Explore L-Systems (Lindenmayer Systems)</p>
+<ul>
+<li><a href="https://CRAN.R-project.org/package=ChemoSpec">ChemoSpec</a>: Exploratory Chemometrics for Spectroscopy</li>
+<li><a href="https://CRAN.R-project.org/package=ChemoSpec2D">ChemoSpec2D</a>: Exploratory Chemometrics for 2D Spectroscopy</li>
+<li><a href="https://bryanhanson.github.io/LearnPCA/">LearnPCA</a> A series of vignettes explaining PCA from the very beginning.</li>
+<li><a href="https://CRAN.R-project.org/package=exCon">exCon</a>: Interactive Exploration of Contour Data <a href="https://bryanhanson.github.io/exCon/exCon.html">live demo</a></li>
+<li><a href="https://CRAN.R-project.org/package=readJDX">readJDX</a>: Import Data in the JCAMP-DX Format</li>
+<li><a href="https://CRAN.R-project.org/package=SpecHelpers">SpecHelpers</a>: Spectroscopy Related Utilities</li>
+<li><a href="https://gitlab.com/chemometrics/unmixR">unmixR</a>: Hyperspectral Unmixing with R, with Anton Belov, Conor McManus, Claudia Beleites and Simon Fuller</li>
+<li><a href="https://CRAN.R-project.org/package=HiveR">HiveR</a>: Hive Plots in 2D and 3D</li>
+<li><a href="https://CRAN.R-project.org/package=HiveR">LindenmayeR</a>: Functions to Explore L-Systems (Lindenmayer Systems)</li>
+</ul>
 </section>
 <section id="selected-presentations" class="level2">
 <h2 class="anchored" data-anchor-id="selected-presentations">Selected Presentations</h2>
-<p>“Development of Chemometric Tools for 2D NMR Data Sets” Poster at PANIC 2018 (Practical Applications of NMR in Industry Conference), La Jolla (San Diego) California, March 2018. <a href="pdfs/Panic_2018_Poster.pdf">Download</a></p>
-<p>“Using R to Make Sense of NMR Data Sets” invited talk at PANIC 2017 (Practical Applications of NMR in Industry Conference), Hilton Head South Carolina, February 2017. <a href="pdfs/Panic_2017_Presentation.pdf">Download</a></p>
-<p>“unmixR: Hyperspectral Unmixing in ” with Conor McManus, Simon Fuller, and Claudia Beleites. Poster at 2014, University of California at Los Angeles, June 30–July 3, 2014. <a href="pdfs/useR_2014_Poster.pdf">Download</a></p>
-<p>“Preliminary Metabolic Investigation of Saline-Stressed <em>Portulac olercea</em> using 1H NMR” with Paulina J. Haight and John S. Harwood. Poster at the ACS National Meeting, Indianpolis, September 2013. <a href="pdfs/ACS_2013_Poster.pdf">Download</a></p>
-<p>“HiveR: 2 and 3D Hive Plots of Networks” Invited talk at useR! 2012 Conference, Nashville Tennessee, June 12–15, 2012. <a href="pdfs/useR_2012_Presentation.pdf">Download</a></p>
-<p>“HiveR: 2 and 3D Hive Plots of Networks” Poster at useR! 2012 Conference, Nashville Tennessee, June 12–15, 2012. <a href="pdfs/useR_2012_Poster.pdf">Download</a></p>
-<p>“Implementation of ANOVA-PCA in R for Multivariate Exploration” with M. J. Keinsley. Poster at useR! 2012 Conference, Nashville Tennessee, June 12–15, 2012. <a href="pdfs/useR_2012_Poster2.pdf">Download</a></p>
-<p>“The Effect of Climate Change on the Medicinal Plant Purslane <em>Portulaca oleracea</em>” with Elizabeth Botts, Coutney Brimmer, Tanner Miller, Kelley Summers and Dana Dudle. Presented at the 52<span class="math inline">\(^{nd}\)</span> Annual Meeting of the Society for Economic Botany, July 9–13, 2011, St Louis Missouri. <a href="pdfs/SEB_2011_Poster.pdf">Download</a></p>
-<p>“ChemoSpec: an R Package for the Chemometric Analysis of Spectroscopic Data” useR! 2010 Conference, National Institute of Standards and Technology, Gaithersburg Maryland, July 2010. <a href="pdfs/useR_2010_Poster.pdf">Download</a></p>
-<p>“Assessing <em>Serenoa repens</em> (Arecaceae) Quality at the Retail Level Using Spectroscopic and Chemometric Methods” with Tao Ye and M. Daniel Raftery. Presented at the 49<span class="math inline">\(^{th}\)</span> Annual Meeting of the Society for Economic Botany, June 1–5, 2008, Duke University. <a href="pdfs/SEB_2008_Poster.pdf">Download</a></p>
+<ul>
+<li>“Development of Chemometric Tools for 2D NMR Data Sets” Poster at PANIC 2018 (Practical Applications of NMR in Industry Conference), La Jolla (San Diego) California, March 2018. <a href="pdfs/Panic_2018_Poster.pdf">Download</a></li>
+<li>“Using R to Make Sense of NMR Data Sets” invited talk at PANIC 2017 (Practical Applications of NMR in Industry Conference), Hilton Head South Carolina, February 2017. <a href="pdfs/Panic_2017_Presentation.pdf">Download</a></li>
+<li>“unmixR: Hyperspectral Unmixing in ” with Conor McManus, Simon Fuller, and Claudia Beleites. Poster at 2014, University of California at Los Angeles, June 30–July 3, 2014. <a href="pdfs/useR_2014_Poster.pdf">Download</a></li>
+<li>“Preliminary Metabolic Investigation of Saline-Stressed <em>Portulac olercea</em> using 1H NMR” with Paulina J. Haight and John S. Harwood. Poster at the ACS National Meeting, Indianpolis, September 2013. <a href="pdfs/ACS_2013_Poster.pdf">Download</a></li>
+<li>“HiveR: 2 and 3D Hive Plots of Networks” Invited talk at useR! 2012 Conference, Nashville Tennessee, June 12–15, 2012. <a href="pdfs/useR_2012_Presentation.pdf">Download</a></li>
+<li>“HiveR: 2 and 3D Hive Plots of Networks” Poster at useR! 2012 Conference, Nashville Tennessee, June 12–15, 2012. <a href="pdfs/useR_2012_Poster.pdf">Download</a></li>
+<li>“Implementation of ANOVA-PCA in R for Multivariate Exploration” with M. J. Keinsley. Poster at useR! 2012 Conference, Nashville Tennessee, June 12–15, 2012. <a href="pdfs/useR_2012_Poster2.pdf">Download</a></li>
+<li>“The Effect of Climate Change on the Medicinal Plant Purslane <em>Portulaca oleracea</em>” with Elizabeth Botts, Coutney Brimmer, Tanner Miller, Kelley Summers and Dana Dudle. Presented at the 52<span class="math inline">\(^{nd}\)</span> Annual Meeting of the Society for Economic Botany, July 9–13, 2011, St Louis Missouri. <a href="pdfs/SEB_2011_Poster.pdf">Download</a></li>
+<li>“ChemoSpec: an R Package for the Chemometric Analysis of Spectroscopic Data” useR! 2010 Conference, National Institute of Standards and Technology, Gaithersburg Maryland, July 2010. <a href="pdfs/useR_2010_Poster.pdf">Download</a></li>
+<li>“Assessing <em>Serenoa repens</em> (Arecaceae) Quality at the Retail Level Using Spectroscopic and Chemometric Methods” with Tao Ye and M. Daniel Raftery. Presented at the 49<span class="math inline">\(^{th}\)</span> Annual Meeting of the Society for Economic Botany, June 1–5, 2008, Duke University. <a href="pdfs/SEB_2008_Poster.pdf">Download</a></li>
+</ul>
 </section>
 <section id="miscellaneous" class="level2">
 <h2 class="anchored" data-anchor-id="miscellaneous">Miscellaneous</h2>
-<p>Google Summer of Code 2021: Mentored Tejasvi Gupta (India) who adapted <a href="https://CRAN.R-project.org/package=ChemoSpec">ChemoSpec</a> to provide <code>ggplot2</code> and <code>plotly</code> graphics options.</p>
-<p>Google Summer of Code 2021: Co-mentored Sang Truong (USA) who continued work on the <a href="https://github.com/r-hyperspec">hyperSpec</a> package.</p>
-<p>Google Summer of Code 2020: Co-mentored Erick Oduniyi (USA) who began the work of refactoring <a href="https://github.com/r-hyperspec">hyperSpec</a> into sub-packages.</p>
-<p>Google Summer of Code 2016: Co-mentored Anton Belov (Russia) in writing new functions for the <a href="https://gitlab.com/chemometrics/unmixR">unmixR</a> package.</p>
-<p>Google Summer of Code 2013: Co-mentored Conor McManus (Ireland) in writing the <a href="https://gitlab.com/chemometrics/unmixR">unmixR</a> package.</p>
-<p>I am a significant contributor to the <a href="http://www.validnmr.com/w/index.php?title=Chemometrics">Valid NMR Chemometrics Wiki</a>.</p>
-<p>You can see my <a href="https://stackexchange.com/users/316869/bryan-hanson?tab=accounts">StackExchange</a> Activity.</p>
+<ul>
+<li>Google Summer of Code 2021: Mentored Tejasvi Gupta (India) who adapted <a href="https://CRAN.R-project.org/package=ChemoSpec">ChemoSpec</a> to provide <code>ggplot2</code> and <code>plotly</code> graphics options.</li>
+<li>Google Summer of Code 2021: Co-mentored Sang Truong (USA) who continued work on the <a href="https://github.com/r-hyperspec">hyperSpec</a> package.</li>
+<li>Google Summer of Code 2020: Co-mentored Erick Oduniyi (USA) who began the work of refactoring <a href="https://github.com/r-hyperspec">hyperSpec</a> into sub-packages.</li>
+<li>Google Summer of Code 2016: Co-mentored Anton Belov (Russia) in writing new functions for the <a href="https://gitlab.com/chemometrics/unmixR">unmixR</a> package.</li>
+<li>Google Summer of Code 2013: Co-mentored Conor McManus (Ireland) in writing the <a href="https://gitlab.com/chemometrics/unmixR">unmixR</a> package.</li>
+<li>I am a significant contributor to the <a href="http://www.validnmr.com/w/index.php?title=Chemometrics">Valid NMR Chemometrics Wiki</a>.</li>
+<li>You can see my <a href="https://stackexchange.com/users/316869/bryan-hanson?tab=accounts">StackExchange</a> Activity.</li>
+</ul>
 
 
 </section>
 
-</main> <!-- /main -->
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src=".//gc.zgo.at/count.js"></script></main> <!-- /main -->
 <script type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const icon = "";
@@ -321,7 +348,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
+<script src="https://utteranc.es/client.js" repo="bryanhanson/CSR" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
 </div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+      <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+  </div>
+</footer>
 
 
 

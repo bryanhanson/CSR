@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-0.9.309">
+<meta name="generator" content="quarto-0.9.312">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2020-06-28">
 <meta name="description" content="Faking it…">
 
-<title>Chemometrics &amp; Spectroscopy Using R - Simulating Spectroscopic Data Part 1</title>
+<title>Chemometrics and Spectroscopy Using R - Simulating Spectroscopic Data Part 1</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -103,11 +103,14 @@ div.csl-indent {
 </style>
 
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../../site_libs/clipboard/clipboard.min.js"></script>
 <meta name="quarto:offset" content="../../">
 <script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<script src="../../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
 <script src="../../site_libs/quarto-html/quarto.js"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -118,11 +121,11 @@ div.csl-indent {
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
-  "location": "sidebar",
+  "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
-  "panel-placement": "start",
-  "type": "textbox",
+  "panel-placement": "end",
+  "type": "overlay",
   "limit": 20,
   "language": {
     "search-no-results-text": "No results",
@@ -137,65 +140,127 @@ div.csl-indent {
   }
 }</script>
 
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({
+  "notice_banner_type":"simple",
+  "consent_type":"implied",
+  "palette":"light",
+  "language":"en",
+  "page_load_consent_levels":["strictly-necessary","functionality","tracking","targeting"],
+  "notice_banner_reject_button_hide":false,
+  "preferences_center_close_button_hide":false,
+  "website_name":""
+  });
+});
+</script> 
+  
+
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="../../styles.css">
+<meta name="twitter:title" content="Chemometrics and Spectroscopy Using R - Simulating Spectroscopic Data Part 1">
+<meta name="twitter:description" content="Faking it...">
+<meta name="twitter:card" content="summary">
 </head>
 
-<body class="fullcontent">
+<body class="nav-fixed fullcontent">
 
 <div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Chemometrics and Spectroscopy Using R</span>
+  </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">About</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../projects.html">Projects</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://www.r-bloggers.com/">R-Bloggers</a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="mailto:hanson@depauw.edu"><i class="bi bi-envelope-fill" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/profbryanhanson"><i class="bi bi-twitter" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/bryanhanson"><i class="bi bi-git" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml"><i class="bi bi-rss" role="img">
+</i> 
+ </a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
 <!-- content -->
-<header id="title-block-header" class="quarto-title-block default page-columns page-full">
-  <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-body">
-      <h1 class="title">Simulating Spectroscopic Data Part 1</h1>
-                          <div class="quarto-categories">
-                <div class="quarto-category">R</div>
-                <div class="quarto-category">Simulated Data</div>
-                <div class="quarto-category">SpecHelpers</div>
-                <div class="quarto-category">Baseline</div>
-              </div>
-                  </div>
-  </div>
-    
-  <div>
-    <div class="description">
-      Faking it…
-    </div>
-  </div>
-
-
-
-
-  <div class="quarto-title-meta">
-
-      <div>
-      <div class="quarto-title-meta-heading">Author</div>
-      <div class="quarto-title-meta-contents">
-               <p>Bryan Hanson </p>
-            </div>
-    </div>
-      
-      <div>
-      <div class="quarto-title-meta-heading">Published</div>
-      <div class="quarto-title-meta-contents">
-        <p class="date">June 28, 2020</p>
-      </div>
-    </div>
-      
-    </div>
-    
-  
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Simulating Spectroscopic Data Part 1</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">Simulated Data</div>
+    <div class="quarto-category">SpecHelpers</div>
+    <div class="quarto-category">Baseline</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Faking it…
+  </div>
+</div>
 
 
 
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Bryan Hanson </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 28, 2020</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+</header>
 
 <div class="cell">
 
@@ -203,15 +268,15 @@ div.csl-indent {
 <p>It is well-recognized that one of the virtues of the <code>R</code> language is the extensive tools it provides for working with distributions. <a href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/Distributions">Functions</a> exist to generate random number draws, determine quantiles, and examine the probability <a href="https://en.wikipedia.org/wiki/Probability_density_function">density</a> and <a href="https://en.wikipedia.org/wiki/Cumulative_distribution_function">cumulative</a> distribution curves that describe each distribution.</p>
 <p>This toolbox gives one the ability to create simulated data sets for testing very easily. If you need a few random numbers from a Gaussian distribution then <code>rnorm</code> is your friend:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rnorm</span>(<span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">rnorm</span>(<span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] -1.67497913 -1.49447605 -0.02394601</code></pre>
 </div>
 </div>
 <p>Imagine you were developing a new technique to determine if two methods of manufacturing widgets produced widgets of the same mass.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Even before the widgets were manufactured, you could test your code by simulating widget masses using <code>rnorm</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>widget_1_masses <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="fl">5.0</span>, <span class="fl">0.5</span>) <span class="co"># mean mass 5.0</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>widget_2_masses <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="fl">4.5</span>, <span class="fl">0.5</span>) <span class="co"># mean mass 4.5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>widget_1_masses <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="fl">5.0</span>, <span class="fl">0.5</span>) <span class="co"># mean mass 5.0</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a>widget_2_masses <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="fl">4.5</span>, <span class="fl">0.5</span>) <span class="co"># mean mass 4.5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -229,23 +294,23 @@ div.csl-indent {
 <p>After theoretical considerations, we should keep in mind that all spectroscopies have some sort of detector, electronic components and basic data processing that can affect peak shape. A CCD on a UV detector is one of the simpler situations. FT-IR has a mechanical interferometer, and the raw signal from both IR and NMR is Fourier-transformed prior to use. So there are not only theoretical issues to think about, but also engineering, instrument tuning, electrical engineering and mathematical issues to consider.</p>
 <p>Even with myriad theoretical and practical considerations, a Gaussian curve is a good approximation to a simple peak, and more complex peaks can be built by summing Gaussian curves. If we want to simulate a simple peak with a Gaussian shape, we can use the <code>dnorm</code> function, which gives us the “density” of the distribution:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>std_deviations <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">5</span>, <span class="dv">5</span>, <span class="at">length.out =</span> <span class="dv">100</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>Gaussian_1 <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(std_deviations)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(std_deviations, Gaussian_1, <span class="at">type =</span> <span class="st">"l"</span>,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"standard deviations"</span>, <span class="at">ylab =</span> <span class="st">"Gaussian Density"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>std_deviations <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">5</span>, <span class="dv">5</span>, <span class="at">length.out =</span> <span class="dv">100</span>)</span>
+<span id="cb4-2"><a href="#cb4-2"></a>Gaussian_1 <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(std_deviations)</span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="fu">plot</span>(std_deviations, Gaussian_1, <span class="at">type =</span> <span class="st">"l"</span>,</span>
+<span id="cb4-4"><a href="#cb4-4"></a>  <span class="at">xlab =</span> <span class="st">"standard deviations"</span>, <span class="at">ylab =</span> <span class="st">"Gaussian Density"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="2020-06-28-Sim-Spec-Data-Pt1_files/figure-html/dnorm1-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>If we want this to look more like a “real” peak, we can increase the x range and use x values with realistic frequency values. And if we want our spectrum to be more complex, we can add several of these curves together. Keep in mind that the area under the density curve is 1.0, and the peak width is determined by the value of argument <code>sd</code> (the standard deviation). For example if you want to simulate the UV spectrum of <a href="https://webbook.nist.gov/cgi/cbook.cgi?ID=C121335&amp;Units=SI&amp;Mask=400">vanillin</a>, which has maxima at about 230, 280 and 315 nm, one can do something along these lines:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>wavelengths <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">220</span>, <span class="dv">350</span>, <span class="at">by =</span> <span class="fl">1.0</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>Peak1 <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(wavelengths, <span class="dv">230</span>, <span class="dv">22</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>Peak2 <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(wavelengths, <span class="dv">280</span>, <span class="dv">17</span>)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>Peak3 <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(wavelengths, <span class="dv">315</span>, <span class="dv">17</span>)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>Peaks123 <span class="ot">&lt;-</span> <span class="fu">colSums</span>(<span class="fu">rbind</span>(<span class="fl">1.6</span> <span class="sc">*</span> Peak1, Peak2, Peak3))</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(wavelengths, Peaks123, <span class="at">type =</span> <span class="st">"l"</span>,</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"wavelengths (nm)"</span>, <span class="at">ylab =</span> <span class="st">"arbitrary intensity"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>wavelengths <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">220</span>, <span class="dv">350</span>, <span class="at">by =</span> <span class="fl">1.0</span>)</span>
+<span id="cb5-2"><a href="#cb5-2"></a>Peak1 <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(wavelengths, <span class="dv">230</span>, <span class="dv">22</span>)</span>
+<span id="cb5-3"><a href="#cb5-3"></a>Peak2 <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(wavelengths, <span class="dv">280</span>, <span class="dv">17</span>)</span>
+<span id="cb5-4"><a href="#cb5-4"></a>Peak3 <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(wavelengths, <span class="dv">315</span>, <span class="dv">17</span>)</span>
+<span id="cb5-5"><a href="#cb5-5"></a>Peaks123 <span class="ot">&lt;-</span> <span class="fu">colSums</span>(<span class="fu">rbind</span>(<span class="fl">1.6</span> <span class="sc">*</span> Peak1, Peak2, Peak3))</span>
+<span id="cb5-6"><a href="#cb5-6"></a><span class="fu">plot</span>(wavelengths, Peaks123, <span class="at">type =</span> <span class="st">"l"</span>,</span>
+<span id="cb5-7"><a href="#cb5-7"></a>  <span class="at">xlab =</span> <span class="st">"wavelengths (nm)"</span>, <span class="at">ylab =</span> <span class="st">"arbitrary intensity"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="2020-06-28-Sim-Spec-Data-Pt1_files/figure-html/vanillin-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -254,11 +319,11 @@ div.csl-indent {
 <p>It’s a simple, if tedious, task to add Gaussian curves in this manner to simulate a <em>single spectrum</em>. One can also create several different spectra, and then combine them in various ratios to create a data set representing samples composed of <em>mixtures of compounds</em>. UV spectra are tougher due to the vibrational coupling; NMR spectra are quite straightforward since we know the area of each magnetic environment in the structure (but we also have to deal with doublets etc.). If you plan to do a lot of this, take a look at the <a href="https://cran.r-project.org/package=SpecHelpers"><code>SpecHelpers</code></a> package, which is designed to streamline these tasks.</p>
 <p>A relatively minor exception to the typical Gaussian peak shape is NMR. Peaks in NMR are typically described as “Lorentzian”, which corresponds to the <a href="https://en.wikipedia.org/wiki/Cauchy_distribution">Cauchy</a> distribution <span class="citation" data-cites="Goldenberg2016">(<a href="#ref-Goldenberg2016" role="doc-biblioref">Goldenberg 2016</a>)</span>. This quick comparison shows that NMR peaks are expected to be less sharp and have fatter tails:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>Gaussian_1 <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(std_deviations)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>Cauchy_1 <span class="ot">&lt;-</span> <span class="fu">dcauchy</span>(std_deviations)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(std_deviations, Gaussian_1, <span class="at">type =</span> <span class="st">"l"</span>,</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"standard deviations"</span>, <span class="at">ylab =</span> <span class="st">"density"</span>)</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(std_deviations, Cauchy_1, <span class="at">col =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>Gaussian_1 <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(std_deviations)</span>
+<span id="cb6-2"><a href="#cb6-2"></a>Cauchy_1 <span class="ot">&lt;-</span> <span class="fu">dcauchy</span>(std_deviations)</span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="fu">plot</span>(std_deviations, Gaussian_1, <span class="at">type =</span> <span class="st">"l"</span>,</span>
+<span id="cb6-4"><a href="#cb6-4"></a>  <span class="at">xlab =</span> <span class="st">"standard deviations"</span>, <span class="at">ylab =</span> <span class="st">"density"</span>)</span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="fu">lines</span>(std_deviations, Cauchy_1, <span class="at">col =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="2020-06-28-Sim-Spec-Data-Pt1_files/figure-html/GvC-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -269,47 +334,47 @@ div.csl-indent {
 <p>For many types of spectroscopies there is a need to correct the baseline when processing the data. But if you are simulating spectroscopic (or chromatographic) data, how can you introduce baseline anomalies? Such anomalies can take many forms, for instance a linear dependence on wavelength (i.e.&nbsp;a steadily rising baseline without curvature). But more often one sees complex rolling baseline issues.</p>
 <p>Let’s play with introducing different types of baseline abberations. First, let’s create a set of three simple spectra. We’ll use a simple function to scale the set of spectra so the range is on the interval [0…1] for ease of further manipulations.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>wavelengths <span class="ot">&lt;-</span> <span class="dv">200</span><span class="sc">:</span><span class="dv">800</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>Spec1 <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(wavelengths, <span class="dv">425</span>, <span class="dv">30</span>)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>Spec2 <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(wavelengths, <span class="dv">550</span>, <span class="dv">20</span>) <span class="sc">*</span> <span class="dv">3</span> <span class="co"># boost the area</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>Spec3 <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(wavelengths, <span class="dv">615</span>, <span class="dv">15</span>)</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>Spec123 <span class="ot">&lt;-</span> <span class="fu">rbind</span>(Spec1, Spec2, Spec3)</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(Spec123) <span class="co"># matrix with samples in rows</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>wavelengths <span class="ot">&lt;-</span> <span class="dv">200</span><span class="sc">:</span><span class="dv">800</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a>Spec1 <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(wavelengths, <span class="dv">425</span>, <span class="dv">30</span>)</span>
+<span id="cb7-3"><a href="#cb7-3"></a>Spec2 <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(wavelengths, <span class="dv">550</span>, <span class="dv">20</span>) <span class="sc">*</span> <span class="dv">3</span> <span class="co"># boost the area</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a>Spec3 <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(wavelengths, <span class="dv">615</span>, <span class="dv">15</span>)</span>
+<span id="cb7-5"><a href="#cb7-5"></a>Spec123 <span class="ot">&lt;-</span> <span class="fu">rbind</span>(Spec1, Spec2, Spec3)</span>
+<span id="cb7-6"><a href="#cb7-6"></a><span class="fu">dim</span>(Spec123) <span class="co"># matrix with samples in rows</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1]   3 601</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>scale01 <span class="ot">&lt;-</span> <span class="cf">function</span>(M) {</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># scales the range of the matrix to [0...1]</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  mn <span class="ot">&lt;-</span> <span class="fu">min</span>(M)</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  M <span class="ot">&lt;-</span> M <span class="sc">-</span> mn</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  mx <span class="ot">&lt;-</span> <span class="fu">max</span>(M)</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  M <span class="ot">&lt;-</span> M<span class="sc">/</span>mx</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>scale01 <span class="ot">&lt;-</span> <span class="cf">function</span>(M) {</span>
+<span id="cb9-2"><a href="#cb9-2"></a>  <span class="co"># scales the range of the matrix to [0...1]</span></span>
+<span id="cb9-3"><a href="#cb9-3"></a>  mn <span class="ot">&lt;-</span> <span class="fu">min</span>(M)</span>
+<span id="cb9-4"><a href="#cb9-4"></a>  M <span class="ot">&lt;-</span> M <span class="sc">-</span> mn</span>
+<span id="cb9-5"><a href="#cb9-5"></a>  mx <span class="ot">&lt;-</span> <span class="fu">max</span>(M)</span>
+<span id="cb9-6"><a href="#cb9-6"></a>  M <span class="ot">&lt;-</span> M<span class="sc">/</span>mx</span>
+<span id="cb9-7"><a href="#cb9-7"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Here are the results; the dotted line is the sum of the three spectra, offset vertically for ease of comparison.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>Spec123 <span class="ot">&lt;-</span> <span class="fu">scale01</span>(Spec123)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(wavelengths, Spec123[<span class="dv">1</span>,], <span class="at">col =</span> <span class="st">"black"</span>, <span class="at">type =</span> <span class="st">"l"</span>,</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"wavelength (nm)"</span>, <span class="at">ylab =</span> <span class="st">"intensity"</span>,</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">1.3</span>))</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(wavelengths, Spec123[<span class="dv">2</span>,], <span class="at">col =</span> <span class="st">"red"</span>)</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(wavelengths, Spec123[<span class="dv">3</span>,], <span class="at">col =</span> <span class="st">"blue"</span>)</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(wavelengths, <span class="fu">colSums</span>(Spec123) <span class="sc">+</span> <span class="fl">0.2</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>Spec123 <span class="ot">&lt;-</span> <span class="fu">scale01</span>(Spec123)</span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="fu">plot</span>(wavelengths, Spec123[<span class="dv">1</span>,], <span class="at">col =</span> <span class="st">"black"</span>, <span class="at">type =</span> <span class="st">"l"</span>,</span>
+<span id="cb10-3"><a href="#cb10-3"></a>  <span class="at">xlab =</span> <span class="st">"wavelength (nm)"</span>, <span class="at">ylab =</span> <span class="st">"intensity"</span>,</span>
+<span id="cb10-4"><a href="#cb10-4"></a>  <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">1.3</span>))</span>
+<span id="cb10-5"><a href="#cb10-5"></a><span class="fu">lines</span>(wavelengths, Spec123[<span class="dv">2</span>,], <span class="at">col =</span> <span class="st">"red"</span>)</span>
+<span id="cb10-6"><a href="#cb10-6"></a><span class="fu">lines</span>(wavelengths, Spec123[<span class="dv">3</span>,], <span class="at">col =</span> <span class="st">"blue"</span>)</span>
+<span id="cb10-7"><a href="#cb10-7"></a><span class="fu">lines</span>(wavelengths, <span class="fu">colSums</span>(Spec123) <span class="sc">+</span> <span class="fl">0.2</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="2020-06-28-Sim-Spec-Data-Pt1_files/figure-html/showThree-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>One clever way to introduce baseline anomalies is to use a <a href="https://en.wikipedia.org/wiki/Vandermonde_matrix">Vandermonde matrix</a>. This is a trick I learned while working with the team on the <code>hyperSpec</code> overhaul funded by <a href="https://chemospec.org/posts/2020-05-07-GSOC-hyperSpec/">GSOC</a>.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> It’s easiest to explain by an example:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>vander <span class="ot">&lt;-</span> <span class="cf">function</span>(x, order) <span class="fu">outer</span>(x, <span class="dv">0</span><span class="sc">:</span>order, <span class="st">`</span><span class="at">^</span><span class="st">`</span>)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>vdm <span class="ot">&lt;-</span> <span class="fu">vander</span>(wavelengths, <span class="dv">2</span>)</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(vdm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>vander <span class="ot">&lt;-</span> <span class="cf">function</span>(x, order) <span class="fu">outer</span>(x, <span class="dv">0</span><span class="sc">:</span>order, <span class="st">`</span><span class="at">^</span><span class="st">`</span>)</span>
+<span id="cb11-2"><a href="#cb11-2"></a>vdm <span class="ot">&lt;-</span> <span class="fu">vander</span>(wavelengths, <span class="dv">2</span>)</span>
+<span id="cb11-3"><a href="#cb11-3"></a><span class="fu">dim</span>(vdm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 601   3</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>vdm[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>vdm[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     [,1] [,2]  [,3]
 [1,]    1  200 40000
@@ -318,13 +383,13 @@ div.csl-indent {
 [4,]    1  203 41209
 [5,]    1  204 41616</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>vdm <span class="ot">&lt;-</span> <span class="fu">scale</span>(vdm, <span class="at">center =</span> <span class="cn">FALSE</span>, <span class="at">scale =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">50</span>, <span class="dv">2000</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>vdm <span class="ot">&lt;-</span> <span class="fu">scale</span>(vdm, <span class="at">center =</span> <span class="cn">FALSE</span>, <span class="at">scale =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">50</span>, <span class="dv">2000</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Looking at the first few rows of <code>vdm</code>, you can see that the first column is a simple multiplier, in this case an identity vector. This can be viewed as an offset term.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> The second column contains the original wavelength values, in effect a linear term. The third column contains the square of the original wavelength values. If more terms had been requested, they would be the cubed values etc. In the code above we also scaled the columns of the matrix so that the influence of the linear and especially the squared terms don’t dominate the absolute values of the final result. Scaling does not affect the shape of the curves.</p>
 <p>To use this Vandermonde matrix, we need another matrix which will function as a set of coefficients.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>coefs <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(<span class="fu">nrow</span>(Spec123) <span class="sc">*</span> <span class="dv">3</span>), <span class="at">ncol =</span> <span class="dv">3</span>)</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>coefs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>coefs <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(<span class="fu">nrow</span>(Spec123) <span class="sc">*</span> <span class="dv">3</span>), <span class="at">ncol =</span> <span class="dv">3</span>)</span>
+<span id="cb16-2"><a href="#cb16-2"></a>coefs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>           [,1]      [,2]      [,3]
 [1,] 0.81126877 0.9094830 0.2902550
@@ -334,34 +399,34 @@ div.csl-indent {
 </div>
 <p>If we multiply the coefficients by the tranposed Vandermonde matrix, we get back a set of offsets which are the rows of the Vandermonde matrix modified by the coefficients. We’ll scale things so that <code>Spec123</code> and <code>offsets</code> are on the same overall scale and then further scale so that the spectra are not overwhelmed by the offsets in the next step.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>offsets <span class="ot">&lt;-</span> coefs <span class="sc">%*%</span> <span class="fu">t</span>(vdm)</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(offsets) <span class="co"># same dimensions as Spec123 above</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>offsets <span class="ot">&lt;-</span> coefs <span class="sc">%*%</span> <span class="fu">t</span>(vdm)</span>
+<span id="cb18-2"><a href="#cb18-2"></a><span class="fu">dim</span>(offsets) <span class="co"># same dimensions as Spec123 above</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1]   3 601</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>offsets <span class="ot">&lt;-</span> <span class="fu">scale01</span>(offsets) <span class="sc">*</span> <span class="fl">0.1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>offsets <span class="ot">&lt;-</span> <span class="fu">scale01</span>(offsets) <span class="sc">*</span> <span class="fl">0.1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>These offsets can then be added to the original spectrum to obtain our spectra with a distorted baseline. Here we have summed the individual spectra. We have added a line based on extrapolating the first 20 points of the distorted data, which clearly shows the influence of the squared term.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>FinalSpec1 <span class="ot">&lt;-</span> offsets <span class="sc">+</span> Spec123</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(wavelengths, <span class="fu">colSums</span>(FinalSpec1), <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">col =</span> <span class="st">"red"</span>,</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"wavelength (nm)"</span>, <span class="at">ylab =</span> <span class="st">"intensity"</span>)</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(wavelengths, <span class="fu">colSums</span>(Spec123))</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">colSums</span>(FinalSpec1)[<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>] <span class="sc">~</span> wavelengths[<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>])</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(wavelengths, fit<span class="sc">$</span>coef[<span class="dv">2</span>]<span class="sc">*</span>wavelengths <span class="sc">+</span> fit<span class="sc">$</span>coef[<span class="dv">1</span>],</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lty =</span> <span class="dv">2</span>) <span class="co"># good ol' y = mx + b</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a>FinalSpec1 <span class="ot">&lt;-</span> offsets <span class="sc">+</span> Spec123</span>
+<span id="cb21-2"><a href="#cb21-2"></a><span class="fu">plot</span>(wavelengths, <span class="fu">colSums</span>(FinalSpec1), <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">col =</span> <span class="st">"red"</span>,</span>
+<span id="cb21-3"><a href="#cb21-3"></a>  <span class="at">xlab =</span> <span class="st">"wavelength (nm)"</span>, <span class="at">ylab =</span> <span class="st">"intensity"</span>)</span>
+<span id="cb21-4"><a href="#cb21-4"></a><span class="fu">lines</span>(wavelengths, <span class="fu">colSums</span>(Spec123))</span>
+<span id="cb21-5"><a href="#cb21-5"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">colSums</span>(FinalSpec1)[<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>] <span class="sc">~</span> wavelengths[<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>])</span>
+<span id="cb21-6"><a href="#cb21-6"></a><span class="fu">lines</span>(wavelengths, fit<span class="sc">$</span>coef[<span class="dv">2</span>]<span class="sc">*</span>wavelengths <span class="sc">+</span> fit<span class="sc">$</span>coef[<span class="dv">1</span>],</span>
+<span id="cb21-7"><a href="#cb21-7"></a>  <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lty =</span> <span class="dv">2</span>) <span class="co"># good ol' y = mx + b</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="2020-06-28-Sim-Spec-Data-Pt1_files/figure-html/vdm4-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>The Vandermonde matrix approach works by creating offsets that are added to the original spectrum. However, it is limited to creating baseline distortions that generally increase at higher values. To create other types of distortions, you can use your imagination. For instance, you could reverse the order of the rows of <code>offsets</code> and/or use higher terms, scale a row, etc. One could also play with various polynomial functions to create the desired effect over the wavelength range of interest. For instance, the following code adds a piece of an inverted parabola to the original spectrum to simulate a baseline hump.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>hump <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">1</span><span class="sc">*</span>(<span class="dv">15</span><span class="sc">*</span>(wavelengths <span class="sc">-</span> <span class="dv">450</span>))<span class="sc">^</span><span class="dv">2</span> <span class="co"># piece of a parabola</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>hump <span class="ot">&lt;-</span> <span class="fu">scale01</span>(hump)</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>FinalSpec2 <span class="ot">&lt;-</span> hump <span class="sc">*</span> <span class="fl">0.1</span> <span class="sc">+</span> <span class="fu">colSums</span>(Spec123)</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(wavelengths, FinalSpec2, <span class="at">type =</span> <span class="st">"l"</span>,</span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"wavelengths (nm)"</span>, <span class="at">ylab =</span> <span class="st">"intensity"</span>)</span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(wavelengths, hump <span class="sc">*</span> <span class="fl">0.1</span>, <span class="at">lty =</span> <span class="dv">2</span>) <span class="co"># trace the hump</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>hump <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">1</span><span class="sc">*</span>(<span class="dv">15</span><span class="sc">*</span>(wavelengths <span class="sc">-</span> <span class="dv">450</span>))<span class="sc">^</span><span class="dv">2</span> <span class="co"># piece of a parabola</span></span>
+<span id="cb22-2"><a href="#cb22-2"></a>hump <span class="ot">&lt;-</span> <span class="fu">scale01</span>(hump)</span>
+<span id="cb22-3"><a href="#cb22-3"></a>FinalSpec2 <span class="ot">&lt;-</span> hump <span class="sc">*</span> <span class="fl">0.1</span> <span class="sc">+</span> <span class="fu">colSums</span>(Spec123)</span>
+<span id="cb22-4"><a href="#cb22-4"></a><span class="fu">plot</span>(wavelengths, FinalSpec2, <span class="at">type =</span> <span class="st">"l"</span>,</span>
+<span id="cb22-5"><a href="#cb22-5"></a>  <span class="at">xlab =</span> <span class="st">"wavelengths (nm)"</span>, <span class="at">ylab =</span> <span class="st">"intensity"</span>)</span>
+<span id="cb22-6"><a href="#cb22-6"></a><span class="fu">lines</span>(wavelengths, hump <span class="sc">*</span> <span class="fl">0.1</span>, <span class="at">lty =</span> <span class="dv">2</span>) <span class="co"># trace the hump</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="2020-06-28-Sim-Spec-Data-Pt1_files/figure-html/hump-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -374,7 +439,7 @@ div.csl-indent {
 </section>
 
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
 <div id="ref-Goldenberg2016" class="csl-entry" role="doc-biblioentry">
 Goldenberg, David P. 2016. <em><span class="nocase">Principles of NMR Spectroscopy: An Illustrated Guide</span></em>. University Science Books.
 </div>
@@ -386,7 +451,17 @@ Goldenberg, David P. 2016. <em><span class="nocase">Principles of NMR Spectrosco
 <li id="fn3" role="doc-endnote"><p>The work I’m showing here is based on original code in package <a href="https://cran.r-project.org/web/packages/hyperSpec/index.html"><code>hyperSpec</code></a> by Claudia Belietes.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4" role="doc-endnote"><p>As a vector of 1’s it will have no effect on the calculations to come. However, you could multiply this column by a value to add an offset to your simulated spectra. This would be a means of simulating a steady electronic bias in an instrument’s raw data.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
-</section></div></main> <!-- /main -->
+</section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
+  author = {Bryan Hanson},
+  title = {Simulating {Spectroscopic} {Data} {Part} 1},
+  date = {2020-06-28},
+  url = {http://chemospec.org/posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1.html},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2020" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
+Bryan Hanson. 2020. <span>“Simulating Spectroscopic Data Part 1.”</span>
+June 28, 2020. <a href="http://chemospec.org/posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1.html">http://chemospec.org/posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1.html</a>.
+</div></div></section></div></main> <!-- /main -->
 <script type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const icon = "";
@@ -466,7 +541,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
+<script src="https://utteranc.es/client.js" repo="bryanhanson/CSR" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
 </div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+      <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+  </div>
+</footer>
 
 
 

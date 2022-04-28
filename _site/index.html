@@ -67,7 +67,8 @@ ul.task-list{list-style: none;}
 
     const options = {
       valueNames: ['listing-date','listing-title','listing-author','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
+      page: 25,
+    pagination: { item: "<li class='page-item'><a class='page page-link' href='#'></a></li>" },
       searchColumns: ["listing-date","listing-title","listing-author","listing-description","listing-categories"],
     };
 
@@ -157,7 +158,7 @@ cookieconsent.run({
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(9)</span></div><div class="category" data-category="Alignment">Alignment <span class="quarto-category-count">(1)</span></div><div class="category" data-category="ChemoSpec">ChemoSpec <span class="quarto-category-count">(3)</span></div><div class="category" data-category="ChemoSpec2D">ChemoSpec2D <span class="quarto-category-count">(1)</span></div><div class="category" data-category="ChemoSpecUtils">ChemoSpecUtils <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Data Formats">Data Formats <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Github">Github <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Heatmap">Heatmap <span class="quarto-category-count">(1)</span></div><div class="category" data-category="NMR">NMR <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Python">Python <span class="quarto-category-count">(2)</span></div><div class="category" data-category="R">R <span class="quarto-category-count">(9)</span></div><div class="category" data-category="Seriation">Seriation <span class="quarto-category-count">(1)</span></div><div class="category" data-category="readJDX">readJDX <span class="quarto-category-count">(1)</span></div></div></div>
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(26)</span></div><div class="category" data-category="ASCII">ASCII <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Alignment">Alignment <span class="quarto-category-count">(3)</span></div><div class="category" data-category="Baseline">Baseline <span class="quarto-category-count">(1)</span></div><div class="category" data-category="ChemoSpec">ChemoSpec <span class="quarto-category-count">(9)</span></div><div class="category" data-category="ChemoSpec2D">ChemoSpec2D <span class="quarto-category-count">(5)</span></div><div class="category" data-category="ChemoSpecUtils">ChemoSpecUtils <span class="quarto-category-count">(4)</span></div><div class="category" data-category="Data Formats">Data Formats <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Developers">Developers <span class="quarto-category-count">(1)</span></div><div class="category" data-category="FOSS">FOSS <span class="quarto-category-count">(1)</span></div><div class="category" data-category="GSOC">GSOC <span class="quarto-category-count">(5)</span></div><div class="category" data-category="Github">Github <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Github Actions">Github Actions <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Guest Post">Guest Post <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Heatmap">Heatmap <span class="quarto-category-count">(1)</span></div><div class="category" data-category="JCAMP-DX">JCAMP-DX <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Literature">Literature <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Metabolomics">Metabolomics <span class="quarto-category-count">(2)</span></div><div class="category" data-category="NMR">NMR <span class="quarto-category-count">(3)</span></div><div class="category" data-category="PLS">PLS <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Python">Python <span class="quarto-category-count">(2)</span></div><div class="category" data-category="R">R <span class="quarto-category-count">(24)</span></div><div class="category" data-category="Seriation">Seriation <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Simulated Data">Simulated Data <span class="quarto-category-count">(1)</span></div><div class="category" data-category="SpecHelpers">SpecHelpers <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Utilities">Utilities <span class="quarto-category-count">(1)</span></div><div class="category" data-category="drat">drat <span class="quarto-category-count">(1)</span></div><div class="category" data-category="httr">httr <span class="quarto-category-count">(1)</span></div><div class="category" data-category="hyperSpec">hyperSpec <span class="quarto-category-count">(4)</span></div><div class="category" data-category="readJDX">readJDX <span class="quarto-category-count">(2)</span></div></div></div>
 <!-- main -->
 <main class="content column-page-left" id="quarto-document-content">
 
@@ -174,7 +175,521 @@ cookieconsent.run({
 
 <script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src=".//gc.zgo.at/count.js"></script><div class="quarto-listing quarto-listing-container-default" id="listing-listing">
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="R,Heatmap,Seriation,ChemoSpec" data-listing-date-sort="1587798000000" data-listing-file-modified-sort="1651077902695" data-listing-reading-time-sort="5.785">
+<div class="quarto-post image-right" data-index="0" data-categories="R,ChemoSpec,Metabolomics" data-listing-date-sort="1648105200000" data-listing-file-modified-sort="1651079739493" data-listing-reading-time-sort="6.395">
+<div class="body">
+<a href="./posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2.html">
+<h3 class="no-anchor listing-title">
+Metabolic Phenotyping Protocol Part 2
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
+R
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('ChemoSpec'); return false;">
+ChemoSpec
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Metabolomics'); return false;">
+Metabolomics
+</div>
+</div>
+<a href="./posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2.html">
+<div class="listing-description">
+<p>Implementing the Statistical Analysis in Metabolic Phenotyping Protocol of Blaise <em>et al.</em></p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2.html">
+<div class="listing-date">
+Mar 24, 2022
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="1" data-categories="Literature" data-listing-date-sort="1645167600000" data-listing-file-modified-sort="1651079681941" data-listing-reading-time-sort="0.555">
+<div class="body">
+<a href="./posts/2022-02-18-Key-References/2022-02-18-Key-References.html">
+<h3 class="no-anchor listing-title">
+Chemometrics in Spectroscopy: Key References
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Literature'); return false;">
+Literature
+</div>
+</div>
+<a href="./posts/2022-02-18-Key-References/2022-02-18-Key-References.html">
+<div class="listing-description">
+<p>Keep coming back to these sources</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/2022-02-18-Key-References/2022-02-18-Key-References.html">
+<div class="listing-date">
+Feb 18, 2022
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="2" data-categories="R,Utilities,Developers" data-listing-date-sort="1644390000000" data-listing-file-modified-sort="1651079625725" data-listing-reading-time-sort="7.915">
+<div class="body">
+<a href="./posts/2022-02-09-Imports-Suggests/2022-02-09-Imports-Suggests.html">
+<h3 class="no-anchor listing-title">
+Do You have Stale Imports or Suggests?
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
+R
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Utilities'); return false;">
+Utilities
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Developers'); return false;">
+Developers
+</div>
+</div>
+<a href="./posts/2022-02-09-Imports-Suggests/2022-02-09-Imports-Suggests.html">
+<div class="listing-description">
+<p>Hints For Package Developers</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/2022-02-09-Imports-Suggests/2022-02-09-Imports-Suggests.html">
+<div class="listing-date">
+Feb 9, 2022
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="3" data-categories="R,ChemoSpec,Metabolomics" data-listing-date-sort="1643698800000" data-listing-file-modified-sort="1651079553137" data-listing-reading-time-sort="5.4">
+<div class="body">
+<a href="./posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1.html">
+<h3 class="no-anchor listing-title">
+Metabolic Phenotyping Protocol Part 1
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
+R
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('ChemoSpec'); return false;">
+ChemoSpec
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Metabolomics'); return false;">
+Metabolomics
+</div>
+</div>
+<a href="./posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1.html">
+<div class="listing-description">
+<p>Implementing the Statistical Analysis in Metabolic Phenotyping Protocol of Blaise <em>et al.</em></p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1.html">
+<div class="listing-date">
+Feb 1, 2022
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="4" data-categories="R,ChemoSpec,ChemoSpecUtils,ChemoSpec2D,GSOC" data-listing-date-sort="1634108400000" data-listing-file-modified-sort="1651079420870" data-listing-reading-time-sort="1.48">
+<div class="body">
+<a href="./posts/2021-10-13-GSOC-CS-Graphics/2021-10-13-GSOC-CS-Graphics.html">
+<h3 class="no-anchor listing-title">
+GSOC 2021: New Graphics for ChemoSpec
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
+R
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('ChemoSpec'); return false;">
+ChemoSpec
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('ChemoSpecUtils'); return false;">
+ChemoSpecUtils
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('ChemoSpec2D'); return false;">
+ChemoSpec2D
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('GSOC'); return false;">
+GSOC
+</div>
+</div>
+<a href="./posts/2021-10-13-GSOC-CS-Graphics/2021-10-13-GSOC-CS-Graphics.html">
+<div class="listing-description">
+<p>Major improvements!</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/2021-10-13-GSOC-CS-Graphics/2021-10-13-GSOC-CS-Graphics.html">
+<div class="listing-date">
+Oct 13, 2021
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="5" data-categories="R,hyperSpec,ChemoSpec,GSOC" data-listing-date-sort="1621666800000" data-listing-file-modified-sort="1651079369755" data-listing-reading-time-sort="0.655">
+<div class="body">
+<a href="./posts/2021-05-22-GSOC-hyperSpec-ChemoSpec/2021-05-22-GSOC-hyperSpec-ChemoSpec.html">
+<h3 class="no-anchor listing-title">
+GSOC 2021: hyperSpec and ChemoSpec!
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
+R
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('hyperSpec'); return false;">
+hyperSpec
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('ChemoSpec'); return false;">
+ChemoSpec
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('GSOC'); return false;">
+GSOC
+</div>
+</div>
+<a href="./posts/2021-05-22-GSOC-hyperSpec-ChemoSpec/2021-05-22-GSOC-hyperSpec-ChemoSpec.html">
+<div class="listing-description">
+<p>I’m gonna be busy!</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/2021-05-22-GSOC-hyperSpec-ChemoSpec/2021-05-22-GSOC-hyperSpec-ChemoSpec.html">
+<div class="listing-date">
+May 22, 2021
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="6" data-categories="R,Github,FOSS,httr" data-listing-date-sort="1618815600000" data-listing-file-modified-sort="1651079319793" data-listing-reading-time-sort="6.275">
+<div class="body">
+<a href="./posts/2021-04-19-Search-GH-Topics/2021-04-19-Search-GH-Topics.html">
+<h3 class="no-anchor listing-title">
+Automatically Searching Github Repos by Topic
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
+R
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Github'); return false;">
+Github
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('FOSS'); return false;">
+FOSS
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('httr'); return false;">
+httr
+</div>
+</div>
+<a href="./posts/2021-04-19-Search-GH-Topics/2021-04-19-Search-GH-Topics.html">
+<div class="listing-description">
+<p>How to find packages of interest</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/2021-04-19-Search-GH-Topics/2021-04-19-Search-GH-Topics.html">
+<div class="listing-date">
+Apr 19, 2021
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="7" data-categories="R,Github Actions,drat,GSOC,hyperSpec" data-listing-date-sort="1618124400000" data-listing-file-modified-sort="1651079278594" data-listing-reading-time-sort="4.975">
+<div class="body">
+<a href="./posts/2021-04-11-GHA-drat/2021-04-11-GHA-drat.html">
+<h3 class="no-anchor listing-title">
+Using Github Actions &amp; drat to Deploy R Packages
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
+R
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Github Actions'); return false;">
+Github Actions
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('drat'); return false;">
+drat
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('GSOC'); return false;">
+GSOC
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('hyperSpec'); return false;">
+hyperSpec
+</div>
+</div>
+<a href="./posts/2021-04-11-GHA-drat/2021-04-11-GHA-drat.html">
+<div class="listing-description">
+<p>Automating a tedious task</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/2021-04-11-GHA-drat/2021-04-11-GHA-drat.html">
+<div class="listing-date">
+Apr 11, 2021
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="8" data-categories="R,ChemoSpec,ChemoSpec2D,ChemoSpecUtils,readJDX" data-listing-date-sort="1616828400000" data-listing-file-modified-sort="1651079221965" data-listing-reading-time-sort="0.61">
+<div class="body">
+<a href="./posts/2021-03-27-Spec-Suite-update/2021-03-27-Spec-Suite-update.html">
+<h3 class="no-anchor listing-title">
+Spectroscopy Suite Update
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
+R
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('ChemoSpec'); return false;">
+ChemoSpec
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('ChemoSpec2D'); return false;">
+ChemoSpec2D
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('ChemoSpecUtils'); return false;">
+ChemoSpecUtils
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('readJDX'); return false;">
+readJDX
+</div>
+</div>
+<a href="./posts/2021-03-27-Spec-Suite-update/2021-03-27-Spec-Suite-update.html">
+<div class="listing-description">
+<p>Updates for the new version of R</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/2021-03-27-Spec-Suite-update/2021-03-27-Spec-Suite-update.html">
+<div class="listing-date">
+Mar 27, 2021
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="9" data-categories="R,PLS,ChemoSpec" data-listing-date-sort="1612767600000" data-listing-file-modified-sort="1651079170682" data-listing-reading-time-sort="4.06">
+<div class="body">
+<a href="./posts/2021-02-08-PLS/2021-02-08-PLS.html">
+<h3 class="no-anchor listing-title">
+Interfacing ChemoSpec to PLS
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
+R
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('PLS'); return false;">
+PLS
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('ChemoSpec'); return false;">
+ChemoSpec
+</div>
+</div>
+<a href="./posts/2021-02-08-PLS/2021-02-08-PLS.html">
+<div class="listing-description">
+<p>It’s easy to connect the two packages</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/2021-02-08-PLS/2021-02-08-PLS.html">
+<div class="listing-date">
+Feb 8, 2021
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="10" data-categories="R,hyperSpec,GSOC,Guest Post" data-listing-date-sort="1599548400000" data-listing-file-modified-sort="1651079104752" data-listing-reading-time-sort="2.12">
+<div class="body">
+<a href="./posts/2020-09-08-GSOC-hyperSpec/2020-09-08-GSOC-hyperSpec.html">
+<h3 class="no-anchor listing-title">
+GSOC Wrap Up
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
+R
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('hyperSpec'); return false;">
+hyperSpec
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('GSOC'); return false;">
+GSOC
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Guest Post'); return false;">
+Guest Post
+</div>
+</div>
+<a href="./posts/2020-09-08-GSOC-hyperSpec/2020-09-08-GSOC-hyperSpec.html">
+<div class="listing-description">
+<p>Guest post by Erick Oduniyi</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/2020-09-08-GSOC-hyperSpec/2020-09-08-GSOC-hyperSpec.html">
+<div class="listing-date">
+Sep 8, 2020
+</div>
+<div class="listing-author">
+Erick Oduniyi
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="11" data-categories="R,Simulated Data,SpecHelpers,Baseline" data-listing-date-sort="1593327600000" data-listing-file-modified-sort="1651079024474" data-listing-reading-time-sort="8.685">
+<div class="body">
+<a href="./posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1.html">
+<h3 class="no-anchor listing-title">
+Simulating Spectroscopic Data Part 1
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
+R
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Simulated Data'); return false;">
+Simulated Data
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('SpecHelpers'); return false;">
+SpecHelpers
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Baseline'); return false;">
+Baseline
+</div>
+</div>
+<a href="./posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1.html">
+<div class="listing-description">
+<p>Faking it…</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1.html">
+<div class="listing-date">
+Jun 28, 2020
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="12" data-categories="R,hyperSpec,GSOC" data-listing-date-sort="1588834800000" data-listing-file-modified-sort="1651078958248" data-listing-reading-time-sort="2.43">
+<div class="body">
+<a href="./posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html">
+<h3 class="no-anchor listing-title">
+Fortifying hyperSpec: Getting Ready for GSOC
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
+R
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('hyperSpec'); return false;">
+hyperSpec
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('GSOC'); return false;">
+GSOC
+</div>
+</div>
+<a href="./posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html">
+<div class="listing-description">
+<p>Re-factoring hyperSpec</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html">
+<div class="listing-date">
+May 7, 2020
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="13" data-categories="R,ChemoSpecUtils" data-listing-date-sort="1587970800000" data-listing-file-modified-sort="1651078872692" data-listing-reading-time-sort="0.89">
+<div class="body">
+<a href="./posts/2020-04-27-CSU-update/2020-04-27-CSU-update.html">
+<h3 class="no-anchor listing-title">
+ChemoSpecUtils Update
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
+R
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('ChemoSpecUtils'); return false;">
+ChemoSpecUtils
+</div>
+</div>
+<a href="./posts/2020-04-27-CSU-update/2020-04-27-CSU-update.html">
+<div class="listing-description">
+<p>Improvments to ChemoSpecUtils</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/2020-04-27-CSU-update/2020-04-27-CSU-update.html">
+<div class="listing-date">
+Apr 27, 2020
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="14" data-categories="R,Heatmap,Seriation,ChemoSpec" data-listing-date-sort="1587798000000" data-listing-file-modified-sort="1651077902695" data-listing-reading-time-sort="5.785">
 <div class="body">
 <a href="./posts/2020-04-25-Heatmaps/2020-04-25-Heatmaps.html">
 <h3 class="no-anchor listing-title">
@@ -212,7 +727,118 @@ Apr 25, 2020
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="1" data-categories="R,ChemoSpec,Alignment,NMR" data-listing-date-sort="1582182000000" data-listing-file-modified-sort="1651078374800" data-listing-reading-time-sort="3.65">
+<div class="quarto-post image-right" data-index="15" data-categories="Data Formats,JCAMP-DX,ASCII" data-listing-date-sort="1584774000000" data-listing-file-modified-sort="1651078824742" data-listing-reading-time-sort="6.555">
+<div class="body">
+<a href="./posts/2020-03-21-Data-Formats-Pt1/2020-03-21-Data-Formats-Pt1.html">
+<h3 class="no-anchor listing-title">
+Data Sharing in the Age of Coronavirus, Part 1
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Data Formats'); return false;">
+Data Formats
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('JCAMP-DX'); return false;">
+JCAMP-DX
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('ASCII'); return false;">
+ASCII
+</div>
+</div>
+<a href="./posts/2020-03-21-Data-Formats-Pt1/2020-03-21-Data-Formats-Pt1.html">
+<div class="listing-description">
+<p>ASCII &amp; JCAMP-DX formats</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/2020-03-21-Data-Formats-Pt1/2020-03-21-Data-Formats-Pt1.html">
+<div class="listing-date">
+Mar 21, 2020
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="16" data-categories="R,ChemoSpec2D,Alignment,NMR" data-listing-date-sort="1583305200000" data-listing-file-modified-sort="1651078625509" data-listing-reading-time-sort="4.02">
+<div class="body">
+<a href="./posts/2020-03-04-NMR-Align-Pt3/2020-03-04-NMR-Align-Pt3.html">
+<h3 class="no-anchor listing-title">
+Aligning 2D NMR Spectra Part 3
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
+R
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('ChemoSpec2D'); return false;">
+ChemoSpec2D
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Alignment'); return false;">
+Alignment
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('NMR'); return false;">
+NMR
+</div>
+</div>
+<a href="./posts/2020-03-04-NMR-Align-Pt3/2020-03-04-NMR-Align-Pt3.html">
+<div class="listing-description">
+<p>Putting it all together</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/2020-03-04-NMR-Align-Pt3/2020-03-04-NMR-Align-Pt3.html">
+<div class="listing-date">
+Mar 4, 2020
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="17" data-categories="R,ChemoSpec2D,Alignment,NMR" data-listing-date-sort="1583132400000" data-listing-file-modified-sort="1651078570297" data-listing-reading-time-sort="4.85">
+<div class="body">
+<a href="./posts/2020-03-02-NMR-Align-Pt2/2020-03-02-NMR-Align-Pt2.html">
+<h3 class="no-anchor listing-title">
+Aligning 2D NMR Spectra Part 2
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
+R
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('ChemoSpec2D'); return false;">
+ChemoSpec2D
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Alignment'); return false;">
+Alignment
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('NMR'); return false;">
+NMR
+</div>
+</div>
+<a href="./posts/2020-03-02-NMR-Align-Pt2/2020-03-02-NMR-Align-Pt2.html">
+<div class="listing-description">
+<p>Implementing the HATS-PR algorithm</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/2020-03-02-NMR-Align-Pt2/2020-03-02-NMR-Align-Pt2.html">
+<div class="listing-date">
+Mar 2, 2020
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="18" data-categories="R,ChemoSpec,Alignment,NMR" data-listing-date-sort="1582182000000" data-listing-file-modified-sort="1651078374800" data-listing-reading-time-sort="3.65">
 <div class="body">
 <a href="./posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1.html">
 <h3 class="no-anchor listing-title">
@@ -250,7 +876,7 @@ Feb 20, 2020
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="2" data-categories="R,ChemoSpec2D" data-listing-date-sort="1582095600000" data-listing-file-modified-sort="1651078103272" data-listing-reading-time-sort="1.93">
+<div class="quarto-post image-right" data-index="19" data-categories="R,ChemoSpec2D" data-listing-date-sort="1582095600000" data-listing-file-modified-sort="1651078103272" data-listing-reading-time-sort="1.93">
 <div class="body">
 <a href="./posts/2020-02-19-CS2D-update/2020-02-19-CS2D-update.html">
 <h3 class="no-anchor listing-title">
@@ -282,7 +908,7 @@ Feb 19, 2020
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="3" data-categories="R,Github" data-listing-date-sort="1579935600000" data-listing-file-modified-sort="1651078000205" data-listing-reading-time-sort="3.845">
+<div class="quarto-post image-right" data-index="20" data-categories="R,Github" data-listing-date-sort="1579935600000" data-listing-file-modified-sort="1651078000205" data-listing-reading-time-sort="3.845">
 <div class="body">
 <a href="./posts/2020-01-25-GH-Topics/2020-01-25-GH-Topics.html">
 <h3 class="no-anchor listing-title">
@@ -314,7 +940,7 @@ Jan 25, 2020
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="4" data-categories="R,ChemoSpec" data-listing-date-sort="1579849200000" data-listing-file-modified-sort="1651077947347" data-listing-reading-time-sort="0.39">
+<div class="quarto-post image-right" data-index="21" data-categories="R,ChemoSpec" data-listing-date-sort="1579849200000" data-listing-file-modified-sort="1651077947347" data-listing-reading-time-sort="0.39">
 <div class="body">
 <a href="./posts/2020-01-24-CS-update/2020-01-24-CS-update.html">
 <h3 class="no-anchor listing-title">
@@ -346,7 +972,7 @@ Jan 24, 2020
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="5" data-categories="R,ChemoSpecUtils" data-listing-date-sort="1579676400000" data-listing-file-modified-sort="1651077794361" data-listing-reading-time-sort="2.405">
+<div class="quarto-post image-right" data-index="22" data-categories="R,ChemoSpecUtils" data-listing-date-sort="1579676400000" data-listing-file-modified-sort="1651077794361" data-listing-reading-time-sort="2.405">
 <div class="body">
 <a href="./posts/2020-01-22-CSU-update/2020-01-22-CSU-update.html">
 <h3 class="no-anchor listing-title">
@@ -378,7 +1004,7 @@ Jan 22, 2020
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="6" data-categories="R,Python" data-listing-date-sort="1579676400000" data-listing-file-modified-sort="1651077856026" data-listing-reading-time-sort="0.835">
+<div class="quarto-post image-right" data-index="23" data-categories="R,Python" data-listing-date-sort="1579676400000" data-listing-file-modified-sort="1651077856026" data-listing-reading-time-sort="0.835">
 <div class="body">
 <a href="./posts/2020-01-22-F4S-update/2020-01-22-F4S-update.html">
 <h3 class="no-anchor listing-title">
@@ -410,7 +1036,7 @@ Jan 22, 2020
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="7" data-categories="R,readJDX,Data Formats" data-listing-date-sort="1577948400000" data-listing-file-modified-sort="1651077873521" data-listing-reading-time-sort="0.625">
+<div class="quarto-post image-right" data-index="24" data-categories="R,readJDX,Data Formats" data-listing-date-sort="1577948400000" data-listing-file-modified-sort="1651077873521" data-listing-reading-time-sort="0.625">
 <div class="body">
 <a href="./posts/2020-01-02-readJDX-update/2020-01-02-readJDX-update.html">
 <h3 class="no-anchor listing-title">
@@ -445,7 +1071,7 @@ Jan 2, 2020
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="8" data-categories="R,Python" data-listing-date-sort="1577862000000" data-listing-file-modified-sort="1651076308086" data-listing-reading-time-sort="0.865">
+<div class="quarto-post image-right" data-index="25" data-categories="R,Python" data-listing-date-sort="1577862000000" data-listing-file-modified-sort="1651076308086" data-listing-reading-time-sort="0.865">
 <div class="body">
 <a href="./posts/2020-01-01-Intro-F4S/2021-01-01-Intro-F4S.html">
 <h3 class="no-anchor listing-title">
@@ -481,6 +1107,9 @@ Jan 1, 2020
 <div class="listing-no-matching d-none">
 No matching items
 </div>
+<nav id="listing-pagination" class="listing-pagination" aria-label="Page Navigation">
+  <ul class="pagination"></ul>
+</nav>
 </div></main> <!-- /main -->
 <script type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
@@ -560,6 +1189,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     });
   }
 });
+</script>
+<script src="https://utteranc.es/client.js" repo="bryanhanson/CSR" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
 </script>
 </div> <!-- /content -->
 <footer class="footer">
