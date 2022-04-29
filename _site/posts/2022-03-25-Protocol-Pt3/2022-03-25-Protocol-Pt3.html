@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-0.9.312">
+<meta name="generator" content="quarto-99.9.9">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -227,6 +227,7 @@ cookieconsent.run({
   <div class="quarto-categories">
     <div class="quarto-category">R</div>
     <div class="quarto-category">ChemoSpec</div>
+    <div class="quarto-category">Metabolomics</div>
   </div>
   </div>
 
@@ -320,10 +321,10 @@ of class 'Spectra'</code></pre>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">plotScree</span>(c_pca)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+<div id="fig-screeAlt" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="2022-03-25-Protocol-Pt3_files/figure-html/screeAlt-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Scree plot (recommended style).</figcaption><p></p>
+<p><img src="2022-03-25-Protocol-Pt3_files/figure-html/fig-screeAlt-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 1: Scree plot (recommended style).</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -332,10 +333,10 @@ of class 'Spectra'</code></pre>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>p <span class="ot">&lt;-</span> <span class="fu">plotScores</span>(Worms2, c_pca, <span class="at">pcs =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="at">ellipse =</span> <span class="st">"rob"</span>, <span class="at">tol =</span> <span class="fl">0.02</span>)</span>
 <span id="cb5-2"><a href="#cb5-2"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+<div id="fig-scores12" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="2022-03-25-Protocol-Pt3_files/figure-html/scores12-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Score plot for PCs 1 and 2. Compare to protocol figure 7d.</figcaption><p></p>
+<p><img src="2022-03-25-Protocol-Pt3_files/figure-html/fig-scores12-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 2: Score plot for PCs 1 and 2. Compare to protocol figure 7d.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -345,41 +346,49 @@ of class 'Spectra'</code></pre>
 <span id="cb6-2"><a href="#cb6-2"></a>    <span class="at">tol =</span> <span class="fl">0.02</span>)</span>
 <span id="cb6-3"><a href="#cb6-3"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+<div id="fig-scores23" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="2022-03-25-Protocol-Pt3_files/figure-html/scores23-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Score plot for PCS 2 and 3.</figcaption><p></p>
+<p><img src="2022-03-25-Protocol-Pt3_files/figure-html/fig-scores23-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 3: Score plot for PCS 2 and 3.</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
-<p>One thing the published protocol does not explicitly discuss is an inspection of the loadings, but it is covered in the <a href="https://github.com/Gscorreia89/chemometrics-tutorials">Jupyter notebook</a>. This is useful in order to see if any particular frequencies are driving the separation of the samples in the score plot. Let’s plot the loadings (Figure @ref(fig:loadings)). Remember that these data were autoscaled, and hence all frequencies, including noisy frequencies, will contribute to the separation.</p>
+<p>One thing the published protocol does not explicitly discuss is an inspection of the loadings, but it is covered in the <a href="https://github.com/Gscorreia89/chemometrics-tutorials">Jupyter notebook</a>. This is useful in order to see if any particular frequencies are driving the separation of the samples in the score plot. Let’s plot the loadings (<a href="#fig-loadings">Figure&nbsp;4</a>). Remember that these data were autoscaled, and hence all frequencies, including noisy frequencies, will contribute to the separation.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>p <span class="ot">&lt;-</span> <span class="fu">plotLoadings</span>(Worms2, c_pca, <span class="at">loads =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)</span>
 <span id="cb7-2"><a href="#cb7-2"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+<div id="fig-loadings" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="2022-03-25-Protocol-Pt3_files/figure-html/loadings-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Loadings for PC1 and PC2.</figcaption><p></p>
+<p><img src="2022-03-25-Protocol-Pt3_files/figure-html/fig-loadings-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 4: Loadings for PC1 and PC2.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>From <a href="#fig-splot">Figure&nbsp;5</a> we can see that the peaks around <span class="math inline">\(\delta\)</span> 1.30 - 1.32, 1.47-1.48, and 3.03 - 3.07 are important drivers of the separation in the score plot. As an illustration, let’s look at the loadings around <span class="math inline">\(\delta\)</span> 1.3 a bit more closely (<a href="#fig-loadingsDetail">Figure&nbsp;6</a>).</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>p <span class="ot">&lt;-</span> <span class="fu">sPlotSpectra</span>(Worms2, c_pca, <span class="at">tol =</span> <span class="fl">0.001</span>)</span>
+<span id="cb8-2"><a href="#cb8-2"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-splot" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="2022-03-25-Protocol-Pt3_files/figure-html/fig-splot-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 5: s-Plot for PC1.</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>p <span class="ot">&lt;-</span> <span class="fu">sPlotSpectra</span>(Worms2, c_pca, <span class="at">tol =</span> <span class="fl">0.001</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>From Figure @ref(fig:sps) we can see that the peaks around <span class="math inline">\(\delta\)</span> 1.30 - 1.32, 1.47-1.48, and 3.03 - 3.07 are important drivers of the separation in the score plot. As an illustration, let’s look at the loadings around <span class="math inline">\(\delta\)</span> 1.3 a bit more closely.</p>
-<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>p <span class="ot">&lt;-</span> <span class="fu">plotLoadings</span>(Worms2, c_pca, <span class="at">loads =</span> <span class="dv">1</span>)</span>
-<span id="cb9-2"><a href="#cb9-2"></a>p <span class="ot">&lt;-</span> p <span class="sc">&amp;</span> <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="fl">2.05</span>, <span class="fl">2.1</span>))  <span class="co"># why &amp; not +</span></span>
-<span id="cb9-3"><a href="#cb9-3"></a>p <span class="ot">&lt;-</span> p <span class="sc">&amp;</span> <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">seq</span>(<span class="fl">0.1</span>, <span class="dv">5</span>, <span class="at">by =</span> <span class="fl">0.05</span>))</span>
-<span id="cb9-4"><a href="#cb9-4"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-2"><a href="#cb9-2"></a>p <span class="ot">&lt;-</span> p <span class="sc">&amp;</span> <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="fl">1.29</span>, <span class="fl">1.33</span>))  <span class="co"># plotLoadings needs &amp; not +</span></span>
+<span id="cb9-3"><a href="#cb9-3"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+<div id="fig-loadingsDetail" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="2022-03-25-Protocol-Pt3_files/figure-html/loadingsDetail-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Loadings for PC1 and PC2.</figcaption><p></p>
+<p><img src="2022-03-25-Protocol-Pt3_files/figure-html/fig-loadingsDetail-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 6: Loadings for PC1 and PC2.</figcaption><p></p>
 </figure>
 </div>
 </div>

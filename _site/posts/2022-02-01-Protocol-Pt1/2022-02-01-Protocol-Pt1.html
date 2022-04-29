@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-0.9.312">
+<meta name="generator" content="quarto-99.9.9">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -226,6 +226,7 @@ cookieconsent.run({
   <div class="quarto-categories">
     <div class="quarto-category">R</div>
     <div class="quarto-category">ChemoSpec</div>
+    <div class="quarto-category">Metabolomics</div>
   </div>
   </div>
 
@@ -410,16 +411,16 @@ of class 'Spectra'</code></pre>
 </section>
 <section id="plot-it-to-check-it" class="level2">
 <h2 class="anchored" data-anchor-id="plot-it-to-check-it">Plot it to check it</h2>
-<p>Let’s look at one sample from each group to make sure everything looks reasonable (Figure @ref(fig:samplePlot)). At least these four spectra look good. Note that we are using the latest <code>ChemoSpec</code> that uses <code>ggplot2</code> graphics by default (announced <a href="https://chemospec.org/posts/2021-10-13-GSOC-CS-Graphics/">here</a>).</p>
+<p>Let’s look at one sample from each group to make sure everything looks reasonable (Figure <a href="#fig-samplePlot">Figure&nbsp;1</a>). At least these four spectra look good. Note that we are using the latest <code>ChemoSpec</code> that uses <code>ggplot2</code> graphics by default (announced <a href="https://chemospec.org/posts/2021-10-13-GSOC-CS-Graphics/">here</a>).</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>p <span class="ot">&lt;-</span> <span class="fu">plotSpectra</span>(Worms, <span class="at">which =</span> <span class="fu">c</span>(<span class="dv">35</span>, <span class="dv">1</span>, <span class="dv">34</span>, <span class="dv">2</span>), <span class="at">lab.pos =</span> <span class="fl">7.5</span>, <span class="at">offset =</span> <span class="fl">0.008</span>, <span class="at">amplify =</span> <span class="dv">35</span>,</span>
 <span id="cb11-2"><a href="#cb11-2"></a>    <span class="at">yrange =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.05</span>, <span class="fl">1.1</span>))</span>
 <span id="cb11-3"><a href="#cb11-3"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+<div id="fig-samplePlot" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="2022-02-01-Protocol-Pt1_files/figure-html/samplePlot-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Sample spectra from each group.</figcaption><p></p>
+<p><img src="2022-02-01-Protocol-Pt1_files/figure-html/fig-samplePlot-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 1: Sample spectra from each group.</figcaption><p></p>
 </figure>
 </div>
 </div>

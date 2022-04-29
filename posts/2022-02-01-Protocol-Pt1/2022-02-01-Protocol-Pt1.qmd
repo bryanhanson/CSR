@@ -199,14 +199,17 @@ sumSpectra(Worms)
 
 ## Plot it to check it
 
-Let's look at one sample from each group to make sure everything looks reasonable (Figure \@ref(fig:samplePlot)).  At least these four spectra look good. Note that we are using the latest `ChemoSpec` that uses `ggplot2` graphics by default (announced [here](https://chemospec.org/posts/2021-10-13-GSOC-CS-Graphics/)).
+Let's look at one sample from each group to make sure everything looks reasonable (Figure @fig-samplePlot).  At least these four spectra look good. Note that we are using the latest `ChemoSpec` that uses `ggplot2` graphics by default (announced [here](https://chemospec.org/posts/2021-10-13-GSOC-CS-Graphics/)).
 
-```{r samplePlot, fig.cap = "Sample spectra from each group."}
+```{r}
+#| label: fig-samplePlot
+#| fig-cap: "Sample spectra from each group."
 p <- plotSpectra(Worms, which = c(35, 1, 34, 2), lab.pos = 7.5, offset = 0.008, amplify = 35, yrange = c(-0.05, 1.1))
 p
 ```
 
 In the next post we'll continue with some basic exploratory data analysis.
+
 
 ---
 

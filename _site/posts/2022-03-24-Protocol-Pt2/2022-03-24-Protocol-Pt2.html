@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-0.9.312">
+<meta name="generator" content="quarto-99.9.9">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -226,6 +226,7 @@ cookieconsent.run({
   <div class="quarto-categories">
     <div class="quarto-category">R</div>
     <div class="quarto-category">ChemoSpec</div>
+    <div class="quarto-category">Metabolomics</div>
   </div>
   </div>
 
@@ -325,36 +326,36 @@ of class 'Spectra'</code></pre>
 </div>
 <section id="components-to-retain" class="level3">
 <h3 class="anchored" data-anchor-id="components-to-retain">Components to Retain</h3>
-<p>A key question at this stage is how many components are needed to describe the data set. Keep in mind that this depends on the choice of scaling. Figures @ref(fig:screeAlt) and @ref(fig:screeTrad) are two different types of scree plots, which show the residual variance. This is the R<sup>2</sup><sub>x</sub> value in the protocol (see protocol Figure 7a). Another approach to answering this question is to do a cross-validated PCA.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> The results are shown in Figure @ref(fig:cv-pca). These are the Q<sup>2</sup><sub>x</sub> values in protocol Figure 7a. All of these ways of looking at the variance explained suggest that retaining three or possibly four PCs is adequate.</p>
-<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/screeAlt_369e9c60f38afa2078046b1347182bbf">
+<p>A key question at this stage is how many components are needed to describe the data set. Keep in mind that this depends on the choice of scaling. <a href="#fig-screeAlt">Figure&nbsp;1</a> and <a href="#fig-screeTrad">Figure&nbsp;2</a> are two different types of scree plots, which show the residual variance. This is the R<sup>2</sup><sub>x</sub> value in the protocol (see protocol Figure 7a). Another approach to answering this question is to do a cross-validated PCA.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> The results are shown in <a href="#fig-cv-pca">Figure&nbsp;3</a>. These are the Q<sup>2</sup><sub>x</sub> values in protocol Figure 7a. All of these ways of looking at the variance explained suggest that retaining three or possibly four PCs is adequate.</p>
+<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/fig-screeAlt_1abc3fdd975a4c23fc680b69270a7f28">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">plotScree</span>(c_pca)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+<div id="fig-screeAlt" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="2022-03-24-Protocol-Pt2_files/figure-html/screeAlt-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Scree plot (recommended style).</figcaption><p></p>
+<p><img src="2022-03-24-Protocol-Pt2_files/figure-html/fig-screeAlt-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 1: Scree plot (recommended style).</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/screeTrad_225c8fd5d79364a56ef15efa04fe1f2f">
+<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/fig-screeTrad_83fd39cd7b0de03daf6f9d256e79bf15">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">plotScree</span>(c_pca, <span class="at">style =</span> <span class="st">"trad"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+<div id="fig-screeTrad" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="2022-03-24-Protocol-Pt2_files/figure-html/screeTrad-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Scree plot (traditional style).</figcaption><p></p>
+<p><img src="2022-03-24-Protocol-Pt2_files/figure-html/fig-screeTrad-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 2: Scree plot (traditional style).</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/cv-pca_6ae9110fe4d82a3790f82fc73c2a7a86">
+<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/fig-cv-pca_ce8857bd5320503e2da81e49461bb359">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">cv_pcaSpectra</span>(Worms, <span class="at">choice =</span> <span class="st">"autoscale"</span>, <span class="at">pcs =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+<div id="fig-cv-pca" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="2022-03-24-Protocol-Pt2_files/figure-html/cv-pca-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Scree plot using cross validation.</figcaption><p></p>
+<p><img src="2022-03-24-Protocol-Pt2_files/figure-html/fig-cv-pca-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 3: Scree plot using cross validation.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -362,28 +363,28 @@ of class 'Spectra'</code></pre>
 </section>
 <section id="score-plots" class="level3">
 <h3 class="anchored" data-anchor-id="score-plots">Score Plots</h3>
-<p>Next, examine the score plots (Figures @ref(fig:scores12), @ref(fig:scores23)). In these plots, each data point is colored by its group membership (keep in mind this is completely independent of the PCA calculation). In addition, robust confidence ellipses are shown for each group. Inspection of these plots is one way to identify potential outliers. The other use is of course to see if the sample classes separate, and by how much.</p>
-<p>Examination of these plots shows that separation by classes has not really been achieved using autoscaling. In Figure @ref(fig:scores12) we see four clear outlier candidates (samples 37, 101, 107, and 118). In Figure @ref(fig:scores23) we see some of these samples and should probably add sample 114 for a total of five candidates.</p>
-<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/scores12_37d56700349b4a02d183774d55fa77ac">
+<p>Next, examine the score plots (<a href="#fig-scores12">Figure&nbsp;4</a>, <a href="#fig-scores23">Figure&nbsp;5</a>). In these plots, each data point is colored by its group membership (keep in mind this is completely independent of the PCA calculation). In addition, robust confidence ellipses are shown for each group. Inspection of these plots is one way to identify potential outliers. The other use is of course to see if the sample classes separate, and by how much.</p>
+<p>Examination of these plots shows that separation by classes has not really been achieved using autoscaling. In <a href="#fig-scores12">Figure&nbsp;4</a> we see four clear outlier candidates (samples 37, 101, 107, and 118). In <a href="#fig-scores23">Figure&nbsp;5</a> we see some of these samples and should probably add sample 114 for a total of five candidates.</p>
+<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/fig-scores12_ac627f961d8e9ce3c512c07b3a2f1ca1">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>p <span class="ot">&lt;-</span> <span class="fu">plotScores</span>(Worms, c_pca, <span class="at">pcs =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="at">ellipse =</span> <span class="st">"rob"</span>, <span class="at">tol =</span> <span class="fl">0.02</span>)</span>
 <span id="cb8-2"><a href="#cb8-2"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+<div id="fig-scores12" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="2022-03-24-Protocol-Pt2_files/figure-html/scores12-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Score plot for PCs 1 and 2. Compare to protocol figure 7a.</figcaption><p></p>
+<p><img src="2022-03-24-Protocol-Pt2_files/figure-html/fig-scores12-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 4: Score plot for PCs 1 and 2. Compare to protocol figure 7a.</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/scores23_db4b144372bcf165e6b5df22c17c3b69">
+<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/fig-scores23_7c8c513b910ae960f3efa4286710f901">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>p <span class="ot">&lt;-</span> <span class="fu">plotScores</span>(Worms, c_pca, <span class="at">pcs =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">ellipse =</span> <span class="st">"rob"</span>, <span class="at">leg.loc =</span> <span class="st">"topright"</span>, <span class="at">tol =</span> <span class="fl">0.02</span>)</span>
 <span id="cb9-2"><a href="#cb9-2"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+<div id="fig-scores23" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="2022-03-24-Protocol-Pt2_files/figure-html/scores23-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Score plot for PCS 2 and 3.</figcaption><p></p>
+<p><img src="2022-03-24-Protocol-Pt2_files/figure-html/fig-scores23-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 5: Score plot for PCS 2 and 3.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -393,7 +394,7 @@ of class 'Spectra'</code></pre>
 <section id="outliers" class="level3">
 <h3 class="anchored" data-anchor-id="outliers">Outliers</h3>
 <p>The protocol recommends plotting Hotelling’s <em>T</em><sup>2</sup> ellipse for the entire data set; this is not implemented in <code>ChemoSpec</code> but we can easily do it if we are using <code>ggplot2</code> plots (which is the default in <code>ChemoSpec</code>). We need the <code>ellipseCoord</code> function from the <code>HotellingsEllipse</code> package.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
-<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/hotelling1_62a6c0411cd441951152933b0a1302d2">
+<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/fig-hotelling1_eadb3ae98074dc823883c80a04b1c9a4">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="fu">source</span>(<span class="st">"ellipseCoord.R"</span>)</span>
 <span id="cb10-2"><a href="#cb10-2"></a>xy_coord <span class="ot">&lt;-</span> <span class="fu">ellipseCoord</span>(<span class="fu">as.data.frame</span>(c_pca<span class="sc">$</span>x), <span class="at">pcx =</span> <span class="dv">1</span>, <span class="at">pcy =</span> <span class="dv">2</span>, <span class="at">conf.limit =</span> <span class="fl">0.95</span>,</span>
 <span id="cb10-3"><a href="#cb10-3"></a>    <span class="at">pts =</span> <span class="dv">500</span>)</span>
@@ -401,36 +402,36 @@ of class 'Spectra'</code></pre>
 <span id="cb10-5"><a href="#cb10-5"></a>p <span class="ot">&lt;-</span> p <span class="sc">+</span> <span class="fu">geom_path</span>(<span class="at">data =</span> xy_coord, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y)) <span class="sc">+</span> <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="st">"black"</span>)</span>
 <span id="cb10-6"><a href="#cb10-6"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+<div id="fig-hotelling1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="2022-03-24-Protocol-Pt2_files/figure-html/hotelling1-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Score plot for PCs 1 and 2 with Hotelling’s <em>T</em><sup>2</sup> ellipse. Compare to protocol figure 7a.</figcaption><p></p>
+<p><img src="2022-03-24-Protocol-Pt2_files/figure-html/fig-hotelling1-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 6: Score plot for PCs 1 and 2 with Hotelling’s <em>T</em><sup>2</sup> ellipse. Compare to protocol figure 7a.</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
-<p>We can see many of the same outliers by this approach as we saw in Figures @ref(fig:scores12) and @ref(fig:scores23).</p>
-<p>Another way to identify outliers is to use the approach described in <span class="citation" data-cites="Filzmoser2009">Varmuza and Filzmoser (<a href="#ref-Filzmoser2009" role="doc-biblioref">2009</a>)</span> section 3.7.3. Figures @ref(fig:diagOD) and @ref(fig:diagSD) give the plots. Please see Filzmoser for the details, but any samples that are above the plotted threshold line are candidate outliers, and any samples above the threshold in <em>both</em> plots should be looked at very carefully. Though we are using classical PCA, Filzmoser recommends using these plots with robust PCA. These plots are a better approach than “eye balling it” on the score plots.</p>
-<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/diagOD_38dfefcc084f8429e4cecf83f91f3842">
+<p>We can see many of the same outliers by this approach as we saw in <a href="#fig-scores12">Figure&nbsp;4</a> and <a href="#fig-scores23">Figure&nbsp;5</a>.</p>
+<p>Another way to identify outliers is to use the approach described in <span class="citation" data-cites="Filzmoser2009">Varmuza and Filzmoser (<a href="#ref-Filzmoser2009" role="doc-biblioref">2009</a>)</span> section 3.7.3. <a href="#fig-diagOD">Figure&nbsp;7</a> and <a href="#fig-diagSD">Figure&nbsp;8</a> give the plots. Please see Filzmoser for the details, but any samples that are above the plotted threshold line are candidate outliers, and any samples above the threshold in <em>both</em> plots should be looked at very carefully. Though we are using classical PCA, Filzmoser recommends using these plots with robust PCA. These plots are a better approach than “eye balling it” on the score plots.</p>
+<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/fig-diagOD_ef9c479ac399ac49334d26d78c1eb1f4">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>p <span class="ot">&lt;-</span> <span class="fu">pcaDiag</span>(Worms, c_pca, <span class="at">plot =</span> <span class="st">"OD"</span>)</span>
 <span id="cb11-2"><a href="#cb11-2"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+<div id="fig-diagOD" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="2022-03-24-Protocol-Pt2_files/figure-html/diagOD-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Orthogonal distance plot based on the first three PCs.</figcaption><p></p>
+<p><img src="2022-03-24-Protocol-Pt2_files/figure-html/fig-diagOD-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 7: Orthogonal distance plot based on the first three PCs.</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/diagSD_d9be7a1ce1108a36a805702fa51e9339">
+<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/fig-diagSD_ad3694ee8233f729b195eff1fae86129">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>p <span class="ot">&lt;-</span> <span class="fu">pcaDiag</span>(Worms, c_pca, <span class="at">plot =</span> <span class="st">"SD"</span>)</span>
 <span id="cb12-2"><a href="#cb12-2"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+<div id="fig-diagSD" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="2022-03-24-Protocol-Pt2_files/figure-html/diagSD-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Score distance plot based on the first three PCs.</figcaption><p></p>
+<p><img src="2022-03-24-Protocol-Pt2_files/figure-html/fig-diagSD-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 8: Score distance plot based on the first three PCs.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -440,8 +441,8 @@ of class 'Spectra'</code></pre>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>Worms2 <span class="ot">&lt;-</span> <span class="fu">removeSample</span>(Worms, <span class="at">rem.sam =</span> <span class="fu">c</span>(<span class="st">"37_"</span>, <span class="st">"101_"</span>, <span class="st">"107_"</span>, <span class="st">"114_"</span>, <span class="st">"118_"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>At this point one should repeat the PCA, score plots and diagnostic plots to get a good look at how removing these samples affected the results. Those tasks are left to the reader.</p>
-<!-- One thing the protocol does not explicitly discuss is an inspection of the loadings.  This is useful in order to see if any particular frequencies are driving the separation of the samples in the score plot. For the sake of completeness, we'll go ahead and plot the loadings. See Figure \@ref(fig:loadings). From this plot it is clear that the peaks above $\delta$ 5.0 are not contributing much to differentiating the samples.  One could consider removing these peaks from the analysis, but we'll leave them for now. -->
-<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/loadings_d6ef35bf4c5ea40a24116c5a0a75157b">
+<!-- One thing the protocol does not explicitly discuss is an inspection of the loadings.  This is useful in order to see if any particular frequencies are driving the separation of the samples in the score plot. For the sake of completeness, we'll go ahead and plot the loadings. See @fig-loadings. From this plot it is clear that the peaks above $\delta$ 5.0 are not contributing much to differentiating the samples.  One could consider removing these peaks from the analysis, but we'll leave them for now. -->
+<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/fig-loadings_5710d6cefea5a3943156f47724d89483">
 
 </div>
 <p>We will continue in the next post with a discussion of loadings.</p>

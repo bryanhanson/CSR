@@ -9,7 +9,7 @@
 <link>http://chemospec.org/index.html</link>
 <atom:link href="http://chemospec.org/index.xml" rel="self" type="application/rss+xml"/>
 <description>Applying chemometrics to spectroscopy using R</description>
-<generator>quarto-0.9.312</generator>
+<generator>quarto-99.9.9</generator>
 <lastBuildDate>Thu, 24 Mar 2022 07:00:00 GMT</lastBuildDate>
 <item>
   <title>Metabolic Phenotyping Protocol Part 2</title>
@@ -84,35 +84,35 @@ of class 'Spectra'</code></pre>
 </div>
 <section id="components-to-retain" class="level3">
 <h3 class="anchored" data-anchor-id="components-to-retain">Components to Retain</h3>
-<p>A key question at this stage is how many components are needed to describe the data set. Keep in mind that this depends on the choice of scaling. Figures @ref(fig:screeAlt) and @ref(fig:screeTrad) are two different types of scree plots, which show the residual variance. This is the R<sup>2</sup><sub>x</sub> value in the protocol (see protocol Figure 7a). Another approach to answering this question is to do a cross-validated PCA.<sup>2</sup> The results are shown in Figure @ref(fig:cv-pca). These are the Q<sup>2</sup><sub>x</sub> values in protocol Figure 7a. All of these ways of looking at the variance explained suggest that retaining three or possibly four PCs is adequate.</p>
-<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/screeAlt_369e9c60f38afa2078046b1347182bbf">
+<p>A key question at this stage is how many components are needed to describe the data set. Keep in mind that this depends on the choice of scaling. Figure&nbsp;1 and Figure&nbsp;2 are two different types of scree plots, which show the residual variance. This is the R<sup>2</sup><sub>x</sub> value in the protocol (see protocol Figure 7a). Another approach to answering this question is to do a cross-validated PCA.<sup>2</sup> The results are shown in Figure&nbsp;3. These are the Q<sup>2</sup><sub>x</sub> values in protocol Figure 7a. All of these ways of looking at the variance explained suggest that retaining three or possibly four PCs is adequate.</p>
+<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/fig-screeAlt_1abc3fdd975a4c23fc680b69270a7f28">
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="fu" style="color: #4758AB;">plotScree</span>(c_pca)</span></code></pre></div>
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+<div id="fig-screeAlt" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/screeAlt-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p><img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-screeAlt-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
 <p></p><p></p>
 </figure>
 </div>
 </div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/screeTrad_225c8fd5d79364a56ef15efa04fe1f2f">
+<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/fig-screeTrad_83fd39cd7b0de03daf6f9d256e79bf15">
 <div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="fu" style="color: #4758AB;">plotScree</span>(c_pca, <span class="at" style="color: #657422;">style =</span> <span class="st" style="color: #20794D;">"trad"</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+<div id="fig-screeTrad" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/screeTrad-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p><img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-screeTrad-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
 <p></p><p></p>
 </figure>
 </div>
 </div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/cv-pca_6ae9110fe4d82a3790f82fc73c2a7a86">
+<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/fig-cv-pca_ce8857bd5320503e2da81e49461bb359">
 <div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><span class="fu" style="color: #4758AB;">cv_pcaSpectra</span>(Worms, <span class="at" style="color: #657422;">choice =</span> <span class="st" style="color: #20794D;">"autoscale"</span>, <span class="at" style="color: #657422;">pcs =</span> <span class="dv" style="color: #AD0000;">10</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+<div id="fig-cv-pca" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/cv-pca-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p><img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-cv-pca-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
 <p></p><p></p>
 </figure>
 </div>
@@ -121,27 +121,27 @@ of class 'Spectra'</code></pre>
 </section>
 <section id="score-plots" class="level3">
 <h3 class="anchored" data-anchor-id="score-plots">Score Plots</h3>
-<p>Next, examine the score plots (Figures @ref(fig:scores12), @ref(fig:scores23)). In these plots, each data point is colored by its group membership (keep in mind this is completely independent of the PCA calculation). In addition, robust confidence ellipses are shown for each group. Inspection of these plots is one way to identify potential outliers. The other use is of course to see if the sample classes separate, and by how much.</p>
-<p>Examination of these plots shows that separation by classes has not really been achieved using autoscaling. In Figure @ref(fig:scores12) we see four clear outlier candidates (samples 37, 101, 107, and 118). In Figure @ref(fig:scores23) we see some of these samples and should probably add sample 114 for a total of five candidates.</p>
-<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/scores12_37d56700349b4a02d183774d55fa77ac">
+<p>Next, examine the score plots (Figure&nbsp;4, Figure&nbsp;5). In these plots, each data point is colored by its group membership (keep in mind this is completely independent of the PCA calculation). In addition, robust confidence ellipses are shown for each group. Inspection of these plots is one way to identify potential outliers. The other use is of course to see if the sample classes separate, and by how much.</p>
+<p>Examination of these plots shows that separation by classes has not really been achieved using autoscaling. In Figure&nbsp;4 we see four clear outlier candidates (samples 37, 101, 107, and 118). In Figure&nbsp;5 we see some of these samples and should probably add sample 114 for a total of five candidates.</p>
+<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/fig-scores12_ac627f961d8e9ce3c512c07b3a2f1ca1">
 <div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1">p <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">plotScores</span>(Worms, c_pca, <span class="at" style="color: #657422;">pcs =</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">2</span>, <span class="at" style="color: #657422;">ellipse =</span> <span class="st" style="color: #20794D;">"rob"</span>, <span class="at" style="color: #657422;">tol =</span> <span class="fl" style="color: #AD0000;">0.02</span>)</span>
 <span id="cb8-2">p</span></code></pre></div>
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+<div id="fig-scores12" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/scores12-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p><img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-scores12-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
 <p></p><p></p>
 </figure>
 </div>
 </div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/scores23_db4b144372bcf165e6b5df22c17c3b69">
+<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/fig-scores23_7c8c513b910ae960f3efa4286710f901">
 <div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1">p <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">plotScores</span>(Worms, c_pca, <span class="at" style="color: #657422;">pcs =</span> <span class="dv" style="color: #AD0000;">2</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">3</span>, <span class="at" style="color: #657422;">ellipse =</span> <span class="st" style="color: #20794D;">"rob"</span>, <span class="at" style="color: #657422;">leg.loc =</span> <span class="st" style="color: #20794D;">"topright"</span>, <span class="at" style="color: #657422;">tol =</span> <span class="fl" style="color: #AD0000;">0.02</span>)</span>
 <span id="cb9-2">p</span></code></pre></div>
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+<div id="fig-scores23" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/scores23-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p><img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-scores23-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
 <p></p><p></p>
 </figure>
 </div>
@@ -152,7 +152,7 @@ of class 'Spectra'</code></pre>
 <section id="outliers" class="level3">
 <h3 class="anchored" data-anchor-id="outliers">Outliers</h3>
 <p>The protocol recommends plotting Hotelling’s <em>T</em><sup>2</sup> ellipse for the entire data set; this is not implemented in <code>ChemoSpec</code> but we can easily do it if we are using <code>ggplot2</code> plots (which is the default in <code>ChemoSpec</code>). We need the <code>ellipseCoord</code> function from the <code>HotellingsEllipse</code> package.<sup>3</sup></p>
-<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/hotelling1_62a6c0411cd441951152933b0a1302d2">
+<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/fig-hotelling1_eadb3ae98074dc823883c80a04b1c9a4">
 <div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><span class="fu" style="color: #4758AB;">source</span>(<span class="st" style="color: #20794D;">"ellipseCoord.R"</span>)</span>
 <span id="cb10-2">xy_coord <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">ellipseCoord</span>(<span class="fu" style="color: #4758AB;">as.data.frame</span>(c_pca<span class="sc" style="color: #5E5E5E;">$</span>x), <span class="at" style="color: #657422;">pcx =</span> <span class="dv" style="color: #AD0000;">1</span>, <span class="at" style="color: #657422;">pcy =</span> <span class="dv" style="color: #AD0000;">2</span>, <span class="at" style="color: #657422;">conf.limit =</span> <span class="fl" style="color: #AD0000;">0.95</span>,</span>
 <span id="cb10-3">    <span class="at" style="color: #657422;">pts =</span> <span class="dv" style="color: #AD0000;">500</span>)</span>
@@ -160,35 +160,35 @@ of class 'Spectra'</code></pre>
 <span id="cb10-5">p <span class="ot" style="color: #003B4F;">&lt;-</span> p <span class="sc" style="color: #5E5E5E;">+</span> <span class="fu" style="color: #4758AB;">geom_path</span>(<span class="at" style="color: #657422;">data =</span> xy_coord, <span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> x, <span class="at" style="color: #657422;">y =</span> y)) <span class="sc" style="color: #5E5E5E;">+</span> <span class="fu" style="color: #4758AB;">scale_color_manual</span>(<span class="at" style="color: #657422;">values =</span> <span class="st" style="color: #20794D;">"black"</span>)</span>
 <span id="cb10-6">p</span></code></pre></div>
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+<div id="fig-hotelling1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/hotelling1-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p><img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-hotelling1-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
 <p></p><p></p>
 </figure>
 </div>
 </div>
 </div>
-<p>We can see many of the same outliers by this approach as we saw in Figures @ref(fig:scores12) and @ref(fig:scores23).</p>
-<p>Another way to identify outliers is to use the approach described in <span class="citation" data-cites="Filzmoser2009">Varmuza and Filzmoser (2009)</span> section 3.7.3. Figures @ref(fig:diagOD) and @ref(fig:diagSD) give the plots. Please see Filzmoser for the details, but any samples that are above the plotted threshold line are candidate outliers, and any samples above the threshold in <em>both</em> plots should be looked at very carefully. Though we are using classical PCA, Filzmoser recommends using these plots with robust PCA. These plots are a better approach than “eye balling it” on the score plots.</p>
-<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/diagOD_38dfefcc084f8429e4cecf83f91f3842">
+<p>We can see many of the same outliers by this approach as we saw in Figure&nbsp;4 and Figure&nbsp;5.</p>
+<p>Another way to identify outliers is to use the approach described in <span class="citation" data-cites="Filzmoser2009">Varmuza and Filzmoser (2009)</span> section 3.7.3. Figure&nbsp;7 and Figure&nbsp;8 give the plots. Please see Filzmoser for the details, but any samples that are above the plotted threshold line are candidate outliers, and any samples above the threshold in <em>both</em> plots should be looked at very carefully. Though we are using classical PCA, Filzmoser recommends using these plots with robust PCA. These plots are a better approach than “eye balling it” on the score plots.</p>
+<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/fig-diagOD_ef9c479ac399ac49334d26d78c1eb1f4">
 <div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1">p <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">pcaDiag</span>(Worms, c_pca, <span class="at" style="color: #657422;">plot =</span> <span class="st" style="color: #20794D;">"OD"</span>)</span>
 <span id="cb11-2">p</span></code></pre></div>
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+<div id="fig-diagOD" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/diagOD-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p><img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-diagOD-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
 <p></p><p></p>
 </figure>
 </div>
 </div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/diagSD_d9be7a1ce1108a36a805702fa51e9339">
+<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/fig-diagSD_ad3694ee8233f729b195eff1fae86129">
 <div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1">p <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">pcaDiag</span>(Worms, c_pca, <span class="at" style="color: #657422;">plot =</span> <span class="st" style="color: #20794D;">"SD"</span>)</span>
 <span id="cb12-2">p</span></code></pre></div>
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+<div id="fig-diagSD" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/diagSD-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p><img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-diagSD-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
 <p></p><p></p>
 </figure>
 </div>
@@ -199,8 +199,8 @@ of class 'Spectra'</code></pre>
 <div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1">Worms2 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">removeSample</span>(Worms, <span class="at" style="color: #657422;">rem.sam =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"37_"</span>, <span class="st" style="color: #20794D;">"101_"</span>, <span class="st" style="color: #20794D;">"107_"</span>, <span class="st" style="color: #20794D;">"114_"</span>, <span class="st" style="color: #20794D;">"118_"</span>))</span></code></pre></div>
 </div>
 <p>At this point one should repeat the PCA, score plots and diagnostic plots to get a good look at how removing these samples affected the results. Those tasks are left to the reader.</p>
-<!-- One thing the protocol does not explicitly discuss is an inspection of the loadings.  This is useful in order to see if any particular frequencies are driving the separation of the samples in the score plot. For the sake of completeness, we'll go ahead and plot the loadings. See Figure \@ref(fig:loadings). From this plot it is clear that the peaks above $\delta$ 5.0 are not contributing much to differentiating the samples.  One could consider removing these peaks from the analysis, but we'll leave them for now. -->
-<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/loadings_d6ef35bf4c5ea40a24116c5a0a75157b">
+<!-- One thing the protocol does not explicitly discuss is an inspection of the loadings.  This is useful in order to see if any particular frequencies are driving the separation of the samples in the score plot. For the sake of completeness, we'll go ahead and plot the loadings. See @fig-loadings. From this plot it is clear that the peaks above $\delta$ 5.0 are not contributing much to differentiating the samples.  One could consider removing these peaks from the analysis, but we'll leave them for now. -->
+<div class="cell" data-layout-align="center" data-hash="2022-03-24-Protocol-Pt2_cache/html/fig-loadings_5710d6cefea5a3943156f47724d89483">
 
 </div>
 <p>We will continue in the next post with a discussion of loadings.</p>
@@ -640,15 +640,15 @@ of class 'Spectra'</code></pre>
 </section>
 <section id="plot-it-to-check-it" class="level2">
 <h2 class="anchored" data-anchor-id="plot-it-to-check-it">Plot it to check it</h2>
-<p>Let’s look at one sample from each group to make sure everything looks reasonable (Figure @ref(fig:samplePlot)). At least these four spectra look good. Note that we are using the latest <code>ChemoSpec</code> that uses <code>ggplot2</code> graphics by default (announced <a href="https://chemospec.org/posts/2021-10-13-GSOC-CS-Graphics/">here</a>).</p>
+<p>Let’s look at one sample from each group to make sure everything looks reasonable (Figure Figure&nbsp;1). At least these four spectra look good. Note that we are using the latest <code>ChemoSpec</code> that uses <code>ggplot2</code> graphics by default (announced <a href="https://chemospec.org/posts/2021-10-13-GSOC-CS-Graphics/">here</a>).</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1">p <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">plotSpectra</span>(Worms, <span class="at" style="color: #657422;">which =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">35</span>, <span class="dv" style="color: #AD0000;">1</span>, <span class="dv" style="color: #AD0000;">34</span>, <span class="dv" style="color: #AD0000;">2</span>), <span class="at" style="color: #657422;">lab.pos =</span> <span class="fl" style="color: #AD0000;">7.5</span>, <span class="at" style="color: #657422;">offset =</span> <span class="fl" style="color: #AD0000;">0.008</span>, <span class="at" style="color: #657422;">amplify =</span> <span class="dv" style="color: #AD0000;">35</span>,</span>
 <span id="cb11-2">    <span class="at" style="color: #657422;">yrange =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="sc" style="color: #5E5E5E;">-</span><span class="fl" style="color: #AD0000;">0.05</span>, <span class="fl" style="color: #AD0000;">1.1</span>))</span>
 <span id="cb11-3">p</span></code></pre></div>
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+<div id="fig-samplePlot" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="http://chemospec.org/posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1_files/figure-html/samplePlot-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p><img src="http://chemospec.org/posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1_files/figure-html/fig-samplePlot-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
 <p></p><p></p>
 </figure>
 </div>
@@ -916,7 +916,7 @@ Topic.”</span> April 19, 2021. <a href="http://chemospec.org/posts/2021-04-19-
   <pubDate>Mon, 19 Apr 2021 07:00:00 GMT</pubDate>
 </item>
 <item>
-  <title>Using Github Actions & drat to Deploy R Packages</title>
+  <title>Using Github Actions and drat to Deploy R Packages</title>
   <link>http://chemospec.org/posts/2021-04-11-GHA-drat/2021-04-11-GHA-drat.html</link>
   <description><![CDATA[ 
 
@@ -972,13 +972,13 @@ Topic.”</span> April 19, 2021. <a href="http://chemospec.org/posts/2021-04-19-
 </ol>
 </section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2021,
   author = {Bryan Hanson},
-  title = {Using {Github} {Actions} \&amp; Drat to {Deploy} {R} {Packages}},
+  title = {Using {Github} {Actions} and Drat to {Deploy} {R} {Packages}},
   date = {2021-04-11},
   url = {http://chemospec.org/posts/2021-04-11-GHA-drat/2021-04-11-GHA-drat.html},
   langid = {en}
 }
 </code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2021" class="csl-entry quarto-appendix-citeas">
-Bryan Hanson. 2021. <span>“Using Github Actions &amp; Drat to Deploy R
+Bryan Hanson. 2021. <span>“Using Github Actions and Drat to Deploy R
 Packages.”</span> April 11, 2021. <a href="http://chemospec.org/posts/2021-04-11-GHA-drat/2021-04-11-GHA-drat.html">http://chemospec.org/posts/2021-04-11-GHA-drat/2021-04-11-GHA-drat.html</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>

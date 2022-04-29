@@ -1,5 +1,5 @@
 ---
-title: "Using Github Actions & drat to Deploy R Packages"
+title: "Using Github Actions and drat to Deploy R Packages"
 description: "Automating a tedious task"
 date: "2021-04-11"
 categories: [R, Github Actions, drat, GSOC, hyperSpec]

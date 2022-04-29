@@ -1,6 +1,6 @@
 ---
 title: "FOSS for Spectroscopy"
-description: "A Collection of Free & Open Source Spectroscopy Resources"
+description: "A Collection of Free and Open Source Spectroscopy Resources"
 date: "2020-01-01"
 categories: [R, Python]
 ---

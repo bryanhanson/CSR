@@ -85,32 +85,32 @@ c_pca <- c_pcaSpectra(Worms, choice = "autoscale") # no scaling is the default
 
 ### Components to Retain
 
-A key question at this stage is how many components are needed to describe the data set.  Keep in mind that this depends on the choice of scaling.  Figures \@ref(fig:screeAlt) and \@ref(fig:screeTrad) are two different types of scree plots, which show the residual variance.  This is the R^2^~x~ value in the protocol (see protocol Figure 7a).  Another approach to answering this question is to do a cross-validated PCA.[^3]  The results are shown in Figure \@ref(fig:cv-pca).  These are the Q^2^~x~ values in protocol Figure 7a.  All of these ways of looking at the variance explained suggest that retaining three or possibly four PCs is adequate.
+A key question at this stage is how many components are needed to describe the data set.  Keep in mind that this depends on the choice of scaling. @fig-screeAlt and @fig-screeTrad are two different types of scree plots, which show the residual variance.  This is the R^2^~x~ value in the protocol (see protocol Figure 7a).  Another approach to answering this question is to do a cross-validated PCA.[^3]  The results are shown in @fig-cv-pca.  These are the Q^2^~x~ values in protocol Figure 7a.  All of these ways of looking at the variance explained suggest that retaining three or possibly four PCs is adequate.
 
-```{r screeAlt, fig.cap = "Scree plot (recommended style)."}
+```{r fig-screeAlt, fig.cap = "Scree plot (recommended style)."}
 plotScree(c_pca)
 ```
 
-```{r screeTrad, fig.cap = "Scree plot (traditional style)."}
+```{r fig-screeTrad, fig.cap = "Scree plot (traditional style)."}
 plotScree(c_pca, style = "trad")
 ```
 
-```{r cv-pca, fig.cap = "Scree plot using cross validation.", sq.fig = TRUE}
+```{r fig-cv-pca, fig.cap = "Scree plot using cross validation.", sq.fig = TRUE}
 cv_pcaSpectra(Worms, choice = "autoscale", pcs = 10)
 ```
 
 ### Score Plots
 
-Next, examine the score plots (Figures \@ref(fig:scores12), \@ref(fig:scores23)).  In these plots, each data point is colored by its group membership (keep in mind this is completely independent of the PCA calculation).  In addition, robust confidence ellipses are shown for each group.  Inspection of these plots is one way to identify potential outliers. The other use is of course to see if the sample classes separate, and by how much.
+Next, examine the score plots (@fig-scores12, @fig-scores23).  In these plots, each data point is colored by its group membership (keep in mind this is completely independent of the PCA calculation).  In addition, robust confidence ellipses are shown for each group.  Inspection of these plots is one way to identify potential outliers. The other use is of course to see if the sample classes separate, and by how much.
 
-Examination of these plots shows that separation by classes has not really been achieved using autoscaling. In Figure \@ref(fig:scores12) we see four clear outlier candidates (samples 37, 101, 107, and 118).  In Figure \@ref(fig:scores23) we see some of these samples and should probably add sample 114 for a total of five candidates.
+Examination of these plots shows that separation by classes has not really been achieved using autoscaling. In @fig-scores12 we see four clear outlier candidates (samples 37, 101, 107, and 118).  In @fig-scores23 we see some of these samples and should probably add sample 114 for a total of five candidates.
 
-```{r scores12, sq.fig = TRUE, fig.cap = "Score plot for PCs 1 and 2. Compare to protocol figure 7a."}
+```{r fig-scores12, sq.fig = TRUE, fig.cap = "Score plot for PCs 1 and 2. Compare to protocol figure 7a."}
 p <- plotScores(Worms, c_pca, pcs = 1:2, ellipse = "rob", tol = 0.02)
 p
 ```
 
-```{r scores23, sq.fig = TRUE, fig.cap = "Score plot for PCS 2 and 3."}
+```{r fig-scores23, sq.fig = TRUE, fig.cap = "Score plot for PCS 2 and 3."}
 p <- plotScores(Worms, c_pca, pcs = 2:3, ellipse = "rob", leg.loc = "topright", tol = 0.02)
 p
 ```
@@ -121,7 +121,7 @@ To label more sample points, you can increase the value of the argument `tol`.
 
 The protocol recommends plotting Hotelling's *T*^2^ ellipse for the entire data set; this is not implemented in `ChemoSpec` but we can easily do it if we are using `ggplot2` plots (which is the default in `ChemoSpec`).  We need the `ellipseCoord` function from the `HotellingsEllipse` package.[^2]
 
-```{r hotelling1, sq.fig = TRUE, fig.cap = "Score plot for PCs 1 and 2 with Hotelling's *T*^2^ ellipse. Compare to protocol figure 7a." }
+```{r fig-hotelling1, sq.fig = TRUE, fig.cap = "Score plot for PCs 1 and 2 with Hotelling's *T*^2^ ellipse. Compare to protocol figure 7a." }
 source("ellipseCoord.R")
 xy_coord <- ellipseCoord(as.data.frame(c_pca$x),
   pcx = 1, pcy = 2,
@@ -132,17 +132,17 @@ p <- p + geom_path(data = xy_coord, aes(x = x, y = y)) +
 p
 ```
 
-We can see many of the same outliers by this approach as we saw in Figures \@ref(fig:scores12) and \@ref(fig:scores23).
+We can see many of the same outliers by this approach as we saw in @fig-scores12 and @fig-scores23.
 
 
-Another way to identify outliers is to use the approach described in @Filzmoser2009 section 3.7.3.  Figures \@ref(fig:diagOD) and  \@ref(fig:diagSD) give the plots. Please see Filzmoser for the details, but any samples that are above the plotted threshold line are candidate outliers, and any samples above the threshold in *both* plots should be looked at very carefully.  Though we are using classical PCA, Filzmoser recommends using these plots with robust PCA.  These plots are a better approach than "eye balling it" on the score plots.
+Another way to identify outliers is to use the approach described in @Filzmoser2009 section 3.7.3.  @fig-diagOD and  @fig-diagSD give the plots. Please see Filzmoser for the details, but any samples that are above the plotted threshold line are candidate outliers, and any samples above the threshold in *both* plots should be looked at very carefully.  Though we are using classical PCA, Filzmoser recommends using these plots with robust PCA.  These plots are a better approach than "eye balling it" on the score plots.
 
-```{r diagOD, sq.fig = TRUE, fig.cap = "Orthogonal distance plot based on the first three PCs."}
+```{r fig-diagOD, sq.fig = TRUE, fig.cap = "Orthogonal distance plot based on the first three PCs."}
 p <- pcaDiag(Worms, c_pca, plot = "OD")
 p
 ```
 
-```{r diagSD, sq.fig = TRUE, fig.cap = "Score distance plot based on the first three PCs."}
+```{r fig-diagSD, sq.fig = TRUE, fig.cap = "Score distance plot based on the first three PCs."}
 p <- pcaDiag(Worms, c_pca, plot = "SD")
 p
 ```
@@ -156,9 +156,9 @@ Worms2 <- removeSample(Worms,
 
 At this point one should repeat the PCA, score plots and diagnostic plots to get a good look at how removing these samples affected the results. Those tasks are left to the reader.
 
-<!-- One thing the protocol does not explicitly discuss is an inspection of the loadings.  This is useful in order to see if any particular frequencies are driving the separation of the samples in the score plot. For the sake of completeness, we'll go ahead and plot the loadings. See Figure \@ref(fig:loadings). From this plot it is clear that the peaks above $\delta$ 5.0 are not contributing much to differentiating the samples.  One could consider removing these peaks from the analysis, but we'll leave them for now. -->
+<!-- One thing the protocol does not explicitly discuss is an inspection of the loadings.  This is useful in order to see if any particular frequencies are driving the separation of the samples in the score plot. For the sake of completeness, we'll go ahead and plot the loadings. See @fig-loadings. From this plot it is clear that the peaks above $\delta$ 5.0 are not contributing much to differentiating the samples.  One could consider removing these peaks from the analysis, but we'll leave them for now. -->
 
-```{r loadings, sq.fig = TRUE, fig.cap = "Loadings for PC1 and PC2.", eval = FALSE, echo = FALSE}
+```{r fig-loadings, sq.fig = TRUE, fig.cap = "Loadings for PC1 and PC2.", eval = FALSE, echo = FALSE}
 p <- plotLoadings(Worms, c_pca, loads = 1:2)
 p
 ```
