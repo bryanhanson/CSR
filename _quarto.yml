@@ -1,9 +1,6 @@
 project:
   type: website
   output-dir: docs
-  feed:
-    categories:
-    - R
 website:
   title: "Chemometrics and Spectroscopy Using R"
   site-url: http://chemospec.org
