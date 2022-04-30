@@ -1,7 +1,7 @@
 ---
 title: "Metabolic Phenotyping Protocol Part 3"
 description: "Implementing the Statistical Analysis in Metabolic Phenotyping Protocol of Blaise *et al.*"
-date: "2022-03-25"
+date: "2022-04-29"
 categories: [R, ChemoSpec, Metabolomics]
 bibliography: REFS.bib
 draft: true
@@ -73,29 +73,39 @@ If you recall in Part 2 we removed five samples.  Let's re-run PCA without these
 c_pca <- c_pcaSpectra(Worms2, choice = "autoscale")
 ```
 
-```{r fig-screeAlt, fig.cap = "Scree plot (recommended style)."}
+```{r}
+#| label: fig-screeAlt
+#| fig-cap: "Scree plot (recommended style)."
 plotScree(c_pca)
 ```
 
-```{r fig-scores12, sq.fig = TRUE, fig.cap = "Score plot for PCs 1 and 2. Compare to protocol figure 7d."}
+```{r}
+#| label: fig-scores12
+#| sq.fig: true
+#| fig-cap: "Score plot for PCs 1 and 2. Compare to protocol figure 7d."
 p <- plotScores(Worms2, c_pca, pcs = 1:2, ellipse = "rob", tol = 0.02)
 p
 ```
 
-```{r fig-scores23, sq.fig = TRUE, fig.cap = "Score plot for PCS 2 and 3."}
+```{r}
+#| label: fig-scores23
+#| sq.fig: true
+#| fig-cap: "Score plot for PCS 2 and 3."
 p <- plotScores(Worms2, c_pca, pcs = 2:3, ellipse = "rob", leg.loc = "topright", tol = 0.02)
 p
 ```
 
-One thing the published protocol does not explicitly discuss is an inspection of the loadings, but it is covered in the [Jupyter notebook](https://github.com/Gscorreia89/chemometrics-tutorials).  This is useful in order to see if any particular frequencies are driving the separation of the samples in the score plot. Let's plot the loadings (@fig-loadings). Remember that these data were autoscaled, and hence all frequencies, including noisy frequencies, will contribute to the separation.
+One thing the published protocol does not explicitly discuss is an inspection of the loadings, but it is covered in the [Jupyter notebook](https://github.com/Gscorreia89/chemometrics-tutorials).  The loadings are useful in order to see if any particular frequencies are driving the separation of the samples in the score plot. Let's plot the loadings (@fig-loadings). Remember that these data were autoscaled, and hence all frequencies, including noisy frequencies, will contribute to the separation.  If we had not scaled the data, these plots would look dramatically different.
 
-```{r fig-loadings, sq.fig = TRUE, fig.cap = "Loadings for PC1 and PC2."}
+```{r}
+#| label: fig-loadings
+#| sq.fig: true
+#| fig-cap: "Loadings for PC1 and PC2."
 p <- plotLoadings(Worms2, c_pca, loads = 1:2)
 p
 ```
 
-
-From @fig-splot we can see that the peaks around $\delta$ 1.30 - 1.32, 1.47-1.48, and 3.03 - 3.07 are important drivers of the separation in the score plot.  As an illustration, let's look at the loadings around $\delta$ 1.3 a bit more closely (@fig-loadingsDetail).
+The s-plot is another very useful way to find peaks that are important in separating the samples (@fig-splot); we can see that the peaks around $\delta$ 1.30 - 1.32, 1.47-1.48, and 3.03 - 3.07 are important drivers of the separation in the score plot.
 
 ```{r}
 #| label: fig-splot
@@ -103,12 +113,6 @@ From @fig-splot we can see that the peaks around $\delta$ 1.30 - 1.32, 1.47-1.48
 #| fig-cap: "s-Plot for PC1."
 
 p <- sPlotSpectra(Worms2, c_pca, tol = 0.001)
-p
-```
-
-```{r fig-loadingsDetail, sq.fig = TRUE, fig.cap = "Loadings for PC1 and PC2."}
-p <- plotLoadings(Worms2, c_pca, loads = 1)
-p <- p & coord_cartesian(xlim = c(1.29, 1.33)) # plotLoadings needs & not +
 p
 ```
 
