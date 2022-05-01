@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Bryan Hanson">
-<meta name="dcterms.date" content="2022-04-29">
+<meta name="dcterms.date" content="2022-05-01">
 <meta name="description" content="Implementing the Statistical Analysis in Metabolic Phenotyping Protocol of Blaise et al.">
 
 <title>Chemometrics and Spectroscopy Using R - Metabolic Phenotyping Protocol Part 3</title>
@@ -228,6 +228,8 @@ cookieconsent.run({
     <div class="quarto-category">R</div>
     <div class="quarto-category">ChemoSpec</div>
     <div class="quarto-category">Metabolomics</div>
+    <div class="quarto-category">PLS</div>
+    <div class="quarto-category">PLS-DA</div>
   </div>
   </div>
 
@@ -252,7 +254,7 @@ cookieconsent.run({
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">April 29, 2022</p>
+      <p class="date">May 1, 2022</p>
     </div>
   </div>
     
@@ -269,7 +271,7 @@ cookieconsent.run({
 <li>Part 2 of this series is <a href="https://chemospec.org/posts/2022-03-24-Protocol-Pt2/">here</a>.</li>
 </ul>
 <p>If you aren’t familiar with <code>ChemoSpec</code>, you might wish to look at the introductory <a href="https://bryanhanson.github.io/ChemoSpec/articles/ChemoSpec.html">vignette</a> first.</p>
-<p><strong>In this series of posts we are following the protocol as described in the printed publication closely <span class="citation" data-cites="Blaise2021">(<a href="#ref-Blaise2021" role="doc-biblioref">Blaise et al. 2021</a>)</span>. The authors have also provided a <a href="https://github.com/Gscorreia89/chemometrics-tutorials">Jupyter notebook</a>. This is well worth your time, even if Python is not your preferred lanaguage, as there are additional examples and discussion for study.</strong></p>
+<p><em>In this series of posts we are following the protocol as described in the printed publication closely <span class="citation" data-cites="Blaise2021">(<a href="#ref-Blaise2021" role="doc-biblioref">Blaise et al. 2021</a>)</span>. The authors have also provided a <a href="https://github.com/Gscorreia89/chemometrics-tutorials">Jupyter notebook</a>. This is well worth your time, even if Python is not your preferred language, as there are additional examples and discussion for study.</em></p>
 <section id="read-in-the-data" class="level1">
 <h1>Read in the Data</h1>
 <p>Load the <code>Spectra</code> object we created in Part 2 so we can summarize it.</p>
@@ -323,7 +325,7 @@ of class 'Spectra'</code></pre>
 <div class="cell-output-display">
 <div id="fig-screeAlt" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="2022-04-29-Protocol-Pt3_files/figure-html/fig-screeAlt-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p><img src="2022-05-01-Protocol-Pt3_files/figure-html/fig-screeAlt-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
 <p></p><figcaption aria-hidden="true" class="figure-caption">Figure 1: Scree plot (recommended style).</figcaption><p></p>
 </figure>
 </div>
@@ -335,20 +337,20 @@ of class 'Spectra'</code></pre>
 <div class="cell-output-display">
 <div id="fig-scores12" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="2022-04-29-Protocol-Pt3_files/figure-html/fig-scores12-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p><img src="2022-05-01-Protocol-Pt3_files/figure-html/fig-scores12-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
 <p></p><figcaption aria-hidden="true" class="figure-caption">Figure 2: Score plot for PCs 1 and 2. Compare to protocol figure 7d.</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>p <span class="ot">&lt;-</span> <span class="fu">plotScores</span>(Worms2, c_pca, <span class="at">pcs =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">ellipse =</span> <span class="st">"rob"</span>, <span class="at">leg.loc =</span> <span class="st">"topright"</span>,</span>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>p <span class="ot">&lt;-</span> <span class="fu">plotScores</span>(Worms2, c_pca, <span class="at">pcs =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">ellipse =</span> <span class="st">"rob"</span>, <span class="at">leg.loc =</span> <span class="st">"bottomleft"</span>,</span>
 <span id="cb6-2"><a href="#cb6-2"></a>    <span class="at">tol =</span> <span class="fl">0.02</span>)</span>
 <span id="cb6-3"><a href="#cb6-3"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="fig-scores23" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="2022-04-29-Protocol-Pt3_files/figure-html/fig-scores23-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p><img src="2022-05-01-Protocol-Pt3_files/figure-html/fig-scores23-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
 <p></p><figcaption aria-hidden="true" class="figure-caption">Figure 3: Score plot for PCS 2 and 3.</figcaption><p></p>
 </figure>
 </div>
@@ -361,24 +363,90 @@ of class 'Spectra'</code></pre>
 <div class="cell-output-display">
 <div id="fig-loadings" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="2022-04-29-Protocol-Pt3_files/figure-html/fig-loadings-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p><img src="2022-05-01-Protocol-Pt3_files/figure-html/fig-loadings-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
 <p></p><figcaption aria-hidden="true" class="figure-caption">Figure 4: Loadings for PC1 and PC2.</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
-<p>The s-plot is another very useful way to find peaks that are important in separating the samples (<a href="#fig-splot">Figure&nbsp;5</a>); we can see that the peaks around <span class="math inline">\(\delta\)</span> 1.30 - 1.32, 1.47-1.48, and 3.03 - 3.07 are important drivers of the separation in the score plot.</p>
+<p>The s-plot is another very useful way to find peaks that are important in separating the samples (<a href="#fig-splot">Figure&nbsp;5</a>); we can see that the peaks around <span class="math inline">\(\delta\)</span> 1.30-1.32, 1.47-1.48, and 3.03-3.07 are important drivers of the separation in the score plot. Having discovered this, one can investigate the source of those peaks.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>p <span class="ot">&lt;-</span> <span class="fu">sPlotSpectra</span>(Worms2, c_pca, <span class="at">tol =</span> <span class="fl">0.001</span>)</span>
 <span id="cb8-2"><a href="#cb8-2"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="fig-splot" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="2022-04-29-Protocol-Pt3_files/figure-html/fig-splot-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p><img src="2022-05-01-Protocol-Pt3_files/figure-html/fig-splot-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
 <p></p><figcaption aria-hidden="true" class="figure-caption">Figure 5: s-Plot for PC1.</figcaption><p></p>
 </figure>
 </div>
 </div>
+</div>
+<section id="supervised-analysis-with-pls-da" class="level2">
+<h2 class="anchored" data-anchor-id="supervised-analysis-with-pls-da">Supervised Analysis with PLS-DA</h2>
+<p><code>ChemoSpec</code> carries out exploratory data analysis, which is an unsupervised process. The next step in the protocol is PLS-DA (partial least squares - discriminant analysis). I have written about <code>ChemoSpec</code> + PLS <a href="https://chemospec.org/posts/2021-02-08-PLS/2021-02-08-PLS.html">here</a> if you would like more background on plain PLS. However, PLS-DA is a technique that combines data reduction/variable selection along with classification. We’ll need the <code>mixOmics</code> package (<span class="citation" data-cites="mixOmics">F et al. (<a href="#ref-mixOmics" role="doc-biblioref">2017</a>)</span>) package for this analysis; note that loading it replaces the <code>plotLoadings</code> function from <code>ChemoSpec</code>.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">library</span>(<span class="st">"mixOmics"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: MASS</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: lattice</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Loaded mixOmics 6.20.0
+Thank you for using mixOmics!
+Tutorials: http://mixomics.org
+Bookdown vignette: https://mixomicsteam.github.io/Bookdown
+Questions, issues: Follow the prompts at http://mixomics.org/contact-us
+Cite us:  citation('mixOmics')</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'mixOmics'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:ChemoSpec':
+
+    plotLoadings</code></pre>
+</div>
+</div>
+<p><a href="#fig-plsda-indiv">Figure&nbsp;6</a> shows the score plot; the results suggest that classification and modeling may be successful. The <code>splsda</code> function carries out a single <em>sparse</em> computation. One computation should not be considered the ideal answer; a better approach is to use cross-validation, for instance the <code>bootsPLS</code> function in the <code>bootsPLS</code> package (<span class="citation" data-cites="bootsPLS">Rohart, Le Cao, and Wells (<a href="#ref-bootsPLS" role="doc-biblioref">2018</a>)</span> which uses <code>splsda</code> under the hood). However, that computation is too time-consuming to demonstrate here.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>X <span class="ot">&lt;-</span> Worms2<span class="sc">$</span>data</span>
+<span id="cb15-2"><a href="#cb15-2"></a>Y <span class="ot">&lt;-</span> Worms2<span class="sc">$</span>groups</span>
+<span id="cb15-3"><a href="#cb15-3"></a>splsda <span class="ot">&lt;-</span> <span class="fu">splsda</span>(X, Y, <span class="at">ncomp =</span> <span class="dv">8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="fu">plotIndiv</span>(splsda,</span>
+<span id="cb16-2"><a href="#cb16-2"></a>  <span class="at">col.per.group =</span> <span class="fu">c</span>(<span class="st">"#FB0D16FF"</span>, <span class="st">"#FFC0CBFF"</span>, <span class="st">"#511CFCFF"</span>, <span class="st">"#2E94E9FF"</span>),</span>
+<span id="cb16-3"><a href="#cb16-3"></a>  <span class="at">title =</span> <span class="st">"sPLS-DA Score Plot"</span>, <span class="at">legend =</span> <span class="cn">TRUE</span>, <span class="at">ellipse =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-plsda-indiv" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="2022-05-01-Protocol-Pt3_files/figure-html/fig-plsda-indiv-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 6: sPLS-DA plot showing classification.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>To estimate the number of components needed, the <code>perf</code> function can be used. The results are in <a href="#fig-plsda-perf">Figure&nbsp;7</a> and suggest that five components are sufficient to describe the data.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>perf.splsda <span class="ot">&lt;-</span> <span class="fu">perf</span>(splsda, <span class="at">folds =</span> <span class="dv">5</span>, <span class="at">nrepeat =</span> <span class="dv">5</span>)</span>
+<span id="cb17-2"><a href="#cb17-2"></a><span class="fu">plot</span>(perf.splsda)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-plsda-perf" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="2022-05-01-Protocol-Pt3_files/figure-html/fig-plsda-perf-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 7: Evaluation of the PLS-DA performance.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>At this point, we have several ideas of how to proceed. Going forward, one might choose to focus on accurate classification, or on determining which frequencies should be included in a predictive model. Any model will need to refined and more details extracted. The reader is referred to the case study from the <a href="http://mixomics.org/case-studies/splsda-srbct/">mixOmics</a> folks which covers these tasks and explains the process.</p>
+<div class="cell" data-layout-align="center">
+
 </div>
 <hr>
 <p>This post was created using <code>ChemoSpec</code> version 6.1.3 and <code>ChemoSpecUtils</code> version 1.0.0.</p>
@@ -386,21 +454,28 @@ of class 'Spectra'</code></pre>
 
 
 </section>
+</section>
 
 <script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
 <div id="ref-Blaise2021" class="csl-entry" role="doc-biblioentry">
 Blaise, Benjamin J., Gonçalo D. S. Correia, Gordon A. Haggart, Izabella Surowiec, Caroline Sands, Matthew R. Lewis, Jake T. M. Pearce, et al. 2021. <span>“Statistical Analysis in Metabolic Phenotyping.”</span> <em>Nature Protocols</em> 16: 4299–4326. <a href="https://doi.org/10.1038/s41596-021-00579-1">https://doi.org/10.1038/s41596-021-00579-1</a>.
 </div>
+<div id="ref-mixOmics" class="csl-entry" role="doc-biblioentry">
+F, Rohart, Gautier B, Singh A, and Le Cao K-A. 2017. <span>“mixOmics: An r Package for ’Omics Feature Selection and Multiple Data Integration.”</span> <em>PLoS Computational Biology</em> 13 (11): e1005752. <a href="http://www.mixOmics.org">http://www.mixOmics.org</a>.
+</div>
+<div id="ref-bootsPLS" class="csl-entry" role="doc-biblioentry">
+Rohart, Florian, Kim-Anh Le Cao, and Christine Wells. 2018. <em>bootsPLS: Bootstrap Subsamplings of Sparse Partial Least Squares - Discriminant Analysis for Classification and Signature Identification</em>. <a href="https://CRAN.R-project.org/package=bootsPLS">https://CRAN.R-project.org/package=bootsPLS</a>.
+</div>
 </div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
   author = {Bryan Hanson},
   title = {Metabolic {Phenotyping} {Protocol} {Part} 3},
-  date = {2022-04-29},
-  url = {http://chemospec.org/posts/2022-04-29-Protocol-Pt3/2022-04-29-Protocol-Pt3.html},
+  date = {2022-05-01},
+  url = {http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3.html},
   langid = {en}
 }
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2022" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
 Bryan Hanson. 2022. <span>“Metabolic Phenotyping Protocol Part
-3.”</span> April 29, 2022. <a href="http://chemospec.org/posts/2022-04-29-Protocol-Pt3/2022-04-29-Protocol-Pt3.html">http://chemospec.org/posts/2022-04-29-Protocol-Pt3/2022-04-29-Protocol-Pt3.html</a>.
+3.”</span> May 1, 2022. <a href="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3.html">http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3.html</a>.
 </div></div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {

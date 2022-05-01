@@ -10,7 +10,236 @@
 <atom:link href="http://chemospec.org/index.xml" rel="self" type="application/rss+xml"/>
 <description>Applying chemometrics to spectroscopy using R</description>
 <generator>quarto-99.9.9</generator>
-<lastBuildDate>Thu, 24 Mar 2022 07:00:00 GMT</lastBuildDate>
+<lastBuildDate>Sun, 01 May 2022 07:00:00 GMT</lastBuildDate>
+<item>
+  <title>Metabolic Phenotyping Protocol Part 3</title>
+  <link>http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3.html</link>
+  <description><![CDATA[ 
+
+
+
+<div class="cell">
+
+</div>
+<ul>
+<li>Part 1 of this series is <a href="https://chemospec.org/posts/2022-02-01-Protocol-Pt1/">here</a>.</li>
+<li>Part 2 of this series is <a href="https://chemospec.org/posts/2022-03-24-Protocol-Pt2/">here</a>.</li>
+</ul>
+<p>If you aren’t familiar with <code>ChemoSpec</code>, you might wish to look at the introductory <a href="https://bryanhanson.github.io/ChemoSpec/articles/ChemoSpec.html">vignette</a> first.</p>
+<p><em>In this series of posts we are following the protocol as described in the printed publication closely <span class="citation" data-cites="Blaise2021">(Blaise et al. 2021)</span>. The authors have also provided a <a href="https://github.com/Gscorreia89/chemometrics-tutorials">Jupyter notebook</a>. This is well worth your time, even if Python is not your preferred language, as there are additional examples and discussion for study.</em></p>
+<section id="read-in-the-data" class="level1">
+<h1>Read in the Data</h1>
+<p>Load the <code>Spectra</code> object we created in Part 2 so we can summarize it.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;">library</span>(<span class="st" style="color: #20794D;">"ChemoSpec"</span>)</span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;">load</span>(<span class="st" style="color: #20794D;">"Worms2.RData"</span>)  <span class="co" style="color: #5E5E5E;"># restores the 'Worms2' Spectra object</span></span>
+<span id="cb1-3"><span class="fu" style="color: #4758AB;">sumSpectra</span>(Worms2)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ C. elegans metabolic phenotyping study (Blaise 2007) 
+
+    There are 133 spectra in this set.
+    The y-axis unit is intensity.
+
+    The frequency scale runs from
+    8.9995 to 5e-04 ppm
+    There are 8600 frequency values.
+    The frequency resolution is
+    0.001 ppm/point.
+
+    This data set is not continuous
+    along the frequency axis.
+    Here are the data chunks:
+
+  beg.freq end.freq   size beg.indx end.indx
+1   8.9995   5.0005 -3.999        1     4000
+2   4.5995   0.0005 -4.599     4001     8600
+
+    The spectra are divided into 4 groups: 
+
+   group no.     color symbol alt.sym
+1 Mut_L2  28 #FB0D16FF      0      m2
+2 Mut_L4  33 #FFC0CBFF     15      m4
+3  WT_L2  32 #511CFCFF      1      w2
+4  WT_L4  40 #2E94E9FF     16      w4
+
+
+*** Note: this is an S3 object
+of class 'Spectra'</code></pre>
+</div>
+</div>
+</section>
+<section id="exploratory-data-analysis-cont." class="level1">
+<h1>Exploratory Data Analysis, Con’t.</h1>
+<p>If you recall in Part 2 we removed five samples. Let’s re-run PCA without these samples and show the key plots. We will simply report these here without much discussion; they are pretty much as expected.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1">c_pca <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">c_pcaSpectra</span>(Worms2, <span class="at" style="color: #657422;">choice =</span> <span class="st" style="color: #20794D;">"autoscale"</span>)</span></code></pre></div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="fu" style="color: #4758AB;">plotScree</span>(c_pca)</span></code></pre></div>
+<div class="cell-output-display">
+<div id="fig-screeAlt" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-screeAlt-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p></p><p></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1">p <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">plotScores</span>(Worms2, c_pca, <span class="at" style="color: #657422;">pcs =</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">2</span>, <span class="at" style="color: #657422;">ellipse =</span> <span class="st" style="color: #20794D;">"rob"</span>, <span class="at" style="color: #657422;">tol =</span> <span class="fl" style="color: #AD0000;">0.02</span>)</span>
+<span id="cb5-2">p</span></code></pre></div>
+<div class="cell-output-display">
+<div id="fig-scores12" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-scores12-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p></p><p></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1">p <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">plotScores</span>(Worms2, c_pca, <span class="at" style="color: #657422;">pcs =</span> <span class="dv" style="color: #AD0000;">2</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">3</span>, <span class="at" style="color: #657422;">ellipse =</span> <span class="st" style="color: #20794D;">"rob"</span>, <span class="at" style="color: #657422;">leg.loc =</span> <span class="st" style="color: #20794D;">"bottomleft"</span>,</span>
+<span id="cb6-2">    <span class="at" style="color: #657422;">tol =</span> <span class="fl" style="color: #AD0000;">0.02</span>)</span>
+<span id="cb6-3">p</span></code></pre></div>
+<div class="cell-output-display">
+<div id="fig-scores23" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-scores23-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p></p><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>One thing the published protocol does not explicitly discuss is an inspection of the loadings, but it is covered in the <a href="https://github.com/Gscorreia89/chemometrics-tutorials">Jupyter notebook</a>. The loadings are useful in order to see if any particular frequencies are driving the separation of the samples in the score plot. Let’s plot the loadings (Figure&nbsp;4). Remember that these data were autoscaled, and hence all frequencies, including noisy frequencies, will contribute to the separation. If we had not scaled the data, these plots would look dramatically different.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1">p <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">plotLoadings</span>(Worms2, c_pca, <span class="at" style="color: #657422;">loads =</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">2</span>)</span>
+<span id="cb7-2">p</span></code></pre></div>
+<div class="cell-output-display">
+<div id="fig-loadings" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-loadings-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p></p><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The s-plot is another very useful way to find peaks that are important in separating the samples (Figure&nbsp;5); we can see that the peaks around <img src="https://latex.codecogs.com/png.latex?%5Cdelta"> 1.30-1.32, 1.47-1.48, and 3.03-3.07 are important drivers of the separation in the score plot. Having discovered this, one can investigate the source of those peaks.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1">p <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">sPlotSpectra</span>(Worms2, c_pca, <span class="at" style="color: #657422;">tol =</span> <span class="fl" style="color: #AD0000;">0.001</span>)</span>
+<span id="cb8-2">p</span></code></pre></div>
+<div class="cell-output-display">
+<div id="fig-splot" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-splot-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p></p><p></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="supervised-analysis-with-pls-da" class="level2">
+<h2 class="anchored" data-anchor-id="supervised-analysis-with-pls-da">Supervised Analysis with PLS-DA</h2>
+<p><code>ChemoSpec</code> carries out exploratory data analysis, which is an unsupervised process. The next step in the protocol is PLS-DA (partial least squares - discriminant analysis). I have written about <code>ChemoSpec</code> + PLS <a href="https://chemospec.org/posts/2021-02-08-PLS/2021-02-08-PLS.html">here</a> if you would like more background on plain PLS. However, PLS-DA is a technique that combines data reduction/variable selection along with classification. We’ll need the <code>mixOmics</code> package (<span class="citation" data-cites="mixOmics">F et al. (2017)</span>) package for this analysis; note that loading it replaces the <code>plotLoadings</code> function from <code>ChemoSpec</code>.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><span class="fu" style="color: #4758AB;">library</span>(<span class="st" style="color: #20794D;">"mixOmics"</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: MASS</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: lattice</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Loaded mixOmics 6.20.0
+Thank you for using mixOmics!
+Tutorials: http://mixomics.org
+Bookdown vignette: https://mixomicsteam.github.io/Bookdown
+Questions, issues: Follow the prompts at http://mixomics.org/contact-us
+Cite us:  citation('mixOmics')</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'mixOmics'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:ChemoSpec':
+
+    plotLoadings</code></pre>
+</div>
+</div>
+<p>Figure&nbsp;6 shows the score plot; the results suggest that classification and modeling may be successful. The <code>splsda</code> function carries out a single <em>sparse</em> computation. One computation should not be considered the ideal answer; a better approach is to use cross-validation, for instance the <code>bootsPLS</code> function in the <code>bootsPLS</code> package (<span class="citation" data-cites="bootsPLS">Rohart, Le Cao, and Wells (2018)</span> which uses <code>splsda</code> under the hood). However, that computation is too time-consuming to demonstrate here.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1">X <span class="ot" style="color: #003B4F;">&lt;-</span> Worms2<span class="sc" style="color: #5E5E5E;">$</span>data</span>
+<span id="cb15-2">Y <span class="ot" style="color: #003B4F;">&lt;-</span> Worms2<span class="sc" style="color: #5E5E5E;">$</span>groups</span>
+<span id="cb15-3">splsda <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">splsda</span>(X, Y, <span class="at" style="color: #657422;">ncomp =</span> <span class="dv" style="color: #AD0000;">8</span>)</span></code></pre></div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><span class="fu" style="color: #4758AB;">plotIndiv</span>(splsda,</span>
+<span id="cb16-2">  <span class="at" style="color: #657422;">col.per.group =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"#FB0D16FF"</span>, <span class="st" style="color: #20794D;">"#FFC0CBFF"</span>, <span class="st" style="color: #20794D;">"#511CFCFF"</span>, <span class="st" style="color: #20794D;">"#2E94E9FF"</span>),</span>
+<span id="cb16-3">  <span class="at" style="color: #657422;">title =</span> <span class="st" style="color: #20794D;">"sPLS-DA Score Plot"</span>, <span class="at" style="color: #657422;">legend =</span> <span class="cn" style="color: #8f5902;">TRUE</span>, <span class="at" style="color: #657422;">ellipse =</span> <span class="cn" style="color: #8f5902;">TRUE</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<div id="fig-plsda-indiv" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-plsda-indiv-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p></p><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>To estimate the number of components needed, the <code>perf</code> function can be used. The results are in Figure&nbsp;7 and suggest that five components are sufficient to describe the data.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1">perf.splsda <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">perf</span>(splsda, <span class="at" style="color: #657422;">folds =</span> <span class="dv" style="color: #AD0000;">5</span>, <span class="at" style="color: #657422;">nrepeat =</span> <span class="dv" style="color: #AD0000;">5</span>)</span>
+<span id="cb17-2"><span class="fu" style="color: #4758AB;">plot</span>(perf.splsda)</span></code></pre></div>
+<div class="cell-output-display">
+<div id="fig-plsda-perf" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-plsda-perf-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p></p><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>At this point, we have several ideas of how to proceed. Going forward, one might choose to focus on accurate classification, or on determining which frequencies should be included in a predictive model. Any model will need to refined and more details extracted. The reader is referred to the case study from the <a href="http://mixomics.org/case-studies/splsda-srbct/">mixOmics</a> folks which covers these tasks and explains the process.</p>
+<div class="cell" data-layout-align="center">
+
+</div>
+<hr>
+<p>This post was created using <code>ChemoSpec</code> version 6.1.3 and <code>ChemoSpecUtils</code> version 1.0.0.</p>
+
+
+
+</section>
+</section>
+
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-Blaise2021" class="csl-entry">
+Blaise, Benjamin J., Gonçalo D. S. Correia, Gordon A. Haggart, Izabella Surowiec, Caroline Sands, Matthew R. Lewis, Jake T. M. Pearce, et al. 2021. <span>“Statistical Analysis in Metabolic Phenotyping.”</span> <em>Nature Protocols</em> 16: 4299–4326. <a href="https://doi.org/10.1038/s41596-021-00579-1">https://doi.org/10.1038/s41596-021-00579-1</a>.
+</div>
+<div id="ref-mixOmics" class="csl-entry">
+F, Rohart, Gautier B, Singh A, and Le Cao K-A. 2017. <span>“mixOmics: An r Package for ’Omics Feature Selection and Multiple Data Integration.”</span> <em>PLoS Computational Biology</em> 13 (11): e1005752. <a href="http://www.mixOmics.org">http://www.mixOmics.org</a>.
+</div>
+<div id="ref-bootsPLS" class="csl-entry">
+Rohart, Florian, Kim-Anh Le Cao, and Christine Wells. 2018. <em>bootsPLS: Bootstrap Subsamplings of Sparse Partial Least Squares - Discriminant Analysis for Classification and Signature Identification</em>. <a href="https://CRAN.R-project.org/package=bootsPLS">https://CRAN.R-project.org/package=bootsPLS</a>.
+</div>
+</div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
+  author = {Bryan Hanson},
+  title = {Metabolic {Phenotyping} {Protocol} {Part} 3},
+  date = {2022-05-01},
+  url = {http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3.html},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2022" class="csl-entry quarto-appendix-citeas">
+Bryan Hanson. 2022. <span>“Metabolic Phenotyping Protocol Part
+3.”</span> May 1, 2022. <a href="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3.html">http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3.html</a>.
+</div></div></section></div> ]]></description>
+  <category>R</category>
+  <category>ChemoSpec</category>
+  <category>Metabolomics</category>
+  <category>PLS</category>
+  <category>PLS-DA</category>
+  <guid>http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3.html</guid>
+  <pubDate>Sun, 01 May 2022 07:00:00 GMT</pubDate>
+</item>
 <item>
   <title>Metabolic Phenotyping Protocol Part 2</title>
   <link>http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2.html</link>
@@ -23,7 +252,7 @@
 </div>
 <p>Part 1 of this series is <a href="https://chemospec.org/posts/2022-02-01-Protocol-Pt1/">here</a>.</p>
 <p>If you aren’t familiar with <code>ChemoSpec</code>, you might wish to look at the introductory <a href="https://bryanhanson.github.io/ChemoSpec/articles/ChemoSpec.html">vignette</a> first.</p>
-<p><strong>In this series of posts we are following the protocol as described in the printed publication closely <span class="citation" data-cites="Blaise2021">(Blaise et al. 2021)</span>. The authors have also provided a <a href="https://github.com/Gscorreia89/chemometrics-tutorials">Jupyter notebook</a>. This is well worth your time, even if Python is not your preferred lanaguage, as there are additional examples and discussion for study.</strong></p>
+<p><em>In this series of posts we are following the protocol as described in the printed publication closely <span class="citation" data-cites="Blaise2021">(Blaise et al. 2021)</span>. The authors have also provided a <a href="https://github.com/Gscorreia89/chemometrics-tutorials">Jupyter notebook</a>. This is well worth your time, even if Python is not your preferred lanaguage, as there are additional examples and discussion for study.</em></p>
 <section id="read-in-the-data" class="level1">
 <h1>Read in the Data</h1>
 <p>I saved the <code>Spectra</code> object we created in Part 1 so we can read it and remind ourselves of what’s in it. Due to the compression in R’s <code>save</code> function the data takes up 4.9 Mb on disk. The original csv files total about 62 Mb.</p>
@@ -499,7 +728,7 @@ Suggests?”</span> February 9, 2022. <a href="http://chemospec.org/posts/2022-0
 <section id="background" class="level1">
 <h1>Background</h1>
 <p><span class="citation" data-cites="Blaise2021">Blaise et al. (2021)</span> have published a detailed protocol for metabolomic phenotyping. They illustrate the protocol using a data set composed of 139 <sup>1</sup>H HR-MAS SS-NMR spectra <span class="citation" data-cites="Blaise2007">(Blaise et al. 2007)</span> of the model organism <em>Caenorhabditis elegans</em>. There are two genotypes, wild type and a mutant, and worms from two life stages.</p>
-<p><strong>This series of posts follows the published protocol closely in order to illustrate how to implement the protocol using <code>ChemoSpec</code>. As in any chemometric analysis, there are decisions to be made about how to process the data. In these posts we are interested in which functions to use, and how to examine the results. We are not exploring all possible data processing choices, and argument choices are not necessarily optimized. </strong></p>
+<p><em>This series of posts follows the published protocol closely in order to illustrate how to implement the protocol using <code>ChemoSpec</code>. As in any chemometric analysis, there are decisions to be made about how to process the data. In these posts we are interested in which functions to use, and how to examine the results. We are not exploring all possible data processing choices, and argument choices are not necessarily optimized.</em></p>
 </section>
 <section id="import-the-data" class="level1">
 <h1>Import the Data</h1>
@@ -2165,44 +2394,6 @@ February 20, 2020. <a href="http://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/
   <category>NMR</category>
   <guid>http://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1.html</guid>
   <pubDate>Thu, 20 Feb 2020 07:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>ChemoSpec2D Update</title>
-  <link>http://chemospec.org/posts/2020-02-19-CS2D-update/2020-02-19-CS2D-update.html</link>
-  <description><![CDATA[ 
-
-
-
-<p>I’m pleased to announce that <code>ChemoSpec2D</code>, a package for exploratory data analysis of 2D NMR spectra, has been updated on CRAN and is coming to a mirror near you. Barring user reports to the contrary, I feel like the package has pretty much stabilized and is pretty robust. The main area for future expansion is to add additional data import routines. Please feel free to ask about your specific use case!</p>
-<p>The most noteworthy user-facing improvements are:</p>
-<ul>
-<li>Function <code>import2DSpectra</code> can now handle JCAMP-DX files, Bruker files exported via the TopSpin “totxt” command, and JEOL spectra exported as “generic ascii”. The design allows additional formats to be added if I have test files to play with (hint hint).</li>
-<li><code>files2Spectra2DObject</code> gains a new argument <code>allowSloppy</code>. This <em>experimental</em> feature will allow one to import data sets that do not have the same dimensions. The intent here is to deal with data sets where the number of points in each dimension is similar but not identical. Additional functions will be needed to handle this kind of data. See the documentation for details.</li>
-<li><code>files2Spectra2DObject</code> has also been modified to allow arguments to be passed to <code>list.files</code> and <code>readJDX</code>. This means for instance you can specify a path other than the current working directory, and have the function recurse through sub-directories. This brings <code>files2Spectra2DObject</code> into line with <code>ChemoSpec::files2SpectraObject</code>.</li>
-<li>Function <code>hats_alignSpectra2D</code> gains new arguments <code>dist_method</code> and <code>maximize</code> which allows the user to pass their choice of distance measure through to the objective function used to evaluate the overlap of the spectra. This greatly improves the quality of the alignment.</li>
-<li>Plotting is simplified with the addition of two new functions to create Lists of Colors, <code>LofC</code> and Lists of Levels, <code>LofL</code>.</li>
-<li>The basic color scheme for contours was updated to use a perceptually consistent low/blue -&gt; high/red scheme, based on the principles in the <code>colorspace</code> package. The color-handling infrastructure was also changed to allow easy introduction of different color schemes in the future, though the user cannot yet make changes on the fly.</li>
-</ul>
-<p>In addition, a number of small bugs and annoyances were taken care of, arguments tweaked and documentation improved and expanded. Several functions were rebuilt to make them more robust.</p>
-<p>Please see the package <a href="https://bryanhanson.github.io/ChemoSpec2D/">website</a> for the full changelog and all documentation.</p>
-
-
-
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
-  author = {Bryan Hanson},
-  title = {ChemoSpec2D {Update}},
-  date = {2020-02-19},
-  url = {http://chemospec.org/posts/2020-02-19-CS2D-update/2020-02-19-CS2D-update.html},
-  langid = {en}
-}
-</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2020" class="csl-entry quarto-appendix-citeas">
-Bryan Hanson. 2020. <span>“ChemoSpec2D Update.”</span> February 19,
-2020. <a href="http://chemospec.org/posts/2020-02-19-CS2D-update/2020-02-19-CS2D-update.html">http://chemospec.org/posts/2020-02-19-CS2D-update/2020-02-19-CS2D-update.html</a>.
-</div></div></section></div> ]]></description>
-  <category>R</category>
-  <category>ChemoSpec2D</category>
-  <guid>http://chemospec.org/posts/2020-02-19-CS2D-update/2020-02-19-CS2D-update.html</guid>
-  <pubDate>Wed, 19 Feb 2020 07:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>

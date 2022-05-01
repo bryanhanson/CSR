@@ -51,7 +51,7 @@ Part 1 of this series is [here](https://chemospec.org/posts/2022-02-01-Protocol-
 
 If you aren't familiar with `ChemoSpec`, you might wish to look at the introductory [vignette](https://bryanhanson.github.io/ChemoSpec/articles/ChemoSpec.html) first.
 
-**In this series of posts we are following the protocol as described in the printed publication closely [@Blaise2021].  The authors have also provided a [Jupyter notebook](https://github.com/Gscorreia89/chemometrics-tutorials).  This is well worth your time, even if Python is not your preferred lanaguage, as there are additional examples and discussion for study.**
+*In this series of posts we are following the protocol as described in the printed publication closely [@Blaise2021].  The authors have also provided a [Jupyter notebook](https://github.com/Gscorreia89/chemometrics-tutorials).  This is well worth your time, even if Python is not your preferred lanaguage, as there are additional examples and discussion for study.*
 
 # Read in the Data
 

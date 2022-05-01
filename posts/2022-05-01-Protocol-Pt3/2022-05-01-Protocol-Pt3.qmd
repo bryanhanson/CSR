@@ -1,20 +1,22 @@
 ---
 title: "Metabolic Phenotyping Protocol Part 3"
 description: "Implementing the Statistical Analysis in Metabolic Phenotyping Protocol of Blaise *et al.*"
-date: "2022-04-29"
-categories: [R, ChemoSpec, Metabolomics]
-bibliography: REFS.bib
-draft: true
+date: "2022-05-01"
+categories: [R, ChemoSpec, Metabolomics, PLS, PLS-DA]
+bibliography:
+  - REFS.bib
+  - grateful-refs.bib
 ---
 
 ```{r SetUp, echo = FALSE, eval = TRUE, results = "hide", warning = FALSE, message = FALSE}
 
 # R options & configuration:
-set.seed(9)
+set.seed(123)
 rm(list = ls())
 suppressPackageStartupMessages(library("ChemoSpec"))
 suppressPackageStartupMessages(library("ggplot2"))
 suppressPackageStartupMessages(library("knitr"))
+suppressPackageStartupMessages(library("grateful"))
 
 descCS <- packageDescription("ChemoSpec")
 descCSU <- packageDescription("ChemoSpecUtils")
@@ -53,7 +55,7 @@ knitr::opts_chunk$set(fig.align = "center", sq.fig = FALSE, tidy = TRUE,
 
 If you aren't familiar with `ChemoSpec`, you might wish to look at the introductory [vignette](https://bryanhanson.github.io/ChemoSpec/articles/ChemoSpec.html) first.
 
-**In this series of posts we are following the protocol as described in the printed publication closely [@Blaise2021].  The authors have also provided a [Jupyter notebook](https://github.com/Gscorreia89/chemometrics-tutorials).  This is well worth your time, even if Python is not your preferred lanaguage, as there are additional examples and discussion for study.**
+*In this series of posts we are following the protocol as described in the printed publication closely [@Blaise2021].  The authors have also provided a [Jupyter notebook](https://github.com/Gscorreia89/chemometrics-tutorials).  This is well worth your time, even if Python is not your preferred language, as there are additional examples and discussion for study.*
 
 # Read in the Data
 
@@ -91,7 +93,7 @@ p
 #| label: fig-scores23
 #| sq.fig: true
 #| fig-cap: "Score plot for PCS 2 and 3."
-p <- plotScores(Worms2, c_pca, pcs = 2:3, ellipse = "rob", leg.loc = "topright", tol = 0.02)
+p <- plotScores(Worms2, c_pca, pcs = 2:3, ellipse = "rob", leg.loc = "bottomleft", tol = 0.02)
 p
 ```
 
@@ -105,7 +107,7 @@ p <- plotLoadings(Worms2, c_pca, loads = 1:2)
 p
 ```
 
-The s-plot is another very useful way to find peaks that are important in separating the samples (@fig-splot); we can see that the peaks around $\delta$ 1.30 - 1.32, 1.47-1.48, and 3.03 - 3.07 are important drivers of the separation in the score plot.
+The s-plot is another very useful way to find peaks that are important in separating the samples (@fig-splot); we can see that the peaks around $\delta$ 1.30-1.32, 1.47-1.48, and 3.03-3.07 are important drivers of the separation in the score plot.  Having discovered this, one can investigate the source of those peaks.
 
 ```{r}
 #| label: fig-splot
@@ -116,6 +118,52 @@ p <- sPlotSpectra(Worms2, c_pca, tol = 0.001)
 p
 ```
 
+## Supervised Analysis with PLS-DA
+
+`ChemoSpec` carries out exploratory data analysis, which is an unsupervised process.  The next step in the protocol is PLS-DA (partial least squares - discriminant analysis). I have written about `ChemoSpec` + PLS [here](https://chemospec.org/posts/2021-02-08-PLS/2021-02-08-PLS.html) if you would like more background on plain PLS. However, PLS-DA is a technique that combines data reduction/variable selection along with classification. We'll need the `mixOmics` package (@mixOmics) package for this analysis; note that loading it replaces the `plotLoadings` function from `ChemoSpec`.
+
+```{r}
+library("mixOmics")
+```
+
+@fig-plsda-indiv shows the score plot; the results suggest that classification and modeling may be successful.  The `splsda` function carries out a single *sparse* computation. One computation should not be considered the ideal answer; a better approach is to use cross-validation, for instance the `bootsPLS` function in the `bootsPLS` package (@bootsPLS which uses `splsda` under the hood).  However, that computation is too time-consuming to demonstrate here.
+
+
+```{r}
+X <- Worms2$data
+Y <- Worms2$groups
+splsda <- splsda(X, Y, ncomp = 8)
+```
+
+```{r}
+#| label: fig-plsda-indiv
+#| fig-cap: "sPLS-DA plot showing classification."
+#| sq.fig: true
+#| tidy: false
+plotIndiv(splsda,
+  col.per.group = c("#FB0D16FF", "#FFC0CBFF", "#511CFCFF", "#2E94E9FF"),
+  title = "sPLS-DA Score Plot", legend = TRUE, ellipse = TRUE)
+```
+
+To estimate the number of components needed, the `perf` function can be used. The results are in @fig-plsda-perf and suggest that five components are sufficient to describe the data.
+
+```{r}
+#| label: fig-plsda-perf
+#| fig-cap: "Evaluation of the PLS-DA performance."
+#| sq.fig: true
+perf.splsda <- perf(splsda, folds = 5, nrepeat = 5)
+plot(perf.splsda)
+```
+
+At this point, we have several ideas of how to proceed.  Going forward, one might choose to focus on accurate classification, or on determining which frequencies should be included in a predictive model.  Any model will need to refined and more details extracted.  The reader is referred to the case study from the [mixOmics](http://mixomics.org/case-studies/splsda-srbct/) folks which covers these tasks and explains the process.
+
+```{r}
+#| eval: false
+#| results: "hide"
+#| warning: false
+#| echo: false
+get_pkgs_info(pkgs = c("mixOmics", "bootsPLS"))
+```
 
 ---
 

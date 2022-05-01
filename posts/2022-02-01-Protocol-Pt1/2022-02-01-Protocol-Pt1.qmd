@@ -100,7 +100,7 @@ If you aren't familiar with `ChemoSpec`, you might wish to look at the introduct
 
 @Blaise2021 have published a detailed protocol for metabolomic phenotyping.  They illustrate the protocol using a data set composed of 139 ^1^H HR-MAS SS-NMR spectra [@Blaise2007] of the model organism *Caenorhabditis elegans*.  There are two genotypes, wild type and a mutant, and worms from two life stages.
 
-**This series of posts follows the published protocol closely in order to illustrate how to implement the protocol using `ChemoSpec`. As in any chemometric analysis, there are decisions to be made about how to process the data. In these posts we are interested in which functions to use, and how to examine the results.  We are not exploring all possible data processing choices, and argument choices are not necessarily optimized. **
+*This series of posts follows the published protocol closely in order to illustrate how to implement the protocol using `ChemoSpec`. As in any chemometric analysis, there are decisions to be made about how to process the data. In these posts we are interested in which functions to use, and how to examine the results.  We are not exploring all possible data processing choices, and argument choices are not necessarily optimized.*
 
 # Import the Data
 
