@@ -10,7 +10,88 @@
 <atom:link href="http://chemospec.org/index.xml" rel="self" type="application/rss+xml"/>
 <description>Applying chemometrics to spectroscopy using R</description>
 <generator>quarto-99.9.9</generator>
-<lastBuildDate>Sun, 01 May 2022 07:00:00 GMT</lastBuildDate>
+<lastBuildDate>Tue, 03 May 2022 07:00:00 GMT</lastBuildDate>
+<item>
+  <title>Introducing LearnPCA</title>
+  <link>http://chemospec.org/posts/2022-05-03-LearnPCA-Intro/2022-05-03-LearnPCA-Intro.html</link>
+  <description><![CDATA[ 
+
+
+
+<p>PCA, or principal components analysis, is one of the most wide-spread statistical methods in use. It shows up in many disciplines, from political science and psychology, to chemistry and biology. PCA is also really challenging to understand.</p>
+<p>I’m pleased to announce that my colleague David Harvey and I have recently released <code>LearnPCA</code>, an <code>R</code> package to help people with understanding PCA. In <code>LearnPCA</code> we’ve tried to integrate our years of experience teaching the topic, along with the best insights we can find in books, tutorials and the nooks and crannies of the internet. Though our experience is in a chemometrics context, we use examples from different disciplines so that the package will be broadly helpful.</p>
+<p>The package contains seven vignettes that proceed from the conceptual basics to advanced topics. As of version 0.2.0, there is also a Shiny app to help visualize the process of finding the principal component axes. The current vignettes are:</p>
+<ul>
+<li>A Guide to the LearnPCA Package</li>
+<li>A Conceptual Introduction to PCA</li>
+<li>Step-by-Step PCA</li>
+<li>Understanding Scores and Loadings</li>
+<li>Visualizing PCA in 3D</li>
+<li>The Math Behind PCA</li>
+<li>A Comparison of Functions for PCA</li>
+</ul>
+<p>You can access the vignettes at the <a href="https://bryanhanson.github.io/LearnPCA/">Github Site</a>, you don’t even have to install the package. For the Shiny app, do the following:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;">install.packages</span>(<span class="st" style="color: #20794D;">"LearnPCA"</span>) <span class="co" style="color: #5E5E5E;"># you'll need version 0.2.0</span></span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;">library</span>(<span class="st" style="color: #20794D;">"LearnPCA"</span>)</span>
+<span id="cb1-3"><span class="fu" style="color: #4758AB;">PCsearch</span>()</span></code></pre></div>
+</div>
+<p>We would really appreciate your feedback on this package. You can do so in the comments below, or open an <a href="https://github.com/bryanhanson/LearnPCA/issues">issue</a>. 
+<script type="application/shiny-prerendered" data-context="server-extras">
+ojs_define <- function(..., .session = shiny::getDefaultReactiveDomain()) {
+  quos <- rlang::enquos(...)
+  vars <- rlang::list2(...)
+  nm <- names(vars)
+  if (is.null(nm)) {
+    nm <- rep_len("", length(vars))
+  }
+  mapply(function(q, nm, val) {
+    # Infer name, if possible
+    if (nm == "") {
+      tryCatch({
+        nm <- rlang::as_name(q)
+      }, error = function(e) {
+        code <- paste(collapse = "\n", deparse(rlang::f_rhs(q)))
+        stop("ojs_define() could not create a name for the argument: ", code)
+      })
+    }
+    .session$output[[nm]] <- val
+    outputOptions(.session$output, nm, suspendWhenHidden = FALSE)
+    .session$sendCustomMessage("ojs-export", list(name = nm))
+    NULL
+  }, quos, nm, vars, SIMPLIFY = FALSE, USE.NAMES = FALSE)
+  invisible()
+}
+</script>
+</p>
+<!--html_preserve-->
+<script type="application/shiny-prerendered" data-context="dependencies">
+{"type":"list","attributes":{},"value":[]}
+</script>
+<!--/html_preserve-->
+<!--html_preserve-->
+<script type="application/shiny-prerendered" data-context="execution_dependencies">
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages","version"]},"class":{"type":"character","attributes":{},"value":["data.frame"]},"row.names":{"type":"integer","attributes":{},"value":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34]}},"value":[{"type":"character","attributes":{},"value":["base","cli","compiler","datasets","digest","ellipsis","evaluate","fastmap","graphics","grDevices","htmltools","htmlwidgets","httpuv","jsonlite","knitr","later","lifecycle","magrittr","methods","mime","promises","R6","Rcpp","rlang","rmarkdown","shiny","stats","stringi","stringr","tools","utils","xfun","xtable","yaml"]},{"type":"character","attributes":{},"value":["4.2.0","3.3.0","4.2.0","4.2.0","0.6.29","0.3.2","0.15","1.1.0","4.2.0","4.2.0","0.5.2","1.5.4","1.6.5","1.8.0","1.39","1.3.0","1.0.1","2.0.3","4.2.0","0.12","1.2.0.1","2.5.1","1.0.8.3","1.0.2","2.14","1.7.1","4.2.0","1.7.6","1.4.0","4.2.0","4.2.0","0.30","1.8-4","2.3.5"]}]}]}
+</script>
+<!--/html_preserve-->
+
+
+
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
+  author = {Bryan Hanson},
+  title = {Introducing {LearnPCA}},
+  date = {2022-05-03},
+  url = {http://chemospec.org/posts/2022-05-03-LearnPCA-Intro/2022-05-03-LearnPCA-Intro.html},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2022" class="csl-entry quarto-appendix-citeas">
+Bryan Hanson. 2022. <span>“Introducing LearnPCA.”</span> May 3, 2022. <a href="http://chemospec.org/posts/2022-05-03-LearnPCA-Intro/2022-05-03-LearnPCA-Intro.html">http://chemospec.org/posts/2022-05-03-LearnPCA-Intro/2022-05-03-LearnPCA-Intro.html</a>.
+</div></div></section></div> ]]></description>
+  <category>R</category>
+  <category>PCA</category>
+  <guid>http://chemospec.org/posts/2022-05-03-LearnPCA-Intro/2022-05-03-LearnPCA-Intro.html</guid>
+  <pubDate>Tue, 03 May 2022 07:00:00 GMT</pubDate>
+</item>
 <item>
   <title>Metabolic Phenotyping Protocol Part 3</title>
   <link>http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3.html</link>
@@ -2299,101 +2380,6 @@ Bryan Hanson. 2020. <span>“Aligning 2d NMR Spectra Part 2.”</span> March
   <category>NMR</category>
   <guid>http://chemospec.org/posts/2020-03-02-NMR-Align-Pt2/2020-03-02-NMR-Align-Pt2.html</guid>
   <pubDate>Mon, 02 Mar 2020 07:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>Aligning 2D NMR Spectra Part 1</title>
-  <link>http://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1.html</link>
-  <description><![CDATA[ 
-
-
-
-<p>In this series of posts, I’ll discuss the alignment process for the case of 2D NMR, as implemented in the package <code>ChemoSpec2D</code>. This is Part 1. <a href="https://chemospec.org/posts/2020-03-02-NMR-Align-Pt2/">Part 2</a>. <a href="https://chemospec.org/posts/2020-03-04-NMR-Align-Pt3/">Part 3</a>.</p>
-<p><img src="http://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/P8_Manual_Alignment.png" alt="Manual Alignment" style="width:400px;"></p>
-<p>In one-dimensional <img src="https://latex.codecogs.com/png.latex?%5E1">H NMR spectroscopy, particularly biomolecular NMR, it is frequently necessary to align spectra before chemometric or metabolomics analysis. Poor alignment arises largely from pH and ionic strength induced shifts in aqueous samples. There are a number of published alignment algorithms for the one-dimensional case. The same issue presumably exists for 2D NMR spectra, but alignment options are limited. Instead, for 2D NMR people often work with tables of peaks. Creating these tables is an extra step and decisions about what to include may leave useful information behind.</p>
-<p>No doubt you’ve compared two spectra by overlaying them on the screen, or printing them out, placing them on top of each other, and holding them up to the light. Conceptually, one can “align” spectra by a similar method: just slide one of the pieces of paper up/down and left/right until the spectra are optimally aligned. But how would one do this algorithmically? A literature searched turned up only a few publications on this topic. Among these, there was only one that I felt I could implement using the description in the paper: the HATS-PR algorithm of Robinette <em>et al.</em> <span class="citation" data-cites="Robinette2011">(Robinette et al. 2011)</span>.</p>
-<p>We’ll discuss the HATS algorithm in a future post. As a first step however, we need to consider how we know when two spectra are properly aligned. Visual inspection won’t work, as we will encounter cases where peaks in one region align, but only at the expense of peaks in another region. How would we rank such cases? To automate this process, we need to use an <em>objective function</em>, basically some kind of equation, that we evaluate as we explore the alignment space. A simple but effective option is to compute the distance between the two spectra. This is done by concatenating each row of the 2D spectra to give a long vector of intensities. The distance between these vectors can then be computed using any of the standard distance definitions. Let’s illustrate, starting by taking a look at some mis-aligned data. <code>ChemoSpec2D</code> contains a mis-aligned data set, <code>MUD2</code>, for just this purpose. Here are two spectra from <code>MUD2</code>; note we are using the new convenience functions <code>LofC</code> and <code>LofL</code> to make it easy to overlay the spectra.</p>
-<div class="cell">
-
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;">library</span>(<span class="st" style="color: #20794D;">"ChemoSpec2D"</span>)</span></code></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Loading required package: ChemoSpecUtils</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-As of version 6, ChemoSpec2D offers new graphics output options</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Functions plotScores and plotScree will work with the new options</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>For details, please see ?GraphicsOptions</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-The ChemoSpec graphics option is set to 'ggplot2'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>To change it, do
-    options(ChemoSpecGraphics = 'option'),
-    where 'option' is one of 'base' or 'ggplot2' or'plotly'.</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="fu" style="color: #4758AB;">data</span>(MUD2)</span>
-<span id="cb8-2">mylvls <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">seq</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">30</span>, <span class="at" style="color: #657422;">length.out =</span> <span class="dv" style="color: #AD0000;">10</span>)</span>
-<span id="cb8-3"><span class="fu" style="color: #4758AB;">plotSpectra2D</span>(MUD2, <span class="at" style="color: #657422;">which =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">1</span>, <span class="dv" style="color: #AD0000;">6</span>), <span class="at" style="color: #657422;">showGrid =</span> <span class="cn" style="color: #8f5902;">TRUE</span>,</span>
-<span id="cb8-4">  <span class="at" style="color: #657422;">lvls =</span> <span class="fu" style="color: #4758AB;">LofL</span>(mylvls, <span class="dv" style="color: #AD0000;">2</span>),</span>
-<span id="cb8-5">  <span class="at" style="color: #657422;">cols =</span> <span class="fu" style="color: #4758AB;">LofC</span>(<span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"red"</span>, <span class="st" style="color: #20794D;">"black"</span>), <span class="dv" style="color: #AD0000;">2</span>, <span class="fu" style="color: #4758AB;">length</span>(mylvls), <span class="dv" style="color: #AD0000;">2</span>),</span>
-<span id="cb8-6">  <span class="at" style="color: #657422;">main =</span> <span class="st" style="color: #20794D;">"MUD2 Spectra 1 &amp; 6"</span>)</span></code></pre></div>
-<div class="cell-output-display">
-<p><img src="http://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1_files/figure-html/MUD2-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<p>The function <code>sampleDist</code> allows us to compute the distance between every pair of spectra in the <code>MUD2</code> data set, and present the results as a heat map. Here are the results using cosine as the distance measure.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1">cos_dist <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">sampleDist</span>(MUD2, <span class="at" style="color: #657422;">method =</span> <span class="st" style="color: #20794D;">"cosine"</span>,</span>
-<span id="cb9-2">  <span class="at" style="color: #657422;">main =</span> <span class="st" style="color: #20794D;">"Cosine Distance"</span>)</span></code></pre></div>
-<div class="cell-output-display">
-<p><img src="http://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1_files/figure-html/cosine-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<p>The actual numerical values are in <code>cos_dist</code>, a matrix. Looking at the heatmap, there are some modest differences among the spectra. However, if one looks at the scale, cosine distances are only defined on [-1 … 1]. While the cosine distance is popular in many spectroscopic contexts, it’s not the best objective function for our purpose because there is little absolute difference between -1 and 1 (and for <code>MUD2</code> the absolute differences are even smaller, as the range is only 0, 0.99). This limited range affects the alignment process in a subtle way that we won’t cover here (alignment is still successful, however).</p>
-<p>Let’s consider instead the Euclidean distance.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1">eu_dist <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">sampleDist</span>(MUD2, <span class="at" style="color: #657422;">method =</span> <span class="st" style="color: #20794D;">"euclidean"</span>,</span>
-<span id="cb10-2">  <span class="at" style="color: #657422;">main =</span> <span class="st" style="color: #20794D;">"Euclidean Distance"</span>)</span></code></pre></div>
-<div class="cell-output-display">
-<p><img src="http://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1_files/figure-html/euclid-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<p>It turns of that the Euclidean distance gives a wider span of distances, which will serve us well in the next steps. Here, the range is roughly 80, 150. Note that in this plot the distance between identical spectra is zero, plotted as a white squares along the diagonal. When we used cosine as the distance, identical spectra were perfectly correlated and hence the diagonal in that plot was red.</p>
-<p>In the next post I’ll discuss the general flow of the HATS algorithm, and how to carry it out using <code>ChemoSpec2D</code>.</p>
-
-
-
-
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent">
-<div id="ref-Robinette2011" class="csl-entry">
-Robinette, Steven L., Ramadan Ajredini, Hasan Rasheed, Abdulrahman Zeinomar, Frank C. Schroeder, Aaron T. Dossey, and Arthur S. Edison. 2011. <span>“Hierarchical Alignment and Full Resolution Pattern Recognition of 2d NMR Spectra: Application to Nematode Chemical Ecology.”</span> <em>Analytical Chemistry</em> 83 (5): 1649–57. <a href="https://doi.org/10.1021/ac102724x">https://doi.org/10.1021/ac102724x</a>.
-</div>
-</div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
-  author = {Bryan Hanson},
-  title = {Aligning {2D} {NMR} {Spectra} {Part} 1},
-  date = {2020-02-20},
-  url = {http://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1.html},
-  langid = {en}
-}
-</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2020" class="csl-entry quarto-appendix-citeas">
-Bryan Hanson. 2020. <span>“Aligning 2d NMR Spectra Part 1.”</span>
-February 20, 2020. <a href="http://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1.html">http://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1.html</a>.
-</div></div></section></div> ]]></description>
-  <category>R</category>
-  <category>ChemoSpec</category>
-  <category>Alignment</category>
-  <category>NMR</category>
-  <guid>http://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1.html</guid>
-  <pubDate>Thu, 20 Feb 2020 07:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>

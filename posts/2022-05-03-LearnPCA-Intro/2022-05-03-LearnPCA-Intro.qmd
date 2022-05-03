@@ -1,0 +1,33 @@
+---
+title: "Introducing LearnPCA"
+description: "Improve your understanding of PCA"
+date: "2022-05-03"
+categories: [R, PCA]
+server: shiny
+---
+
+PCA, or principal components analysis, is one of the most wide-spread statistical methods in use.  It shows up in many disciplines, from political science and psychology, to chemistry and biology.  PCA is also really challenging to understand.
+
+I'm pleased to announce that my colleague David Harvey and I have recently released `LearnPCA`, an `R` package to help people with understanding PCA.  In `LearnPCA` we've tried to integrate our years of experience teaching the topic, along with the best insights we can find in books, tutorials and the nooks and crannies of the internet.  Though our experience is in a chemometrics context, we use examples from different disciplines so that the package will be broadly helpful.
+
+The package contains seven vignettes that proceed from the conceptual basics to advanced topics.  As of version 0.2.0, there is also a Shiny app to help visualize the process of finding the principal component axes. The current vignettes are:
+
+* A Guide to the LearnPCA Package
+* A Conceptual Introduction to PCA
+* Step-by-Step PCA
+* Understanding Scores and Loadings
+* Visualizing PCA in 3D
+* The Math Behind PCA
+* A Comparison of Functions for PCA
+
+You can access the vignettes at the [Github Site](https://bryanhanson.github.io/LearnPCA/), you don't even have to install the package.  For the Shiny app, do the following:
+
+```{r}
+#| eval: false
+#| echo: true
+install.packages("LearnPCA") # you'll need version 0.2.0
+library("LearnPCA")
+PCsearch()
+```
+
+We would really appreciate your feedback on this package.  You can do so in the comments below, or open an [issue](https://github.com/bryanhanson/LearnPCA/issues).
