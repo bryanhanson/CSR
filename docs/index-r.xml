@@ -70,6 +70,7 @@ ojs_define <- function(..., .session = shiny::getDefaultReactiveDomain()) {
 </script>
 <!--/html_preserve-->
 <!--html_preserve-->
+
 <script type="application/shiny-prerendered" data-context="execution_dependencies">
 {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages","version"]},"class":{"type":"character","attributes":{},"value":["data.frame"]},"row.names":{"type":"integer","attributes":{},"value":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34]}},"value":[{"type":"character","attributes":{},"value":["base","cli","compiler","datasets","digest","ellipsis","evaluate","fastmap","graphics","grDevices","htmltools","htmlwidgets","httpuv","jsonlite","knitr","later","lifecycle","magrittr","methods","mime","promises","R6","Rcpp","rlang","rmarkdown","shiny","stats","stringi","stringr","tools","utils","xfun","xtable","yaml"]},{"type":"character","attributes":{},"value":["4.2.0","3.3.0","4.2.0","4.2.0","0.6.29","0.3.2","0.15","1.1.0","4.2.0","4.2.0","0.5.2","1.5.4","1.6.5","1.8.0","1.39","1.3.0","1.0.1","2.0.3","4.2.0","0.12","1.2.0.1","2.5.1","1.0.8.3","1.0.2","2.14","1.7.1","4.2.0","1.7.6","1.4.0","4.2.0","4.2.0","0.30","1.8-4","2.3.5"]}]}]}
 </script>
@@ -77,7 +78,7 @@ ojs_define <- function(..., .session = shiny::getDefaultReactiveDomain()) {
 
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
   author = {Bryan Hanson},
   title = {Introducing {LearnPCA}},
   date = {2022-05-03},
@@ -292,7 +293,7 @@ Attaching package: 'mixOmics'</code></pre>
 </section>
 </section>
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent">
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-Blaise2021" class="csl-entry">
 Blaise, Benjamin J., Gonçalo D. S. Correia, Gordon A. Haggart, Izabella Surowiec, Caroline Sands, Matthew R. Lewis, Jake T. M. Pearce, et al. 2021. <span>“Statistical Analysis in Metabolic Phenotyping.”</span> <em>Nature Protocols</em> 16: 4299–4326. <a href="https://doi.org/10.1038/s41596-021-00579-1">https://doi.org/10.1038/s41596-021-00579-1</a>.
 </div>
@@ -527,7 +528,7 @@ of class 'Spectra'</code></pre>
 </section>
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent">
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-Blaise2021" class="csl-entry">
 Blaise, Benjamin J., Gonçalo D. S. Correia, Gordon A. Haggart, Izabella Surowiec, Caroline Sands, Matthew R. Lewis, Jake T. M. Pearce, et al. 2021. <span>“Statistical Analysis in Metabolic Phenotyping.”</span> <em>Nature Protocols</em> 16: 4299–4326. <a href="https://doi.org/10.1038/s41596-021-00579-1">https://doi.org/10.1038/s41596-021-00579-1</a>.
 </div>
@@ -737,7 +738,7 @@ Bryan Hanson. 2022. <span>“Metabolic Phenotyping Protocol Part
 
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>As you will see in a moment, during testing I found a bunch of stale entries I need to remove from several packages!↩︎</p></li>
@@ -941,7 +942,7 @@ of class 'Spectra'</code></pre>
 </section>
 </section>
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent">
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-Blaise2021" class="csl-entry">
 Blaise, Benjamin J., Gonçalo D. S. Correia, Gordon A. Haggart, Izabella Surowiec, Caroline Sands, Matthew R. Lewis, Jake T. M. Pearce, et al. 2021. <span>“Statistical Analysis in Metabolic Phenotyping.”</span> <em>Nature Protocols</em> 16: 4299–4326. <a href="https://doi.org/10.1038/s41596-021-00579-1">https://doi.org/10.1038/s41596-021-00579-1</a>.
 </div>
@@ -972,6 +973,7 @@ Bryan Hanson. 2022. <span>“Metabolic Phenotyping Protocol Part
 
 
 
+
 <table>
 <tbody><tr>
 <td>
@@ -981,6 +983,7 @@ Bryan Hanson. 2022. <span>“Metabolic Phenotyping Protocol Part
 It’s been quiet around this blog because supervising two students for <a href="https://summerofcode.withgoogle.com/">Google Summer of Code</a> has kept me pretty busy! But we have some news…
 </td>
 </tr>
+
 </tbody></table>
 <p>Thanks to Mr.&nbsp;Tejasvi Gupta and the support of GSOC, <a href="https://bryanhanson.github.io/ChemoSpec/"><code>ChemoSpec</code></a> and <a href="https://bryanhanson.github.io/ChemoSpec2D/"><code>ChemoSpec2D</code></a> were extended to produce <code>ggplot2</code> graphics and <code>plotly</code> graphics! <code>ggplot2</code> is now the default output, and the <code>ggplot2</code> object is returned, so if one doesn’t like the choice of theme or any other aspect, one can customize the object to one’s desire. The <code>ggplot2</code> graphics output are generally similar in layout and spirit to the <code>base</code> graphics output, but significant improvements have been made in labeling data points using the <code>ggrepel</code> package. The original <code>base</code> graphics are still available as well. Much of this work required changes in <code>ChemoSpecUtils</code> which supports the common needs of both packages.</p>
 <p>Tejasvi did a really great job with this project, and I think users of these packages will really like the results. We have greatly expanded the pre-release testing of the graphics, and as far as we can see every thing works as intended. Of course, please file an issue if you see any problems or unexpected behavior.</p>
@@ -1004,7 +1007,7 @@ It’s been quiet around this blog because supervising two students for <a href=
 
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2021,
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2021,
   author = {Bryan Hanson},
   title = {GSOC 2021: {New} {Graphics} for {ChemoSpec}},
   date = {2021-10-13},
@@ -1038,7 +1041,7 @@ ChemoSpec.”</span> October 13, 2021. <a href="http://chemospec.org/posts/2021-
 
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2021,
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2021,
   author = {Bryan Hanson},
   title = {GSOC 2021: {hyperSpec} and {ChemoSpec!}},
   date = {2021-05-22},
@@ -1166,7 +1169,7 @@ May 22, 2021. <a href="http://chemospec.org/posts/2021-05-22-GSOC-hyperSpec-Chem
 </section>
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>This code has been tested on a number of searches and I’ve captured every exception I’ve encountered. If you have problems using this code, please file an issue. It’s nearly impossible that it is perfect at this point!↩︎</p></li>
@@ -1237,7 +1240,7 @@ Topic.”</span> April 19, 2021. <a href="http://chemospec.org/posts/2021-04-19-
 </section>
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>The work continues this summer, hopefully again with the support of GSOC.↩︎</p></li>
@@ -1296,7 +1299,7 @@ Packages.”</span> April 11, 2021. <a href="http://chemospec.org/posts/2021-04-
 
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2021,
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2021,
   author = {Bryan Hanson},
   title = {Spectroscopy {Suite} {Update}},
   date = {2021-03-27},
@@ -1425,7 +1428,7 @@ of class 'Spectra'</code></pre>
 
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent">
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-Christensen2004" class="csl-entry">
 Christensen, Jakob, Lars Nørgaard, Hanne Heimdal, Joan Grønkjær Pedersen, and Søren Balling Engelsen. 2004. <span>“Rapid Spectroscopic Analysis of Marzipan-Comparative Instrumentation.”</span> <em>Journal of Near Infrared Spectroscopy</em> 12 (1): 63–75. <a href="https://doi.org/10.1255/jnirs.408">https://doi.org/10.1255/jnirs.408</a>.
 </div>
@@ -1469,6 +1472,7 @@ February 8, 2021. <a href="http://chemospec.org/posts/2021-02-08-PLS/2021-02-08-
 
 
 
+
 <table>
 <tbody><tr>
 <td>
@@ -1478,6 +1482,7 @@ February 8, 2021. <a href="http://chemospec.org/posts/2021-02-08-PLS/2021-02-08-
 Well, things have been busy lately! As reported back in <a href="https://chemospec.org/posts/2020-05-07-GSOC-hyperSpec/"><em>May</em></a>, I’ve been participating in Google Summer of Code which has now wrapped up. This was very rewarding for me, but today I want to share a guest post by Erick Oduniyi, the very talented student on the project. Bryan
 </td>
 </tr>
+
 </tbody></table>
 <hr>
 <p>Checking in from Kansas!</p>
@@ -1508,7 +1513,7 @@ Well, things have been busy lately! As reported back in <a href="https://chemosp
 
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{oduniyi2020,
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{oduniyi2020,
   author = {Erick Oduniyi},
   title = {GSOC {Wrap} {Up}},
   date = {2020-09-08},
@@ -1709,7 +1714,7 @@ Erick Oduniyi. 2020. <span>“GSOC Wrap Up.”</span> September 8, 2020. <a href
 </section>
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent">
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-Goldenberg2016" class="csl-entry">
 Goldenberg, David P. 2016. <em><span class="nocase">Principles of NMR Spectroscopy: An Illustrated Guide</span></em>. University Science Books.
 </div>
@@ -1760,7 +1765,7 @@ June 28, 2020. <a href="http://chemospec.org/posts/2020-06-28-Sim-Spec-Data-Pt1/
 
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>A little history for the curious: the <code>hyperSpec</code> and <code>ChemoSpec</code> packages were written around the same time, independent of each other (~2009). Eventually, Claudia and I became aware of each other’s work, and we have collaborated in ways large and small ever since (I like working with Claudia because I always learn from her!). We have jointly mentored GSOC students twice before. One side project is <a href="https://github.com/Chathurga/HyperChemoBridge"><code>hyperChemoBridge</code></a>, a small package that converts <code>hyperSpec</code> objects into <code>Spectra</code> objects (the native <code>ChemoSpec</code> format) and vice-versa.↩︎</p></li>
@@ -1803,7 +1808,7 @@ GSOC.”</span> May 7, 2020. <a href="http://chemospec.org/posts/2020-05-07-GSOC
 
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
   author = {Bryan Hanson},
   title = {ChemoSpecUtils {Update}},
   date = {2020-04-27},
@@ -1935,7 +1940,7 @@ The ChemoSpec graphics option is set to 'ggplot2'</code></pre>
 </section>
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>Other functions in <code>ChemoSpec</code> that can help you explore which frequencies are important are <code>plotLoadings</code>, <code>plot2Loadings</code> and <code>sPlotSpectra</code>.↩︎</p></li>
@@ -2097,7 +2102,7 @@ font-style: italic;">##  where 'option' is one of 'base' or 'ggplot2' or'plotly'
 
 </section>
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
   author = {Bryan Hanson},
   title = {Aligning {2D} {NMR} {Spectra} {Part} 3},
   date = {2020-03-04},
@@ -2172,7 +2177,7 @@ Bryan Hanson. 2020. <span>“Aligning 2d NMR Spectra Part 3.”</span> March
 
 </section>
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent">
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-Robinette2011" class="csl-entry">
 Robinette, Steven L., Ramadan Ajredini, Hasan Rasheed, Abdulrahman Zeinomar, Frank C. Schroeder, Aaron T. Dossey, and Arthur S. Edison. 2011. <span>“Hierarchical Alignment and Full Resolution Pattern Recognition of 2d NMR Spectra: Application to Nematode Chemical Ecology.”</span> <em>Analytical Chemistry</em> 83 (5): 1649–57. <a href="https://doi.org/10.1021/ac102724x">https://doi.org/10.1021/ac102724x</a>.
 </div>
@@ -2267,7 +2272,7 @@ The ChemoSpec graphics option is set to 'ggplot2'</code></pre>
 
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent">
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-Robinette2011" class="csl-entry">
 Robinette, Steven L., Ramadan Ajredini, Hasan Rasheed, Abdulrahman Zeinomar, Frank C. Schroeder, Aaron T. Dossey, and Arthur S. Edison. 2011. <span>“Hierarchical Alignment and Full Resolution Pattern Recognition of 2d NMR Spectra: Application to Nematode Chemical Ecology.”</span> <em>Analytical Chemistry</em> 83 (5): 1649–57. <a href="https://doi.org/10.1021/ac102724x">https://doi.org/10.1021/ac102724x</a>.
 </div>
@@ -2311,7 +2316,7 @@ February 20, 2020. <a href="http://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/
 
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
   author = {Bryan Hanson},
   title = {ChemoSpec2D {Update}},
   date = {2020-02-19},

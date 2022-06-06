@@ -20,13 +20,14 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 </style>
 
+
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../../site_libs/clipboard/clipboard.min.js"></script>
-<meta name="quarto:offset" content="../../">
 <script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
 <script src="../../site_libs/cookie-consent/cookie-consent.js"></script>
 <link href="../../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
 <script src="../../site_libs/quarto-html/quarto.js"></script>
@@ -34,7 +35,7 @@ ul.task-list{list-style: none;}
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link id="quarto-text-highlighting-styles" href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
@@ -157,8 +158,6 @@ cookieconsent.run({
 </div>
 
 
-
-
 <div class="quarto-title-meta">
 
     <div>
@@ -180,6 +179,7 @@ cookieconsent.run({
 
 </header>
 
+
 <table>
 <tbody><tr>
 <td>
@@ -189,6 +189,7 @@ cookieconsent.run({
 It’s been quiet around this blog because supervising two students for <a href="https://summerofcode.withgoogle.com/">Google Summer of Code</a> has kept me pretty busy! But we have some news…
 </td>
 </tr>
+
 </tbody></table>
 <p>Thanks to Mr.&nbsp;Tejasvi Gupta and the support of GSOC, <a href="https://bryanhanson.github.io/ChemoSpec/"><code>ChemoSpec</code></a> and <a href="https://bryanhanson.github.io/ChemoSpec2D/"><code>ChemoSpec2D</code></a> were extended to produce <code>ggplot2</code> graphics and <code>plotly</code> graphics! <code>ggplot2</code> is now the default output, and the <code>ggplot2</code> object is returned, so if one doesn’t like the choice of theme or any other aspect, one can customize the object to one’s desire. The <code>ggplot2</code> graphics output are generally similar in layout and spirit to the <code>base</code> graphics output, but significant improvements have been made in labeling data points using the <code>ggrepel</code> package. The original <code>base</code> graphics are still available as well. Much of this work required changes in <code>ChemoSpecUtils</code> which supports the common needs of both packages.</p>
 <p>Tejasvi did a really great job with this project, and I think users of these packages will really like the results. We have greatly expanded the pre-release testing of the graphics, and as far as we can see every thing works as intended. Of course, please file an issue if you see any problems or unexpected behavior.</p>
@@ -212,7 +213,7 @@ It’s been quiet around this blog because supervising two students for <a href=
 
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="../..//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2021,
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2021,
   author = {Bryan Hanson},
   title = {GSOC 2021: {New} {Graphics} for {ChemoSpec}},
   date = {2021-10-13},
