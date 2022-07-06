@@ -9,10 +9,103 @@
 <link>http://chemospec.org/index.html</link>
 <atom:link href="http://chemospec.org/index.xml" rel="self" type="application/rss+xml"/>
 <description>Applying chemometrics to spectroscopy using R</description>
-<generator>quarto-99.9.9</generator>
-<lastBuildDate>Tue, 03 May 2022 07:00:00 GMT</lastBuildDate>
+<generator>quarto-0.9.640</generator>
+<lastBuildDate>Wed, 06 Jul 2022 07:00:00 GMT</lastBuildDate>
+<item>
+  <title>FOSS4Spectroscopy: R vs Python</title>
+  <dc:creator>Bryan Hanson</dc:creator>
+  <link>http://chemospec.org/posts/2022-07-06-F4S-Update/2022-07-06-F4S-Update.html</link>
+  <description><![CDATA[ 
+
+
+
+<div class="cell">
+
+</div>
+<p>If you aren’t familiar with it, the <a href="https://bryanhanson.github.io/FOSS4Spectroscopy/">FOSS for Spectroscopy web site</a> lists Free and Open Source Software for spectroscopic applications. The collection is of course never really complete, and your package suggestions are most welcome (<a href="https://github.com/bryanhanson/FOSS4Spectroscopy">how to contribute</a>). My methods for finding packages are improving and at this point the major repositories have been searched reasonably well.</p>
+<p>A few days ago I pushed a major update, and <strong>at this point <code>Python</code> packages outnumber <code>R</code> packages more than two to one</strong>. The update was made possible because I recently had time to figure out how to search the <a href="https://pypi.org/">PyPi.org</a> site automatically.</p>
+<p>In a previous <a href="https://chemospec.org/posts/2021-04-19-Search-GH-Topics/2021-04-19-Search-GH-Topics.html">post</a> I explained the methods I used to find packages related to spectroscopy. These have been updated considerably and the rest of this post will cover the updated methods.</p>
+<section id="repos-topics" class="level2">
+<h2 class="anchored" data-anchor-id="repos-topics">Repos &amp; Topics</h2>
+<p>There are four places I search for packages related to spectroscopy.<sup>1</sup></p>
+<ul>
+<li><a href="https://cran.r-project.org/">CRAN</a>, searched manually using the <a href="https://cran.r-project.org/web/packages/packagefinder/index.html"><code>packagefinder</code></a> package.<sup>2</sup></li>
+<li>Github, searched using custom functions and scripts, detailed below.</li>
+<li><a href="https://pypi.org/">PyPi.org</a>, searched as for Github.</li>
+<li><a href="https://juliapackages.com/">juliapackages.org</a>, searched manually.</li>
+</ul>
+<p>The topics I search are as follows:</p>
+<ul>
+<li>NMR</li>
+<li>EPR</li>
+<li>ESR</li>
+<li>UV</li>
+<li>VIS</li>
+<li>spectrophotometry</li>
+<li>NIR (IR search terms overlap a lot, and also generate many false positives dealing with IR communications, e.g.&nbsp;TV remotes)</li>
+<li>FT-IR</li>
+<li>FTIR</li>
+<li>Raman</li>
+<li>XRF</li>
+<li>XAS</li>
+<li>LIBS (on PyPi.org one must use “laser induced breakdown spectroscopy” because LIBS is the name of a popular software and generates hundreds of false positives)</li>
+</ul>
+</section>
+<section id="searching-cran" class="level2">
+<h2 class="anchored" data-anchor-id="searching-cran">Searching CRAN</h2>
+<p>I search CRAN using <code>packagefinder</code>; the process is quite straightforward and won’t be covered here. However, it is not an automated process (I should probably work on that).</p>
+</section>
+<section id="searching-github" class="level2">
+<h2 class="anchored" data-anchor-id="searching-github">Searching Github</h2>
+<p>The broad approach used to search Github is the same as described in the original <a href="https://chemospec.org/posts/2021-04-19-Search-GH-Topics/2021-04-19-Search-GH-Topics.html">post</a>. However, the scripts have been refined and updated, and now exist as functions in a new package I created called <code>webu</code> (for “webutilities”, but that name is taken on CRAN). The repo is <a href="https://github.com/bryanhanson/webu">here</a>. <code>webu</code> is not on CRAN and I don’t currently intend to put it there, but you can install from the repo of course if you wish to try it out.</p>
+<p>Searching Github is now carried out by a supervising script called <code>/utilities/run_searches.R</code> (in the <code>FOSS4Spectroscopy</code> <a href="https://github.com/bryanhanson/FOSS4Spectroscopy">repo</a>). The script contains some notes about finicky details, but is pretty simple overall and should be easy enough to follow.</p>
+</section>
+<section id="searching-pypi.org" class="level2">
+<h2 class="anchored" data-anchor-id="searching-pypi.org">Searching PyPi.org</h2>
+<p>Unlike Github, it is not necessary to authenticate to use the PyPi.org API. That makes things simpler than the Github case. The needed functions are in <code>webu</code> and include some deliberate delays so as to not overload their servers. As for Github, searches are supervised by <code>/utilities/run_searches.R</code>.</p>
+<p>One thing I observed at PyPi.org is that authors do not always fill out all the fields that PyPi.org can accept, which means some fields are <code>NULL</code> and we have to trap for that possibility. Package information is accessed via a JSON record, for instance the entry for <code>nmrglue</code> can be seen <a href="https://pypi.org/pypi/nmrglue/json">here</a>. This package is pretty typical in that the <code>author_email</code> field is filled out, but the <code>maintainer_email</code> field is not (they are presumably the same). If one considers these JSON files to be analogous to DESCRIPTION in <code>R</code> packages, it looks like there is less oversight on PyPi.org compared to CRAN.</p>
+</section>
+<section id="searching-julia" class="level2">
+<h2 class="anchored" data-anchor-id="searching-julia">Searching Julia</h2>
+<p>Julia packages are readily searched manually at <a href="https://juliapackages.com/">juliapackages.org</a>.</p>
+</section>
+<section id="cleaning-final-vetting" class="level2">
+<h2 class="anchored" data-anchor-id="cleaning-final-vetting">Cleaning &amp; Final Vetting</h2>
+<p>The raw results from the searches described above still need a lot of inspection and cleaning to be usable. The PyPi.org and Github results are saved in an Excel worksheet with the relevant URLs. These links can be followed to determine the suitability of each package. In the <code>/Utilities</code> folder there are additional scripts to remove entries that are already in the main database (FOSS4Spec.xlsx), as well as to check the names of the packages: Python authors and/or policies seem to lead to cases where different packages can have names differing by case, but also authors are sometimes sloppy when referring to their own packages, sometimes using <code>mypkg</code> and at other times <code>myPkg</code> to refer to the same package.</p>
+
+
+</section>
+
+
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Once in a while users submit their own package to the repo, and I also find interesting packages in my literature reading.↩︎</p></li>
+<li id="fn2"><p><code>packagefinder</code> has recently been archived, but hopefully will be back soon.↩︎</p></li>
+</ol>
+</section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
+  author = {Bryan Hanson},
+  title = {FOSS4Spectroscopy: {R} Vs {Python}},
+  date = {2022-07-06},
+  url = {http://chemospec.org/posts/2022-07-06-F4S-Update/2022-07-06-F4S-Update.html},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2022" class="csl-entry quarto-appendix-citeas">
+Bryan Hanson. 2022. <span>“FOSS4Spectroscopy: R Vs Python.”</span> July
+6, 2022. <a href="http://chemospec.org/posts/2022-07-06-F4S-Update/2022-07-06-F4S-Update.html">http://chemospec.org/posts/2022-07-06-F4S-Update/2022-07-06-F4S-Update.html</a>.
+</div></div></section></div> ]]></description>
+  <category>FOSS</category>
+  <category>R</category>
+  <category>Python</category>
+  <category>Julia</category>
+  <category>Github</category>
+  <category>PyPi</category>
+  <guid>http://chemospec.org/posts/2022-07-06-F4S-Update/2022-07-06-F4S-Update.html</guid>
+  <pubDate>Wed, 06 Jul 2022 07:00:00 GMT</pubDate>
+</item>
 <item>
   <title>Introducing LearnPCA</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2022-05-03-LearnPCA-Intro/2022-05-03-LearnPCA-Intro.html</link>
   <description><![CDATA[ 
 
@@ -95,6 +188,7 @@ Bryan Hanson. 2022. <span>“Introducing LearnPCA.”</span> May 3, 2022. <a hre
 </item>
 <item>
   <title>Metabolic Phenotyping Protocol Part 3</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3.html</link>
   <description><![CDATA[ 
 
@@ -324,6 +418,7 @@ Bryan Hanson. 2022. <span>“Metabolic Phenotyping Protocol Part
 </item>
 <item>
   <title>Metabolic Phenotyping Protocol Part 2</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2.html</link>
   <description><![CDATA[ 
 
@@ -562,6 +657,7 @@ Bryan Hanson. 2022. <span>“Metabolic Phenotyping Protocol Part
 </item>
 <item>
   <title>Chemometrics in Spectroscopy: Key References</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2022-02-18-Key-References/2022-02-18-Key-References.html</link>
   <description><![CDATA[ 
 
@@ -594,6 +690,7 @@ References.”</span> February 18, 2022. <a href="http://chemospec.org/posts/202
 </item>
 <item>
   <title>Do You have Stale Imports or Suggests?</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2022-02-09-Imports-Suggests/2022-02-09-Imports-Suggests.html</link>
   <description><![CDATA[ 
 
@@ -795,6 +892,7 @@ Suggests?”</span> February 9, 2022. <a href="http://chemospec.org/posts/2022-0
 </item>
 <item>
   <title>Metabolic Phenotyping Protocol Part 1</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1.html</link>
   <description><![CDATA[ 
 
@@ -1000,6 +1098,7 @@ Bryan Hanson. 2022. <span>“Metabolic Phenotyping Protocol Part
 </item>
 <item>
   <title>GSOC 2021: New Graphics for ChemoSpec</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2021-10-13-GSOC-CS-Graphics/2021-10-13-GSOC-CS-Graphics.html</link>
   <description><![CDATA[ 
 
@@ -1060,6 +1159,7 @@ ChemoSpec.”</span> October 13, 2021. <a href="http://chemospec.org/posts/2021-
 </item>
 <item>
   <title>GSOC 2021: hyperSpec and ChemoSpec!</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2021-05-22-GSOC-hyperSpec-ChemoSpec/2021-05-22-GSOC-hyperSpec-ChemoSpec.html</link>
   <description><![CDATA[ 
 
@@ -1093,6 +1193,7 @@ May 22, 2021. <a href="http://chemospec.org/posts/2021-05-22-GSOC-hyperSpec-Chem
 </item>
 <item>
   <title>Automatically Searching Github Repos by Topic</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2021-04-19-Search-GH-Topics/2021-04-19-Search-GH-Topics.html</link>
   <description><![CDATA[ 
 
@@ -1230,6 +1331,7 @@ Topic.”</span> April 19, 2021. <a href="http://chemospec.org/posts/2021-04-19-
 </item>
 <item>
   <title>Using Github Actions and drat to Deploy R Packages</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2021-04-11-GHA-drat/2021-04-11-GHA-drat.html</link>
   <description><![CDATA[ 
 
@@ -1304,6 +1406,7 @@ Packages.”</span> April 11, 2021. <a href="http://chemospec.org/posts/2021-04-
 </item>
 <item>
   <title>Spectroscopy Suite Update</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2021-03-27-Spec-Suite-update/2021-03-27-Spec-Suite-update.html</link>
   <description><![CDATA[ 
 
@@ -1352,6 +1455,7 @@ Bryan Hanson. 2021. <span>“Spectroscopy Suite Update.”</span> March 27,
 </item>
 <item>
   <title>Interfacing ChemoSpec to PLS</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2021-02-08-PLS/2021-02-08-PLS.html</link>
   <description><![CDATA[ 
 
@@ -1564,6 +1668,7 @@ Erick Oduniyi. 2020. <span>“GSOC Wrap Up.”</span> September 8, 2020. <a href
 </item>
 <item>
   <title>Simulating Spectroscopic Data Part 1</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1.html</link>
   <description><![CDATA[ 
 
@@ -1778,6 +1883,7 @@ June 28, 2020. <a href="http://chemospec.org/posts/2020-06-28-Sim-Spec-Data-Pt1/
 </item>
 <item>
   <title>Fortifying hyperSpec: Getting Ready for GSOC</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html</link>
   <description><![CDATA[ 
 
@@ -1822,6 +1928,7 @@ GSOC.”</span> May 7, 2020. <a href="http://chemospec.org/posts/2020-05-07-GSOC
 </item>
 <item>
   <title>ChemoSpecUtils Update</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2020-04-27-CSU-update/2020-04-27-CSU-update.html</link>
   <description><![CDATA[ 
 
@@ -1858,6 +1965,7 @@ Bryan Hanson. 2020. <span>“ChemoSpecUtils Update.”</span> April 27,
 </item>
 <item>
   <title>Spectral Heatmaps</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2020-04-25-Heatmaps/2020-04-25-Heatmaps.html</link>
   <description><![CDATA[ 
 
@@ -1996,6 +2104,7 @@ Bryan Hanson. 2020. <span>“Spectral Heatmaps.”</span> April 25, 2020. <a hre
 </item>
 <item>
   <title>Data Sharing in the Age of Coronavirus, Part 1</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2020-03-21-Data-Formats-Pt1/2020-03-21-Data-Formats-Pt1.html</link>
   <description><![CDATA[ 
 
@@ -2153,6 +2262,7 @@ Bryan Hanson. 2020. <span>“Data Sharing in the Age of Coronavirus, Part
 </item>
 <item>
   <title>Aligning 2D NMR Spectra Part 3</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2020-03-04-NMR-Align-Pt3/2020-03-04-NMR-Align-Pt3.html</link>
   <description><![CDATA[ 
 
@@ -2308,85 +2418,6 @@ Bryan Hanson. 2020. <span>“Aligning 2d NMR Spectra Part 3.”</span> March
   <category>NMR</category>
   <guid>http://chemospec.org/posts/2020-03-04-NMR-Align-Pt3/2020-03-04-NMR-Align-Pt3.html</guid>
   <pubDate>Wed, 04 Mar 2020 07:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>Aligning 2D NMR Spectra Part 2</title>
-  <link>http://chemospec.org/posts/2020-03-02-NMR-Align-Pt2/2020-03-02-NMR-Align-Pt2.html</link>
-  <description><![CDATA[ 
-
-
-
-<p>This is Part 2 of a series on aligning 2D NMR, as implemented in the package <code>ChemoSpec2D</code>. <a href="https://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/">Part 1</a> <a href="https://chemospec.org/posts/2020-03-04-NMR-Align-Pt3/">Part 3</a></p>
-<section id="the-hats-pr-algorithm" class="level2">
-<h2 class="anchored" data-anchor-id="the-hats-pr-algorithm">The HATS-PR Algorithm</h2>
-<p>In Part 1 I briefly mentioned that we would be using the HATS-PR algorithm of Robinette <em>et al.</em> <span class="citation" data-cites="Robinette2011">(Robinette et al. 2011)</span>. I also discussed the choice of objective function which is used to report on the quality of the alignment. HATS-PR stands for “Hierachical Alignment of Two-Dimensional Spectra - Pattern Recognition”. In <code>ChemoSpec2D</code> the algorithm is implemented in the <code>hats_alignSpectra2D</code> function. Here are the major steps of the HATS-PR algorithm:</p>
-<ol type="1">
-<li>Contruct a <em>guide tree</em> using hierarchical clustering (HCA): compute the distance between the spectra, and use these distances to construct a dendrogram (the guide tree). As the name suggests, this tree is used to guide the alignment. The most similar spectra are aligned first, then the next most similar, and so on. In later rounds one applies the alignment procedure to sets of spectra that have already been aligned. In Robinette <em>et al.</em> they use the Pearson correlation coefficient as the distance measure. In <code>ChemoSpec2D</code> you can choose from a number of distance measures. I encourage you to experiment with the choices and see how they affect the alignment process for your data sets.</li>
-<li>For each alignment event, check the alignment using the objective function, which recall is a distance measure. If the objective function is below the threshold, no alignment is needed (“below” assumes we are minimizing the objective function, but we might also be maximizing and hence trying to exceed the threshold). If alignment is necessary, move one of the spectra relative to the other <em>in some fashion</em>, checking each new postion with the objective function until the best alignment is found. This is an exercise in optimization.</li>
-</ol>
-</section>
-<section id="finding-the-optimal-alignment" class="level2">
-<h2 class="anchored" data-anchor-id="finding-the-optimal-alignment">Finding the Optimal Alignment</h2>
-<p>The heart of the task is in the phrase <em>in some fashion</em>. At one extreme, one can imagine holding one spectrum fixed, and sliding the other spectrum left and right, up and down, over some range of values – essentially a grid of data points. At each position on the virtual grid, evaluate the objective function and keep track of the results. This will always find the answer, but such a brute force search will be very time-consuming and undesirable, especially if the search space is large. Alternatively, do something more efficient! Robinette <em>et al.</em> use a “simple gradient ascent” approach, but there is a vast literature on optimization strategies that we can consider. In <code>ChemoSpec2D</code> we use a machine learning approach (details next), but the function is written in such a way that one can add other optimization approaches seamlessly. <em>Anything</em> is better than a brute force approach.</p>
-</section>
-<section id="optimizing-with-mlrmbo" class="level2">
-<h2 class="anchored" data-anchor-id="optimizing-with-mlrmbo">Optimizing with <code>mlrMBO</code></h2>
-<p>The name <code>mlrMBO</code> comes from “machine learning with R model-based optimization.” <code>mlrMBO</code> is a powerful and flexible package for general purpose optimization, especially in the cases where the objective function is computationally expensive. There is a nice <a href="https://cran.r-project.org/web/packages/mlrMBO/vignettes/mlrMBO.html">introductory vignette</a>.</p>
-<p>The basic steps in the model-based optimization using <code>mlrMBO</code> as implemented in <code>hats_alignSpectra2D</code> in package <code>ChemoSpec2D</code> are as follows:</p>
-<ol type="1">
-<li>Define your objective function. Our choice of the Euclidean distance was described in Part 1, along with other options. Most distance measures are not computationally expensive in terms of code. However, the huge number of data points in a typical 2D NMR spectrum bogs things down considerably. The approach taken in model-based optimation mitigates this to a great deal, since the objective function is only used for the initial response surface.</li>
-<li>Generate an “initial design”, by which we mean a strategy to search the possible optimization space. <code>hats_alignSpectra2D</code> takes arguments <code>maxF1</code> and <code>maxF2</code> which define the space that will be considered as the two spectra are shifted relative to each other. The space potentially covered is <code>-maxF1</code> to <code>maxF1</code> and similarly for the F2 dimension. We take advantage of concepts from the design of experiments field, and use the <a href="https://cran.r-project.org/web/packages/lhs/vignettes/lhs_basics.html">lhs package</a> to generate a Latin Hypercube Sample of our space.</li>
-<li>The sample points selected by <code>lhs</code> are evaluated using the objective function.</li>
-<li>The values of the objective function at the sample points are used to create a surrogate model, essentially a response surface. The key here is that the surrogate model is computationally fast and will stand in for the actual objective function during the optimization. <code>mlrMBO</code> provides many <a href="https://mlr.mlr-org.com/articles/tutorial/integrated_learners.html">options</a> for the surrogate model. For <code>hats_alignSpectra2D</code> we use a response surface based on kriging, which is a means of interpolating values that was originally developed in the geospatial statistics world.</li>
-<li>New samples points are suggested by the kriging algorithm, evaluated using the surrogate function, and used to update (improve) the model. Each iteration improves the quality of the model.</li>
-<li>After reaching the designated threshold or the number of iterations specified, the best answer is returned. In this case the best answer is the optimal shift of one spectrum relative to the other, in each dimension.</li>
-</ol>
-</section>
-<section id="other-details" class="level2">
-<h2 class="anchored" data-anchor-id="other-details">Other Details</h2>
-<p>In addition to the differences noted above, the implementation of HATS-PR in <code>ChemoSpec2D</code> carries out only <em>global</em> alignment. The algorithm described by Robinette <em>et al.</em> includes <em>local</em> alignment steps which I have not implemented. Local alignment is a possible future addition.</p>
-</section>
-<section id="configure-your-workspace" class="level2">
-<h2 class="anchored" data-anchor-id="configure-your-workspace">Configure Your Workspace</h2>
-<p>If you are going to actually execute the code here (as opposed to just reading along), you’ll need the development version of <code>ChemoSpec2D</code> (I improved some of the plots that track the alignment progress since the last CRAN release). And you’ll need certain packages. Here are the steps to install everything:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;">chooseCRANmirror</span>() <span class="co" style="color: #5E5E5E;"># choose a CRAN mirror</span></span>
-<span id="cb1-2"><span class="fu" style="color: #4758AB;">install.packages</span>(<span class="st" style="color: #20794D;">"remotes"</span>)</span>
-<span id="cb1-3"><span class="fu" style="color: #4758AB;">library</span>(<span class="st" style="color: #20794D;">"remotes"</span>)</span>
-<span id="cb1-4"><span class="co" style="color: #5E5E5E;"># devel branch -- you need 0.4.156 or higher</span></span>
-<span id="cb1-5"><span class="fu" style="color: #4758AB;">install_github</span>(<span class="at" style="color: #657422;">repo =</span> <span class="st" style="color: #20794D;">"bryanhanson/ChemoSpec2D@devel"</span>)</span>
-<span id="cb1-6"><span class="fu" style="color: #4758AB;">library</span>(<span class="st" style="color: #20794D;">"ChemoSpec2D"</span>)</span>
-<span id="cb1-7"><span class="co" style="color: #5E5E5E;"># other packages needed</span></span>
-<span id="cb1-8"><span class="fu" style="color: #4758AB;">install.packages</span>(<span class="st" style="color: #20794D;">"mlrMBO"</span>) <span class="co" style="color: #5E5E5E;"># will also install mlr, smoof, ParamHelpers</span></span>
-<span id="cb1-9"><span class="fu" style="color: #4758AB;">install.packages</span>(<span class="st" style="color: #20794D;">"lhs"</span>)</span></code></pre></div>
-</div>
-<p>Now you are ready for the main event! <a href="https://chemospec.org/2020/03/04/p10/">Part 3</a></p>
-
-
-
-</section>
-
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent">
-<div id="ref-Robinette2011" class="csl-entry">
-Robinette, Steven L., Ramadan Ajredini, Hasan Rasheed, Abdulrahman Zeinomar, Frank C. Schroeder, Aaron T. Dossey, and Arthur S. Edison. 2011. <span>“Hierarchical Alignment and Full Resolution Pattern Recognition of 2d NMR Spectra: Application to Nematode Chemical Ecology.”</span> <em>Analytical Chemistry</em> 83 (5): 1649–57. <a href="https://doi.org/10.1021/ac102724x">https://doi.org/10.1021/ac102724x</a>.
-</div>
-</div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
-  author = {Bryan Hanson},
-  title = {Aligning {2D} {NMR} {Spectra} {Part} 2},
-  date = {2020-03-02},
-  url = {http://chemospec.org/posts/2020-03-02-NMR-Align-Pt2/2020-03-02-NMR-Align-Pt2.html},
-  langid = {en}
-}
-</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2020" class="csl-entry quarto-appendix-citeas">
-Bryan Hanson. 2020. <span>“Aligning 2d NMR Spectra Part 2.”</span> March
-2, 2020. <a href="http://chemospec.org/posts/2020-03-02-NMR-Align-Pt2/2020-03-02-NMR-Align-Pt2.html">http://chemospec.org/posts/2020-03-02-NMR-Align-Pt2/2020-03-02-NMR-Align-Pt2.html</a>.
-</div></div></section></div> ]]></description>
-  <category>R</category>
-  <category>ChemoSpec2D</category>
-  <category>Alignment</category>
-  <category>NMR</category>
-  <guid>http://chemospec.org/posts/2020-03-02-NMR-Align-Pt2/2020-03-02-NMR-Align-Pt2.html</guid>
-  <pubDate>Mon, 02 Mar 2020 07:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>

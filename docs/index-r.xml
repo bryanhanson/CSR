@@ -9,10 +9,103 @@
 <link>http://chemospec.org/index.html#category=R</link>
 <atom:link href="http://chemospec.org/index-r.xml" rel="self" type="application/rss+xml"/>
 <description>Applying chemometrics to spectroscopy using R</description>
-<generator>quarto-99.9.9</generator>
-<lastBuildDate>Tue, 03 May 2022 07:00:00 GMT</lastBuildDate>
+<generator>quarto-0.9.640</generator>
+<lastBuildDate>Wed, 06 Jul 2022 07:00:00 GMT</lastBuildDate>
+<item>
+  <title>FOSS4Spectroscopy: R vs Python</title>
+  <dc:creator>Bryan Hanson</dc:creator>
+  <link>http://chemospec.org/posts/2022-07-06-F4S-Update/2022-07-06-F4S-Update.html</link>
+  <description><![CDATA[ 
+
+
+
+<div class="cell">
+
+</div>
+<p>If you aren’t familiar with it, the <a href="https://bryanhanson.github.io/FOSS4Spectroscopy/">FOSS for Spectroscopy web site</a> lists Free and Open Source Software for spectroscopic applications. The collection is of course never really complete, and your package suggestions are most welcome (<a href="https://github.com/bryanhanson/FOSS4Spectroscopy">how to contribute</a>). My methods for finding packages are improving and at this point the major repositories have been searched reasonably well.</p>
+<p>A few days ago I pushed a major update, and <strong>at this point <code>Python</code> packages outnumber <code>R</code> packages more than two to one</strong>. The update was made possible because I recently had time to figure out how to search the <a href="https://pypi.org/">PyPi.org</a> site automatically.</p>
+<p>In a previous <a href="https://chemospec.org/posts/2021-04-19-Search-GH-Topics/2021-04-19-Search-GH-Topics.html">post</a> I explained the methods I used to find packages related to spectroscopy. These have been updated considerably and the rest of this post will cover the updated methods.</p>
+<section id="repos-topics" class="level2">
+<h2 class="anchored" data-anchor-id="repos-topics">Repos &amp; Topics</h2>
+<p>There are four places I search for packages related to spectroscopy.<sup>1</sup></p>
+<ul>
+<li><a href="https://cran.r-project.org/">CRAN</a>, searched manually using the <a href="https://cran.r-project.org/web/packages/packagefinder/index.html"><code>packagefinder</code></a> package.<sup>2</sup></li>
+<li>Github, searched using custom functions and scripts, detailed below.</li>
+<li><a href="https://pypi.org/">PyPi.org</a>, searched as for Github.</li>
+<li><a href="https://juliapackages.com/">juliapackages.org</a>, searched manually.</li>
+</ul>
+<p>The topics I search are as follows:</p>
+<ul>
+<li>NMR</li>
+<li>EPR</li>
+<li>ESR</li>
+<li>UV</li>
+<li>VIS</li>
+<li>spectrophotometry</li>
+<li>NIR (IR search terms overlap a lot, and also generate many false positives dealing with IR communications, e.g.&nbsp;TV remotes)</li>
+<li>FT-IR</li>
+<li>FTIR</li>
+<li>Raman</li>
+<li>XRF</li>
+<li>XAS</li>
+<li>LIBS (on PyPi.org one must use “laser induced breakdown spectroscopy” because LIBS is the name of a popular software and generates hundreds of false positives)</li>
+</ul>
+</section>
+<section id="searching-cran" class="level2">
+<h2 class="anchored" data-anchor-id="searching-cran">Searching CRAN</h2>
+<p>I search CRAN using <code>packagefinder</code>; the process is quite straightforward and won’t be covered here. However, it is not an automated process (I should probably work on that).</p>
+</section>
+<section id="searching-github" class="level2">
+<h2 class="anchored" data-anchor-id="searching-github">Searching Github</h2>
+<p>The broad approach used to search Github is the same as described in the original <a href="https://chemospec.org/posts/2021-04-19-Search-GH-Topics/2021-04-19-Search-GH-Topics.html">post</a>. However, the scripts have been refined and updated, and now exist as functions in a new package I created called <code>webu</code> (for “webutilities”, but that name is taken on CRAN). The repo is <a href="https://github.com/bryanhanson/webu">here</a>. <code>webu</code> is not on CRAN and I don’t currently intend to put it there, but you can install from the repo of course if you wish to try it out.</p>
+<p>Searching Github is now carried out by a supervising script called <code>/utilities/run_searches.R</code> (in the <code>FOSS4Spectroscopy</code> <a href="https://github.com/bryanhanson/FOSS4Spectroscopy">repo</a>). The script contains some notes about finicky details, but is pretty simple overall and should be easy enough to follow.</p>
+</section>
+<section id="searching-pypi.org" class="level2">
+<h2 class="anchored" data-anchor-id="searching-pypi.org">Searching PyPi.org</h2>
+<p>Unlike Github, it is not necessary to authenticate to use the PyPi.org API. That makes things simpler than the Github case. The needed functions are in <code>webu</code> and include some deliberate delays so as to not overload their servers. As for Github, searches are supervised by <code>/utilities/run_searches.R</code>.</p>
+<p>One thing I observed at PyPi.org is that authors do not always fill out all the fields that PyPi.org can accept, which means some fields are <code>NULL</code> and we have to trap for that possibility. Package information is accessed via a JSON record, for instance the entry for <code>nmrglue</code> can be seen <a href="https://pypi.org/pypi/nmrglue/json">here</a>. This package is pretty typical in that the <code>author_email</code> field is filled out, but the <code>maintainer_email</code> field is not (they are presumably the same). If one considers these JSON files to be analogous to DESCRIPTION in <code>R</code> packages, it looks like there is less oversight on PyPi.org compared to CRAN.</p>
+</section>
+<section id="searching-julia" class="level2">
+<h2 class="anchored" data-anchor-id="searching-julia">Searching Julia</h2>
+<p>Julia packages are readily searched manually at <a href="https://juliapackages.com/">juliapackages.org</a>.</p>
+</section>
+<section id="cleaning-final-vetting" class="level2">
+<h2 class="anchored" data-anchor-id="cleaning-final-vetting">Cleaning &amp; Final Vetting</h2>
+<p>The raw results from the searches described above still need a lot of inspection and cleaning to be usable. The PyPi.org and Github results are saved in an Excel worksheet with the relevant URLs. These links can be followed to determine the suitability of each package. In the <code>/Utilities</code> folder there are additional scripts to remove entries that are already in the main database (FOSS4Spec.xlsx), as well as to check the names of the packages: Python authors and/or policies seem to lead to cases where different packages can have names differing by case, but also authors are sometimes sloppy when referring to their own packages, sometimes using <code>mypkg</code> and at other times <code>myPkg</code> to refer to the same package.</p>
+
+
+</section>
+
+
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Once in a while users submit their own package to the repo, and I also find interesting packages in my literature reading.↩︎</p></li>
+<li id="fn2"><p><code>packagefinder</code> has recently been archived, but hopefully will be back soon.↩︎</p></li>
+</ol>
+</section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
+  author = {Bryan Hanson},
+  title = {FOSS4Spectroscopy: {R} Vs {Python}},
+  date = {2022-07-06},
+  url = {http://chemospec.org/posts/2022-07-06-F4S-Update/2022-07-06-F4S-Update.html},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2022" class="csl-entry quarto-appendix-citeas">
+Bryan Hanson. 2022. <span>“FOSS4Spectroscopy: R Vs Python.”</span> July
+6, 2022. <a href="http://chemospec.org/posts/2022-07-06-F4S-Update/2022-07-06-F4S-Update.html">http://chemospec.org/posts/2022-07-06-F4S-Update/2022-07-06-F4S-Update.html</a>.
+</div></div></section></div> ]]></description>
+  <category>FOSS</category>
+  <category>R</category>
+  <category>Python</category>
+  <category>Julia</category>
+  <category>Github</category>
+  <category>PyPi</category>
+  <guid>http://chemospec.org/posts/2022-07-06-F4S-Update/2022-07-06-F4S-Update.html</guid>
+  <pubDate>Wed, 06 Jul 2022 07:00:00 GMT</pubDate>
+</item>
 <item>
   <title>Introducing LearnPCA</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2022-05-03-LearnPCA-Intro/2022-05-03-LearnPCA-Intro.html</link>
   <description><![CDATA[ 
 
@@ -95,6 +188,7 @@ Bryan Hanson. 2022. <span>“Introducing LearnPCA.”</span> May 3, 2022. <a hre
 </item>
 <item>
   <title>Metabolic Phenotyping Protocol Part 3</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3.html</link>
   <description><![CDATA[ 
 
@@ -324,6 +418,7 @@ Bryan Hanson. 2022. <span>“Metabolic Phenotyping Protocol Part
 </item>
 <item>
   <title>Metabolic Phenotyping Protocol Part 2</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2.html</link>
   <description><![CDATA[ 
 
@@ -562,6 +657,7 @@ Bryan Hanson. 2022. <span>“Metabolic Phenotyping Protocol Part
 </item>
 <item>
   <title>Do You have Stale Imports or Suggests?</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2022-02-09-Imports-Suggests/2022-02-09-Imports-Suggests.html</link>
   <description><![CDATA[ 
 
@@ -763,6 +859,7 @@ Suggests?”</span> February 9, 2022. <a href="http://chemospec.org/posts/2022-0
 </item>
 <item>
   <title>Metabolic Phenotyping Protocol Part 1</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1.html</link>
   <description><![CDATA[ 
 
@@ -968,6 +1065,7 @@ Bryan Hanson. 2022. <span>“Metabolic Phenotyping Protocol Part
 </item>
 <item>
   <title>GSOC 2021: New Graphics for ChemoSpec</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2021-10-13-GSOC-CS-Graphics/2021-10-13-GSOC-CS-Graphics.html</link>
   <description><![CDATA[ 
 
@@ -1028,6 +1126,7 @@ ChemoSpec.”</span> October 13, 2021. <a href="http://chemospec.org/posts/2021-
 </item>
 <item>
   <title>GSOC 2021: hyperSpec and ChemoSpec!</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2021-05-22-GSOC-hyperSpec-ChemoSpec/2021-05-22-GSOC-hyperSpec-ChemoSpec.html</link>
   <description><![CDATA[ 
 
@@ -1061,6 +1160,7 @@ May 22, 2021. <a href="http://chemospec.org/posts/2021-05-22-GSOC-hyperSpec-Chem
 </item>
 <item>
   <title>Automatically Searching Github Repos by Topic</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2021-04-19-Search-GH-Topics/2021-04-19-Search-GH-Topics.html</link>
   <description><![CDATA[ 
 
@@ -1198,6 +1298,7 @@ Topic.”</span> April 19, 2021. <a href="http://chemospec.org/posts/2021-04-19-
 </item>
 <item>
   <title>Using Github Actions and drat to Deploy R Packages</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2021-04-11-GHA-drat/2021-04-11-GHA-drat.html</link>
   <description><![CDATA[ 
 
@@ -1272,6 +1373,7 @@ Packages.”</span> April 11, 2021. <a href="http://chemospec.org/posts/2021-04-
 </item>
 <item>
   <title>Spectroscopy Suite Update</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2021-03-27-Spec-Suite-update/2021-03-27-Spec-Suite-update.html</link>
   <description><![CDATA[ 
 
@@ -1320,6 +1422,7 @@ Bryan Hanson. 2021. <span>“Spectroscopy Suite Update.”</span> March 27,
 </item>
 <item>
   <title>Interfacing ChemoSpec to PLS</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2021-02-08-PLS/2021-02-08-PLS.html</link>
   <description><![CDATA[ 
 
@@ -1532,6 +1635,7 @@ Erick Oduniyi. 2020. <span>“GSOC Wrap Up.”</span> September 8, 2020. <a href
 </item>
 <item>
   <title>Simulating Spectroscopic Data Part 1</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1.html</link>
   <description><![CDATA[ 
 
@@ -1746,6 +1850,7 @@ June 28, 2020. <a href="http://chemospec.org/posts/2020-06-28-Sim-Spec-Data-Pt1/
 </item>
 <item>
   <title>Fortifying hyperSpec: Getting Ready for GSOC</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html</link>
   <description><![CDATA[ 
 
@@ -1790,6 +1895,7 @@ GSOC.”</span> May 7, 2020. <a href="http://chemospec.org/posts/2020-05-07-GSOC
 </item>
 <item>
   <title>ChemoSpecUtils Update</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2020-04-27-CSU-update/2020-04-27-CSU-update.html</link>
   <description><![CDATA[ 
 
@@ -1826,6 +1932,7 @@ Bryan Hanson. 2020. <span>“ChemoSpecUtils Update.”</span> April 27,
 </item>
 <item>
   <title>Spectral Heatmaps</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2020-04-25-Heatmaps/2020-04-25-Heatmaps.html</link>
   <description><![CDATA[ 
 
@@ -1964,6 +2071,7 @@ Bryan Hanson. 2020. <span>“Spectral Heatmaps.”</span> April 25, 2020. <a hre
 </item>
 <item>
   <title>Aligning 2D NMR Spectra Part 3</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2020-03-04-NMR-Align-Pt3/2020-03-04-NMR-Align-Pt3.html</link>
   <description><![CDATA[ 
 
@@ -2122,6 +2230,7 @@ Bryan Hanson. 2020. <span>“Aligning 2d NMR Spectra Part 3.”</span> March
 </item>
 <item>
   <title>Aligning 2D NMR Spectra Part 2</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2020-03-02-NMR-Align-Pt2/2020-03-02-NMR-Align-Pt2.html</link>
   <description><![CDATA[ 
 
@@ -2201,6 +2310,7 @@ Bryan Hanson. 2020. <span>“Aligning 2d NMR Spectra Part 2.”</span> March
 </item>
 <item>
   <title>Aligning 2D NMR Spectra Part 1</title>
+  <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1.html</link>
   <description><![CDATA[ 
 
@@ -2293,44 +2403,6 @@ February 20, 2020. <a href="http://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/
   <category>NMR</category>
   <guid>http://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1.html</guid>
   <pubDate>Thu, 20 Feb 2020 07:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>ChemoSpec2D Update</title>
-  <link>http://chemospec.org/posts/2020-02-19-CS2D-update/2020-02-19-CS2D-update.html</link>
-  <description><![CDATA[ 
-
-
-
-<p>I’m pleased to announce that <code>ChemoSpec2D</code>, a package for exploratory data analysis of 2D NMR spectra, has been updated on CRAN and is coming to a mirror near you. Barring user reports to the contrary, I feel like the package has pretty much stabilized and is pretty robust. The main area for future expansion is to add additional data import routines. Please feel free to ask about your specific use case!</p>
-<p>The most noteworthy user-facing improvements are:</p>
-<ul>
-<li>Function <code>import2DSpectra</code> can now handle JCAMP-DX files, Bruker files exported via the TopSpin “totxt” command, and JEOL spectra exported as “generic ascii”. The design allows additional formats to be added if I have test files to play with (hint hint).</li>
-<li><code>files2Spectra2DObject</code> gains a new argument <code>allowSloppy</code>. This <em>experimental</em> feature will allow one to import data sets that do not have the same dimensions. The intent here is to deal with data sets where the number of points in each dimension is similar but not identical. Additional functions will be needed to handle this kind of data. See the documentation for details.</li>
-<li><code>files2Spectra2DObject</code> has also been modified to allow arguments to be passed to <code>list.files</code> and <code>readJDX</code>. This means for instance you can specify a path other than the current working directory, and have the function recurse through sub-directories. This brings <code>files2Spectra2DObject</code> into line with <code>ChemoSpec::files2SpectraObject</code>.</li>
-<li>Function <code>hats_alignSpectra2D</code> gains new arguments <code>dist_method</code> and <code>maximize</code> which allows the user to pass their choice of distance measure through to the objective function used to evaluate the overlap of the spectra. This greatly improves the quality of the alignment.</li>
-<li>Plotting is simplified with the addition of two new functions to create Lists of Colors, <code>LofC</code> and Lists of Levels, <code>LofL</code>.</li>
-<li>The basic color scheme for contours was updated to use a perceptually consistent low/blue -&gt; high/red scheme, based on the principles in the <code>colorspace</code> package. The color-handling infrastructure was also changed to allow easy introduction of different color schemes in the future, though the user cannot yet make changes on the fly.</li>
-</ul>
-<p>In addition, a number of small bugs and annoyances were taken care of, arguments tweaked and documentation improved and expanded. Several functions were rebuilt to make them more robust.</p>
-<p>Please see the package <a href="https://bryanhanson.github.io/ChemoSpec2D/">website</a> for the full changelog and all documentation.</p>
-
-
-
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
-  author = {Bryan Hanson},
-  title = {ChemoSpec2D {Update}},
-  date = {2020-02-19},
-  url = {http://chemospec.org/posts/2020-02-19-CS2D-update/2020-02-19-CS2D-update.html},
-  langid = {en}
-}
-</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2020" class="csl-entry quarto-appendix-citeas">
-Bryan Hanson. 2020. <span>“ChemoSpec2D Update.”</span> February 19,
-2020. <a href="http://chemospec.org/posts/2020-02-19-CS2D-update/2020-02-19-CS2D-update.html">http://chemospec.org/posts/2020-02-19-CS2D-update/2020-02-19-CS2D-update.html</a>.
-</div></div></section></div> ]]></description>
-  <category>R</category>
-  <category>ChemoSpec2D</category>
-  <guid>http://chemospec.org/posts/2020-02-19-CS2D-update/2020-02-19-CS2D-update.html</guid>
-  <pubDate>Wed, 19 Feb 2020 07:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>

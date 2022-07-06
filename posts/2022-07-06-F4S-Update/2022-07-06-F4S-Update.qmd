@@ -1,0 +1,68 @@
+---
+title: "FOSS4Spectroscopy: R vs Python"
+description: "Now with more Python and Julia packages, and improved workflow"
+date: "2022-07-06"
+categories: [FOSS, R, Python, Julia, Github, PyPi]
+---
+
+```{r setup, echo = FALSE}
+
+```
+If you aren't familiar with it, the [FOSS for Spectroscopy web site](https://bryanhanson.github.io/FOSS4Spectroscopy/) lists Free and Open Source Software for spectroscopic applications.  The collection is of course never really complete, and your package suggestions are most welcome ([how to contribute](https://github.com/bryanhanson/FOSS4Spectroscopy)).  My methods for finding packages are improving and at this point the major repositories have been searched reasonably well.
+
+A few days ago I pushed a major update, and **at this point `Python` packages outnumber `R` packages  more than two to one**.  The update was made possible because I recently had time to figure out how to search the [PyPi.org](https://pypi.org/) site automatically.
+
+In a previous [post](https://chemospec.org/posts/2021-04-19-Search-GH-Topics/2021-04-19-Search-GH-Topics.html) I explained the methods I used to find packages related to spectroscopy. These have been updated considerably and the rest of this post will cover the updated methods.
+
+## Repos & Topics
+
+There are four places I search for packages related to spectroscopy.[^1]
+
+* [CRAN](https://cran.r-project.org/), searched manually using the [`packagefinder`](https://cran.r-project.org/web/packages/packagefinder/index.html) package.[^2]
+* Github, searched using custom functions and scripts, detailed below.
+* [PyPi.org](https://pypi.org/), searched as for Github.
+* [juliapackages.org](https://juliapackages.com/), searched manually.
+
+The topics I search are as follows:
+
+* NMR
+* EPR
+* ESR
+* UV
+* VIS
+* spectrophotometry
+* NIR (IR search terms overlap a lot, and also generate many false positives dealing with IR communications, e.g. TV remotes)
+* FT-IR
+* FTIR
+* Raman
+* XRF
+* XAS
+* LIBS (on PyPi.org one must use "laser induced breakdown spectroscopy" because LIBS is the name of a popular software and generates hundreds of false positives)
+
+
+## Searching CRAN
+
+I search CRAN using `packagefinder`; the process is quite straightforward and won't be covered here. However, it is not an automated process (I should probably work on that).
+
+## Searching Github
+
+The broad approach used to search Github is the same as described in the original [post](https://chemospec.org/posts/2021-04-19-Search-GH-Topics/2021-04-19-Search-GH-Topics.html).  However, the scripts have been refined and updated, and now exist as functions in a new package I created called `webu` (for "webutilities", but that name is taken on CRAN).  The repo is [here](https://github.com/bryanhanson/webu).  `webu` is not on CRAN and I don't currently intend to put it there, but you can install from the repo of course if you wish to try it out.
+
+Searching Github is now carried out by a supervising script called `/utilities/run_searches.R` (in the `FOSS4Spectroscopy` [repo](https://github.com/bryanhanson/FOSS4Spectroscopy)).  The script contains some notes about finicky details, but is pretty simple overall and should be easy enough to follow.
+
+## Searching PyPi.org
+
+Unlike Github, it is not necessary to authenticate to use the PyPi.org API.  That makes things simpler than the Github case.  The needed functions are in `webu` and include some deliberate delays so as to not overload their servers.  As for Github, searches are supervised by `/utilities/run_searches.R`.
+
+One thing I observed at PyPi.org is that authors do not always fill out all the fields that PyPi.org can accept, which means some fields are `NULL` and we have to trap for that possibility.  Package information is accessed via a JSON record, for instance the entry for `nmrglue` can be seen [here](https://pypi.org/pypi/nmrglue/json).  This package is pretty typical in that the `author_email` field is filled out, but the `maintainer_email` field is not (they are presumably the same).  If one considers these JSON files to be analogous to DESCRIPTION in `R` packages, it looks like there is less oversight on PyPi.org compared to CRAN.
+
+## Searching Julia
+
+Julia packages are readily searched manually at [juliapackages.org](https://juliapackages.com/).
+
+## Cleaning & Final Vetting
+
+The raw results from the searches described above still need a lot of inspection and cleaning to be usable.  The PyPi.org and Github results are saved in an Excel worksheet with the relevant URLs.  These links can be followed to determine the suitability of each package.  In the `/Utilities` folder there are additional scripts to remove entries that are already in the main database (FOSS4Spec.xlsx), as well as to check the names of the packages: Python authors and/or policies seem to lead to cases where different packages can have names differing by case, but also authors are sometimes sloppy when referring to their own packages, sometimes using `mypkg` and at other times `myPkg` to refer to the same package.
+
+[^1]: Once in a while users submit their own package to the repo, and I also find interesting packages in my literature reading.
+[^2]: `packagefinder` has recently been archived, but hopefully will be back soon.
