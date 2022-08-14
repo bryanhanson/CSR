@@ -9,8 +9,302 @@
 <link>http://chemospec.org/index.html</link>
 <atom:link href="http://chemospec.org/index.xml" rel="self" type="application/rss+xml"/>
 <description>Applying chemometrics to spectroscopy using R</description>
-<generator>quarto-0.9.640</generator>
-<lastBuildDate>Wed, 06 Jul 2022 07:00:00 GMT</lastBuildDate>
+<generator>quarto-99.9.9</generator>
+<lastBuildDate>Sun, 14 Aug 2022 07:00:00 GMT</lastBuildDate>
+<item>
+  <title>Notes on Linear Algebra Part 1</title>
+  <dc:creator>Bryan Hanson</dc:creator>
+  <link>http://chemospec.org/posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html</link>
+  <description><![CDATA[ 
+
+
+
+<p>If you are already familiar with much of linear algebra, as well as the relevant functions in <code>R</code>, read no further and do something else!</p>
+<p>If you are like me, you’ve had <em>no</em> formal training in linear algebra, which means you learn what you need to when you need to use it. Eventually, you cobble together some hard-won knowledge. That’s good, because almost everything in chemometrics involves linear algebra.</p>
+<p>This post is essentially a set of personal notes about the dot product and the cross product, two important manipulations in linear algebra. I’ve tried to harmonize things I learned way back in college physics and math courses, and integrate information I’ve found in various sources I have leaned on more recently. Without a doubt, the greatest impediment to really understanding this material is the use of multiple terminology and notations. I’m going to try really hard to be clear and to the point in my dicussion.</p>
+<p>The main sources I’ve relied on are:</p>
+<ul>
+<li><em>The No Bullshit Guide to Linear Algebra</em> by <a href="https://minireference.com">Ivan Savov</a>. This is by far my favorite treatment of linear algebra. It gets to the point quickly.</li>
+<li>The Wikipedia pages on <a href="https://en.wikipedia.org/wiki/Dot_product">dot product</a>, <a href="https://en.wikipedia.org/wiki/Cross_product">cross product</a> and <a href="https://en.wikipedia.org/wiki/Outer_product">outer product</a>.</li>
+</ul>
+<p>Let’s get started. For sanity and consistency, let’s define two 3D vectors and two matrices to illustrate our examples. Most of the time I’m going to write vectors with an arrow over the name, as a nod to the treatment usually given in a physics course. This reminds us that we are thinking about a quantity with direction and magnitude in some coordinate system, something geometric. Of course in the <code>R</code> language a vector is simply a list of numbers with the same data type; <code>R</code> doesn’t care if a vector is a vector in the geometric sense or a list of states.</p>
+<p><span id="eq-def-u"><img src="https://latex.codecogs.com/png.latex?%0A%5Cvec%7Bu%7D%20=%20(u_x,%20u_y,%20u_z)%0A%5Ctag%7B1%7D"></span></p>
+<p><span id="eq-def-v"><img src="https://latex.codecogs.com/png.latex?%0A%5Cvec%7Bv%7D%20=%20(v_x,%20v_y,%20v_z)%0A%5Ctag%7B2%7D"></span></p>
+<p><span id="eq-def-A"><img src="https://latex.codecogs.com/png.latex?%0A%5Cmathbf%7BA%7D%20=%0A%5Cbegin%7Bbmatrix%7D%0Aa_%7B11%7D%20&amp;%20a_%7B12%7D%20&amp;%20a_%7B13%7D%20%5C%5C%0Aa_%7B21%7D%20&amp;%20a_%7B22%7D%20&amp;%20a_%7B23%7D%20%5C%5C%0A%5Cend%7Bbmatrix%7D%0A%5Ctag%7B3%7D"></span></p>
+<p><span id="eq-def-B"><img src="https://latex.codecogs.com/png.latex?%0A%5Cmathbf%7BB%7D%20=%0A%5Cbegin%7Bbmatrix%7D%0Ab_%7B11%7D%20&amp;%20b_%7B12%7D%20&amp;%20b_%7B13%7D%20%5C%5C%0Ab_%7B21%7D%20&amp;%20b_%7B22%7D%20&amp;%20b_%7B23%7D%20%5C%5C%0Ab_%7B31%7D%20&amp;%20b_%7B32%7D%20&amp;%20b_%7B33%7D%20%5C%5C%0A%5Cend%7Bbmatrix%7D%0A%5Ctag%7B4%7D"></span></p>
+<section id="dot-product" class="level2">
+<h2 class="anchored" data-anchor-id="dot-product">Dot Product</h2>
+<section id="terminology" class="level3">
+<h3 class="anchored" data-anchor-id="terminology">Terminology</h3>
+<p>The dot product goes by these other names: inner product, scalar product. Typical notations include:<sup>1</sup></p>
+<ul>
+<li><img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bu%7D%20%5Ccdot%20%5Cvec%7Bv%7D"> (the <img src="https://latex.codecogs.com/png.latex?%5Ccdot"> is the origin of the name “dot” product)</li>
+<li><img src="https://latex.codecogs.com/png.latex?u%20%5Ccdot%20v"></li>
+<li><img src="https://latex.codecogs.com/png.latex?u%5E%5Cmathsf%7BT%7Dv"> (when thinking of the vectors as column vectors)</li>
+<li><img src="https://latex.codecogs.com/png.latex?%5Clangle%20u,%20v%20%5Crangle"> (typically used when <img src="https://latex.codecogs.com/png.latex?u,%20v"> are complex)</li>
+<li><img src="https://latex.codecogs.com/png.latex?%5Clangle%20u%20%7C%20v%20%5Crangle"></li>
+</ul>
+</section>
+<section id="formulas" class="level3">
+<h3 class="anchored" data-anchor-id="formulas">Formulas</h3>
+<p>There are two main formulas for the dot product with <em>vectors</em>, the algebraic formula (Equation&nbsp;5) and the geometric formula (Equation&nbsp;6).</p>
+<p><span id="eq-dp1"><img src="https://latex.codecogs.com/png.latex?%0A%5Cvec%7Bu%7D%20%5Ccdot%20%5Cvec%7Bv%7D%20=%20%5Csum%7Bu_i%20v_i%7D%0A%5Ctag%7B5%7D"></span></p>
+<p><span id="eq-dp2"><img src="https://latex.codecogs.com/png.latex?%0A%5Cvec%7Bu%7D%20%5Ccdot%20%5Cvec%7Bv%7D%20=%20%5C%7C%20%5Cvec%7Bu%7D%20%5C%7C%20%5C%7C%20%5Cvec%7Bv%7D%20%5C%7C%20cos%20%5Ctheta%0A%5Ctag%7B6%7D"></span></p>
+<p><img src="https://latex.codecogs.com/png.latex?%5C%7C%20%5Cvec%7Bx%7D%20%5C%7C"> refers to the <img src="https://latex.codecogs.com/png.latex?L_2"> or Euclidian norm, namely the length of the vector:<sup>2</sup></p>
+<p><span id="eq-L2"><img src="https://latex.codecogs.com/png.latex?%0A%5C%7C%20%5Cvec%7Bx%7D%20%5C%7C%20=%20%20%5Csqrt%7Bx%5E%7B2%7D_1%20+%20%5Cldots%20+%20x%5E%7B2%7D_n%7D%0A%5Ctag%7B7%7D"></span></p>
+<p>The result of the dot product is a scalar. The dot product is also commutative: <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bu%7D%20%5Ccdot%20%5Cvec%7Bv%7D%20=%20%5Cvec%7Bv%7D%20%5Ccdot%20%5Cvec%7Bu%7D">.</p>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Watch out when using row or column vectors
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>From the perspective of <em>matrices</em>, if we think of <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bu%7D"> and <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bv%7D"> as <strong>column vectors</strong> with dimensions 3 x 1, then transposing <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bu%7D"> gives us conformable matrices and we find the result of matrix multiplication is the dot product (compare to Equation&nbsp;5):</p>
+<p><span id="eq-dp3"><img src="https://latex.codecogs.com/png.latex?%0A%5Cvec%7Bu%7D%20%5Ccdot%20%5Cvec%7Bv%7D%20=%20%5Cvec%7Bu%7D%5E%5Cmathsf%7BT%7D%20%5C%20%5Cvec%7Bv%7D%20=%20%5Cbegin%7Bbmatrix%7D%20u_x%20&amp;%20u_y%20&amp;%20u_z%5Cend%7Bbmatrix%7D%20%5Cbegin%7Bbmatrix%7D%20v_x%20%5C%5C%20v_y%20%5C%5C%20v_z%20%5Cend%7Bbmatrix%7D%20=%20u_x%20v_x%20+%20u_y%20v_y%20+%20u_z%20v_z%0A%5Ctag%7B8%7D"></span></p>
+<p>Even though this is matrix multiplication, the answer is still a scalar.</p>
+<p>Now, rather confusingly, if we think of <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bu%7D"> and <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bv%7D"> as <strong>row vectors</strong>, and we transpose <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bv%7D">,then we get the dot product:</p>
+<p><span id="eq-dp5"><img src="https://latex.codecogs.com/png.latex?%0A%5Cvec%7Bu%7D%20%5Ccdot%20%5Cvec%7Bv%7D%20=%20%5Cvec%7Bu%7D%20%5C%20%5Cvec%7Bv%7D%5E%5Cmathsf%7BT%7D%20=%20%5Cbegin%7Bbmatrix%7D%20u_x%20&amp;%20u_y%20&amp;%20u_z%5Cend%7Bbmatrix%7D%20%5Cbegin%7Bbmatrix%7D%20v_x%20%5C%5C%20v_y%20%5C%5C%20v_z%20%5Cend%7Bbmatrix%7D%20=%20u_x%20v_x%20+%20u_y%20v_y%20+%20u_z%20v_z%0A%5Ctag%7B9%7D"></span></p>
+<p>Equations Equation&nbsp;8 and Equation&nbsp;9 can be a source of real confusion at first. They give the impression that the dot product can be either <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bu%7D%5E%5Cmathsf%7BT%7D%20%5C%20%5Cvec%7Bv%7D"> or <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bu%7D%20%5C%20%5Cvec%7Bv%7D%5E%5Cmathsf%7BT%7D">. <em>However, this is only true in the limited contexts defined above.</em> To summarize:</p>
+<ul>
+<li>Thinking of the vectors as <em>column vectors</em> with dimensions <img src="https://latex.codecogs.com/png.latex?n%20%5Ctimes%201"> then one can use <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bu%7D%5E%5Cmathsf%7BT%7D%20%5C%20%5Cvec%7Bv%7D"></li>
+<li>Thinking of the vectors as <em>row vectors</em> with dimensions <img src="https://latex.codecogs.com/png.latex?1%20%5Ctimes%20n"> then one can use <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bu%7D%20%5C%20%5Cvec%7Bv%7D%5E%5Cmathsf%7BT%7D"></li>
+</ul>
+<p>Unfortunately I think this distinction is not always clearly made by authors, and is a source of great confusion to linear algebra learners. <strong>Be careful when working with row and column vectors.</strong></p>
+</div>
+</div>
+</div>
+</section>
+<section id="matrix-multiplication" class="level3">
+<h3 class="anchored" data-anchor-id="matrix-multiplication">Matrix Multiplication</h3>
+<p>Suppose we wanted to compute <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BA%7D%5Cmathbf%7BB%7D%20=%20%5Cmathbf%7BC%7D">.<sup>3</sup> We use the idea of row and column vectors to accomplish this task. In the process, we discover that matrix multiplication is a series of dot products:</p>
+<p><span id="eq-dp4"><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Bmultline%7D%0A%5Cmathbf%7BA%7D%5Cmathbf%7BB%7D%20=%20%5Cmathbf%7BC%7D%20=%0A%5Cbegin%7Bbmatrix%7D%0A%5Ctextcolor%7Bred%7D%7Ba_%7B11%7D%7D%20&amp;%20%5Ctextcolor%7Bred%7D%7Ba_%7B12%7D%7D%20&amp;%20%5Ctextcolor%7Bred%7D%7Ba_%7B13%7D%7D%20%5C%5C%0Aa_%7B21%7D%20&amp;%20a_%7B22%7D%20&amp;%20a_%7B23%7D%20%5C%5C%0A%5Cend%7Bbmatrix%7D%0A%5Cbegin%7Bbmatrix%7D%0A%5Ctextcolor%7Bred%7D%7Bb_%7B11%7D%7D%20&amp;%20b_%7B12%7D%20&amp;%20b_%7B13%7D%20%5C%5C%0A%5Ctextcolor%7Bred%7D%7Bb_%7B21%7D%7D%20&amp;%20b_%7B22%7D%20&amp;%20b_%7B23%7D%20%5C%5C%0A%5Ctextcolor%7Bred%7D%7Bb_%7B31%7D%7D%20&amp;%20b_%7B32%7D%20&amp;%20b_%7B33%7D%20%5C%5C%0A%5Cend%7Bbmatrix%7D%20=%20%5C%5C%0A%5Cbegin%7Bbmatrix%7D%0A%5Ctextcolor%7Bred%7D%7Ba_%7B11%7Db_%7B11%7D%20+%20a_%7B12%7Db_%7B21%7D%20+%20a_%7B13%7Db_%7B31%7D%7D%20&amp;%20a_%7B11%7Db_%7B12%7D%20+%20a_%7B12%7Db_%7B22%7D%20+%20a_%7B13%7Db_%7B32%7D%20&amp;%20a_%7B11%7Db_%7B13%7D%20+%20a_%7B12%7Db_%7B23%7D%20+%20a_%7B13%7Db_%7B33%7D%5C%5C%0Aa_%7B21%7Db_%7B11%7D%20+%20a_%7B22%7Db_%7B21%7D%20+%20a_%7B23%7Db_%7B31%7D%20&amp;%20a_%7B21%7Db_%7B12%7D%20+%20a_%7B22%7Db_%7B22%7D%20+%20a_%7B23%7Db_%7B32%7D%20&amp;%20a_%7B21%7Db_%7B13%7D%20+%20a_%7B22%7Db_%7B23%7D%20+%20a_%7B23%7Db_%7B33%7D%5C%5C%0A%5Cend%7Bbmatrix%7D%0A%5Cend%7Bmultline%7D%0A%5Ctag%7B10%7D"></span></p>
+<p>The red color shows how the dot product of the first row of <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BA%7D"> and the first column of <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BB%7D"> gives the first entry in <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BC%7D">. Every entry in <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BC%7D"> results from a dot product. Every entry is a scalar, embedded in a matrix.</p>
+</section>
+<section id="what-can-we-do-with-the-dot-product" class="level3">
+<h3 class="anchored" data-anchor-id="what-can-we-do-with-the-dot-product">What Can We Do With the Dot Product?</h3>
+<ul>
+<li>Determine the angle between two vectors, as in Equation&nbsp;6.</li>
+<li>As such, determine if two vectors intersect at a right angle (at least in 2-3D). More generally, two vectors of any dimension are <em>orthogonal</em> if their dot product is zero.</li>
+<li>Matrix multiplication, when applied repeatedly.</li>
+<li>Compute the length of a vector, via <img src="https://latex.codecogs.com/png.latex?%5Csqrt%7Bv%20%5Ccdot%20v%7D"></li>
+<li>Compute the projection of one vector on another, for instance how much of a force is along the <img src="https://latex.codecogs.com/png.latex?x">-direction? A verbal interpretation of <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bu%7D%20%5Ccdot%20%5Cvec%7Bv%7D"> is it gives the amount of <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bv%7D"> in the direction of <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bu%7D">.</li>
+</ul>
+</section>
+</section>
+<section id="cross-product" class="level2">
+<h2 class="anchored" data-anchor-id="cross-product">Cross Product</h2>
+<section id="terminology-and-notation" class="level3">
+<h3 class="anchored" data-anchor-id="terminology-and-notation">Terminology and Notation</h3>
+<p>The cross product goes by these other names: outer product<sup>4</sup>, tensor product, vector product.</p>
+</section>
+<section id="formulas-1" class="level3">
+<h3 class="anchored" data-anchor-id="formulas-1">Formulas</h3>
+<p>The cross product of two vectors returns a vector rather than a scalar. Vectors are defined in terms of a <em>basis</em> which is a coordinate system. Earlier, when we defined <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bu%7D%20=%20(u_x,%20u_y,%20u_z)"> it was intrinsically defined in terms of the standard basis set <img src="https://latex.codecogs.com/png.latex?%5Chat%7Bi%7D,%20%5Chat%7Bj%7D,%20%5Chat%7Bk%7D"> (in some fields this would be called the unit coordinate system). Thus a fuller definition of <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bu%7D"> would be:</p>
+<p><span id="eq-cp1"><img src="https://latex.codecogs.com/png.latex?%0A%5Cvec%7Bu%7D%20=%20u_x%5Chat%7Bi%7D%20+%20u_y%5Chat%7Bk%7D%20+%20u_z%5Chat%7Bk%7D%0A%5Ctag%7B11%7D"></span></p>
+<p>In terms of <em>vectors</em>, the cross product is defined as:</p>
+<p><span id="eq-cp2"><img src="https://latex.codecogs.com/png.latex?%0A%5Cvec%7Bu%7D%20%5Ctimes%20%5Cvec%7Bv%7D%20=%20(a_%7By%7Db_%7Bz%7D%20-%20a_%7Bz%7Db_%7By%7D)%5Chat%7Bi%7D%20+%20(a_%7Bz%7Db_%7Bx%7D%20-%20a_%7Bx%7Db_%7Bz%7D)%5Chat%7Bj%7D%20+%20(a_%7Bx%7Db_%7By%7D%20-a_%7By%7Db_%7Bx%7D)%5Chat%7Bk%7D%0A%5Ctag%7B12%7D"></span></p>
+<p>In my opinion, this is not exactly intuitive, but there is a pattern to it: notice that the terms for <img src="https://latex.codecogs.com/png.latex?%5Chat%7Bi%7D"> don’t involve the <img src="https://latex.codecogs.com/png.latex?x"> component. The details of how this result is computed relies on some properties of the basis set; this <a href="https://en.wikipedia.org/wiki/Cross_product#Coordinate_notation">Wikipedia</a> article has a nice explanation. We need not dwell on it however.</p>
+<p>There is also a geometric formula for the cross product:</p>
+<p><span id="eq-cp4"><img src="https://latex.codecogs.com/png.latex?%0A%5Cvec%7Bu%7D%20%5Ctimes%20%5Cvec%7Bv%7D%20=%20%5C%7C%20%5Cvec%7Bu%7D%20%5C%7C%20%5C%7C%20%5Cvec%7Bv%7D%20%5C%7C%20sin%20%5Ctheta%20%5Chat%7Bn%7D%0A%5Ctag%7B13%7D"></span></p>
+<p>where <img src="https://latex.codecogs.com/png.latex?%5Chat%7Bn%7D"> is the unit vector perpendicular to the plane defined by <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bu%7D"> and <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bv%7D">. The direction of <img src="https://latex.codecogs.com/png.latex?%5Chat%7Bn%7D"> is defined by the <a href="https://en.wikipedia.org/wiki/Right-hand_rule">right-hand rule</a>. Because of this, the cross product is not commutative, i.e.&nbsp;<img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bu%7D%20%5Ctimes%20%5Cvec%7Bv%7D%20%5Cne%20%5Cvec%7Bv%7D%20%5Ctimes%20%5Cvec%7Bu%7D">. The cross product is however anti-commutative: <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bu%7D%20%5Ctimes%20%5Cvec%7Bv%7D%20=%20-%20(%5Cvec%7Bv%7D%20%5Ctimes%20%5Cvec%7Bu%7D)"></p>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Cross product using column vectors
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>As we did for the dot product, we can look at the cross product from the perspective of column vectors. Instead of transposing the first matrix as we did for the dot product, we transpose the second one:</p>
+<p><span id="eq-cp3"><img src="https://latex.codecogs.com/png.latex?%0A%5Cvec%7Bu%7D%20%5Ctimes%20%5Cvec%7Bv%7D%20=%20%5Cvec%7Bu%7D%20%5C%20%5Cvec%7Bv%7D%5E%5Cmathsf%7BT%7D%20=%20%5Cbegin%7Bbmatrix%7D%20u_x%20%5C%5C%20u_y%20%5C%5C%20u_z%5Cend%7Bbmatrix%7D%20%5Cbegin%7Bbmatrix%7D%20v_x%20&amp;%20v_y%20&amp;%20v_z%20%5Cend%7Bbmatrix%7D%20=%20%5Cbegin%7Bbmatrix%7D%20u_%7Bx%7Dv_%7Bx%7D%20&amp;%20u_%7Bx%7Dv_%7By%7D%20&amp;%20u_%7Bx%7Dv_%7Bz%7D%20%5C%5C%20u_%7By%7Dv_%7Bx%7D%20&amp;%20u_%7By%7Dv_%7By%7D%20&amp;%20u_%7By%7Dv_%7Bz%7D%20%5C%5C%20u_%7Bz%7Dv_%7Bx%7D%20&amp;%20u_%7Bz%7Dv_%7By%7D%20&amp;%20u_%7Bz%7Dv_%7Bz%7D%5C%5C%20%5Cend%7Bbmatrix%7D%0A%5Ctag%7B14%7D"></span></p>
+<p>Interestingly, we are using the dot product to compute the cross product.</p>
+<p>The case where we treat <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bu%7D"> and <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bv%7D"> as row vectors is left to the reader.<sup>5</sup></p>
+</div>
+</div>
+</div>
+<p>Finally, there is a matrix definition of the cross product as well. Evaluation of the following <a href="https://en.wikipedia.org/wiki/Determinant">determinant</a> gives the cross product:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cvec%7Bu%7D%20%5Ctimes%20%5Cvec%7Bv%7D%20=%20%5Cbegin%7Bvmatrix%7D%20%5Chat%7Bi%7D%20&amp;%20%5Chat%7Bj%7D%20&amp;%20%5Chat%7Bj%7D%5C%5C%20u_%7Bx%7D%20&amp;%20u_%7By%7D%20&amp;%20u_%7Bz%7D%20%5C%5C%20v_%7Bx%7D%20&amp;%20v_%7By%7D%20&amp;%20v_%7Bz%7D%5C%5C%5Cend%7Bvmatrix%7D%0A"></p>
+</section>
+<section id="what-can-we-do-with-the-cross-product" class="level3">
+<h3 class="anchored" data-anchor-id="what-can-we-do-with-the-cross-product">What Can We Do With the Cross Product?</h3>
+<ul>
+<li>In 3D, the result of the cross product is perpendicular or normal to the plane defined by the two input vectors.</li>
+<li>If however, the two vectors are parallel or anti-parallel, the cross product is zero.</li>
+<li>The length of the cross product is the area of the parallelogram defined by the two input vectors: <img src="https://latex.codecogs.com/png.latex?%5C%7C%20%5Cvec%7Bu%7D%20%5Ctimes%20%5Cvec%7Bv%7D%20%5C%7C"></li>
+</ul>
+</section>
+</section>
+<section id="r-functions" class="level2">
+<h2 class="anchored" data-anchor-id="r-functions">R Functions</h2>
+<section id="section" class="level3">
+<h3 class="anchored" data-anchor-id="section"><code>%*%</code></h3>
+<p>The workhorse for matrix multiplication in <code>R</code> is the <code>%*%</code> function. This function will accept any combination of vectors and matrices as inputs, so it is flexible. It is also smart: given a vector and a matrix, the vector will be treated as row or column matrix as needed to ensure conformity, if possible. Let’s look at some examples:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="co" style="color: #5E5E5E;"># Some data for examples</span></span>
+<span id="cb1-2">p <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">5</span></span>
+<span id="cb1-3">q <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="dv" style="color: #AD0000;">6</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">10</span></span>
+<span id="cb1-4">M <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">matrix</span>(<span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">15</span>, <span class="at" style="color: #657422;">nrow =</span> <span class="dv" style="color: #AD0000;">3</span>, <span class="at" style="color: #657422;">ncol =</span> <span class="dv" style="color: #AD0000;">5</span>)</span>
+<span id="cb1-5">M</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3] [,4] [,5]
+[1,]    1    4    7   10   13
+[2,]    2    5    8   11   14
+[3,]    3    6    9   12   15</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="co" style="color: #5E5E5E;"># A vector times a vector</span></span>
+<span id="cb3-2">p <span class="sc" style="color: #5E5E5E;">%*%</span> q</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1]
+[1,]  130</code></pre>
+</div>
+</div>
+<p>Notice that <code>R</code> returns a data type of matrix, but it is a <img src="https://latex.codecogs.com/png.latex?1%20%5Ctimes%201"> matrix, and thus a scalar value. That means we just computed the dot product, a descision <code>R</code> made internally. We can verify this by noting that <code>q %*% p</code> gives the same answer. Thus, <code>R</code> handled these vectors as column vectors and computed <img src="https://latex.codecogs.com/png.latex?p%5E%7B%5Cintercal%7Dq">.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="co" style="color: #5E5E5E;"># A vector times a matrix</span></span>
+<span id="cb5-2">M <span class="sc" style="color: #5E5E5E;">%*%</span> p</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1]
+[1,]  135
+[2,]  150
+[3,]  165</code></pre>
+</div>
+</div>
+<p>As <code>M</code> had dimensions <img src="https://latex.codecogs.com/png.latex?3%20%5Ctimes%205">, <code>R</code> treated <code>p</code> as a <img src="https://latex.codecogs.com/png.latex?5%20%5Ctimes%201"> column vector in order to be conformable. The result is a <img src="https://latex.codecogs.com/png.latex?3%20%5Ctimes%201"> vector, so this is the cross product.</p>
+<p>If we try to compute <code>p %*% M</code> we get an error, because there is nothing <code>R</code> can do to <code>p</code> which will make it conformable to <code>M</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1">p <span class="sc" style="color: #5E5E5E;">%*%</span> M</span></code></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in p %*% M: non-conformable arguments</code></pre>
+</div>
+</div>
+<p>What about multiplying matrices?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1">M <span class="sc" style="color: #5E5E5E;">%*%</span> M</span></code></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in M %*% M: non-conformable arguments</code></pre>
+</div>
+</div>
+<p>As you can see, when dealing with matrices, <code>%*%</code> will not change a thing, and if your matrices are non-conformable then it’s an error. Of course, if we transpose either instance of <code>M</code> we do have conformable matrices, but the answers are different, and this is neither the dot product or the cross product, just matrix multiplication.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><span class="fu" style="color: #4758AB;">t</span>(M) <span class="sc" style="color: #5E5E5E;">%*%</span> M</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3] [,4] [,5]
+[1,]   14   32   50   68   86
+[2,]   32   77  122  167  212
+[3,]   50  122  194  266  338
+[4,]   68  167  266  365  464
+[5,]   86  212  338  464  590</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1">M <span class="sc" style="color: #5E5E5E;">%*%</span> <span class="fu" style="color: #4758AB;">t</span>(M)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3]
+[1,]  335  370  405
+[2,]  370  410  450
+[3,]  405  450  495</code></pre>
+</div>
+</div>
+<p>What can we take from these examples?</p>
+<ul>
+<li><code>R</code> will give you the <strong>dot product</strong> if you give it two vectors. Note that this is a design decision, as it could have returned the cross product (see Equation&nbsp;14).</li>
+<li><code>R</code> will promote a vector to a row or column vector if it can to make it conformable with a matrix you provide. If it cannot, <code>R</code> will give you an error. If it can, the <strong>cross product</strong> is returned.</li>
+<li>When it comes to two matrices, <code>R</code> will give an error when they are not conformable.</li>
+<li>One function, <code>%*%</code>, does it all: dot product, cross product, or matrix multiplication, but you need to pay attention.</li>
+<li>The documentation says as much, but more tersely: “Multiplies two matrices, if they are conformable. If one argument is a vector, it will be promoted to either a row or column matrix to make the two arguments conformable. If both are vectors of the same length, it will return the inner product (as a matrix)”</li>
+</ul>
+</section>
+<section id="other-functions" class="level3">
+<h3 class="anchored" data-anchor-id="other-functions">Other Functions</h3>
+<p>There are other <code>R</code> functions that do some of the same work:</p>
+<ul>
+<li><code>crossprod</code> equivalent to <code>t(M) %*% M</code> but faster.</li>
+<li><code>tcrossprod</code> equivalent to <code>M %*% t(M)</code> but faster.</li>
+<li><code>outer</code> or <code>%o%</code></li>
+</ul>
+<p>The first two functions will accept combinations of vectors and matrices, as does <code>%*%</code>. Let’s try it with two vectors:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><span class="fu" style="color: #4758AB;">crossprod</span>(p, q)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1]
+[1,]  130</code></pre>
+</div>
+</div>
+<p>Huh. <code>crossprod</code> is returning the <em>dot product</em>! So this is the case where “the cross product is not the cross product.” From a clarity perspective, this is not ideal. Let’s try the other function:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><span class="fu" style="color: #4758AB;">tcrossprod</span>(p, q)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3] [,4] [,5]
+[1,]    6    7    8    9   10
+[2,]   12   14   16   18   20
+[3,]   18   21   24   27   30
+[4,]   24   28   32   36   40
+[5,]   30   35   40   45   50</code></pre>
+</div>
+</div>
+<p>There’s the cross product!</p>
+<p>What about <code>outer</code>? Remember that another name for the cross product is the outer product. So is <code>outer</code> the same as <code>tcrossprod</code>? In the case of two vectors, it is:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><span class="fu" style="color: #4758AB;">identical</span>(<span class="fu" style="color: #4758AB;">outer</span>(p, q), <span class="fu" style="color: #4758AB;">tcrossprod</span>(p, q))</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<p>What about a vector with a matrix?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1">tst <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">outer</span>(p, M)</span>
+<span id="cb21-2"><span class="fu" style="color: #4758AB;">dim</span>(tst)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 5 3 5</code></pre>
+</div>
+</div>
+<p>Alright, that clearly is not a cross product. The result is an array with dimensions <img src="https://latex.codecogs.com/png.latex?5%20%5Ctimes%203%20%5Ctimes%205">, not a matrix (which would have only two dimensions). <code>outer</code> <em>does</em> correspond to the cross product in the case of two vectors, but anything with higher dimensions gives a different beast. So perhaps using “outer” as a synonym for cross product is not a good idea.</p>
+</section>
+</section>
+<section id="advice" class="level2">
+<h2 class="anchored" data-anchor-id="advice">Advice</h2>
+<p>Given what we’ve seen above, make your life simple and stick to <code>%*%</code>, and pay close attention to the dimensions of the arguments, especially if row or column vectors are in use. In my experience, thinking about the units and dimensions of whatever it is you are calculating is very helpful. Later, if speed is really important in your work, you can use one of the faster alternatives.</p>
+
+
+</section>
+
+
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>An extensive dicussion of notations can be found <a href="https://mathoverflow.net/q/366070">here</a>.↩︎</p></li>
+<li id="fn2"><p>And curiously, the <img src="https://latex.codecogs.com/png.latex?L_2"> norm works out to be equal to the square root of the dot product of a vector with itself: <img src="https://latex.codecogs.com/png.latex?%5C%7C%20v%20%5C%7C%20=%20%5Csqrt%7Bv%20%5Ccdot%20v%7D">↩︎</p></li>
+<li id="fn3"><p>To be multiplied, matrices must be <em>conformable</em>, namely the number of columns of the first matrix must match the number of rows of the second matrix. The reason is so that the dot product terms will match. In the present case we have <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BA%7D%5E%7B2%5Ctimes3%7D%5Cmathbf%7BB%7D%5E%7B3%5Ctimes3%7D%20=%20%5Cmathbf%7BC%7D%5E%7B2%5Ctimes3%7D">.↩︎</p></li>
+<li id="fn4"><p>Be careful, it turns out that “outer” may not be a great synonym for cross product, as explained later.↩︎</p></li>
+<li id="fn5"><p>OK fine, here is the answer when treating <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bu%7D"> and <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bv%7D"> as row vectors: <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bu%7D%20%5Ctimes%20%5Cvec%7Bv%7D%20=%20%5Cvec%7Bu%7D%5E%5Cmathsf%7BT%7D%20%5C%20%5Cvec%7Bv%7D"> which expands exactly as the right-hand side of Equation&nbsp;14.↩︎</p></li>
+</ol>
+</section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
+  author = {Bryan Hanson},
+  editor = {},
+  title = {Notes on {Linear} {Algebra} {Part} 1},
+  date = {2022-08-14},
+  url = {http://chemospec.org/posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2022" class="csl-entry quarto-appendix-citeas">
+Bryan Hanson. 2022. <span>“Notes on Linear Algebra Part 1.”</span>
+August 14, 2022. <a href="http://chemospec.org/posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html">http://chemospec.org/posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html</a>.
+</div></div></section></div> ]]></description>
+  <category>R</category>
+  <category>Linear Algebra</category>
+  <guid>http://chemospec.org/posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html</guid>
+  <pubDate>Sun, 14 Aug 2022 07:00:00 GMT</pubDate>
+</item>
 <item>
   <title>FOSS4Spectroscopy: R vs Python</title>
   <dc:creator>Bryan Hanson</dc:creator>
@@ -77,7 +371,7 @@
 </section>
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>Once in a while users submit their own package to the repo, and I also find interesting packages in my literature reading.↩︎</p></li>
@@ -85,6 +379,7 @@
 </ol>
 </section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
   author = {Bryan Hanson},
+  editor = {},
   title = {FOSS4Spectroscopy: {R} Vs {Python}},
   date = {2022-07-06},
   url = {http://chemospec.org/posts/2022-07-06-F4S-Update/2022-07-06-F4S-Update.html},
@@ -173,6 +468,7 @@ ojs_define <- function(..., .session = shiny::getDefaultReactiveDomain()) {
 
 <script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
   author = {Bryan Hanson},
+  editor = {},
   title = {Introducing {LearnPCA}},
   date = {2022-05-03},
   url = {http://chemospec.org/posts/2022-05-03-LearnPCA-Intro/2022-05-03-LearnPCA-Intro.html},
@@ -257,7 +553,7 @@ of class 'Spectra'</code></pre>
 <div id="fig-screeAlt" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-screeAlt-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><p></p>
+<p></p><figcaption class="figure-caption">Figure 1: Scree plot (recommended style).</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -269,7 +565,7 @@ of class 'Spectra'</code></pre>
 <div id="fig-scores12" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-scores12-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><p></p>
+<p></p><figcaption class="figure-caption">Figure 2: Score plot for PCs 1 and 2. Compare to protocol figure 7d.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -282,7 +578,7 @@ of class 'Spectra'</code></pre>
 <div id="fig-scores23" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-scores23-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><p></p>
+<p></p><figcaption class="figure-caption">Figure 3: Score plot for PCS 2 and 3.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -295,7 +591,7 @@ of class 'Spectra'</code></pre>
 <div id="fig-loadings" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-loadings-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><p></p>
+<p></p><figcaption class="figure-caption">Figure 4: Loadings for PC1 and PC2.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -308,7 +604,7 @@ of class 'Spectra'</code></pre>
 <div id="fig-splot" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-splot-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><p></p>
+<p></p><figcaption class="figure-caption">Figure 5: s-Plot for PC1.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -357,7 +653,7 @@ Attaching package: 'mixOmics'</code></pre>
 <div id="fig-plsda-indiv" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-plsda-indiv-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><p></p>
+<p></p><figcaption class="figure-caption">Figure 6: sPLS-DA plot showing classification.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -370,7 +666,7 @@ Attaching package: 'mixOmics'</code></pre>
 <div id="fig-plsda-perf" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-plsda-perf-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><p></p>
+<p></p><figcaption class="figure-caption">Figure 7: Evaluation of the PLS-DA performance.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -399,6 +695,7 @@ Rohart, Florian, Kim-Anh Le Cao, and Christine Wells. 2018. <em>bootsPLS: Bootst
 </div>
 </div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
   author = {Bryan Hanson},
+  editor = {},
   title = {Metabolic {Phenotyping} {Protocol} {Part} 3},
   date = {2022-05-01},
   url = {http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3.html},
@@ -497,7 +794,7 @@ of class 'Spectra'</code></pre>
 <div id="fig-screeAlt" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-screeAlt-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><p></p>
+<p></p><figcaption class="figure-caption">Figure 1: Scree plot (recommended style).</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -508,7 +805,7 @@ of class 'Spectra'</code></pre>
 <div id="fig-screeTrad" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-screeTrad-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><p></p>
+<p></p><figcaption class="figure-caption">Figure 2: Scree plot (traditional style).</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -519,7 +816,7 @@ of class 'Spectra'</code></pre>
 <div id="fig-cv-pca" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-cv-pca-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><p></p>
+<p></p><figcaption class="figure-caption">Figure 3: Scree plot using cross validation.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -536,7 +833,7 @@ of class 'Spectra'</code></pre>
 <div id="fig-scores12" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-scores12-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><p></p>
+<p></p><figcaption class="figure-caption">Figure 4: Score plot for PCs 1 and 2. Compare to protocol figure 7a.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -548,7 +845,7 @@ of class 'Spectra'</code></pre>
 <div id="fig-scores23" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-scores23-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><p></p>
+<p></p><figcaption class="figure-caption">Figure 5: Score plot for PCS 2 and 3.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -569,7 +866,7 @@ of class 'Spectra'</code></pre>
 <div id="fig-hotelling1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-hotelling1-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><p></p>
+<p></p><figcaption class="figure-caption">Figure 6: Score plot for PCs 1 and 2 with Hotelling’s <em>T</em><sup>2</sup> ellipse. Compare to protocol figure 7a.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -583,7 +880,7 @@ of class 'Spectra'</code></pre>
 <div id="fig-diagOD" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-diagOD-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><p></p>
+<p></p><figcaption class="figure-caption">Figure 7: Orthogonal distance plot based on the first three PCs.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -595,7 +892,7 @@ of class 'Spectra'</code></pre>
 <div id="fig-diagSD" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-diagSD-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><p></p>
+<p></p><figcaption class="figure-caption">Figure 8: Score distance plot based on the first three PCs.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -630,7 +927,7 @@ Blaise, Benjamin J., Gonçalo D. S. Correia, Gordon A. Haggart, Izabella Surowie
 <div id="ref-Filzmoser2009" class="csl-entry">
 Varmuza, K., and P. Filzmoser. 2009. <em>Introduction to Multivariate Statistical Analysis in Chemometrics</em>. CRC Press.
 </div>
-</div></section><section class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>Without scaling, the largest peaks will drive the separation in the scores plot.↩︎</p></li>
@@ -640,6 +937,7 @@ Varmuza, K., and P. Filzmoser. 2009. <em>Introduction to Multivariate Statistica
 </ol>
 </section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
   author = {Bryan Hanson},
+  editor = {},
   title = {Metabolic {Phenotyping} {Protocol} {Part} 2},
   date = {2022-03-24},
   url = {http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2.html},
@@ -675,6 +973,7 @@ Bryan Hanson. 2022. <span>“Metabolic Phenotyping Protocol Part
 
 <script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
   author = {Bryan Hanson},
+  editor = {},
   title = {Chemometrics in {Spectroscopy:} {Key} {References}},
   date = {2022-02-18},
   url = {http://chemospec.org/posts/2022-02-18-Key-References/2022-02-18-Key-References.html},
@@ -867,7 +1166,7 @@ References.”</span> February 18, 2022. <a href="http://chemospec.org/posts/202
 
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>As you will see in a moment, during testing I found a bunch of stale entries I need to remove from several packages!↩︎</p></li>
@@ -875,6 +1174,7 @@ References.”</span> February 18, 2022. <a href="http://chemospec.org/posts/202
 </ol>
 </section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
   author = {Bryan Hanson},
+  editor = {},
   title = {Do {You} Have {Stale} {Imports} or {Suggests?}},
   date = {2022-02-09},
   url = {http://chemospec.org/posts/2022-02-09-Imports-Suggests/2022-02-09-Imports-Suggests.html},
@@ -1058,7 +1358,7 @@ of class 'Spectra'</code></pre>
 <div id="fig-samplePlot" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="http://chemospec.org/posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1_files/figure-html/fig-samplePlot-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><p></p>
+<p></p><figcaption class="figure-caption">Figure 1: Sample spectra from each group.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -1081,6 +1381,7 @@ Blaise, Benjamin J., Jean Giacomotto, Bénédicte Elena, Marc-Emmanuel Dumas, Pi
 </div>
 </div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
   author = {Bryan Hanson},
+  editor = {},
   title = {Metabolic {Phenotyping} {Protocol} {Part} 1},
   date = {2022-02-01},
   url = {http://chemospec.org/posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1.html},
@@ -1140,6 +1441,7 @@ It’s been quiet around this blog because supervising two students for <a href=
 
 <script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2021,
   author = {Bryan Hanson},
+  editor = {},
   title = {GSOC 2021: {New} {Graphics} for {ChemoSpec}},
   date = {2021-10-13},
   url = {http://chemospec.org/posts/2021-10-13-GSOC-CS-Graphics/2021-10-13-GSOC-CS-Graphics.html},
@@ -1175,6 +1477,7 @@ ChemoSpec.”</span> October 13, 2021. <a href="http://chemospec.org/posts/2021-
 
 <script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2021,
   author = {Bryan Hanson},
+  editor = {},
   title = {GSOC 2021: {hyperSpec} and {ChemoSpec!}},
   date = {2021-05-22},
   url = {http://chemospec.org/posts/2021-05-22-GSOC-hyperSpec-ChemoSpec/2021-05-22-GSOC-hyperSpec-ChemoSpec.html},
@@ -1302,7 +1605,7 @@ May 22, 2021. <a href="http://chemospec.org/posts/2021-05-22-GSOC-hyperSpec-Chem
 </section>
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>This code has been tested on a number of searches and I’ve captured every exception I’ve encountered. If you have problems using this code, please file an issue. It’s nearly impossible that it is perfect at this point!↩︎</p></li>
@@ -1313,6 +1616,7 @@ May 22, 2021. <a href="http://chemospec.org/posts/2021-05-22-GSOC-hyperSpec-Chem
 </ol>
 </section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2021,
   author = {Bryan Hanson},
+  editor = {},
   title = {Automatically {Searching} {Github} {Repos} by {Topic}},
   date = {2021-04-19},
   url = {http://chemospec.org/posts/2021-04-19-Search-GH-Topics/2021-04-19-Search-GH-Topics.html},
@@ -1374,7 +1678,7 @@ Topic.”</span> April 19, 2021. <a href="http://chemospec.org/posts/2021-04-19-
 </section>
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>The work continues this summer, hopefully again with the support of GSOC.↩︎</p></li>
@@ -1387,6 +1691,7 @@ Topic.”</span> April 19, 2021. <a href="http://chemospec.org/posts/2021-04-19-
 </ol>
 </section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2021,
   author = {Bryan Hanson},
+  editor = {},
   title = {Using {Github} {Actions} and Drat to {Deploy} {R} {Packages}},
   date = {2021-04-11},
   url = {http://chemospec.org/posts/2021-04-11-GHA-drat/2021-04-11-GHA-drat.html},
@@ -1436,6 +1741,7 @@ Packages.”</span> April 11, 2021. <a href="http://chemospec.org/posts/2021-04-
 
 <script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2021,
   author = {Bryan Hanson},
+  editor = {},
   title = {Spectroscopy {Suite} {Update}},
   date = {2021-03-27},
   url = {http://chemospec.org/posts/2021-03-27-Spec-Suite-update/2021-03-27-Spec-Suite-update.html},
@@ -1577,7 +1883,7 @@ Mevik, Bjørn-Helge, Ron Wehrens, and Kristian Hovde Liland. 2020. <em>Pls: Part
 <div id="ref-Filzmoser2009" class="csl-entry">
 Varmuza, K., and P. Filzmoser. 2009. <em>Introduction to Multivariate Statistical Analysis in Chemometrics</em>. CRC Press.
 </div>
-</div></section><section class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>I have converted the data from Matlab to a <code>ChemoSpec</code> object; if anyone wants to know how to do this let me know and I’ll put up a post on that process.↩︎</p></li>
@@ -1585,6 +1891,7 @@ Varmuza, K., and P. Filzmoser. 2009. <em>Introduction to Multivariate Statistica
 </ol>
 </section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2021,
   author = {Bryan Hanson},
+  editor = {},
   title = {Interfacing {ChemoSpec} to {PLS}},
   date = {2021-02-08},
   url = {http://chemospec.org/posts/2021-02-08-PLS/2021-02-08-PLS.html},
@@ -1651,6 +1958,7 @@ Well, things have been busy lately! As reported back in <a href="https://chemosp
 
 <script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{oduniyi2020,
   author = {Erick Oduniyi},
+  editor = {},
   title = {GSOC {Wrap} {Up}},
   date = {2020-09-08},
   url = {http://chemospec.org/posts/2020-09-08-GSOC-hyperSpec/2020-09-08-GSOC-hyperSpec.html},
@@ -1855,7 +2163,7 @@ Erick Oduniyi. 2020. <span>“GSOC Wrap Up.”</span> September 8, 2020. <a href
 <div id="ref-Goldenberg2016" class="csl-entry">
 Goldenberg, David P. 2016. <em><span class="nocase">Principles of NMR Spectroscopy: An Illustrated Guide</span></em>. University Science Books.
 </div>
-</div></section><section class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>Of course, this is simply the t-test.↩︎</p></li>
@@ -1865,6 +2173,7 @@ Goldenberg, David P. 2016. <em><span class="nocase">Principles of NMR Spectrosco
 </ol>
 </section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
   author = {Bryan Hanson},
+  editor = {},
   title = {Simulating {Spectroscopic} {Data} {Part} 1},
   date = {2020-06-28},
   url = {http://chemospec.org/posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1.html},
@@ -1903,7 +2212,7 @@ June 28, 2020. <a href="http://chemospec.org/posts/2020-06-28-Sim-Spec-Data-Pt1/
 
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>A little history for the curious: the <code>hyperSpec</code> and <code>ChemoSpec</code> packages were written around the same time, independent of each other (~2009). Eventually, Claudia and I became aware of each other’s work, and we have collaborated in ways large and small ever since (I like working with Claudia because I always learn from her!). We have jointly mentored GSOC students twice before. One side project is <a href="https://github.com/Chathurga/HyperChemoBridge"><code>hyperChemoBridge</code></a>, a small package that converts <code>hyperSpec</code> objects into <code>Spectra</code> objects (the native <code>ChemoSpec</code> format) and vice-versa.↩︎</p></li>
@@ -1911,6 +2220,7 @@ June 28, 2020. <a href="http://chemospec.org/posts/2020-06-28-Sim-Spec-Data-Pt1/
 </ol>
 </section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
   author = {Bryan Hanson},
+  editor = {},
   title = {Fortifying {hyperSpec:} {Getting} {Ready} for {GSOC}},
   date = {2020-05-07},
   url = {http://chemospec.org/posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html},
@@ -1949,6 +2259,7 @@ GSOC.”</span> May 7, 2020. <a href="http://chemospec.org/posts/2020-05-07-GSOC
 
 <script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
   author = {Bryan Hanson},
+  editor = {},
   title = {ChemoSpecUtils {Update}},
   date = {2020-04-27},
   url = {http://chemospec.org/posts/2020-04-27-CSU-update/2020-04-27-CSU-update.html},
@@ -2080,13 +2391,14 @@ The ChemoSpec graphics option is set to 'ggplot2'</code></pre>
 </section>
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>Other functions in <code>ChemoSpec</code> that can help you explore which frequencies are important are <code>plotLoadings</code>, <code>plot2Loadings</code> and <code>sPlotSpectra</code>.↩︎</p></li>
 </ol>
 </section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
   author = {Bryan Hanson},
+  editor = {},
   title = {Spectral {Heatmaps}},
   date = {2020-04-25},
   url = {http://chemospec.org/posts/2020-04-25-Heatmaps/2020-04-25-Heatmaps.html},
@@ -2245,6 +2557,7 @@ Woollett, Benjamin, Daniel Klose, Richard Cammack, Robert W. Janes, and B. A. Wa
 </div>
 </div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
   author = {Bryan Hanson},
+  editor = {},
   title = {Data {Sharing} in the {Age} of {Coronavirus,} {Part} 1},
   date = {2020-03-21},
   url = {http://chemospec.org/posts/2020-03-21-Data-Formats-Pt1/2020-03-21-Data-Formats-Pt1.html},
@@ -2259,165 +2572,6 @@ Bryan Hanson. 2020. <span>“Data Sharing in the Age of Coronavirus, Part
   <category>ASCII</category>
   <guid>http://chemospec.org/posts/2020-03-21-Data-Formats-Pt1/2020-03-21-Data-Formats-Pt1.html</guid>
   <pubDate>Sat, 21 Mar 2020 07:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>Aligning 2D NMR Spectra Part 3</title>
-  <dc:creator>Bryan Hanson</dc:creator>
-  <link>http://chemospec.org/posts/2020-03-04-NMR-Align-Pt3/2020-03-04-NMR-Align-Pt3.html</link>
-  <description><![CDATA[ 
-
-
-
-<p>This is Part 3 of a series on aligning 2D NMR, as implemented in the package <code>ChemoSpec2D</code>. <a href="https://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/">Part 1</a> <a href="https://chemospec.org/posts/2020-03-02-NMR-Align-Pt2/">Part2</a></p>
-<p>Let’s get to work. The function to carry out alignment is <code>hats_alignSpectra2D</code>. The arguments <code>maxF1</code> and <code>maxF2</code> define the space that will be considered as the two spectra are shifted relative to each other. The space potentially covered is <code>-maxF1</code> to <code>maxF1</code> and similarly for the F2 dimension. <code>dist_method</code>, <code>thres</code> and <code>minimize</code> refer to the objective function, as described in Part 1. In this example we will consider two spectra succcessfully aligned when we get below the threshold. When one shifts one spectrum relative to the other, part of the shifted spectrum gets cutoff and part of it is empty space. <code>fill = "noise"</code> instructs the function to fill the empty space with an estimate of the noise from the original spectrum. We’ll set <code>plot = FALSE</code> here because the output is extensive. I’ll provide sample plotting output in a moment.</p>
-<div class="cell">
-
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;">library</span>(<span class="st" style="color: #20794D;">"ChemoSpec2D"</span>)</span>
-<span id="cb1-2"><span class="do" style="color: #5E5E5E;
-font-style: italic;">## Loading required package: ChemoSpecUtils</span></span>
-<span id="cb1-3"><span class="do" style="color: #5E5E5E;
-font-style: italic;">## </span></span>
-<span id="cb1-4"><span class="do" style="color: #5E5E5E;
-font-style: italic;">## As of version 6, ChemoSpec2D offers new graphics output options</span></span>
-<span id="cb1-5"><span class="do" style="color: #5E5E5E;
-font-style: italic;">## </span></span>
-<span id="cb1-6"><span class="do" style="color: #5E5E5E;
-font-style: italic;">## Functions plotScores and plotScree will work with the new options</span></span>
-<span id="cb1-7"><span class="do" style="color: #5E5E5E;
-font-style: italic;">## For details, please see ?GraphicsOptions</span></span>
-<span id="cb1-8"><span class="do" style="color: #5E5E5E;
-font-style: italic;">## </span></span>
-<span id="cb1-9"><span class="do" style="color: #5E5E5E;
-font-style: italic;">## The ChemoSpec graphics option is set to 'ggplot2'</span></span>
-<span id="cb1-10"><span class="do" style="color: #5E5E5E;
-font-style: italic;">## To change it, do</span></span>
-<span id="cb1-11"><span class="do" style="color: #5E5E5E;
-font-style: italic;">##  options(ChemoSpecGraphics = 'option'),</span></span>
-<span id="cb1-12"><span class="do" style="color: #5E5E5E;
-font-style: italic;">##  where 'option' is one of 'base' or 'ggplot2' or'plotly'.</span></span>
-<span id="cb1-13"><span class="fu" style="color: #4758AB;">data</span>(MUD2)</span>
-<span id="cb1-14"><span class="fu" style="color: #4758AB;">set.seed</span>(<span class="dv" style="color: #AD0000;">123</span>)</span></code></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1">MUD2a <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">hats_alignSpectra2D</span>(MUD2,</span>
-<span id="cb2-2">    <span class="at" style="color: #657422;">maxF1 =</span> <span class="dv" style="color: #AD0000;">5</span>, <span class="at" style="color: #657422;">maxF2 =</span> <span class="dv" style="color: #AD0000;">5</span>,</span>
-<span id="cb2-3">    <span class="at" style="color: #657422;">dist_method =</span> <span class="st" style="color: #20794D;">"euclidean"</span>, <span class="at" style="color: #657422;">thres =</span> <span class="dv" style="color: #AD0000;">40</span>, <span class="at" style="color: #657422;">minimize =</span> <span class="cn" style="color: #8f5902;">TRUE</span>,</span>
-<span id="cb2-4">    <span class="at" style="color: #657422;">fill =</span> <span class="st" style="color: #20794D;">"noise"</span>,</span>
-<span id="cb2-5">    <span class="at" style="color: #657422;">plot =</span> <span class="cn" style="color: #8f5902;">FALSE</span>)</span></code></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>This is a beta version of hats_alignSpectra2D.
-    You should set the seed for reproducible results.
-    Please check your results carefully, and consider sharing your data
-    for additional testing.  Contact Bryan Hanson via hanson@depauw.edu</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[ChemoSpec2D] Processing row  1  of  9  from the guide tree:
-[ChemoSpec2D] Starting alignment of sample(s) 7 
-    with sample(s) 4 
-[ChemoSpec2D] Best alignment is to shift F2 by  0  and F1 by  -1 
-
-[ChemoSpec2D] Processing row  2  of  9  from the guide tree:
-[ChemoSpec2D] Starting alignment of sample(s) 6 
-    with sample(s) 3 
-[ChemoSpec2D] Best alignment is to shift F2 by  0  and F1 by  -1 
-
-[ChemoSpec2D] Processing row  3  of  9  from the guide tree:
-[ChemoSpec2D] Starting alignment of sample(s) 5 
-    with sample(s) 2 
-[ChemoSpec2D] Best alignment is to shift F2 by  0  and F1 by  -1 
-
-[ChemoSpec2D] Processing row  4  of  9  from the guide tree:
-[ChemoSpec2D] Starting alignment of sample(s) 8 
-    with sample(s) 1 
-[ChemoSpec2D] Best alignment is to shift F2 by  0  and F1 by  -1 
-
-[ChemoSpec2D] Processing row  5  of  9  from the guide tree:
-[ChemoSpec2D] Starting alignment of sample(s) 1, 8 
-    with sample(s) 9 
-[ChemoSpec2D] Best alignment is to shift F2 by  2  and F1 by  1 
-
-[ChemoSpec2D] Processing row  6  of  9  from the guide tree:
-[ChemoSpec2D] Starting alignment of sample(s) 2, 5 
-    with sample(s) 3, 6 
-[ChemoSpec2D] Best alignment is to shift F2 by  2  and F1 by  0 
-
-[ChemoSpec2D] Processing row  7  of  9  from the guide tree:
-[ChemoSpec2D] Starting alignment of sample(s) 4, 7 
-    with sample(s) 10 
-[ChemoSpec2D] Best alignment is to shift F2 by  0  and F1 by  3 
-
-[ChemoSpec2D] Processing row  8  of  9  from the guide tree:
-[ChemoSpec2D] Starting alignment of sample(s) 2, 3, 5, 6 
-    with sample(s) 1, 8, 9 
-[ChemoSpec2D] Best alignment is to shift F2 by  0  and F1 by  3 
-
-[ChemoSpec2D] Processing row  9  of  9  from the guide tree:
-[ChemoSpec2D] Starting alignment of sample(s) 1, 2, 3, 5, 6, 8, 9 
-    with sample(s) 4, 7, 10 
-[ChemoSpec2D] Best alignment is to shift F2 by  -5  and F1 by  0 
-
-[ChemoSpec2D] Alignment steps and results:
-       Ref                Mask F2shift F1shift
-1        4                   7       0      -1
-2        3                   6       0      -1
-3        2                   5       0      -1
-4        1                   8       0      -1
-5        9                1, 8       2       1
-6     3, 6                2, 5       2       0
-7       10                4, 7       0       3
-8  1, 8, 9          2, 3, 5, 6       0       3
-9 4, 7, 10 1, 2, 3, 5, 6, 8, 9      -5       0</code></pre>
-</div>
-</div>
-<p>As the alignment proceeds, updates from the function are prefixed with <code>[ChemoSpec2D]</code>. In the first step we get a message that row 1 of 9 of the guide tree is being processed, in which sample 7 is being aligned with sample 4. The guide tree is shown below. One can see that samples 7 and 4 are very similar, so they are aligned first. If you inspect the output above, you can see that the four most similar pairs of spectra are aligned first, followed by groups of spectra according to similarity. For each alignment the needed shifts are reported. The last part of the output is a summary of all the alignments carried out. Note that the vertical scale on the guide tree is the same as the scale on the <code>sampleDist</code> plot in Part 1 (using the Euclidean distance).</p>
-<p><img src="http://chemospec.org/posts/2020-03-04-NMR-Align-Pt3/P10_Dendrogram.png" alt="X Space" style="width:600px;"></p>
-<section id="diagnostics-on-space" class="level2">
-<h2 class="anchored" data-anchor-id="diagnostics-on-space">Diagnostics on Space</h2>
-<p>To save space, I suppressed the plotting of the results. However, there are plots! In fact there is a set of plots for each alignment step. Here are two of the plots produced if <code>plot = TRUE</code>; these deal with the X-Space which is the search space (the terminology comes from the <code>mlrMBO</code> package which is designed to handle many types of optimization). This plot is for Step 7. The upper plot shows the search space. Axis x1 corresponds to the F1 dimension, and axis x2 the F2 dimension. The red squares represent the initial experimental design, using the results from the objective function. The blue circles represent additional points added as the search proceeds. These represent new points on the response surface defined by the surrogate function (see Part 2 for background). The orange diamond is the best alignment, which in this case has no shift along F2 but a three data point shift along F1; this corresponds to the output above. The green triangle is the last position tested.</p>
-<p>The lower plot represents the progress of the search over time. Axis “dob” stands for “date of birth” which is basically the time index of when the test point was added.</p>
-<p><img src="http://chemospec.org/posts/2020-03-04-NMR-Align-Pt3/P10_X_Space.png" alt="X Space" style="width:600px;"></p>
-</section>
-<section id="diagnostics-on-the-objective-function" class="level2">
-<h2 class="anchored" data-anchor-id="diagnostics-on-the-objective-function">Diagnostics on the Objective Function</h2>
-<p>This second set of plots deals with what <code>mlrMBO</code> considers the Y-Space, which concerns the values of the objective function. The top plot is a histogram of the distance (objective function) values; in this case most of them were pretty bad (high, meaning a larger distance between the spectra). The middle plot is the value of the distance over time (dob). In this example the optimal alignment is found at dob = 4, but there is no particular significance to <em>when</em> the optimum is found. The lower plot shows the <em>expected improvement</em> (ei) at each dob. It is lowest when the optimum has been found. For more details about what’s going on under the hood, see the <a href="https://arxiv.org/abs/1703.03373">Arxiv paper</a>.</p>
-<p><img src="http://chemospec.org/posts/2020-03-04-NMR-Align-Pt3/P10_Y_Space.png" alt="Y Space" style="width:600px;"></p>
-</section>
-<section id="the-aligned-spectra" class="level2">
-<h2 class="anchored" data-anchor-id="the-aligned-spectra">The Aligned Spectra</h2>
-<p>Did this process work? This final plot shows that it did. Let’s be clear that the task here was not terribly hard: <code>MUD2</code> is an artificial example in which the shifts are pretty modest and global in nature. But still, it’s satisfying. I welcome everyone to give <code>hats_alignSpectra2D</code> a try and report any problems or suggestions.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1">mylvls <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">seq</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">30</span>, <span class="at" style="color: #657422;">length.out =</span> <span class="dv" style="color: #AD0000;">10</span>)</span>
-<span id="cb5-2"><span class="fu" style="color: #4758AB;">plotSpectra2D</span>(MUD2a, <span class="at" style="color: #657422;">which =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">1</span>, <span class="dv" style="color: #AD0000;">6</span>), <span class="at" style="color: #657422;">showGrid =</span> <span class="cn" style="color: #8f5902;">TRUE</span>,</span>
-<span id="cb5-3">    <span class="at" style="color: #657422;">lvls =</span> <span class="fu" style="color: #4758AB;">LofL</span>(mylvls, <span class="dv" style="color: #AD0000;">2</span>),</span>
-<span id="cb5-4">    <span class="at" style="color: #657422;">cols =</span> <span class="fu" style="color: #4758AB;">LofC</span>(<span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"red"</span>, <span class="st" style="color: #20794D;">"black"</span>), <span class="dv" style="color: #AD0000;">2</span>, <span class="fu" style="color: #4758AB;">length</span>(mylvls), <span class="dv" style="color: #AD0000;">2</span>),</span>
-<span id="cb5-5">  <span class="at" style="color: #657422;">main =</span> <span class="st" style="color: #20794D;">"Aligned MUD2 Spectra 1 &amp; 6"</span>)</span></code></pre></div>
-<div class="cell-output-display">
-<p><img src="http://chemospec.org/posts/2020-03-04-NMR-Align-Pt3/2020-03-04-NMR-Align-Pt3_files/figure-html/plotMUD2a-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-
-
-</section>
-
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
-  author = {Bryan Hanson},
-  title = {Aligning {2D} {NMR} {Spectra} {Part} 3},
-  date = {2020-03-04},
-  url = {http://chemospec.org/posts/2020-03-04-NMR-Align-Pt3/2020-03-04-NMR-Align-Pt3.html},
-  langid = {en}
-}
-</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2020" class="csl-entry quarto-appendix-citeas">
-Bryan Hanson. 2020. <span>“Aligning 2d NMR Spectra Part 3.”</span> March
-4, 2020. <a href="http://chemospec.org/posts/2020-03-04-NMR-Align-Pt3/2020-03-04-NMR-Align-Pt3.html">http://chemospec.org/posts/2020-03-04-NMR-Align-Pt3/2020-03-04-NMR-Align-Pt3.html</a>.
-</div></div></section></div> ]]></description>
-  <category>R</category>
-  <category>ChemoSpec2D</category>
-  <category>Alignment</category>
-  <category>NMR</category>
-  <guid>http://chemospec.org/posts/2020-03-04-NMR-Align-Pt3/2020-03-04-NMR-Align-Pt3.html</guid>
-  <pubDate>Wed, 04 Mar 2020 07:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>

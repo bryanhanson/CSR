@@ -14,10 +14,15 @@
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-span.underline{text-decoration: underline;}
-div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: 1;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -56,7 +61,7 @@ code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -69,7 +74,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -120,7 +125,7 @@ div.csl-indent {
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -160,7 +165,7 @@ cookieconsent.run({
 
 <link rel="stylesheet" href="../../styles.css">
 <meta name="twitter:title" content="Chemometrics and Spectroscopy Using R - Metabolic Phenotyping Protocol Part 2">
-<meta name="twitter:description" content="Implementing the Statistical Analysis in Metabolic Phenotyping Protocol of Blaise *et al.*">
+<meta name="twitter:description" content="Implementing the Statistical Analysis in Metabolic Phenotyping Protocol of Blaise et al.">
 <meta name="twitter:card" content="summary">
 </head>
 
@@ -332,7 +337,7 @@ of class 'Spectra'</code></pre>
 <div id="fig-screeAlt" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="2022-03-24-Protocol-Pt2_files/figure-html/fig-screeAlt-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 1: Scree plot (recommended style).</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure 1: Scree plot (recommended style).</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -343,7 +348,7 @@ of class 'Spectra'</code></pre>
 <div id="fig-screeTrad" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="2022-03-24-Protocol-Pt2_files/figure-html/fig-screeTrad-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 2: Scree plot (traditional style).</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure 2: Scree plot (traditional style).</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -354,7 +359,7 @@ of class 'Spectra'</code></pre>
 <div id="fig-cv-pca" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="2022-03-24-Protocol-Pt2_files/figure-html/fig-cv-pca-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 3: Scree plot using cross validation.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure 3: Scree plot using cross validation.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -371,7 +376,7 @@ of class 'Spectra'</code></pre>
 <div id="fig-scores12" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="2022-03-24-Protocol-Pt2_files/figure-html/fig-scores12-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 4: Score plot for PCs 1 and 2. Compare to protocol figure 7a.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure 4: Score plot for PCs 1 and 2. Compare to protocol figure 7a.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -383,7 +388,7 @@ of class 'Spectra'</code></pre>
 <div id="fig-scores23" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="2022-03-24-Protocol-Pt2_files/figure-html/fig-scores23-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 5: Score plot for PCS 2 and 3.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure 5: Score plot for PCS 2 and 3.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -404,7 +409,7 @@ of class 'Spectra'</code></pre>
 <div id="fig-hotelling1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="2022-03-24-Protocol-Pt2_files/figure-html/fig-hotelling1-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 6: Score plot for PCs 1 and 2 with Hotelling’s <em>T</em><sup>2</sup> ellipse. Compare to protocol figure 7a.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure 6: Score plot for PCs 1 and 2 with Hotelling’s <em>T</em><sup>2</sup> ellipse. Compare to protocol figure 7a.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -418,7 +423,7 @@ of class 'Spectra'</code></pre>
 <div id="fig-diagOD" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="2022-03-24-Protocol-Pt2_files/figure-html/fig-diagOD-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 7: Orthogonal distance plot based on the first three PCs.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure 7: Orthogonal distance plot based on the first three PCs.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -430,7 +435,7 @@ of class 'Spectra'</code></pre>
 <div id="fig-diagSD" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="2022-03-24-Protocol-Pt2_files/figure-html/fig-diagSD-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 8: Score distance plot based on the first three PCs.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure 8: Score distance plot based on the first three PCs.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -465,16 +470,17 @@ Blaise, Benjamin J., Gonçalo D. S. Correia, Gordon A. Haggart, Izabella Surowie
 <div id="ref-Filzmoser2009" class="csl-entry" role="doc-biblioentry">
 Varmuza, K., and P. Filzmoser. 2009. <em>Introduction to Multivariate Statistical Analysis in Chemometrics</em>. CRC Press.
 </div>
-</div></section><section class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
-<li id="fn1" role="doc-endnote"><p>Without scaling, the largest peaks will drive the separation in the scores plot.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2" role="doc-endnote"><p>Be sure you have <code>ChemoSpec</code> 6.1.3 or higher, as <code>cv_pcaSpectra</code> had a bug in it! One benefit of writing these posts is finding lame bugs…<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3" role="doc-endnote"><p>We are sourcing in a corrected version of the function, as the CRAN version has a small <a href="https://github.com/ChristianGoueguel/HotellingEllipse/issues/2">error</a> in it.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn4" role="doc-endnote"><p>The <a href="https://github.com/Gscorreia89/chemometrics-tutorials">Jupyter notebook</a> has details about this.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>Without scaling, the largest peaks will drive the separation in the scores plot.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Be sure you have <code>ChemoSpec</code> 6.1.3 or higher, as <code>cv_pcaSpectra</code> had a bug in it! One benefit of writing these posts is finding lame bugs…<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>We are sourcing in a corrected version of the function, as the CRAN version has a small <a href="https://github.com/ChristianGoueguel/HotellingEllipse/issues/2">error</a> in it.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>The <a href="https://github.com/Gscorreia89/chemometrics-tutorials">Jupyter notebook</a> has details about this.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
   author = {Bryan Hanson},
+  editor = {},
   title = {Metabolic {Phenotyping} {Protocol} {Part} 2},
   date = {2022-03-24},
   url = {http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2.html},
@@ -486,6 +492,24 @@ Bryan Hanson. 2022. <span>“Metabolic Phenotyping Protocol Part
 </div></div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
   const icon = "";
   const anchorJS = new window.AnchorJS();
   anchorJS.options = {
@@ -535,7 +559,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   for (var i=0; i<noterefs.length; i++) {
     const ref = noterefs[i];
     tippyHover(ref, function() {
-      let href = ref.getAttribute('href');
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href');
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
