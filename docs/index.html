@@ -122,9 +122,11 @@ cookieconsent.run({
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
-      <a class="navbar-brand" href="./index.html">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">Chemometrics and Spectroscopy Using R</span>
-  </a>
+    </a>
+  </div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
@@ -188,7 +190,7 @@ cookieconsent.run({
 
 <div class="quarto-listing quarto-listing-container-default" id="listing-listing">
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="R,Linear Algebra" data-listing-date-sort="1660460400000" data-listing-file-modified-sort="1660511269170" data-listing-reading-time-sort="11.715">
+<div class="quarto-post image-right" data-index="0" data-categories="R,Linear Algebra" data-listing-date-sort="1660460400000" data-listing-file-modified-sort="1661263146401" data-listing-reading-time-sort="11.715">
 <div class="body">
 <a href="./posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html">
 <h3 class="no-anchor listing-title">
@@ -1430,7 +1432,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     const ref = noterefs[i];
     tippyHover(ref, function() {
       // use id or data attribute instead here
-      let href = ref.getAttribute('data-footnote-href');
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);

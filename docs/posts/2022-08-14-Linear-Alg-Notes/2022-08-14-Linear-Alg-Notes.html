@@ -157,9 +157,11 @@ cookieconsent.run({
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
-      <a class="navbar-brand" href="../../index.html">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Chemometrics and Spectroscopy Using R</span>
-  </a>
+    </a>
+  </div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
@@ -377,10 +379,9 @@ a_{21}b_{11} + a_{22}b_{21} + a_{23}b_{31} &amp; a_{21}b_{12} + a_{22}b_{22} + a
 <h3 class="anchored" data-anchor-id="formulas-1">Formulas</h3>
 <p>The cross product of two vectors returns a vector rather than a scalar. Vectors are defined in terms of a <em>basis</em> which is a coordinate system. Earlier, when we defined <span class="math inline">\(\vec{u} = (u_x, u_y, u_z)\)</span> it was intrinsically defined in terms of the standard basis set <span class="math inline">\(\hat{i}, \hat{j}, \hat{k}\)</span> (in some fields this would be called the unit coordinate system). Thus a fuller definition of <span class="math inline">\(\vec{u}\)</span> would be:</p>
 <p><span id="eq-cp1"><span class="math display">\[
-\vec{u} = u_x\hat{i} + u_y\hat{k} + u_z\hat{k}
+\vec{u} = u_x\hat{i} + u_y\hat{j} + u_z\hat{k}
 \tag{11}\]</span></span></p>
-<p>In terms of <em>vectors</em>, the cross product is defined as:</p>
-<p><span id="eq-cp2"><span class="math display">\[
+<p>In terms of <em>vectors</em>, the cross product is defined as: <span id="eq-cp2"><span class="math display">\[
 \vec{u} \times \vec{v} = (a_{y}b_{z} - a_{z}b_{y})\hat{i} + (a_{z}b_{x} - a_{x}b_{z})\hat{j} + (a_{x}b_{y} -a_{y}b_{x})\hat{k}
 \tag{12}\]</span></span></p>
 <p>In my opinion, this is not exactly intuitive, but there is a pattern to it: notice that the terms for <span class="math inline">\(\hat{i}\)</span> don’t involve the <span class="math inline">\(x\)</span> component. The details of how this result is computed relies on some properties of the basis set; this <a href="https://en.wikipedia.org/wiki/Cross_product#Coordinate_notation">Wikipedia</a> article has a nice explanation. We need not dwell on it however.</p>
@@ -401,8 +402,7 @@ Cross product using column vectors
 </div>
 <div id="callout-2" class="callout-2-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>As we did for the dot product, we can look at the cross product from the perspective of column vectors. Instead of transposing the first matrix as we did for the dot product, we transpose the second one:</p>
-<p><span id="eq-cp3"><span class="math display">\[
+<p>As we did for the dot product, we can look at the cross product from the perspective of column vectors. Instead of transposing the first matrix as we did for the dot product, we transpose the second one: <span id="eq-cp3"><span class="math display">\[
 \vec{u} \times \vec{v} = \vec{u} \ \vec{v}^\mathsf{T} = \begin{bmatrix} u_x \\ u_y \\ u_z\end{bmatrix} \begin{bmatrix} v_x &amp; v_y &amp; v_z \end{bmatrix} = \begin{bmatrix} u_{x}v_{x} &amp; u_{x}v_{y} &amp; u_{x}v_{z} \\ u_{y}v_{x} &amp; u_{y}v_{y} &amp; u_{y}v_{z} \\ u_{z}v_{x} &amp; u_{z}v_{y} &amp; u_{z}v_{z}\\ \end{bmatrix}
 \tag{14}\]</span></span></p>
 <p>Interestingly, we are using the dot product to compute the cross product.</p>
@@ -412,7 +412,7 @@ Cross product using column vectors
 </div>
 <p>Finally, there is a matrix definition of the cross product as well. Evaluation of the following <a href="https://en.wikipedia.org/wiki/Determinant">determinant</a> gives the cross product:</p>
 <p><span class="math display">\[
-\vec{u} \times \vec{v} = \begin{vmatrix} \hat{i} &amp; \hat{j} &amp; \hat{j}\\ u_{x} &amp; u_{y} &amp; u_{z} \\ v_{x} &amp; v_{y} &amp; v_{z}\\\end{vmatrix}
+\vec{u} \times \vec{v} = \begin{vmatrix} \hat{i} &amp; \hat{j} &amp; \hat{k}\\ u_{x} &amp; u_{y} &amp; u_{z} \\ v_{x} &amp; v_{y} &amp; v_{z}\\\end{vmatrix}
 \]</span></p>
 </section>
 <section id="what-can-we-do-with-the-cross-product" class="level3">
@@ -650,7 +650,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     const ref = noterefs[i];
     tippyHover(ref, function() {
       // use id or data attribute instead here
-      let href = ref.getAttribute('data-footnote-href');
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);

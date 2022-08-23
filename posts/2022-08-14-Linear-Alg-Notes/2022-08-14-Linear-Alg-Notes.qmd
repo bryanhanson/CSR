@@ -145,7 +145,7 @@ The cross product goes by these other names: outer product[^4], tensor product, 
 The cross product of two vectors returns a vector rather than a scalar. Vectors are defined in terms of a *basis* which is a coordinate system.  Earlier, when we defined $\vec{u} = (u_x, u_y, u_z)$ it was intrinsically defined in terms of the standard basis set $\hat{i}, \hat{j}, \hat{k}$ (in some fields this would be called the unit coordinate system).  Thus a fuller definition of $\vec{u}$ would be:
 
 $$
-\vec{u} = u_x\hat{i} + u_y\hat{k} + u_z\hat{k}
+\vec{u} = u_x\hat{i} + u_y\hat{j} + u_z\hat{k}
 $$ {#eq-cp1}
 
 In terms of *vectors*, the cross product is defined as:
@@ -178,7 +178,7 @@ The case where we treat $\vec{u}$ and $\vec{v}$ as row vectors is left to the re
 Finally, there is a matrix definition of the cross product as well.  Evaluation of the following [determinant](https://en.wikipedia.org/wiki/Determinant) gives the cross product:
 
 $$
-\vec{u} \times \vec{v} = \begin{vmatrix} \hat{i} & \hat{j} & \hat{j}\\ u_{x} & u_{y} & u_{z} \\ v_{x} & v_{y} & v_{z}\\\end{vmatrix}
+\vec{u} \times \vec{v} = \begin{vmatrix} \hat{i} & \hat{j} & \hat{k}\\ u_{x} & u_{y} & u_{z} \\ v_{x} & v_{y} & v_{z}\\\end{vmatrix}
 $$
 
 ### What Can We Do With the Cross Product?
