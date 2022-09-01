@@ -1,12 +1,11 @@
 ---
 title: "Notes on Linear Algebra Part 2"
 description: "Motivations - Bushwhacking through the thicket of linear algebra"
-date: "2022-08-30"
+date: "2022-09-01"
 categories: [R, Linear Algebra]
 format:
   html:
     toc: true
-    self-contained: true
 ---
 
 #### TL;DR
@@ -160,7 +159,7 @@ $$
 \hat{\beta} = (\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{X}^{\mathsf{T}}y
 $$ {#eq-9}
 
-The key point here is that once again we need to invert a matrix to solve this.  The details of where @eq-9 comes from are covered in a number of places, but I will note here that $\hat{\beta}$ refers to the best estimate of $\beta$.
+The key point here is that once again we need to invert a matrix to solve this.  The details of where @eq-9 comes from are covered in a number of places, but I will note here that $\hat{\beta}$ refers to the best estimate of $\beta$.[^12]
 
 ## Inverting Matrices
 
@@ -314,11 +313,12 @@ These are the main sources I relied on for this post.
 [^1]: Remember "story problems" where you had to read closely to express what was given in terms of equations, and find enough equations? "If Sally bought 10 pieces of candy and a drink for $1.50..."
 [^2]: The inverse of a matrix is analogous to dividing a variable by itself, since it leads to that variable canceling out and thus simplifying the equation.  However, strictly speaking there is no operation that qualifies as division in the matrix world.
 [^3]: Conformable means that the number of columns in the first matrix equals the number of rows in the second matrix. This is necessary because of the dot product definition of matrix multiplication.  More details [here](https://chemospec.org/posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html).
-[^4]: For a matrix $\mathbf{A}$ to be invertible, there must exist another matrix $\mathbf{B}$ such that $\mathbf{A}\mathbf{B} = \mathbf{B}\mathbf{A} = 1$.  However, this definition doesn't offer any clues about how we might find the inverse.
+[^4]: For a matrix $\mathbf{A}$ to be invertible, there must exist another matrix $\mathbf{B}$ such that $\mathbf{A}\mathbf{B} = \mathbf{B}\mathbf{A} = \mathbf{I}$.  However, this definition doesn't offer any clues about how we might find the inverse.
 [^5]: A very good discussion of the algebraic approach is available [here](https://en.wikipedia.org/wiki/Simple_linear_regression#Fitting_the_regression_line).
 [^6]: Here we have the slightly unfortunate circumstance where symbol conventions cannot be completely harmonized.  We are saying that $\mathbf{x} = x, y, z$ which seems a bit silly since vector $\mathbf{x}$ contains $y$ and $z$ components in addition to $x$.  I ask you to accept this for two reasons: First, most linear algebra texts use the symbols in @eq-3 as the general form for this topic, so if you go to study this further that's what you'll find. Second, I feel like using $x$, $y$ and $z$ in @eq-1 will be familar to the most people.  If you want to get rid of this infelicity, then you have to write @eq-1 (in part) as $x_1 + 2x_2 + 3x_3 = 3$ which I think clouds the interpretation.  Perhaps  however you feel my choices are equally bad.
-[^7]: We could also write this as $\mathbf{x} = (x, y, z)^\mathsf{T}$ to emphasize that it is a column vector. One might prefer this because the only vector one can write in a row of text is a row vector, so if we mean a column vector many peoplee would prefer to write it transposed.
+[^7]: We could also write this as $\mathbf{x} = (x, y, z)^\mathsf{T}$ to emphasize that it is a column vector. One might prefer this because the only vector one can write in a row of text is a row vector, so if we mean a column vector many people would prefer to write it transposed.
 [^8]: This is another example of an infelicity of symbol conventions. The typical math/statistics text symbols are not the same as the symbols a student in Physics 101 would likely encounter.
 [^9]: This means that the rank of the matrix is less than the number of columns.  You can get the rank of a matrix by counting the number of non-zero eigenvalues via `eigen(A2)$values`, which in this case gives `r eigen(A2)$values`.  There are only two non-zero values, so the rank is two.  Perhaps in another post we'll discuss this in more detail.
 [^10]: In truth, there are other ways to solve $\mathbf{A}\mathbf{x} = \mathbf{b}$ that don't require inversion of a matrix.  However, if a matrix $\mathbf{A}$ isn't invertible, these other methods will also break down.  We'll demonstrate this later when we talk about the LU decomposition.
-[^11]: The switch in the order of matrices on the last line of @eq-12 is one of the properties of the inverse operator.  
+[^11]: The switch in the order of matrices on the last line of @eq-12 is one of the properties of the inverse operator.
+[^12]: The careful reader will note that the data set shown in @eq-8 is not square, there are more observations (rows) than variables (columns).  This is fine and desireable for a linear regression, we don't want to use just two data points as that would have no error but not necessarily be accurate.  However, only square matrices have inverses, so what's going on here?  In practice, what's happening is we are using something called a pseudoinverse.  The first part of the right side of @eq-9 is in fact the pseudoinverse: $(\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{X}^{\mathsf{T}}$. Perhaps we'll cover this in a future post. 

@@ -2,150 +2,146 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>http://chemospec.org/resume.html</loc>
-    <lastmod>2022-08-14T21:13:13.062Z</lastmod>
+    <lastmod>2022-09-01T15:27:28.924Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/posts/2020-04-25-Heatmaps/2020-04-25-Heatmaps.html</loc>
-    <lastmod>2022-08-14T21:13:14.280Z</lastmod>
+    <lastmod>2022-09-01T15:27:30.210Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/posts/2020-01-02-readJDX-update/2020-01-02-readJDX-update.html</loc>
-    <lastmod>2022-08-14T21:13:14.829Z</lastmod>
+    <lastmod>2022-09-01T15:27:30.743Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/posts/2020-01-22-CSU-update/2020-01-22-CSU-update.html</loc>
-    <lastmod>2022-08-14T21:13:15.347Z</lastmod>
+    <lastmod>2022-09-01T15:27:31.291Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1.html</loc>
-    <lastmod>2022-08-14T21:13:16.270Z</lastmod>
+    <lastmod>2022-09-01T15:27:32.256Z</lastmod>
+  </url>
+  <url>
+    <loc>http://chemospec.org/posts/2022-09-01-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2.html</loc>
+    <lastmod>2022-09-01T15:27:35.748Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/posts/2021-05-22-GSOC-hyperSpec-ChemoSpec/2021-05-22-GSOC-hyperSpec-ChemoSpec.html</loc>
-    <lastmod>2022-08-14T21:13:16.848Z</lastmod>
+    <lastmod>2022-09-01T15:27:36.299Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/posts/2020-01-22-F4S-update/2020-01-22-F4S-update.html</loc>
-    <lastmod>2022-08-14T21:13:17.360Z</lastmod>
+    <lastmod>2022-09-01T15:27:36.797Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/posts/2021-04-11-GHA-drat/2021-04-11-GHA-drat.html</loc>
-    <lastmod>2022-08-14T21:13:17.940Z</lastmod>
+    <lastmod>2022-09-01T15:27:37.410Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/posts/2022-05-03-LearnPCA-Intro/2022-05-03-LearnPCA-Intro.html</loc>
-    <lastmod>2022-08-14T21:13:18.656Z</lastmod>
+    <lastmod>2022-09-01T15:27:38.166Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/posts/2020-03-04-NMR-Align-Pt3/2020-03-04-NMR-Align-Pt3.html</loc>
-    <lastmod>2022-08-14T21:13:19.440Z</lastmod>
+    <lastmod>2022-09-01T15:27:39.010Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html</loc>
-    <lastmod>2022-08-14T21:13:19.951Z</lastmod>
+    <lastmod>2022-09-01T15:27:39.554Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/posts/2021-04-19-Search-GH-Topics/2021-04-19-Search-GH-Topics.html</loc>
-    <lastmod>2022-08-14T21:13:20.778Z</lastmod>
+    <lastmod>2022-09-01T15:27:40.387Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1.html</loc>
-    <lastmod>2022-08-14T21:13:21.726Z</lastmod>
+    <lastmod>2022-09-01T15:27:41.292Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/posts/2020-09-08-GSOC-hyperSpec/2020-09-08-GSOC-hyperSpec.html</loc>
-    <lastmod>2022-08-14T21:13:22.254Z</lastmod>
+    <lastmod>2022-09-01T15:27:41.839Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/posts/2020-01-25-GH-Topics/2020-01-25-GH-Topics.html</loc>
-    <lastmod>2022-08-14T21:13:23.112Z</lastmod>
+    <lastmod>2022-09-01T15:27:42.776Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/posts/2020-01-24-CS-update/2020-01-24-CS-update.html</loc>
-    <lastmod>2022-08-14T21:13:23.643Z</lastmod>
+    <lastmod>2022-09-01T15:27:43.288Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/posts/2021-03-27-Spec-Suite-update/2021-03-27-Spec-Suite-update.html</loc>
-    <lastmod>2022-08-14T21:13:24.289Z</lastmod>
+    <lastmod>2022-09-01T15:27:43.856Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/posts/2021-10-13-GSOC-CS-Graphics/2021-10-13-GSOC-CS-Graphics.html</loc>
-    <lastmod>2022-08-14T21:13:24.973Z</lastmod>
+    <lastmod>2022-09-01T15:27:44.420Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2.html</loc>
-    <lastmod>2022-08-14T21:13:26.184Z</lastmod>
+    <lastmod>2022-09-01T15:27:45.397Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/posts/2020-01-01-Intro-F4S/2021-01-01-Intro-F4S.html</loc>
-    <lastmod>2022-08-14T21:13:26.731Z</lastmod>
+    <lastmod>2022-09-01T15:27:45.909Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/posts/2021-02-08-PLS/2021-02-08-PLS.html</loc>
-    <lastmod>2022-08-14T21:13:27.786Z</lastmod>
+    <lastmod>2022-09-01T15:27:46.837Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/posts/2020-03-02-NMR-Align-Pt2/2020-03-02-NMR-Align-Pt2.html</loc>
-    <lastmod>2022-08-14T21:13:29.388Z</lastmod>
+    <lastmod>2022-09-01T15:27:48.381Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html</loc>
-    <lastmod>2022-08-26T02:25:19.367Z</lastmod>
+    <lastmod>2022-09-01T15:27:49.458Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/posts/2022-07-06-F4S-Update/2022-07-06-F4S-Update.html</loc>
-    <lastmod>2022-08-14T21:13:31.135Z</lastmod>
+    <lastmod>2022-09-01T15:27:50.048Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/posts/2020-02-19-CS2D-update/2020-02-19-CS2D-update.html</loc>
-    <lastmod>2022-08-14T21:13:31.672Z</lastmod>
+    <lastmod>2022-09-01T15:27:50.648Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/posts/2020-03-21-Data-Formats-Pt1/2020-03-21-Data-Formats-Pt1.html</loc>
-    <lastmod>2022-08-14T21:13:32.413Z</lastmod>
+    <lastmod>2022-09-01T15:27:51.398Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/posts/2022-02-18-Key-References/2022-02-18-Key-References.html</loc>
-    <lastmod>2022-08-14T21:13:32.958Z</lastmod>
+    <lastmod>2022-09-01T15:27:52.008Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1.html</loc>
-    <lastmod>2022-08-14T21:13:34.096Z</lastmod>
+    <lastmod>2022-09-01T15:27:52.988Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3.html</loc>
-    <lastmod>2022-08-14T21:13:35.461Z</lastmod>
+    <lastmod>2022-09-01T15:27:54.067Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/posts/2020-04-27-CSU-update/2020-04-27-CSU-update.html</loc>
-    <lastmod>2022-08-14T21:13:36.407Z</lastmod>
+    <lastmod>2022-09-01T15:27:54.651Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/posts/2022-02-09-Imports-Suggests/2022-02-09-Imports-Suggests.html</loc>
-    <lastmod>2022-08-14T21:13:37.278Z</lastmod>
+    <lastmod>2022-09-01T15:27:55.525Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/projects.html</loc>
-    <lastmod>2022-08-14T21:13:37.624Z</lastmod>
+    <lastmod>2022-09-01T15:27:55.866Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/index.html</loc>
-    <lastmod>2022-08-27T16:13:44.544Z</lastmod>
+    <lastmod>2022-09-01T15:27:58.104Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/about.html</loc>
-    <lastmod>2022-08-26T22:09:24.911Z</lastmod>
+    <lastmod>2022-09-01T15:27:58.451Z</lastmod>
   </url>
   <url>
     <loc>http://chemospec.org/PlantMetabolomics.html</loc>
-    <lastmod>2022-08-14T21:13:42.313Z</lastmod>
-  </url>
-  <url>
-    <loc>http://chemospec.org/posts/2022-08-30-Linear-Alg-Notes-Pt1/2022-08-30-Linear-Alg-Notes-Pt1.html</loc>
-    <lastmod>2022-08-22T21:20:40.076Z</lastmod>
-  </url>
-  <url>
-    <loc>http://chemospec.org/posts/2022-08-30-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2.html</loc>
-    <lastmod>2022-08-27T16:13:42.155Z</lastmod>
+    <lastmod>2022-09-01T15:28:00.985Z</lastmod>
   </url>
 </urlset>

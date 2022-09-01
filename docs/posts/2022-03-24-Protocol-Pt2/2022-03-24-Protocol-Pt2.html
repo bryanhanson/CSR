@@ -15,7 +15,7 @@
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: 1;}
+div.column{flex: auto; overflow-x: auto;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -165,7 +165,7 @@ cookieconsent.run({
 
 <link rel="stylesheet" href="../../styles.css">
 <meta name="twitter:title" content="Chemometrics and Spectroscopy Using R - Metabolic Phenotyping Protocol Part 2">
-<meta name="twitter:description" content="Implementing the Statistical Analysis in Metabolic Phenotyping Protocol of Blaise et al.">
+<meta name="twitter:description" content="Implementing the Statistical Analysis in Metabolic Phenotyping Protocol of Blaise *et al.*">
 <meta name="twitter:card" content="summary">
 </head>
 
@@ -175,9 +175,11 @@ cookieconsent.run({
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
-      <a class="navbar-brand" href="../../index.html">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Chemometrics and Spectroscopy Using R</span>
-  </a>
+    </a>
+  </div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
@@ -337,7 +339,7 @@ of class 'Spectra'</code></pre>
 <div id="fig-screeAlt" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="2022-03-24-Protocol-Pt2_files/figure-html/fig-screeAlt-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><figcaption class="figure-caption">Figure 1: Scree plot (recommended style).</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;1: Scree plot (recommended style).</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -348,7 +350,7 @@ of class 'Spectra'</code></pre>
 <div id="fig-screeTrad" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="2022-03-24-Protocol-Pt2_files/figure-html/fig-screeTrad-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><figcaption class="figure-caption">Figure 2: Scree plot (traditional style).</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;2: Scree plot (traditional style).</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -359,7 +361,7 @@ of class 'Spectra'</code></pre>
 <div id="fig-cv-pca" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="2022-03-24-Protocol-Pt2_files/figure-html/fig-cv-pca-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><figcaption class="figure-caption">Figure 3: Scree plot using cross validation.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3: Scree plot using cross validation.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -376,7 +378,7 @@ of class 'Spectra'</code></pre>
 <div id="fig-scores12" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="2022-03-24-Protocol-Pt2_files/figure-html/fig-scores12-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><figcaption class="figure-caption">Figure 4: Score plot for PCs 1 and 2. Compare to protocol figure 7a.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;4: Score plot for PCs 1 and 2. Compare to protocol figure 7a.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -388,7 +390,7 @@ of class 'Spectra'</code></pre>
 <div id="fig-scores23" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="2022-03-24-Protocol-Pt2_files/figure-html/fig-scores23-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><figcaption class="figure-caption">Figure 5: Score plot for PCS 2 and 3.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;5: Score plot for PCS 2 and 3.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -409,7 +411,7 @@ of class 'Spectra'</code></pre>
 <div id="fig-hotelling1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="2022-03-24-Protocol-Pt2_files/figure-html/fig-hotelling1-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><figcaption class="figure-caption">Figure 6: Score plot for PCs 1 and 2 with Hotelling’s <em>T</em><sup>2</sup> ellipse. Compare to protocol figure 7a.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;6: Score plot for PCs 1 and 2 with Hotelling’s <em>T</em><sup>2</sup> ellipse. Compare to protocol figure 7a.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -423,7 +425,7 @@ of class 'Spectra'</code></pre>
 <div id="fig-diagOD" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="2022-03-24-Protocol-Pt2_files/figure-html/fig-diagOD-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><figcaption class="figure-caption">Figure 7: Orthogonal distance plot based on the first three PCs.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;7: Orthogonal distance plot based on the first three PCs.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -435,7 +437,7 @@ of class 'Spectra'</code></pre>
 <div id="fig-diagSD" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="2022-03-24-Protocol-Pt2_files/figure-html/fig-diagSD-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<p></p><figcaption class="figure-caption">Figure 8: Score distance plot based on the first three PCs.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;8: Score distance plot based on the first three PCs.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -560,7 +562,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     const ref = noterefs[i];
     tippyHover(ref, function() {
       // use id or data attribute instead here
-      let href = ref.getAttribute('data-footnote-href');
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
@@ -593,7 +595,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
-      <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+      <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookies are used to track visits only</a></div></div>
   </div>
 </footer>
 
