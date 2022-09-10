@@ -177,7 +177,7 @@ $$ {#eq-12}
 
 When all is done, we only need to figure out $\mathbf{U}^{-1}$ and $\mathbf{L}^{-1}$ which as mentioned is straightforward.[^11]
 
-To summarize, if we want to solve a system of equations we need to carry out matrix inversion, which is turn is much easier to do if one uses the LU decomposition to get two easy to invert triangular matrices.  I hope you are beginning to see how pieces of linear algebra fit together, and why it might be good to learn more.
+To summarize, if we want to solve a system of equations we need to carry out matrix inversion, which in turn is much easier to do if one uses the LU decomposition to get two easy to invert triangular matrices.  I hope you are beginning to see how pieces of linear algebra fit together, and why it might be good to learn more.
 
 ## R Functions
 
@@ -321,4 +321,4 @@ These are the main sources I relied on for this post.
 [^9]: This means that the rank of the matrix is less than the number of columns.  You can get the rank of a matrix by counting the number of non-zero eigenvalues via `eigen(A2)$values`, which in this case gives `r eigen(A2)$values`.  There are only two non-zero values, so the rank is two.  Perhaps in another post we'll discuss this in more detail.
 [^10]: In truth, there are other ways to solve $\mathbf{A}\mathbf{x} = \mathbf{b}$ that don't require inversion of a matrix.  However, if a matrix $\mathbf{A}$ isn't invertible, these other methods will also break down.  We'll demonstrate this later when we talk about the LU decomposition.
 [^11]: The switch in the order of matrices on the last line of @eq-12 is one of the properties of the inverse operator.
-[^12]: The careful reader will note that the data set shown in @eq-8 is not square, there are more observations (rows) than variables (columns).  This is fine and desireable for a linear regression, we don't want to use just two data points as that would have no error but not necessarily be accurate.  However, only square matrices have inverses, so what's going on here?  In practice, what's happening is we are using something called a pseudoinverse.  The first part of the right side of @eq-9 is in fact the pseudoinverse: $(\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{X}^{\mathsf{T}}$. Perhaps we'll cover this in a future post. 
+[^12]: The careful reader will note that the data set shown in @eq-8 is not square, there are more observations (rows) than variables (columns).  This is fine and desirable for a linear regression, we don't want to use just two data points as that would have no error but not necessarily be accurate.  However, only square matrices have inverses, so what's going on here?  In practice, what's happening is we are using something called a pseudoinverse.  The first part of the right side of @eq-9 is in fact the pseudoinverse: $(\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{X}^{\mathsf{T}}$. Perhaps we'll cover this in a future post. 

@@ -1,0 +1,122 @@
+---
+title: "Notes on Linear Algebra Part 3"
+description: "Base R Functions Related to Linear Algebra"
+date: "2022-09-10"
+categories: [R, Linear Algebra]
+format:
+  html
+---
+
+
+Series: [Part 1](https://chemospec.org/posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html) [Part 2](https://chemospec.org/posts/2022-09-01-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2.html)
+
+This post is a survey of the linear algebra-related functions from base `R`.  Some of these I've disccused in other posts and some I may discuss in the future, but this post is primarily an inventory: these are the key tools we have available.  "Notes" in the table are taken from the help files.
+
+Matrices, including row and column vectors, will be shown in bold e.g. $\mathbf{A}$ or $\mathbf{a}$ while scalars and variables will be shown in script, e.g. $n$. `R` code will appear like `x <- y`.
+
+In the table, $\mathbf{R}$ or $\mathbf{U}$ is an upper/right triangular matrix.  $\mathbf{L}$  is a lower/left triangular matrix (triangular matrices are square). $\mathbf{A}$ is a generic matrix of dimensions $m \times n$.  $\mathbf{M}$ is a square matrix of dimensions $n \times n$.
+
+| Function | Uses | Notes |
+|:-|:-|:-|:-|
+| **operators** | | |
+| `*` | scalar multiplication | |
+| `%*%` | matrix multiplication | two vectors $\rightarrow$ the dot product; vector + matrix $\rightarrow$ cross product (vector will be promoted as needed)[^1] |
+| **basic functions** | | |
+| `t()` | transpose | interchange rows and columns |
+| `crossprod()` | matrix multiplication | faster version of `t(A) %*% A` |
+| `tcrossprod()` | matrix multiplication | faster version of `A %*% t(A)` |
+| `outer()` | outer product & more | see discussion below |
+| `det()`| computes determinant | uses the LU decomposition; determinant is a volume |
+| `isSymmetric()`| name says it all | |
+| `Conj()`| computes complex conjugate | |
+| **decompositions** | | |
+| `backsolve()` | solves $\mathbf{Rx} = \mathbf{b}$ |  |
+| `forwardsolve()` | solves $\mathbf{Lx} = \mathbf{b}$ |  |
+| `solve()` | solves $\mathbf{Mx} = \mathbf{b}$ and $\mathbf{M}^{-1}$ | e.g. linear systems; if given only one matrix returns the inverse |
+| `qr()` | solves $\mathbf{A} = \mathbf{QR}$| $\mathbf{Q}$ is an orthogonal matrix; can be used to solve $\mathbf{Ax} = \mathbf{b}$; see `?qr` for several `qr.*` extractor functions |
+| `chol()` | solves $\mathbf{M} = \mathbf{L}\mathbf{L}^{\mathsf{T}} = \mathbf{U}^{\mathsf{T}}\mathbf{U}$ | Only applies to positive semi-definite matrices (where $\lambda \ge 0$); related to LU decomposition |
+| `chol2inv()` | computes $\mathbf{M}^{-1}$ from the results of `chol(M)` | |
+| `svd()` | singular value decomposition | input $\mathbf{A}^{(m \times n)}$; can compute PCA; [details](https://bryanhanson.github.io/LearnPCA/) |
+| `eigen()` | eigen decomposition | requires $\mathbf{M}^{(n \times n)}$; can compute PCA; [details](https://bryanhanson.github.io/LearnPCA/) |
+
+
+One thing to notice is that there is no LU decomposition in base `R`.  It is apparently used "under the hood" in `solve()` and there are versions available in contributed packages.[^3]
+
+
+::: {.callout-tip collapse="true"}
+## What is the use of outer()?
+
+As seen in [Part 1](https://chemospec.org/posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html) calling `outer()` on two vectors does indeed give the cross product (technically corresponding to `tcrossprod()`).  This works because the defaults carry out multiplication.[^2]  However, looking through the `R` source code for uses of `outer()`, the function should really be thought of in simple terms as creating all possible combinations of the two inputs. In that way it is similar to `expand.grid()`.  Here are two illustrations of the flexibility of `outer()`:
+
+```{r}
+# generate a grid of x,y values modified by a function
+# from ?colorRamp
+m <- outer(1:20, 1:20, function(x,y) sin(sqrt(x*y)/3))
+str(m)
+```
+
+```{r}
+# generate all combinations of month and year
+# modified from ?outer; any function accepting 2 args can be used
+outer(month.abb, 2000:2002, FUN = paste)
+```
+
+Bottom line: `outer()` can be used for linear algebra but its main uses lie elsewhere.  You don't need it for linear algebra!
+:::
+
+
+::: {.callout-tip collapse="true"}
+## Using outer() for matrix multiplication
+Here's an interesting connection discussed in this [Wikipedia entry](https://en.wikipedia.org/wiki/Outer_product#Connection_with_the_matrix_product). In Part 1 we demonstrated how the repeated application of the dot product underpins matrix multiplication.  The first row of the first matrix is multiplied element-wise by the first column of the second matrix, shown in red, to give the first element of the answer matrix.  This process is then repeated so that every row (first matrix) has been multiplied by every column (second matrix).
+
+$$
+\begin{multline}
+\mathbf{A}\mathbf{B} = \mathbf{C} =
+\begin{bmatrix}
+\textcolor{red}{a_{11}} & \textcolor{red}{a_{12}} & \textcolor{red}{a_{13}} \\
+a_{21} & a_{22} & a_{23} \\
+\end{bmatrix}
+\begin{bmatrix}
+\textcolor{red}{b_{11}} & b_{12} & b_{13} \\
+\textcolor{red}{b_{21}} & b_{22} & b_{23} \\
+\textcolor{red}{b_{31}} & b_{32} & b_{33} \\
+\end{bmatrix} = \\
+\begin{bmatrix}
+\textcolor{red}{a_{11}b_{11} + a_{12}b_{21} + a_{13}b_{31}} & a_{11}b_{12} + a_{12}b_{22} + a_{13}b_{32} & a_{11}b_{13} + a_{12}b_{23} + a_{13}b_{33}\\
+a_{21}b_{11} + a_{22}b_{21} + a_{23}b_{31} & a_{21}b_{12} + a_{22}b_{22} + a_{23}b_{32} & a_{21}b_{13} + a_{22}b_{23} + a_{23}b_{33}\\
+\end{bmatrix}
+\end{multline}
+$$ {#eq-1}
+
+If instead, we treat the first *column* of the first matrix as a column vector and cross multiply it by the first *row* of the second matrix as a row vector, we get the following matrix:
+
+$$
+\begin{multline}
+\begin{bmatrix}
+\textcolor{red}{a_{11}} & a_{12} & a_{13} \\
+\textcolor{red}{a_{21}} & a_{22} & a_{23} \\
+\end{bmatrix}
+\begin{bmatrix}
+\textcolor{red}{b_{11}} & \textcolor{red}{b_{12}} & \textcolor{red}{b_{13}} \\
+b_{21} & b_{22} & b_{23} \\
+b_{31} & b_{32} & b_{33} \\
+\end{bmatrix} \Rightarrow
+\begin{bmatrix}
+\textcolor{red}{a_{11}b_{11}} & \textcolor{red}{a_{11}b_{12}} & \textcolor{red}{a_{11}b_{13}}\\
+\textcolor{red}{a_{21}b_{11}} & \textcolor{red}{a_{21}b_{12}} & \textcolor{red}{a_{21}b_{13}}\\
+\end{bmatrix}
+\end{multline}
+$$ {#eq-2}
+
+Now if you repeat this process for the second column of the first matrix and the second row of the second matrix, you get another matrix.  And if you do it one more time using the third column/third row, you get a third matrix.  If you then add these three matrices together, you get $\mathbf{C}$ as seen in @eq-1.  Notice how each element in $\mathbf{C}$ in @eq-1 is a sum of three terms?  Each of those terms comes from one of the three matrices just described.
+
+To sum up, one can use the dot product on each row (first matrix) by each column (second matrix) to get the answer, or you can use the cross product on the columns sequentially (first matrix) by rows sequentially (second matrix) to get several matrices, which one then sums to get the answer.  It's pretty clear which option is less work and easier to follow, but I think it's an interesting connection between operations.
+
+:::
+
+[^1]: For details see the discussion in [Part 1](https://chemospec.org/posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html).
+[^2]: In fact, for the default `outer()`, `FUN = "*"`, `outer()` actually calls `tcrossprod()`.
+[^3]: Discussed in this [Stackoverflow question](https://stackoverflow.com/q/51687808/633251), which also has an implementation.
+
+
+
