@@ -1,0 +1,176 @@
+---
+title: "Notes on Linear Algebra Part 4"
+description: "A Taxonomy of Matrices"
+date: "2022-09-25"
+categories: [R, Linear Algebra]
+format:
+  html
+draft: true
+---
+
+Series: [Part 1](https://chemospec.org/posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html) [Part 2](https://chemospec.org/posts/2022-09-01-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2.html) [Part 3](https://chemospec.org/posts/2022-09-10-Linear-Alg-Notes-Pt3/Linear-Alg-Notes-Pt3.html)
+
+Back in Part 2 I mentioned some of the challenges of learning linear algebra.  One of those challenges is making sense of all the special types of matrices one encounters.  In this post I hope to shed a little light on that topic.
+
+I am strongly drawn to thinking in terms of categories and relationships.  I find visual presentations like phylogenies showing the relationships between species very useful.  In the course of my linear algebra study, I came across an interesting Venn diagram developed by the very creative thinker [Kenji Hiranabe](https://github.com/kenjihiranabe/The-Art-of-Linear-Algebra). The diagram is discussed at [Matrix World](https://anagileway.com/2020/09/29/matrix-world-in-linear-algebra-for-everyone/), but the latest version is at the Github link.  A Venn diagram is a useful format, but I was inspired to recast the information in different format.  @fig-flow shows a flowchart I created using a portion of the information in Hiranabe's Venn diagram.[^6]  The flowchart is primarily organized around what I am calling the *structure* of a matrix: what does it look like upon visual inspection (which of course only really works for small matrices)?  To me at least, structure is one of the most obvious characteristics of a matrix: an upper triangular matrix really stands out as something different for instance.  Secondarily, the flowchart includes a number of queries that one can ask about a matrix: for instance, is the matrix invertible?  We'll need to expand on all of this of course, but first take a look at the figure.
+
+
+```{mermaid}
+%%| label: fig-flow
+%%| fig-cap: "Relationships between different types of matrices. *Blue Rectangles* denote matrices with particular, recognizable *structures*.  *Pink Hexagons* indicate properties that can be *queried*."
+flowchart TD
+A(all matrices <br/> n x m) --> C(row matrices <br/> 1 x n)
+A --> D(column matrices <br/> n x 1)
+A ---> B(square matrices <br/> n x n)
+B --> E(upper triangular matrices)
+B --> F(lower triangular matrices)
+B ---> G{{is singular?}}
+B ---> H{{is invertible?}}
+H --> I{{is diagonalizable?}}
+I --> J{{is normal?}}
+J --> K(symmetric)
+K --> L(diagonal)
+L --> M(identity)
+J --> N{{is orthogonal?}}
+N --> M
+style G fill:#FFF0F5
+style H fill:#FFF0F5
+style I fill:#FFF0F5
+style J fill:#FFF0F5
+style N fill:#FFF0F5
+```
+
+# Unpacking the Flowchart
+
+## Structure Examples
+
+Let's use `R` to construct and inspect examples of each type of matrix.  We'll use integers to keep the print output nice and neat, but of course real numbers could be used as well. Most of these are pretty straightforward so we'll we'll keep comments to a minimum for the simple cases.
+
+### Rectangular Matrix $m \times n$
+
+```{r}
+A_rect <- matrix(1:12, nrow = 3) # if you give nrow,
+A_rect # R will compute ncol from the length of the data
+```
+
+Notice that `R` is "column major" meaning data fills the first column, then the second column and so forth.
+
+### Row Matrix/Vector $1 \times m$
+
+```{r}
+A_row <- matrix(1:4, nrow = 1) # row matrix/vector
+A_row
+```
+
+### Column Matrix/Vector $n \times 1$
+
+```{r}
+A_col <- matrix(1:4, ncol = 1) # column matrix/vector
+A_col
+```
+
+Keep in mind that to save space in a text-dense document one would often write `A_col^T` so that the result stays on a line: `r A_col^T`.
+
+### Square Matrix $n \times n$
+
+```{r}
+A_sq <- matrix(1:9, nrow = 3)
+A_sq
+```
+
+### Upper and Lower Triangular Matrices
+
+Creating a upper triangular matrix requires a few more steps.  Function `upper.tri()` returns a logical matrix which can be used as a mask to select entries.  Function `lower.tri()` can be used similarly.  Both functions have an argument `diag = TRUE/FALSE` indicating whether to include the diagonal values.
+
+```{r}
+upper.tri(A_sq, diag = TRUE)
+A_upper <- A_sq[upper.tri(A_sq)]
+A_upper # notice that a vector is returned, not quite what might have been expected!
+A_upper <- A_sq # create a copy to be modified
+A_upper[lower.tri(A_upper)] <- 0L # assign the lower entries to zero
+A_upper
+```
+Notice to create an upper triangular matrix we use `lower.tri()` to assign zeros to the lower part of an existing matrix.
+
+### Identity Matrix
+
+If you give `diag()` a single value it defines the  dimensions and ones are put on the diagonal, giving an identity matrix.
+
+```{r}
+A_ident <- diag(4)
+A_ident
+```
+
+### Diagonal Matrix
+
+If you give `diag()` a vector of values these go on the diagonal and the length of the vector determines the dimensions.
+
+```{r}
+A_diag <- diag(1:4)
+A_diag
+```
+
+### Symmetric Matrices
+
+Matrices created by `diag()` are symmetric matrices, but any matrix where $A_{ij} = A_{ji}$ is symmetric.  There is no general function to create symmetric matrices since there is no way to know what data should be used.  However, one can ask if a matrix is symmetric, using the function `isSymmetric()`.
+
+```{r}
+isSymmetric(A_diag)
+```
+
+## The Queries
+
+# The Table Approach
+
+* The table covers matrices who's elements are $\in \mathbb{R}$ (i.e. real numbers).  If working with $\mathbb{C}$ (complex numbers) there are some additional categories and terminology beyond the real case.
+* *Structure* and *special cases* refer to how the matix *appears* upon simple visual inspection (most obvious for small examples).  Dimensions are given for example as $m \times n$.
+* *Condition* is a mathematical test/operation that can be applied to the matrix.
+* *Properties* and *eigenvalues* are self-explanatory.
+* *Decomposition* refers to applicable matrix decompositions.  The goal of any decomposition is to recast a matrix in a more usable form. Typical uses are given later.
+* As you move down the taxonomy unfolds: each subsequent row is generally a subset of the prior rows.
+* Conventions: Matrices, including row and column matrices/vectors, will be shown in bold e.g. $\mathbf{A}$ while scalars and variables will be shown in script, e.g. $n$.
+* The main table should print on a single page if you choose landscape orientation.
+* This document is available at [Github]().
+
+{{< pagebreak >}}
+
+### A Taxonomy of Matrices
+
+| structure | special cases | condition | properties | decomposition | eigenvalues |
+|:-|:-|:-|:-|:-|:-|:-|
+| all matrices $n \times m$ | | | | SVD| |
+| | row matrices $1 \times m$[^2] | | | | |
+| | col matrices $n \times 1$ | | | | |
+| square matrices $n \times n$ |  | | | | |
+| | upper triangular[^4] | | $a_{ij} = 0 \text{ if } i > j$ | | |
+| | lower triangular | | $a_{ij} = 0 \text{ if } i < j$ | | |
+| $n \times n$ con't | | **either:** is singular | $\det(\mathbf{A}) \ne 0$ | QR, LU, eigen | $\text{at least one } \lambda = 0$[^5] |
+| | | **or:** is invertible | $\det(\mathbf{A}) = 0$ | QR, LU, eigen |  $\text{all } \lambda \ne 0$|
+| | | is diagonalizable | | | has $n$ linearly independent eigenvectors |
+| | | is normal | $\mathbf{A}\mathbf{A}^\mathsf{T} = \mathbf{A}^\mathsf{T}\mathbf{A} \ne \mathbf{I}$ | | has $n$ linearly independent eigenvectors | |
+| | symmetric | | $\mathbf{A} = \mathbf{A}^\mathsf{T} \quad a_{ij} = a_{ji}$[^1] | | $\text{ all } \lambda \in \mathbb{R}$ |
+| | diagonal | | $a_{ij} = 0 \text{ if } i \ne j$ | |  $\lambda_i = a_{ii}$ |
+| | | is orthogonal | $\mathbf{A}^{-1} = \mathbf{A}^\mathsf{T} \quad \mathbf{A}\mathbf{A}^\mathsf{T} = \mathbf{A}^\mathsf{T}\mathbf{A} = \mathbf{I}$ | | $\text{all } \lvert\lambda\rvert = 1$|
+| | identity | | $\mathbf{A}\mathbf{I} = \mathbf{I}\mathbf{A} = \mathbf{A}$ | | $\text{all } \lambda = 1$ |
+
+{{< pagebreak >}}
+
+The decompositions and their common uses:
+
+* SVD = singular value decomposition. $\mathbf{\mathbf{A}} = \mathbf{U}\mathbf{\Sigma}\mathbf{V}^{\mathsf{T}}$.  A key use is for PCA = Principal Components Analysis.  For more info see [here](https://chemospec.org/posts/2022-05-03-LearnPCA-Intro/2022-05-03-LearnPCA-Intro.html).
+* Eigen decomposition.
+  + Can be used for PCA if one centers the data and computes $\mathbf{A}^{\mathsf{T}}\mathbf{A}$, the correlation matrix (which will have dimensions $n \times n$).
+* QR. $\mathbf{A} = \mathbf{Q}\mathbf{R}$
+* LU. $\mathbf{A} = \mathbf{L}\mathbf{U}$.[^3]  A common use is to solve systems of simultaneous linear equations $\mathbf{A}\mathbf{x} = \mathbf{b}$, including linear regression.
+
+
+{{< pagebreak >}}
+
+
+
+[^1]: It's helpful to remember that $\mathbf{A}^\mathsf{T}\mathbf{A}$ is always symmetric.
+[^2]: Usually in written text a row matrix, sometimes called a row vector, is written as $\mathbf{x} = \begin{bmatrix}1 & 2 & 3\end{bmatrix}$.  In order to save space in documents, rather than writing $\mathbf{x} = \begin{bmatrix}1 \\ 2 \\ 3\end{bmatrix}$, a column matrix/vector can be kept to a single line by writing it as its transpose: $\mathbf{x} = \begin{bmatrix}1 & 2 & 3\end{bmatrix}^{\mathsf{T}}$, but this requires a little mental gymnastics to visualize.
+[^3]: Sometimes this is written $\mathbf{P}\mathbf{A} = \mathbf{L}\mathbf{U}$ where $\mathbf{P}$ is a permutation matrix which re-orders the rows of $\mathbf{A}$.  This is sometimes desirable to avoid near divide-by-zero problems in particular algorithms.
+[^4]: Upper and lower triangular matrices play a special role in linear algebra.  Because of the presence of many zeros, multiplying them and inverting them is relatively easy, because the zeros cause terms to drop out.
+[^5]: A square matrix is non-invertible if any of its rows are multiples of another row, or similarly for columns.  Besides having at least one $\lambda = 0$, the rank of the matrix is less than the minimum of the number of rows and columns.
+[^6]: I'm only using a portion because the Hiranbe's original contains a bit too much information for someone trying to get their footing in the field.

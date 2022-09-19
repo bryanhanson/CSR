@@ -10,6 +10,8 @@ format:
 
 Series: [Part 1](https://chemospec.org/posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html) [Part 2](https://chemospec.org/posts/2022-09-01-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2.html)
 
+*Update 19 September 2022: in "Use of outer() for Matrix Multiplication", corrected use of "cross" to be "outer" and added example in `R`*  Also added links to work by Hiranabe.
+
 This post is a survey of the linear algebra-related functions from base `R`.  Some of these I've disccused in other posts and some I may discuss in the future, but this post is primarily an inventory: these are the key tools we have available.  "Notes" in the table are taken from the help files.
 
 Matrices, including row and column vectors, will be shown in bold e.g. $\mathbf{A}$ or $\mathbf{a}$ while scalars and variables will be shown in script, e.g. $n$. `R` code will appear like `x <- y`.
@@ -88,7 +90,7 @@ a_{21}b_{11} + a_{22}b_{21} + a_{23}b_{31} & a_{21}b_{12} + a_{22}b_{22} + a_{23
 \end{multline}
 $$ {#eq-1}
 
-If instead, we treat the first *column* of the first matrix as a column vector and cross multiply it by the first *row* of the second matrix as a row vector, we get the following matrix:
+If instead, we treat the first *column* of the first matrix as a column vector and outer multiply it by the first *row* of the second matrix as a row vector, we get the following matrix:
 
 $$
 \begin{multline}
@@ -110,7 +112,22 @@ $$ {#eq-2}
 
 Now if you repeat this process for the second column of the first matrix and the second row of the second matrix, you get another matrix.  And if you do it one more time using the third column/third row, you get a third matrix.  If you then add these three matrices together, you get $\mathbf{C}$ as seen in @eq-1.  Notice how each element in $\mathbf{C}$ in @eq-1 is a sum of three terms?  Each of those terms comes from one of the three matrices just described.
 
-To sum up, one can use the dot product on each row (first matrix) by each column (second matrix) to get the answer, or you can use the cross product on the columns sequentially (first matrix) by rows sequentially (second matrix) to get several matrices, which one then sums to get the answer.  It's pretty clear which option is less work and easier to follow, but I think it's an interesting connection between operations.
+To sum up, one can use the dot product on each row (first matrix) by each column (second matrix) to get the answer, or you can use the outer product on the columns sequentially (first matrix) by rows sequentially (second matrix) to get several matrices, which one then sums to get the answer.  It's pretty clear which option is less work and easier to follow, but I think it's an interesting connection between operations.  The first case corresponds to view "MM1" in *The Art of Linear Algebra* while the second case is view "MM4". See this work by [Kenji Hiranabe](https://github.com/kenjihiranabe/The-Art-of-Linear-Algebra).
+
+Here's a simple proof in `R`.
+```{r}
+M1 <- matrix(1:6, nrow = 3, byrow = TRUE)
+M1
+M2 <- matrix(7:10, nrow = 2, byrow = TRUE)
+M2
+
+tst1 <- M1 %*% M2 # uses dot product
+# next line is sum of sequential outer products:
+# 1st col M1 by 1st row M2 + 2nd col M1 by 2nd row M2
+tst2 <- outer(M1[,1], M2[1,]) + outer(M1[,2], M2[2,])
+
+all.equal(tst1, tst2)
+```
 
 :::
 

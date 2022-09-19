@@ -248,6 +248,7 @@ cookieconsent.run({
 </header>
 
 <p>Series: <a href="https://chemospec.org/posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html">Part 1</a> <a href="https://chemospec.org/posts/2022-09-01-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2.html">Part 2</a></p>
+<p><em>Update 19 September 2022: in “Use of outer() for Matrix Multiplication”, corrected use of “cross” to be “outer” and added example in <code>R</code></em> Also added links to work by Hiranabe.</p>
 <p>This post is a survey of the linear algebra-related functions from base <code>R</code>. Some of these I’ve disccused in other posts and some I may discuss in the future, but this post is primarily an inventory: these are the key tools we have available. “Notes” in the table are taken from the help files.</p>
 <p>Matrices, including row and column vectors, will be shown in bold e.g.&nbsp;<span class="math inline">\(\mathbf{A}\)</span> or <span class="math inline">\(\mathbf{a}\)</span> while scalars and variables will be shown in script, e.g.&nbsp;<span class="math inline">\(n\)</span>. <code>R</code> code will appear like <code>x &lt;- y</code>.</p>
 <p>In the table, <span class="math inline">\(\mathbf{R}\)</span> or <span class="math inline">\(\mathbf{U}\)</span> is an upper/right triangular matrix. <span class="math inline">\(\mathbf{L}\)</span> is a lower/left triangular matrix (triangular matrices are square). <span class="math inline">\(\mathbf{A}\)</span> is a generic matrix of dimensions <span class="math inline">\(m \times n\)</span>. <span class="math inline">\(\mathbf{M}\)</span> is a square matrix of dimensions <span class="math inline">\(n \times n\)</span>.</p>
@@ -461,7 +462,7 @@ a_{21}b_{11} + a_{22}b_{21} + a_{23}b_{31} &amp; a_{21}b_{12} + a_{22}b_{22} + a
 \end{bmatrix}
 \end{multline}
 \tag{1}\]</span></span></p>
-<p>If instead, we treat the first <em>column</em> of the first matrix as a column vector and cross multiply it by the first <em>row</em> of the second matrix as a row vector, we get the following matrix:</p>
+<p>If instead, we treat the first <em>column</em> of the first matrix as a column vector and outer multiply it by the first <em>row</em> of the second matrix as a row vector, we get the following matrix:</p>
 <p><span id="eq-2"><span class="math display">\[
 \begin{multline}
 \begin{bmatrix}
@@ -480,7 +481,34 @@ b_{31} &amp; b_{32} &amp; b_{33} \\
 \end{multline}
 \tag{2}\]</span></span></p>
 <p>Now if you repeat this process for the second column of the first matrix and the second row of the second matrix, you get another matrix. And if you do it one more time using the third column/third row, you get a third matrix. If you then add these three matrices together, you get <span class="math inline">\(\mathbf{C}\)</span> as seen in <a href="#eq-1">Equation&nbsp;1</a>. Notice how each element in <span class="math inline">\(\mathbf{C}\)</span> in <a href="#eq-1">Equation&nbsp;1</a> is a sum of three terms? Each of those terms comes from one of the three matrices just described.</p>
-<p>To sum up, one can use the dot product on each row (first matrix) by each column (second matrix) to get the answer, or you can use the cross product on the columns sequentially (first matrix) by rows sequentially (second matrix) to get several matrices, which one then sums to get the answer. It’s pretty clear which option is less work and easier to follow, but I think it’s an interesting connection between operations.</p>
+<p>To sum up, one can use the dot product on each row (first matrix) by each column (second matrix) to get the answer, or you can use the outer product on the columns sequentially (first matrix) by rows sequentially (second matrix) to get several matrices, which one then sums to get the answer. It’s pretty clear which option is less work and easier to follow, but I think it’s an interesting connection between operations. The first case corresponds to view “MM1” in <em>The Art of Linear Algebra</em> while the second case is view “MM4”. See this work by <a href="https://github.com/kenjihiranabe/The-Art-of-Linear-Algebra">Kenji Hiranabe</a>.</p>
+<p>Here’s a simple proof in <code>R</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>M1 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>, <span class="at">nrow =</span> <span class="dv">3</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-2"><a href="#cb5-2"></a>M1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2]
+[1,]    1    2
+[2,]    3    4
+[3,]    5    6</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>M2 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">7</span><span class="sc">:</span><span class="dv">10</span>, <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-2"><a href="#cb7-2"></a>M2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2]
+[1,]    7    8
+[2,]    9   10</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>tst1 <span class="ot">&lt;-</span> M1 <span class="sc">%*%</span> M2 <span class="co"># uses dot product</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="co"># next line is sum of sequential outer products:</span></span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="co"># 1st col M1 by 1st row M2 + 2nd col M1 by 2nd row M2</span></span>
+<span id="cb9-4"><a href="#cb9-4"></a>tst2 <span class="ot">&lt;-</span> <span class="fu">outer</span>(M1[,<span class="dv">1</span>], M2[<span class="dv">1</span>,]) <span class="sc">+</span> <span class="fu">outer</span>(M1[,<span class="dv">2</span>], M2[<span class="dv">2</span>,])</span>
+<span id="cb9-5"><a href="#cb9-5"></a></span>
+<span id="cb9-6"><a href="#cb9-6"></a><span class="fu">all.equal</span>(tst1, tst2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
