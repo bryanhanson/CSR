@@ -144,8 +144,8 @@ isSymmetric(A_diag)
 | square matrices $n \times n$ |  | | | | |
 | | upper triangular[^4] | | $a_{ij} = 0 \text{ if } i > j$ | | |
 | | lower triangular | | $a_{ij} = 0 \text{ if } i < j$ | | |
-| $n \times n$ con't | | **either:** is singular | $\det(\mathbf{A}) \ne 0$ | QR, LU, eigen | $\text{at least one } \lambda = 0$[^5] |
-| | | **or:** is invertible | $\det(\mathbf{A}) = 0$ | QR, LU, eigen |  $\text{all } \lambda \ne 0$|
+| $n \times n$ con't | | **either:** is singular | $\det(\mathbf{A}) = 0$ | QR, LU, eigen | $\text{at least one } \lambda = 0$[^5] |
+| | | **or:** is invertible | $\det(\mathbf{A}) \ne 0$ | QR, LU, eigen |  $\text{all } \lambda \ne 0$|
 | | | is diagonalizable | | | has $n$ linearly independent eigenvectors |
 | | | is normal | $\mathbf{A}\mathbf{A}^\mathsf{T} = \mathbf{A}^\mathsf{T}\mathbf{A} \ne \mathbf{I}$ | | has $n$ linearly independent eigenvectors | |
 | | symmetric | | $\mathbf{A} = \mathbf{A}^\mathsf{T} \quad a_{ij} = a_{ji}$[^1] | | $\text{ all } \lambda \in \mathbb{R}$ |

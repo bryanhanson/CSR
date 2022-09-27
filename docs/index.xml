@@ -10,7 +10,479 @@
 <atom:link href="http://chemospec.org/index.xml" rel="self" type="application/rss+xml"/>
 <description>Applying chemometrics to spectroscopy using R</description>
 <generator>quarto-99.9.9</generator>
-<lastBuildDate>Sat, 10 Sep 2022 07:00:00 GMT</lastBuildDate>
+<lastBuildDate>Mon, 26 Sep 2022 07:00:00 GMT</lastBuildDate>
+<item>
+  <title>Notes on Linear Algebra Part 4</title>
+  <dc:creator>Bryan Hanson</dc:creator>
+  <link>http://chemospec.org/posts/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html</link>
+  <description><![CDATA[ 
+
+
+
+<p>Series: <a href="https://chemospec.org/posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html">Part 1</a> <a href="https://chemospec.org/posts/2022-09-01-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2.html">Part 2</a> <a href="https://chemospec.org/posts/2022-09-10-Linear-Alg-Notes-Pt3/Linear-Alg-Notes-Pt3.html">Part 3</a></p>
+<p>Back in Part 2 I mentioned some of the challenges of learning linear algebra. One of those challenges is making sense of all the special types of matrices one encounters. In this post I hope to shed a little light on that topic.</p>
+<section id="a-taxonomy-of-matrices" class="level1">
+<h1>A Taxonomy of Matrices</h1>
+<p>I am strongly drawn to thinking in terms of categories and relationships. I find visual presentations like phylogenies showing the relationships between species very useful. In the course of my linear algebra journey, I came across an interesting Venn diagram developed by the very creative thinker <a href="https://github.com/kenjihiranabe/The-Art-of-Linear-Algebra">Kenji Hiranabe</a>. The diagram is discussed at <a href="https://anagileway.com/2020/09/29/matrix-world-in-linear-algebra-for-everyone/">Matrix World</a>, but the latest version is at the Github link. A Venn diagram is a useful format, but I was inspired to recast the information in different format. Figure&nbsp;1 shows a taxonomy I created using a portion of the information in Hiranabe’s Venn diagram.<sup>1</sup> The taxonomy is primarily organized around what I am calling the <em>structure</em> of a matrix: what does it look like upon visual inspection? Of course this is most obvious with small matrices. To me at least, structure is one of the most obvious characteristics of a matrix: an upper triangular matrix really stands out for instance. Secondarily, the taxonomy includes a number of queries that one can ask about a matrix: for instance, is the matrix invertible? We’ll need to expand on all of this of course, but first take a look at the figure.<sup>2</sup></p>
+<div style="page-break-after: always;"></div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-flow" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p>
+</p><pre class="mermaid" data-tooltip-selector="#mermaid-tooltip-1">flowchart TD
+A(all matrices &lt;br/&gt; n x m) --&gt; C(row matrices &lt;br/&gt; 1 x n)
+A --&gt; D(column matrices &lt;br/&gt; n x 1)
+A ---&gt; B(square matrices &lt;br/&gt; n x n)
+B --&gt; E(upper triangular&lt;br/&gt;matrices)
+B --&gt; F(lower triangular&lt;br/&gt;matrices)
+B --&gt; G{{&lt;b&gt;either&lt;/b&gt;&lt;br/&gt;is singular?}}
+B --&gt; H{{&lt;b&gt;or&lt;/b&gt;&lt;br/&gt;is invertible?}}
+H --&gt; I{{is diagonalizable?}}
+I --&gt; J{{is normal?}}
+J --&gt; K(symmetric)
+K --&gt; L(diagonal)
+L --&gt; M(identity)
+J --&gt; N{{is orthogonal?}}
+N --&gt; M
+style G fill:#FFF0F5
+style H fill:#FFF0F5
+style I fill:#FFF0F5
+style J fill:#FFF0F5
+style N fill:#FFF0F5
+</pre>
+<div id="mermaid-tooltip-1" class="mermaidTooltip">
+
+</div>
+<p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;1: Heiarchical relationships between different types of matrices. <em>Blue Rectangles</em> denote matrices with particular, recognizable <em>structures</em>. <em>Pink Hexagons</em> indicate properties that can be <em>queried</em>.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="touring-the-taxonomy" class="level1">
+<h1>Touring the Taxonomy</h1>
+<section id="structure-examples" class="level2">
+<h2 class="anchored" data-anchor-id="structure-examples">Structure Examples</h2>
+<p>Let’s use <code>R</code> to construct and inspect examples of each type of matrix. We’ll use integer matrices to keep the print output nice and neat, but of course real numbers could be used as well.<sup>3</sup> Most of these are pretty straightforward so we’ll keep comments to a minimum for the simple cases.</p>
+<section id="rectangular-matrix-m-times-n" class="level3">
+<h3 class="anchored" data-anchor-id="rectangular-matrix-m-times-n">Rectangular Matrix <img src="https://latex.codecogs.com/png.latex?m%20%5Ctimes%20n"></h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1">A_rect <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">matrix</span>(<span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">12</span>, <span class="at" style="color: #657422;">nrow =</span> <span class="dv" style="color: #AD0000;">3</span>) <span class="co" style="color: #5E5E5E;"># if you give nrow,</span></span>
+<span id="cb1-2">A_rect <span class="co" style="color: #5E5E5E;"># R will compute ncol from the length of the data</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3] [,4]
+[1,]    1    4    7   10
+[2,]    2    5    8   11
+[3,]    3    6    9   12</code></pre>
+</div>
+</div>
+<p>Notice that <code>R</code> is “column major” meaning data fills the first column, then the second column and so forth.</p>
+</section>
+<section id="row-matrixvector-1-times-n" class="level3">
+<h3 class="anchored" data-anchor-id="row-matrixvector-1-times-n">Row Matrix/Vector <img src="https://latex.codecogs.com/png.latex?1%20%5Ctimes%20n"></h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1">A_row <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">matrix</span>(<span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">4</span>, <span class="at" style="color: #657422;">nrow =</span> <span class="dv" style="color: #AD0000;">1</span>)</span>
+<span id="cb3-2">A_row</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3] [,4]
+[1,]    1    2    3    4</code></pre>
+</div>
+</div>
+</section>
+<section id="column-matrixvector-m-times-1" class="level3">
+<h3 class="anchored" data-anchor-id="column-matrixvector-m-times-1">Column Matrix/Vector <img src="https://latex.codecogs.com/png.latex?m%20%5Ctimes%201"></h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1">A_col <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">matrix</span>(<span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">4</span>, <span class="at" style="color: #657422;">ncol =</span> <span class="dv" style="color: #AD0000;">1</span>)</span>
+<span id="cb5-2">A_col</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1]
+[1,]    1
+[2,]    2
+[3,]    3
+[4,]    4</code></pre>
+</div>
+</div>
+<p>Keep in mind that to save space in a text-dense document one would often write <code>A_col</code> as its transpose.<sup>4</sup></p>
+</section>
+<section id="square-matrix-n-times-n" class="level3">
+<h3 class="anchored" data-anchor-id="square-matrix-n-times-n">Square Matrix <img src="https://latex.codecogs.com/png.latex?n%20%5Ctimes%20n"></h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1">A_sq <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">matrix</span>(<span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">9</span>, <span class="at" style="color: #657422;">nrow =</span> <span class="dv" style="color: #AD0000;">3</span>)</span>
+<span id="cb7-2">A_sq</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3]
+[1,]    1    4    7
+[2,]    2    5    8
+[3,]    3    6    9</code></pre>
+</div>
+</div>
+</section>
+<section id="upper-and-lower-triangular-matrices" class="level3">
+<h3 class="anchored" data-anchor-id="upper-and-lower-triangular-matrices">Upper and Lower Triangular Matrices</h3>
+<p>Creating an upper triangular matrix requires a few more steps. Function <code>upper.tri()</code> returns a logical matrix which can be used as a mask to select entries. Function <code>lower.tri()</code> can be used similarly. Both functions have an argument <code>diag = TRUE/FALSE</code> indicating whether to include the diagonal.<sup>5</sup></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><span class="fu" style="color: #4758AB;">upper.tri</span>(A_sq, <span class="at" style="color: #657422;">diag =</span> <span class="cn" style="color: #8f5902;">TRUE</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      [,1]  [,2] [,3]
+[1,]  TRUE  TRUE TRUE
+[2,] FALSE  TRUE TRUE
+[3,] FALSE FALSE TRUE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1">A_upper <span class="ot" style="color: #003B4F;">&lt;-</span> A_sq[<span class="fu" style="color: #4758AB;">upper.tri</span>(A_sq)] <span class="co" style="color: #5E5E5E;"># gives a logical matrix</span></span>
+<span id="cb11-2">A_upper <span class="co" style="color: #5E5E5E;"># notice that a vector is returned, not quite what might have been expected!</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4 7 8</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1">A_upper <span class="ot" style="color: #003B4F;">&lt;-</span> A_sq <span class="co" style="color: #5E5E5E;"># instead, create a copy to be modified</span></span>
+<span id="cb13-2">A_upper[<span class="fu" style="color: #4758AB;">lower.tri</span>(A_upper)] <span class="ot" style="color: #003B4F;">&lt;-</span> 0L <span class="co" style="color: #5E5E5E;"># assign the lower entries to zero</span></span>
+<span id="cb13-3">A_upper</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3]
+[1,]    1    4    7
+[2,]    0    5    8
+[3,]    0    0    9</code></pre>
+</div>
+</div>
+<p>Notice to create an upper triangular matrix we use <code>lower.tri()</code> to assign zeros to the lower part of an existing matrix.</p>
+</section>
+<section id="identity-matrix" class="level3">
+<h3 class="anchored" data-anchor-id="identity-matrix">Identity Matrix</h3>
+<p>If you give <code>diag()</code> a single value it defines the dimensions and creates a matrix with ones on the diagonal, in other words, an identity matrix.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1">A_ident <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">diag</span>(<span class="dv" style="color: #AD0000;">4</span>)</span>
+<span id="cb15-2">A_ident</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3] [,4]
+[1,]    1    0    0    0
+[2,]    0    1    0    0
+[3,]    0    0    1    0
+[4,]    0    0    0    1</code></pre>
+</div>
+</div>
+</section>
+<section id="diagonal-matrix" class="level3">
+<h3 class="anchored" data-anchor-id="diagonal-matrix">Diagonal Matrix</h3>
+<p>If instead you give <code>diag()</code> a vector of values these go on the diagonal and the length of the vector determines the dimensions.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1">A_diag <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">diag</span>(<span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">4</span>)</span>
+<span id="cb17-2">A_diag</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3] [,4]
+[1,]    1    0    0    0
+[2,]    0    2    0    0
+[3,]    0    0    3    0
+[4,]    0    0    0    4</code></pre>
+</div>
+</div>
+</section>
+<section id="symmetric-matrices" class="level3">
+<h3 class="anchored" data-anchor-id="symmetric-matrices">Symmetric Matrices</h3>
+<p>Matrices created by <code>diag()</code> are symmetric matrices, but any matrix where <img src="https://latex.codecogs.com/png.latex?a_%7Bij%7D%20=%20a_%7Bji%7D"> is symmetric. There is no general function to create symmetric matrices since there is no way to know what data should be used. However, one can ask if a matrix is symmetric, using the function <code>isSymmetric()</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><span class="fu" style="color: #4758AB;">isSymmetric</span>(A_diag)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="the-queries" class="level2">
+<h2 class="anchored" data-anchor-id="the-queries">The Queries</h2>
+<p>Let’s take the queries in the taxonomy in order, as the hierarchy is everything.</p>
+<section id="is-the-matrix-singular-or-invertible" class="level3">
+<h3 class="anchored" data-anchor-id="is-the-matrix-singular-or-invertible">Is the Matrix Singular or Invertible?</h3>
+<p>A singular matrix is one in which one or more rows are multiples of another row, or alternatively, one or more columns are multiples of another column. Why do we care? Well, it turns out a singular matrix is a bit of a dead end, you can’t do much with it. An invertible matrix, however, is a very useful entity and has many applications. What is an invertible matrix? In simple terms, being invertible means the matrix has an inverse. This is not the same as the algebraic definition of an inverse, which is related to division:</p>
+<p><span id="eq-1"><img src="https://latex.codecogs.com/png.latex?%0Ax%5E%7B-1%7D%20=%20%5Cfrac%7B1%7D%7Bx%7D%0A%5Ctag%7B1%7D"></span></p>
+<p>Instead, for matrices, invertibility of <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BA%7D"> is defined as the existence of another matrix <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BB%7D"> such that</p>
+<p><span id="eq-2"><img src="https://latex.codecogs.com/png.latex?%0A%5Cmathbf%7BA%7D%5Cmathbf%7BB%7D%20=%20%5Cmathbf%7BB%7D%5Cmathbf%7BA%7D%20=%20%5Cmathbf%7BI%7D%0A%5Ctag%7B2%7D"></span></p>
+<p>Just as <img src="https://latex.codecogs.com/png.latex?x%5E%7B-1%7D"> cancels out <img src="https://latex.codecogs.com/png.latex?x"> in <img src="https://latex.codecogs.com/png.latex?x%5E%7B-1%7Dx%20=%20%5Cfrac%7Bx%7D%7Bx%7D%20=%201">, <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BB%7D"> cancels out <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BA%7D"> to give the identity matrix. In other words, <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BB%7D"> is really <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BA%7D%5E%7B-1%7D">.</p>
+<p>A singular matrix has determinant of zero. On the other hand, an invertible matrix has a non-zero determinant. So to determine which type of matrix we have before us, we can simply compute the determinant.</p>
+<p>Let’s look at a few simple examples.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1">A_singular <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">matrix</span>(<span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">1</span>, <span class="sc" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">2</span>, <span class="sc" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">3</span>, <span class="dv" style="color: #AD0000;">6</span>), <span class="at" style="color: #657422;">nrow =</span> <span class="dv" style="color: #AD0000;">2</span>, <span class="at" style="color: #657422;">ncol =</span> <span class="dv" style="color: #AD0000;">2</span>)</span>
+<span id="cb21-2">A_singular <span class="co" style="color: #5E5E5E;"># notice that col 2 is col 1 * -3, they are not independent</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2]
+[1,]    1   -3
+[2,]   -2    6</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><span class="fu" style="color: #4758AB;">det</span>(A_singular)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1">A_invertible <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">matrix</span>(<span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">2</span>, <span class="dv" style="color: #AD0000;">2</span>, <span class="dv" style="color: #AD0000;">7</span>, <span class="dv" style="color: #AD0000;">8</span>), <span class="at" style="color: #657422;">nrow =</span> <span class="dv" style="color: #AD0000;">2</span>, <span class="at" style="color: #657422;">ncol =</span> <span class="dv" style="color: #AD0000;">2</span>)</span>
+<span id="cb25-2">A_invertible</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2]
+[1,]    2    7
+[2,]    2    8</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb27" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><span class="fu" style="color: #4758AB;">det</span>(A_invertible)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2</code></pre>
+</div>
+</div>
+</section>
+<section id="is-the-matrix-diagonalizable" class="level3">
+<h3 class="anchored" data-anchor-id="is-the-matrix-diagonalizable">Is the Matrix Diagonalizable?</h3>
+<p>A matrix <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BA%7D"> that is diagonalizable can be expressed as:</p>
+<p><span id="eq-3"><img src="https://latex.codecogs.com/png.latex?%0A%5Cmathbf%7B%5CLambda%7D%20=%20%5Cmathbf%7BX%7D%5E%7B-1%7D%5Cmathbf%7BA%7D%5Cmathbf%7BX%7D%0A%5Ctag%7B3%7D"></span></p>
+<p>where <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7B%5CLambda%7D"> is a diagonal matrix – the diagonalized version of the original matrix <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BA%7D">. How do we find out if this is possible, and if possible, what are the values of <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BX%7D"> and <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7B%5CLambda%7D">? The answer is to decompose <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BA%7D"> using the eigendecomposition:</p>
+<p><span id="eq-4"><img src="https://latex.codecogs.com/png.latex?%0A%5Cmathbf%7BA%7D%20=%20%5Cmathbf%7BX%7D%5Cmathbf%7B%5CLambda%7D%5Cmathbf%7BX%7D%5E%7B-1%7D%0A%5Ctag%7B4%7D"></span></p>
+<p>Now there is a lot to know about the eigendecomposition, but for now let’s just focus on a few key points:</p>
+<ul>
+<li>The columns of <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BX%7D"> contains the eigenvectors. Eigenvectors are the most natural basis for describing the data in <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BA%7D">.<sup>6</sup></li>
+<li><img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7B%5CLambda%7D"> is a diagonal matrix with the eigenvalues on the diagonal, in descending order. The individual eigenvalues are typically denoted <img src="https://latex.codecogs.com/png.latex?%5Clambda_i">.</li>
+<li>Eigenvectors and eigenvalues always come in pairs.</li>
+</ul>
+<p>We can answer the original question by using the <code>eigen()</code> function in <code>R</code>. Let’s do an example.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1">A_eigen <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">matrix</span>(<span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">1</span>, <span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">2</span>, <span class="dv" style="color: #AD0000;">2</span>, <span class="dv" style="color: #AD0000;">3</span>, <span class="sc" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">4</span>, <span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">2</span>), <span class="at" style="color: #657422;">ncol =</span> <span class="dv" style="color: #AD0000;">3</span>)</span>
+<span id="cb29-2">A_eigen</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3]
+[1,]    1    2    0
+[2,]    0    3    0
+[3,]    2   -4    2</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1">eA <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">eigen</span>(A_eigen)</span>
+<span id="cb31-2">eA</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>eigen() decomposition
+$values
+[1] 3 2 1
+
+$vectors
+           [,1] [,2]       [,3]
+[1,]  0.4082483    0  0.4472136
+[2,]  0.4082483    0  0.0000000
+[3,] -0.8164966    1 -0.8944272</code></pre>
+</div>
+</div>
+<p>Since <code>eigen(A_eigen)</code> was successful, we can conclude that <code>A_eigen</code> was diagonalizable. You can see the eigenvalues and eigenvectors in the returned value. We can reconstruct <code>A_eigen</code> using Equation&nbsp;4:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1">eA<span class="sc" style="color: #5E5E5E;">$</span>vectors <span class="sc" style="color: #5E5E5E;">%*%</span> <span class="fu" style="color: #4758AB;">diag</span>(eA<span class="sc" style="color: #5E5E5E;">$</span>values) <span class="sc" style="color: #5E5E5E;">%*%</span> <span class="fu" style="color: #4758AB;">solve</span>(eA<span class="sc" style="color: #5E5E5E;">$</span>vectors)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3]
+[1,]    1    2    0
+[2,]    0    3    0
+[3,]    2   -4    2</code></pre>
+</div>
+</div>
+<p>Remember, <code>diag()</code> creates a matrix with the values along the diagonal, and <code>solve()</code> computes the inverse when it gets only one argument.</p>
+<p>The only loose end is which matrices are <em>not</em> diagonalizable? These are covered in this <a href="https://en.wikipedia.org/wiki/Diagonalizable_matrix#Matrices_that_are_not_diagonalizable">Wikipedia article</a>. Briefly, most non-diagonalizable matrices are fairly exotic and real data sets will likely not be a problem.</p>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Nuances About the Presentation of “Eigenstuff”
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>In texts, eigenvalues and eigenvectors are universally introduced as a scaling relationship</p>
+<p><span id="eq-4a"><img src="https://latex.codecogs.com/png.latex?%0A%5Cmathbf%7BA%7D%5Cmathbf%7Bv%7D%20=%20%5Clambda%5Cmathbf%7Bv%7D%0A%5Ctag%7B5%7D"></span></p>
+<p>where <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7Bv%7D"> is a column eigenvector and <img src="https://latex.codecogs.com/png.latex?%5Clambda"> is a scalar eigenvalue. One says “<img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BA%7D"> scales <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7Bv%7D"> by a factor of <img src="https://latex.codecogs.com/png.latex?%5Clambda">.” A single vector is used as one can readily illustrate how that vector grows or shrinks in length when multiplied by <img src="https://latex.codecogs.com/png.latex?%5Clambda">. Let’s call this the “bottom up” explanation.</p>
+<p>Let’s check that is true using our values from above by extracting the first eigenvector and eigenvalue from <code>eA</code>. Notice that we are using regular multiplication on the right-hand-side, i.e.&nbsp;<code>*</code>, rather than <code>%*%</code>, because <code>eA$values[1]</code> is a scalar. Also on the right-hand-side, we have to add <code>drop = FALSE</code> to the subsetting process or the result is no longer a matrix.<sup>7</sup></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><span class="fu" style="color: #4758AB;">isTRUE</span>(<span class="fu" style="color: #4758AB;">all.equal</span>(</span>
+<span id="cb35-2">  A_eigen <span class="sc" style="color: #5E5E5E;">%*%</span> eA<span class="sc" style="color: #5E5E5E;">$</span>vectors[,<span class="dv" style="color: #AD0000;">1</span>],</span>
+<span id="cb35-3">  eA<span class="sc" style="color: #5E5E5E;">$</span>values[<span class="dv" style="color: #AD0000;">1</span>] <span class="sc" style="color: #5E5E5E;">*</span> eA<span class="sc" style="color: #5E5E5E;">$</span>vectors[,<span class="dv" style="color: #AD0000;">1</span>, <span class="at" style="color: #657422;">drop =</span> <span class="cn" style="color: #8f5902;">FALSE</span>]))</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<p>If instead we start from Equation&nbsp;4 and rearrange it to show the relationship between <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BA%7D"> and <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7B%5CLambda%7D"> we get:</p>
+<p><span id="eq-4b"><img src="https://latex.codecogs.com/png.latex?%0A%5Cmathbf%7BA%7D%5Cmathbf%7BX%7D%20=%20%5Cmathbf%7BX%7D%5Cmathbf%7B%5CLambda%7D%0A%5Ctag%7B6%7D"></span></p>
+<p>Let’s call this the “top down” explanation. We can verify this as well, making sure to convert <code>eA$values</code> to a diagonal matrix as the values are stored as a vector to save space.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><span class="fu" style="color: #4758AB;">isTRUE</span>(<span class="fu" style="color: #4758AB;">all.equal</span>(A_eigen <span class="sc" style="color: #5E5E5E;">%*%</span> eA<span class="sc" style="color: #5E5E5E;">$</span>vectors, eA<span class="sc" style="color: #5E5E5E;">$</span>vectors <span class="sc" style="color: #5E5E5E;">%*%</span> <span class="fu" style="color: #4758AB;">diag</span>(eA<span class="sc" style="color: #5E5E5E;">$</span>values)))</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<p>Notice that in Equation&nbsp;6 <img src="https://latex.codecogs.com/png.latex?%5CLambda"> is on the right of <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BX%7D">, but in Equation&nbsp;5 the corresponding value, <img src="https://latex.codecogs.com/png.latex?%5Clambda">, is to the left of <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7Bv%7D">. This is a bit confusing until one realizes that Equation&nbsp;5 could have been written</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cmathbf%7BA%7D%5Cmathbf%7Bv%7D%20=%20%5Cmathbf%7Bv%7D%5Clambda%0A"></p>
+<p>since <img src="https://latex.codecogs.com/png.latex?%5Clambda"> is a scalar. It’s too bad that the usual, bottom up, presentation seems to conflict with the top down approach. Perhaps the choice in Equation&nbsp;5 is a historical artifact.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="is-the-matrix-normal" class="level3">
+<h3 class="anchored" data-anchor-id="is-the-matrix-normal">Is the Matrix Normal?</h3>
+<p>A normal matrix is one where <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BA%7D%5E%7B%5Cmathsf%7BT%7D%7D%5Cmathbf%7BA%7D%20=%20%5Cmathbf%7BA%7D%5Cmathbf%7BA%7D%5E%7B%5Cmathsf%7BT%7D%7D">. As far as I know, there is no function in <code>R</code> to check this condition, but we’ll write our own in a moment. One reason being “normal” is interesting is if <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BA%7D"> is a normal matrix, then the results of the eigendecomposition change slightly:</p>
+<p><span id="eq-5"><img src="https://latex.codecogs.com/png.latex?%0A%5Cmathbf%7BA%7D%20=%20%5Cmathbf%7BO%7D%5Cmathbf%7B%5CLambda%7D%5Cmathbf%7BO%7D%5E%7B-1%7D%0A%5Ctag%7B7%7D"></span></p>
+<p>where <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BO%7D"> is an orthogonal matrix, which we’ll talk about next.</p>
+</section>
+<section id="is-the-matrix-orthogonal" class="level3">
+<h3 class="anchored" data-anchor-id="is-the-matrix-orthogonal">Is the Matrix Orthogonal?</h3>
+<p>An orthogonal matrix takes the definition of a normal matrix one step further: <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BA%7D%5E%7B%5Cmathsf%7BT%7D%7D%5Cmathbf%7BA%7D%20=%20%5Cmathbf%7BA%7D%5Cmathbf%7BA%7D%5E%7B%5Cmathsf%7BT%7D%7D%20=%20%5Cmathbb%7BI%7D">. If a matrix is orthogonal, then its transpose is equal to its inverse: <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BA%7D%5E%7B-1%7D%20=%20%5Cmathbf%7BA%7D%5E%7B%5Cmathsf%7BT%7D%7D">, which of course makes any special computation of the inverse unnecessary. This is a significant advantage in computations.</p>
+<p>To aid our learning, let’s write a simple function that will report if a matrix is normal, orthogonal, or neither.<sup>8</sup></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1">normal_or_orthogonal <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="cf" style="color: #003B4F;">function</span>(M) {</span>
+<span id="cb39-2">  <span class="cf" style="color: #003B4F;">if</span> (<span class="sc" style="color: #5E5E5E;">!</span><span class="fu" style="color: #4758AB;">inherits</span>(M, <span class="st" style="color: #20794D;">"matrix"</span>)) <span class="fu" style="color: #4758AB;">stop</span>(<span class="st" style="color: #20794D;">"M must be a matrix"</span>)</span>
+<span id="cb39-3">  norm <span class="ot" style="color: #003B4F;">&lt;-</span> orthog <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="cn" style="color: #8f5902;">FALSE</span></span>
+<span id="cb39-4">  tst1 <span class="ot" style="color: #003B4F;">&lt;-</span> M <span class="sc" style="color: #5E5E5E;">%*%</span> <span class="fu" style="color: #4758AB;">t</span>(M)</span>
+<span id="cb39-5">  tst2 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">t</span>(M) <span class="sc" style="color: #5E5E5E;">%*%</span> M</span>
+<span id="cb39-6">  norm <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">isTRUE</span>(<span class="fu" style="color: #4758AB;">all.equal</span>(tst1, tst2))</span>
+<span id="cb39-7">  <span class="cf" style="color: #003B4F;">if</span> (norm) orthog <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">isTRUE</span>(<span class="fu" style="color: #4758AB;">all.equal</span>(tst1, <span class="fu" style="color: #4758AB;">diag</span>(<span class="fu" style="color: #4758AB;">dim</span>(M)[<span class="dv" style="color: #AD0000;">1</span>])))</span>
+<span id="cb39-8">  <span class="cf" style="color: #003B4F;">if</span> (orthog) <span class="fu" style="color: #4758AB;">message</span>(<span class="st" style="color: #20794D;">"This matrix is orthogonal</span><span class="sc" style="color: #5E5E5E;">\n</span><span class="st" style="color: #20794D;">"</span>) <span class="cf" style="color: #003B4F;">else</span> </span>
+<span id="cb39-9">    <span class="cf" style="color: #003B4F;">if</span> (norm) <span class="fu" style="color: #4758AB;">message</span>(<span class="st" style="color: #20794D;">"This matrix is normal</span><span class="sc" style="color: #5E5E5E;">\n</span><span class="st" style="color: #20794D;">"</span>) <span class="cf" style="color: #003B4F;">else</span></span>
+<span id="cb39-10">    <span class="fu" style="color: #4758AB;">message</span>(<span class="st" style="color: #20794D;">"This matrix is neither orthogonal nor normal</span><span class="sc" style="color: #5E5E5E;">\n</span><span class="st" style="color: #20794D;">"</span>)</span>
+<span id="cb39-11">  <span class="fu" style="color: #4758AB;">invisible</span>(<span class="cn" style="color: #8f5902;">NULL</span>)</span>
+<span id="cb39-12">}</span></code></pre></div>
+</div>
+<p>And let’s run a couple of tests.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><span class="fu" style="color: #4758AB;">normal_or_orthogonal</span>(A_singular)</span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>This matrix is neither orthogonal nor normal</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb42" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1">Norm <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">matrix</span>(<span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">1</span>, <span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">1</span>, <span class="dv" style="color: #AD0000;">1</span>, <span class="dv" style="color: #AD0000;">1</span>, <span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">1</span>, <span class="dv" style="color: #AD0000;">1</span>), <span class="at" style="color: #657422;">nrow =</span> <span class="dv" style="color: #AD0000;">3</span>)</span>
+<span id="cb42-2"><span class="fu" style="color: #4758AB;">normal_or_orthogonal</span>(Norm)</span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>This matrix is normal</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb44" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><span class="fu" style="color: #4758AB;">normal_or_orthogonal</span>(<span class="fu" style="color: #4758AB;">diag</span>(<span class="dv" style="color: #AD0000;">3</span>)) <span class="co" style="color: #5E5E5E;"># the identity matrix is orthogonal</span></span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>This matrix is orthogonal</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb46" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1">Orth <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">matrix</span>(<span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">1</span>, <span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">1</span>, <span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">1</span>, <span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">1</span>, <span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">0</span>), <span class="at" style="color: #657422;">nrow =</span> <span class="dv" style="color: #AD0000;">4</span>)</span>
+<span id="cb46-2"><span class="fu" style="color: #4758AB;">normal_or_orthogonal</span>(Orth)</span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>This matrix is orthogonal</code></pre>
+</div>
+</div>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Some other properties of an orthogonal matrix
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The columns of an orthogonal matrix are orthogonal to each other. We can show this by taking the dot product between any pair of columns. Remember is the dot product is zero the vectors are orthogonal.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb48-1"><span class="fu" style="color: #4758AB;">t</span>(Orth[,<span class="dv" style="color: #AD0000;">1</span>]) <span class="sc" style="color: #5E5E5E;">%*%</span> Orth[,<span class="dv" style="color: #AD0000;">2</span>] <span class="co" style="color: #5E5E5E;"># col 1 dot col 2</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1]
+[1,]    0</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb50" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb50-1"><span class="fu" style="color: #4758AB;">t</span>(Orth[,<span class="dv" style="color: #AD0000;">1</span>]) <span class="sc" style="color: #5E5E5E;">%*%</span> Orth[,<span class="dv" style="color: #AD0000;">3</span>] <span class="co" style="color: #5E5E5E;"># col 1 dot col 3</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1]
+[1,]    0</code></pre>
+</div>
+</div>
+<p>Finally, not only are the columns orthogonal, but each column vector has length one, making them orthonormal.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb52-1"><span class="fu" style="color: #4758AB;">sqrt</span>(<span class="fu" style="color: #4758AB;">sum</span>(Orth[,<span class="dv" style="color: #AD0000;">1</span>]<span class="sc" style="color: #5E5E5E;">^</span><span class="dv" style="color: #AD0000;">2</span>))</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="appreciating-the-queries" class="level3">
+<h3 class="anchored" data-anchor-id="appreciating-the-queries">Appreciating the Queries</h3>
+<p>Taking these queries together, we see that symmetric and diagonal matrices are necessarily invertible, diagonalizable and normal. They are not however orthogonal. Identity matrices however, have all these properties. Let’s double-check these statements.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb54-1">A_sym <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">matrix</span>(</span>
+<span id="cb54-2">  <span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">1</span>, <span class="dv" style="color: #AD0000;">5</span>, <span class="dv" style="color: #AD0000;">4</span>, <span class="dv" style="color: #AD0000;">5</span>, <span class="dv" style="color: #AD0000;">2</span>, <span class="dv" style="color: #AD0000;">9</span>, <span class="dv" style="color: #AD0000;">4</span>, <span class="dv" style="color: #AD0000;">9</span>, <span class="dv" style="color: #AD0000;">3</span>),</span>
+<span id="cb54-3">  <span class="at" style="color: #657422;">ncol =</span> <span class="dv" style="color: #AD0000;">3</span>) <span class="co" style="color: #5E5E5E;"># symmetric matrix, not diagonal</span></span>
+<span id="cb54-4">A_sym</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3]
+[1,]    1    5    4
+[2,]    5    2    9
+[3,]    4    9    3</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb56" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb56-1"><span class="fu" style="color: #4758AB;">normal_or_orthogonal</span>(A_sym)</span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>This matrix is normal</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb58" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb58-1"><span class="fu" style="color: #4758AB;">normal_or_orthogonal</span>(<span class="fu" style="color: #4758AB;">diag</span>(<span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">3</span>)) <span class="co" style="color: #5E5E5E;"># diagonal matrix, symmetric, but not the identity matrix</span></span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>This matrix is normal</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb60" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb60-1"><span class="fu" style="color: #4758AB;">normal_or_orthogonal</span>(<span class="fu" style="color: #4758AB;">diag</span>(<span class="dv" style="color: #AD0000;">3</span>)) <span class="co" style="color: #5E5E5E;"># identity matrix (also symmetric, diagonal)</span></span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>This matrix is orthogonal</code></pre>
+</div>
+</div>
+<p>So what’s the value of these queries? As mentioned, they help us understand the relationships between different types of matrices, so they help us learn more deeply. On a practical computational level they may not have much value, especially when dealing with real-world data sets. However, there are some other interesting aspects of these queries that deal with decompositions and eigenvalues. We might cover these in the future.</p>
+</section>
+</section>
+</section>
+<section id="an-emerging-theme" class="level1">
+<h1>An Emerging Theme?</h1>
+<p>A more personal thought: In the course of writing these posts, and learning more linear algebra, it increasingly seems to me that a lot of the “effort” that goes into linear algebra is about making tedious operations simpler. Anytime one can have more zeros in a matrix, or have orthogonal vectors, or break a matrix into parts, the simpler things become. However, I haven’t really seen this point driven home in texts or tutorials. I think linear algebra learners would do well to keep this in mind.</p>
+</section>
+<section id="annotated-bibliography" class="level1">
+<h1>Annotated Bibliography</h1>
+<p>These are the main sources I relied on for this post.</p>
+<ul>
+<li><em>The No Bullshit Guide to Linear Algebra</em> by <a href="https://minireference.com">Ivan Savov</a>.
+<ul>
+<li>Section 6.2 Special types of matrices</li>
+<li>Section 6.6 Eigendecomposition</li>
+</ul></li>
+<li><em>Linear Algebra: step by step</em> by Kuldeep Singh, Oxford Univerity Press, 2014.
+<ul>
+<li>Section 4.4 Orthogonal Matrices</li>
+<li>Section 7.3.2 Diagonalization</li>
+<li>Section 7.4 Diagonalization of Symmetric Matrices</li>
+</ul></li>
+<li>Wikipedia articles on the types of matrices.</li>
+</ul>
+
+
+</section>
+
+
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>I’m only using a portion because the Hiranbe’s original contains a bit too much information for someone trying to get their footing in the field.↩︎</p></li>
+<li id="fn2"><p>I’m using the term taxonomy a little loosely of course, you can call it whatever you want. The name is not so important really, what is important is the hierarchy of concepts.↩︎</p></li>
+<li id="fn3"><p>As could complex numbers.↩︎</p></li>
+<li id="fn4"><p>Usually in written text a row matrix, sometimes called a row vector, is written as <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7Bx%7D%20=%20%5Cbegin%7Bbmatrix%7D1%20&amp;%202%20&amp;%203%5Cend%7Bbmatrix%7D">. In order to save space in documents, rather than writing <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7Bx%7D%20=%20%5Cbegin%7Bbmatrix%7D1%20%5C%5C%202%20%5C%5C%203%5Cend%7Bbmatrix%7D">, a column matrix/vector can be kept to a single line by writing it as its transpose: <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7Bx%7D%20=%20%5Cbegin%7Bbmatrix%7D1%20&amp;%202%20&amp;%203%5Cend%7Bbmatrix%7D%5E%7B%5Cmathsf%7BT%7D%7D">, but this requires a little mental gymnastics to visualize.↩︎</p></li>
+<li id="fn5"><p>Upper and lower triangular matrices play a special role in linear algebra. Because of the presence of many zeros, multiplying them and inverting them is relatively easy, because the zeros cause terms to drop out.↩︎</p></li>
+<li id="fn6"><p>This idea of the “most natural basis” is most easily visualized in two dimensions. If you have some data plotted on <img src="https://latex.codecogs.com/png.latex?x"> and <img src="https://latex.codecogs.com/png.latex?y"> axes, determining the line of best fit is one way of finding the most natural basis for describing the data. However, more generally and in more dimensions, principal component analysis (PCA) is the most rigorous way of finding this natural basis, and PCA can be calculated with the <code>eigen()</code> function. Lots more information <a href="https://bryanhanson.github.io/LearnPCA/">here</a>.↩︎</p></li>
+<li id="fn7"><p>The <code>drop</code> argument to subsetting/extracting defaults to <code>TRUE</code> which means that if subsetting reduces the necessary number of dimensions, the unneeded dimension attributes are dropped. Under the default, selecting a single column of a matrix leads to a vector, not a one column vector. In this <code>all.equal()</code> expression we need both sides to evaluate to a matrix.↩︎</p></li>
+<li id="fn8"><p>One might ask why <code>R</code> does not provide a user-facing version of such a function. I think a good argument can be made that the authors of <code>R</code> passed down a robust and lean set of linear algebra functions, geared toward getting work done, and throwing errors as necessary.↩︎</p></li>
+</ol>
+</section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
+  author = {Bryan Hanson},
+  editor = {},
+  title = {Notes on {Linear} {Algebra} {Part} 4},
+  date = {2022-09-26},
+  url = {http://chemospec.org/Linear-Alg-Notes-Pt4.html},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2022" class="csl-entry quarto-appendix-citeas">
+Bryan Hanson. 2022. <span>“Notes on Linear Algebra Part 4.”</span>
+September 26, 2022. <a href="http://chemospec.org/Linear-Alg-Notes-Pt4.html">http://chemospec.org/Linear-Alg-Notes-Pt4.html</a>.
+</div></div></section></div> ]]></description>
+  <category>R</category>
+  <category>Linear Algebra</category>
+  <guid>http://chemospec.org/posts/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html</guid>
+  <pubDate>Mon, 26 Sep 2022 07:00:00 GMT</pubDate>
+</item>
 <item>
   <title>Notes on Linear Algebra Part 3</title>
   <dc:creator>Bryan Hanson</dc:creator>
@@ -20,7 +492,7 @@
 
 
 <p>Series: <a href="https://chemospec.org/posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html">Part 1</a> <a href="https://chemospec.org/posts/2022-09-01-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2.html">Part 2</a></p>
-<p><em>Update 19 September 2022: in “Use of outer() for Matrix Multiplication”, corrected use of “cross” to be “outer” and added example in <code>R</code></em> Also added links to work by Hiranabe.</p>
+<p><em>Update 19 September 2022: in “Use of outer() for Matrix Multiplication”, corrected use of “cross” to be “outer” and added example in <code>R</code>. Also added links to work by Hiranabe.</em></p>
 <p>This post is a survey of the linear algebra-related functions from base <code>R</code>. Some of these I’ve disccused in other posts and some I may discuss in the future, but this post is primarily an inventory: these are the key tools we have available. “Notes” in the table are taken from the help files.</p>
 <p>Matrices, including row and column vectors, will be shown in bold e.g.&nbsp;<img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BA%7D"> or <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7Ba%7D"> while scalars and variables will be shown in script, e.g.&nbsp;<img src="https://latex.codecogs.com/png.latex?n">. <code>R</code> code will appear like <code>x &lt;- y</code>.</p>
 <p>In the table, <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BR%7D"> or <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BU%7D"> is an upper/right triangular matrix. <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BL%7D"> is a lower/left triangular matrix (triangular matrices are square). <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BA%7D"> is a generic matrix of dimensions <img src="https://latex.codecogs.com/png.latex?m%20%5Ctimes%20n">. <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BM%7D"> is a square matrix of dimensions <img src="https://latex.codecogs.com/png.latex?n%20%5Ctimes%20n">.</p>
@@ -2788,44 +3260,6 @@ GSOC.”</span> May 7, 2020. <a href="http://chemospec.org/2020-05-07-GSOC-hyper
   <category>GSOC</category>
   <guid>http://chemospec.org/posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html</guid>
   <pubDate>Thu, 07 May 2020 07:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>ChemoSpecUtils Update</title>
-  <dc:creator>Bryan Hanson</dc:creator>
-  <link>http://chemospec.org/posts/2020-04-27-CSU-update/2020-04-27-CSU-update.html</link>
-  <description><![CDATA[ 
-
-
-
-<p><code>ChemoSpecUtils</code>, a package that supports the common needs of <a href="https://bryanhanson.github.io/ChemoSpec/">ChemoSpec</a> and <a href="https://bryanhanson.github.io/ChemoSpec2D/">ChemoSpec2D</a>, has been updated to fix an unfortunate distance calculation error in version 0.4.38, released in January of this year. From the NEWS file for version 0.4.51:</p>
-<ul>
-<li>Function <code>rowDist</code>, which supports a number of functions, was overhauled to address confusion in the documentation, and in my head, about distances vs.&nbsp;similarities. Also, different definitions found in the literature were documented more clearly. The Minkowski distance option was removed (ask if you want it back), code was cleaned up, documentation greatly improved, an example was added and unit tests were added. Plot scales were also corrected as necessary. Depending upon which distance option is chosen, this change affects <code>hcaSpectra</code>, <code>plotSpectraDist</code>, <code>sampleDist</code> and <code>hcaScores</code> in package <code>ChemoSpec</code> as well as <code>hats_alignSpectra2D</code> and <code>hcaScores</code> in package <code>ChemoSpec2D</code>.</li>
-</ul>
-<p>This brings to mind a Karl Broman quote I think about frequently:</p>
-<blockquote class="blockquote">
-<p>“Open source means everyone can see my stupid mistakes. Version control means everyone can see every stupid mistake I’ve ever made.”</p>
-<p>– <cite>Karl Broman</cite></p>
-</blockquote>
-<p><a href="https://kbroman.wordpress.com/2011/08/17/the-stupidest-r-code-ever/">Karl Broman quote source</a></p>
-
-
-
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
-  author = {Bryan Hanson},
-  editor = {},
-  title = {ChemoSpecUtils {Update}},
-  date = {2020-04-27},
-  url = {http://chemospec.org/2020-04-27-CSU-update.html},
-  langid = {en}
-}
-</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2020" class="csl-entry quarto-appendix-citeas">
-Bryan Hanson. 2020. <span>“ChemoSpecUtils Update.”</span> April 27,
-2020. <a href="http://chemospec.org/2020-04-27-CSU-update.html">http://chemospec.org/2020-04-27-CSU-update.html</a>.
-</div></div></section></div> ]]></description>
-  <category>R</category>
-  <category>ChemoSpecUtils</category>
-  <guid>http://chemospec.org/posts/2020-04-27-CSU-update/2020-04-27-CSU-update.html</guid>
-  <pubDate>Mon, 27 Apr 2020 07:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>

@@ -10,7 +10,7 @@ format:
 
 Series: [Part 1](https://chemospec.org/posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html) [Part 2](https://chemospec.org/posts/2022-09-01-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2.html)
 
-*Update 19 September 2022: in "Use of outer() for Matrix Multiplication", corrected use of "cross" to be "outer" and added example in `R`*  Also added links to work by Hiranabe.
+*Update 19 September 2022: in "Use of outer() for Matrix Multiplication", corrected use of "cross" to be "outer" and added example in `R`. Also added links to work by Hiranabe.*
 
 This post is a survey of the linear algebra-related functions from base `R`.  Some of these I've disccused in other posts and some I may discuss in the future, but this post is primarily an inventory: these are the key tools we have available.  "Notes" in the table are taken from the help files.
 
