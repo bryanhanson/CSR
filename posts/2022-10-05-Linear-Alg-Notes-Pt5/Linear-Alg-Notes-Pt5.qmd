@@ -1,0 +1,42 @@
+---
+title: "Notes on Linear Algebra Part 5"
+description: "blah blah blah"
+date: "2022-10-05"
+categories: [R, Linear Algebra]
+format:
+  html
+draft: true
+---
+
+Series: [Part 1](https://chemospec.org/posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html) [Part 2](https://chemospec.org/posts/2022-09-01-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2.html) [Part 3](https://chemospec.org/posts/2022-09-10-Linear-Alg-Notes-Pt3/Linear-Alg-Notes-Pt3.html) [Part 4](https://chemospec.org/posts/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html)
+
+You will want to be sure to read part 4 before this part.
+
+# The Taxonomy in Table Form
+
+| structure | special cases | query | properties | eigenvalues | eigenvectors |
+|:-|:-|:-|:-|:-|:-|:-|
+| square matrices $n \times n$ |  | | | | |
+| | upper triangular | | $a_{ij} = 0 \text{ if } i > j$ | $\lambda_i = a_{ii}$ | |
+| | lower triangular | | $a_{ij} = 0 \text{ if } i < j$ | $\lambda_i = a_{ii}$ | |
+| $n \times n$ con't | | **either:** is singular | $\det(\mathbf{A}) = 0$ | $\text{at least one } \lambda = 0$ |  |
+| | | **or:** is invertible | $\det(\mathbf{A}) \ne 0$ |$\text{all } \lambda \ne 0$ |  |
+| | | is diagonalizable | | | has $n$ linearly independent eigenvectors |
+| | | is normal | $\mathbf{A}\mathbf{A}^\mathsf{T} = \mathbf{A}^\mathsf{T}\mathbf{A} \ne \mathbf{I}$ | | has $n$ linearly independent eigenvectors |
+| | symmetric | | $\mathbf{A} = \mathbf{A}^\mathsf{T}$ <br /> $a_{ij} = a_{ji}$ |  $\text{ all } \lambda \in \mathbb{R}$ | |
+| | diagonal | | $a_{ij} = 0 \text{ if } i \ne j$ | $\lambda_i = a_{ii}$ | |
+| | | is orthogonal | $\mathbf{A}^{-1} = \mathbf{A}^\mathsf{T}$ <br /> $\mathbf{A}\mathbf{A}^\mathsf{T} = \mathbf{A}^\mathsf{T}\mathbf{A} = \mathbf{I}$ <br />  $det(\mathbf{A}) = \pm 1$ | $\text{all } \lvert\lambda\rvert = 1$ | |
+| | identity | | $\mathbf{A}\mathbf{I} = \mathbf{I}\mathbf{A} = \mathbf{A}$ | $\text{all } \lambda = 1$ | |
+
+# Annotated Bibliography
+
+These are the main sources I relied on for this post.
+
+* *The No Bullshit Guide to Linear Algebra* by [Ivan Savov](https://minireference.com).
+  + Section 6.2 Special types of matrices
+  + Section 
+* *Linear Algebra: step by step* by Kuldeep Singh, Oxford Univerity Press, 2014.
+  + Section 7.2.2
+  + Section 
+  + Section 
+* Wikipedia articles on the types of matrices.
