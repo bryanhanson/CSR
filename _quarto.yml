@@ -9,6 +9,7 @@ website:
     prefs-text: "Cookies are used to track visits only"
   body-footer: <script data-goatcounter="https://chemospec.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   twitter-card: true
+  margin-header: subscribe.html
   comments:
     utterances:
       repo: bryanhanson/CSR
