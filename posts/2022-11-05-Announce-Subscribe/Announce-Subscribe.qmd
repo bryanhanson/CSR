@@ -1,0 +1,10 @@
+---
+title: "You Can Now Subscribe"
+description: "It seems to work!"
+date: "2022-11-05"
+categories: [Housekeeping]
+format:
+  html
+---
+
+Just a short post to let readers know that you can now subscribe to this blog.  Of course, you have always been able to get the RSS feed via the buttons at the top, but now you can submit your e-mail and my cheap-ass free level MailChimp account will let you know when there is a new post.  You might find this useful if you are leaving Twitter or Twitter collapses completely!
