@@ -10,34 +10,7 @@
 <atom:link href="http://chemospec.org/index.xml" rel="self" type="application/rss+xml"/>
 <description>Applying chemometrics to spectroscopy using R</description>
 <generator>quarto-99.9.9</generator>
-<lastBuildDate>Sat, 05 Nov 2022 07:00:00 GMT</lastBuildDate>
-<item>
-  <title>You Can Now Subscribe</title>
-  <dc:creator>Bryan Hanson</dc:creator>
-  <link>http://chemospec.org/posts/2022-11-05-Announce-Subscribe/Announce-Subscribe.html</link>
-  <description><![CDATA[ 
-
-
-
-<p>Just a short post to let readers know that you can now subscribe to this blog. Of course, you have always been able to get the RSS feed via the buttons at the top, but now you can submit your e-mail and my cheap-ass free level MailChimp account will let you know when there is a new post. You might find this useful if you are leaving Twitter or Twitter collapses completely!</p>
-
-
-
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
-  author = {Bryan Hanson},
-  title = {You {Can} {Now} {Subscribe}},
-  date = {2022-11-05},
-  url = {http://chemospec.org/Announce-Subscribe.html},
-  langid = {en}
-}
-</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2022" class="csl-entry quarto-appendix-citeas">
-Bryan Hanson. 2022. <span>“You Can Now Subscribe.”</span> November 5,
-2022. <a href="http://chemospec.org/Announce-Subscribe.html">http://chemospec.org/Announce-Subscribe.html</a>.
-</div></div></section></div> ]]></description>
-  <category>Housekeeping</category>
-  <guid>http://chemospec.org/posts/2022-11-05-Announce-Subscribe/Announce-Subscribe.html</guid>
-  <pubDate>Sat, 05 Nov 2022 07:00:00 GMT</pubDate>
-</item>
+<lastBuildDate>Mon, 26 Sep 2022 07:00:00 GMT</lastBuildDate>
 <item>
   <title>Notes on Linear Algebra Part 4</title>
   <dc:creator>Bryan Hanson</dc:creator>
@@ -3222,6 +3195,51 @@ June 28, 2020. <a href="http://chemospec.org/2020-06-28-Sim-Spec-Data-Pt1.html">
   <category>Baseline</category>
   <guid>http://chemospec.org/posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1.html</guid>
   <pubDate>Sun, 28 Jun 2020 07:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Fortifying hyperSpec: Getting Ready for GSOC</title>
+  <dc:creator>Bryan Hanson</dc:creator>
+  <link>http://chemospec.org/posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html</link>
+  <description><![CDATA[ 
+
+
+
+<p><a href="https://cran.r-project.org/web/packages/hyperSpec/index.html"><code>hyperSpec</code></a> is an <code>R</code> package for working with hyperspectral data sets. Hyperspectral data can take many forms, but a common application is a series of spectra collected over an x, y grid, for instance Raman imaging of medical specimens. <code>hyperSpec</code> was originally written by Claudia Beleites and she currently guides a core group of contributors.<sup>1</sup></p>
+<p>Claudia, regular <code>hyperSpec</code> contributor Roman Kiselev and myself have joined forces this summer in a <a href="https://summerofcode.withgoogle.com/">Google Summer of Code</a> project to fortify <code>hyperSpec</code>. We are pleased to report that the project was accepted by <a href="https://github.com/rstats-gsoc/gsoc2020/wiki">R-GSOC</a> administrators, and, as of a few days ago, the excellent proposal written by Erick Oduniyi was approved by Google. Erick is a senior computer engineering major at Wichita State University in Kansas. Erick gravitates toward interdisciplinary projects. This, and his experience with <code>R</code>, <code>Python</code> and related skills gives him an excellent background for this project.</p>
+<p>The focus of this project is to fortify the infrastructure of <code>hyperSpec</code>. Over the years, keeping <code>hyperSpec</code> up-to-date has grown a bit unwieldy. While to-do lists always evolve, the current <em>interrelated</em> goals include:</p>
+<ul>
+<li><strong>Distill</strong><sup>2</sup> <code>hyperSpec</code>: Prune <code>hyperSpec</code> back to it’s core functionality to keep it lightweight. Relocate portions, such as importing data, into their own dedicated packages.</li>
+<li><strong>Shield</strong> <code>hyperSpec</code>: Analyze the ecosystem of <code>hyperSpec</code> with an eye to reducing dependencies as much as possible and ensuring that necessary dependencies are the best choices. Avoid “re-inventing the wheel”, as long as the available “wheels” are computationally efficient and stable (code base and API).</li>
+<li><strong>Bridge</strong> <code>hyperSpec</code>: Having decided on how to reorganize <code>hyperSpec</code> and which dependencies are necessary and optimal, ensure that <code>hyperSpec</code>, the constellation of new sub-packages, and all dependencies are integrated efficiently. There are a number of data pre-processing and plotting functions that need to be streamlined and interfaced to external packages more consistently. Some portions may need substantial refactoring.</li>
+</ul>
+<p>Addressing each of these goals will make <code>hyperSpec</code> much easier to maintain, less fragile, and easier for others to contribute. Every step will bring enhanced documentation and vignettes, along with new unit tests. Work will begin in earnest on June 1st, and we are looking forward to a very productive summer.</p>
+<p>Finally, on behalf of all participants, let me just say how grateful we are to Google for establishing the GSOC program and for supporting Erick’s work this summer!</p>
+
+
+
+
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>A little history for the curious: the <code>hyperSpec</code> and <code>ChemoSpec</code> packages were written around the same time, independent of each other (~2009). Eventually, Claudia and I became aware of each other’s work, and we have collaborated in ways large and small ever since (I like working with Claudia because I always learn from her!). We have jointly mentored GSOC students twice before. One side project is <a href="https://github.com/Chathurga/HyperChemoBridge"><code>hyperChemoBridge</code></a>, a small package that converts <code>hyperSpec</code> objects into <code>Spectra</code> objects (the native <code>ChemoSpec</code> format) and vice-versa.↩︎</p></li>
+<li id="fn2"><p>The descriptors here are Erick’s clever choice of words.↩︎</p></li>
+</ol>
+</section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
+  author = {Bryan Hanson},
+  title = {Fortifying {hyperSpec:} {Getting} {Ready} for {GSOC}},
+  date = {2020-05-07},
+  url = {http://chemospec.org/2020-05-07-GSOC-hyperSpec.html},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2020" class="csl-entry quarto-appendix-citeas">
+Bryan Hanson. 2020. <span>“Fortifying hyperSpec: Getting Ready for
+GSOC.”</span> May 7, 2020. <a href="http://chemospec.org/2020-05-07-GSOC-hyperSpec.html">http://chemospec.org/2020-05-07-GSOC-hyperSpec.html</a>.
+</div></div></section></div> ]]></description>
+  <category>R</category>
+  <category>hyperSpec</category>
+  <category>GSOC</category>
+  <guid>http://chemospec.org/posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html</guid>
+  <pubDate>Thu, 07 May 2020 07:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>
