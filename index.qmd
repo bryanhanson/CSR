@@ -77,3 +77,4 @@ emBanner <- function() {
 library("grid")
 emBanner()
 ```
+<a rel="me" href="https://fosstodon.org/@ProfBryanHanson">Mastodon</a>
