@@ -28,6 +28,10 @@ website:
         href: mailto:hanson@depauw.edu
       - icon: twitter
         href: https://twitter.com/profbryanhanson
+      - icon: mastodon
+        aria-label: Mastodon
+        href: https://fosstodon.org/@ProfBryanHanson
+        rel: "me"
       - icon: git
         href: https://github.com/bryanhanson
       - icon: rss
