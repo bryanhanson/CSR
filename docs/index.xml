@@ -300,7 +300,7 @@ $vectors
 </div>
 <p>Remember, <code>diag()</code> creates a matrix with the values along the diagonal, and <code>solve()</code> computes the inverse when it gets only one argument.</p>
 <p>The only loose end is which matrices are <em>not</em> diagonalizable? These are covered in this <a href="https://en.wikipedia.org/wiki/Diagonalizable_matrix#Matrices_that_are_not_diagonalizable">Wikipedia article</a>. Briefly, most non-diagonalizable matrices are fairly exotic and real data sets will likely not be a problem.</p>
-<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-tip callout-captioned">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
@@ -385,7 +385,7 @@ Nuances About the Presentation of “Eigenstuff”
 <pre><code>This matrix is orthogonal</code></pre>
 </div>
 </div>
-<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-tip callout-captioned">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
@@ -490,16 +490,16 @@ Some other properties of an orthogonal matrix
 <li id="fn7"><p>The <code>drop</code> argument to subsetting/extracting defaults to <code>TRUE</code> which means that if subsetting reduces the necessary number of dimensions, the unneeded dimension attributes are dropped. Under the default, selecting a single column of a matrix leads to a vector, not a one column vector. In this <code>all.equal()</code> expression we need both sides to evaluate to a matrix.↩︎</p></li>
 <li id="fn8"><p>One might ask why <code>R</code> does not provide a user-facing version of such a function. I think a good argument can be made that the authors of <code>R</code> passed down a robust and lean set of linear algebra functions, geared toward getting work done, and throwing errors as necessary.↩︎</p></li>
 </ol>
-</section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
+</section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
   author = {Bryan Hanson},
   title = {Notes on {Linear} {Algebra} {Part} 4},
-  date = {2022-09-26},
-  url = {http://chemospec.org/Linear-Alg-Notes-Pt4.html},
+  date = {22-09-26},
+  url = {http://chemospec.org/posts/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html},
   langid = {en}
 }
 </code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2022" class="csl-entry quarto-appendix-citeas">
-Bryan Hanson. 2022. <span>“Notes on Linear Algebra Part 4.”</span>
-September 26, 2022. <a href="http://chemospec.org/Linear-Alg-Notes-Pt4.html">http://chemospec.org/Linear-Alg-Notes-Pt4.html</a>.
+Bryan Hanson. 22AD. <span>“Notes on Linear Algebra Part 4.”</span>
+September 26, 22AD. <a href="http://chemospec.org/posts/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html">http://chemospec.org/posts/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
   <category>Linear Algebra</category>

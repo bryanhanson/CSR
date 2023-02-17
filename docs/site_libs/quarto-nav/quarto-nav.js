@@ -54,6 +54,7 @@ window.document.addEventListener("DOMContentLoaded", function () {
     const bodyOffset = topOffset + footerOffset();
     const bodyEl = window.document.body;
     bodyEl.setAttribute("data-bs-offset", topOffset);
+    bodyEl.style.paddingTop = topOffset + "px";
 
     // deal with sidebar offsets
     const sidebars = window.document.querySelectorAll(
@@ -179,7 +180,9 @@ window.document.addEventListener("DOMContentLoaded", function () {
   if (window.location.protocol !== "file:") {
     const links = window.document.querySelectorAll("a");
     for (let i = 0; i < links.length; i++) {
-      links[i].href = links[i].href.replace(/\/index\.html/, "/");
+      if (links[i].href) {
+        links[i].href = links[i].href.replace(/\/index\.html/, "/");
+      }
     }
 
     // Fixup any sharing links that require urls
