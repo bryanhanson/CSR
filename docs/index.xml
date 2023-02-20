@@ -63,8 +63,8 @@ A --&gt; D(column matrices &lt;br/&gt; n x 1)
 A ---&gt; B(square matrices &lt;br/&gt; n x n)
 B --&gt; E(upper triangular&lt;br/&gt;matrices)
 B --&gt; F(lower triangular&lt;br/&gt;matrices)
-B --&gt; G{{&lt;b&gt;either&lt;/b&gt;&lt;br/&gt;is singular?}}
-B --&gt; H{{&lt;b&gt;or&lt;/b&gt;&lt;br/&gt;is invertible?}}
+B --&gt; G{{either:&lt;br/&gt;is singular?}}
+B --&gt; H{{or:&lt;br/&gt;is invertible?}}
 H --&gt; I{{is diagonalizable?}}
 I --&gt; J{{is normal?}}
 J --&gt; K(symmetric)
@@ -79,7 +79,7 @@ style J fill:#FFF0F5
 style N fill:#FFF0F5
 </pre>
 </div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;1: Heiarchical relationships between different types of matrices. <em>Blue Rectangles</em> denote matrices with particular, recognizable <em>structures</em>. <em>Pink Hexagons</em> indicate properties that can be <em>queried</em>.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;1: Hierarchical relationships between different types of matrices. <em>Blue Rectangles</em> denote matrices with particular, recognizable <em>structures</em>. <em>Pink Hexagons</em> indicate properties that can be <em>queried</em>.</figcaption><p></p>
 </figure>
 </div>
 </div>

@@ -6,6 +6,8 @@ categories: [R, Linear Algebra]
 format:
   html:
     toc: true
+    mermaid:
+      theme: default
 ---
 
 Series: [Part 1](https://chemospec.org/posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html) [Part 2](https://chemospec.org/posts/2022-09-01-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2.html) [Part 3](https://chemospec.org/posts/2022-09-10-Linear-Alg-Notes-Pt3/Linear-Alg-Notes-Pt3.html)
@@ -20,15 +22,15 @@ I am strongly drawn to thinking in terms of categories and relationships.  I fin
 
 ```{mermaid}
 %%| label: fig-flow
-%%| fig-cap: "Heiarchical relationships between different types of matrices. *Blue Rectangles* denote matrices with particular, recognizable *structures*.  *Pink Hexagons* indicate properties that can be *queried*."
+%%| fig-cap: "Hierarchical relationships between different types of matrices. *Blue Rectangles* denote matrices with particular, recognizable *structures*.  *Pink Hexagons* indicate properties that can be *queried*."
 flowchart TD
 A(all matrices <br/> n x m) --> C(row matrices <br/> 1 x n)
 A --> D(column matrices <br/> n x 1)
 A ---> B(square matrices <br/> n x n)
 B --> E(upper triangular<br/>matrices)
 B --> F(lower triangular<br/>matrices)
-B --> G{{<b>either</b><br/>is singular?}}
-B --> H{{<b>or</b><br/>is invertible?}}
+B --> G{{either:<br/>is singular?}}
+B --> H{{or:<br/>is invertible?}}
 H --> I{{is diagonalizable?}}
 I --> J{{is normal?}}
 J --> K(symmetric)
