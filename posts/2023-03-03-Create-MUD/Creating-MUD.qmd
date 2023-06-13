@@ -1,0 +1,39 @@
+---
+title: "Generating Simulated Data in 2D"
+description: "What I call MUD: Made Up Data"
+date: "2022-10-05"
+categories: [R, Linear Algebra]
+format:
+  html
+draft: true
+---
+
+One of the great virtues of `R` is the large number of functions returning random draws from a specified [distribution](). This makes it really easy to get realistic data for testing, teaching and demonstration purposes.  For instance, if you wanted to talk about histograms you could create the data and the plot on the fly as follows:
+
+```{r}
+set.seed(123) # so our data is reproducible
+hist(rnorm(1000), breaks = 50)
+```
+
+Which is pretty much effortless.  No need to go find an appropriate data set, though `R` provides [many](), it takes time to find the right one for your purposes.  One-dimensional data is not that interesting though, so in this post I'm going to discuss how to generate two-dimensional data sets.
+
+## Generating 2D MUD
+
+### A Simple x,y Data Set
+
+The arguments of `rnorm()` allow one to specify the number of samples, the desired mean (defaults to 0.0), and the desired variance (defaults to 1.0).  So we can easily create a 2D sample set:
+
+```{r}
+x <- rnorm(n = 20, mean = 0, sd = 5)
+y <- rnorm(n = 20, mean = 0, sd = 1)
+plot(x, y, xlim = c(-7, 7), ylim = c(-7, 7))
+```
+
+Clearly one can vary the parameters to center the data cloud anywhere and give it an approximate shape, from circular to elliptical, by varying the parameters.
+
+### Rotating the Data Cloud
+
+Let's say you were creating this data set so that you could demonstrate linear regression.  In that case, the above is not great as the slope of the line is going to be near zero.  But, [affine transformations]() can be used to rotate the cloud to a desired angle.
+
+### A Linear Algebra Approach
+

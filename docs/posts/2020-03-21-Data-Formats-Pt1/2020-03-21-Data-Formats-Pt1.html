@@ -20,14 +20,15 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for citations */
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
 }
-.hanging div.csl-entry {
+.hanging-indent div.csl-entry {
   margin-left:2em;
   text-indent:-2em;
 }
@@ -41,8 +42,7 @@ div.csl-right-inline {
 }
 div.csl-indent {
   margin-left: 2em;
-}
-</style>
+}</style>
 
 
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -70,6 +70,11 @@ div.csl-indent {
   "panel-placement": "end",
   "type": "overlay",
   "limit": 20,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -79,7 +84,8 @@ div.csl-indent {
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 
@@ -94,11 +100,12 @@ cookieconsent.run({
   "notice_banner_reject_button_hide":false,
   "preferences_center_close_button_hide":false,
   "website_name":""
+  ,
+"language":"en"
   });
 });
 </script> 
   
-
 <script src="../../site_libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="../../site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 <link href="../../site_libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet">
@@ -117,56 +124,58 @@ cookieconsent.run({
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Chemometrics and Spectroscopy Using R</span>
     </a>
   </div>
+            <div id="quarto-search" class="" title="Search"></div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../about.html" rel="">
+    <a class="nav-link" href="../../about.html" rel="" target="">
  <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../projects.html" rel="">
+    <a class="nav-link" href="../../projects.html" rel="" target="">
  <span class="menu-text">Projects</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="https://www.r-bloggers.com/" rel="">
+    <a class="nav-link" href="https://www.r-bloggers.com/" rel="" target="">
  <span class="menu-text">R-Bloggers</span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="mailto:hanson@depauw.edu" rel=""><i class="bi bi-envelope-fill" role="img">
+    <a class="nav-link" href="mailto:hanson@depauw.edu" rel="" target=""><i class="bi bi-envelope-fill" role="img">
 </i> 
  <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://twitter.com/profbryanhanson" rel=""><i class="bi bi-twitter" role="img">
+    <a class="nav-link" href="https://twitter.com/profbryanhanson" rel="" target=""><i class="bi bi-twitter" role="img">
 </i> 
  <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://fosstodon.org/@ProfBryanHanson" rel="me"><i class="bi bi-mastodon" role="img" aria-label="Mastodon">
+    <a class="nav-link" href="https://fosstodon.org/(ProfBryanHanson?)" rel="me" target=""><i class="bi bi-mastodon" role="img" aria-label="Mastodon">
 </i> 
  <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/bryanhanson" rel=""><i class="bi bi-git" role="img">
+    <a class="nav-link" href="https://github.com/bryanhanson" rel="" target=""><i class="bi bi-git" role="img">
 </i> 
  <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="../../index.xml" rel=""><i class="bi bi-rss" role="img">
+    <a class="nav-link" href="../../index.xml" rel="" target=""><i class="bi bi-rss" role="img">
 </i> 
  <span class="menu-text"></span></a>
   </li>  
 </ul>
-              <div id="quarto-search" class="" title="Search"></div>
           </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -255,9 +264,6 @@ cookieconsent.run({
 
 </header>
 
-<div class="cell">
-
-</div>
 <p>This is Part 1 of a series of posts about data formats for sharing spectroscopic data. Many folks are working from home due to a certain global pandemic. I hope you are all healthy and practicing proper social distancing!</p>
 <p>Sharing data is intrinsic to any spectroscopic work. For many tasks, the data need never leave the instrument’s native format. Nowadays the data often goes immediately to some type of shared server, to be available for multiple users. So much of the time we don’t need to worry about format at all, especially if the acquisition software can do the chemometric analysis you need.</p>
 <p>Increasingly however, publishers want all data deposited and documented somewhere in machine-readable, vendor-neutral form. This is one aspect of <a href="https://en.wikipedia.org/wiki/Reproducibility#Reproducible_research"><em>reproducible research</em></a>, where all data and the scripts or steps needed to analyze them are provided electronically with every paper. Or, your data may be headed to one of the many databases out there, where specific formats are required for submission. And while most data acquisition softwares provide some analysis options, if you need to do serious chemometric analysis you likely need to get the data off the machine in a vendor-neutral form. So there are several reasons one should be familiar with the various means of sharing spectroscopic data.</p>
@@ -269,35 +275,32 @@ cookieconsent.run({
 <p>In addition to deciphering how the data is stored in an exported ASCII file, one needs to keep in mind file size, because ASCII values are not compressed. If one is dealing with IR or UV-Vis data, the typically small number of data points means the files are not large, making ASCII export a good option. For 1D NMR data with typically &gt; 16K data points, the size of the files begins to matter a bit, especially if you have large collections of spectra, which are becoming increasingly common with autosamplers. With 2D NMR, spectra in ASCII format begin to take up some serious space, and the time needed to read in the data becomes noticable.</p>
 <section id="pros-cons-of-the-ascii-format" class="level3">
 <h3 class="anchored" data-anchor-id="pros-cons-of-the-ascii-format">Pros &amp; Cons of the ASCII Format</h3>
-<div class="cell">
-
-</div>
 <div class="cell-output-display">
-
-<table class="table table-striped table-bordered" style="margin-left: auto; margin-right: auto;">
+<table class="table table-striped table-bordered" data-quarto-postprocess="true">
 <tbody>
-  <tr>
-   <td style="text-align:left;border-right:3px solid black;font-weight: bold;"> Pros </td>
-   <td style="text-align:left;font-weight: bold;"> Cons </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;border-right:3px solid black;"> Near-universal availability </td>
-   <td style="text-align:left;"> Rarely any metadata </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;border-right:3px solid black;"> Human readible </td>
-   <td style="text-align:left;"> Rarely any documentation </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;border-right:3px solid black;">  </td>
-   <td style="text-align:left;"> Slow to parse for large data sets </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;border-right:3px solid black;">  </td>
-   <td style="text-align:left;"> For 2D NMR, internal order must be deciphered </td>
-  </tr>
+<tr class="odd">
+<td style="text-align: left; border-right: 3px solid black; font-weight: bold;">Pros</td>
+<td style="text-align: left; font-weight: bold;">Cons</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; border-right: 3px solid black;">Near-universal availability</td>
+<td style="text-align: left;">Rarely any metadata</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; border-right: 3px solid black;">Human readible</td>
+<td style="text-align: left;">Rarely any documentation</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; border-right: 3px solid black;"></td>
+<td style="text-align: left;">Slow to parse for large data sets</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; border-right: 3px solid black;"></td>
+<td style="text-align: left;">For 2D NMR, internal order must be deciphered</td>
+</tr>
 </tbody>
 </table>
+
 
 </div>
 </section>
@@ -320,31 +323,31 @@ cookieconsent.run({
 <section id="pros-cons-of-the-jcamp-dx-format" class="level3">
 <h3 class="anchored" data-anchor-id="pros-cons-of-the-jcamp-dx-format">Pros &amp; Cons of the JCAMP-DX Format</h3>
 <div class="cell-output-display">
-
-<table class="table table-striped table-bordered" style="margin-left: auto; margin-right: auto;">
+<table class="table table-striped table-bordered" data-quarto-postprocess="true">
 <tbody>
-  <tr>
-   <td style="text-align:left;border-right:3px solid black;font-weight: bold;"> Pros </td>
-   <td style="text-align:left;font-weight: bold;"> Cons </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;border-right:3px solid black;"> Near-universal availability </td>
-   <td style="text-align:left;"> Minimal compression by modern standards </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;border-right:3px solid black;"> Metadata human readible </td>
-   <td style="text-align:left;"> Error checking makes parsing slow </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;border-right:3px solid black;"> Compression formats can be manually detangled for checking </td>
-   <td style="text-align:left;"> Error checking probably no longer needed </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;border-right:3px solid black;">  </td>
-   <td style="text-align:left;"> Vendors do not always follow the standard exactly </td>
-  </tr>
+<tr class="odd">
+<td style="text-align: left; border-right: 3px solid black; font-weight: bold;">Pros</td>
+<td style="text-align: left; font-weight: bold;">Cons</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; border-right: 3px solid black;">Near-universal availability</td>
+<td style="text-align: left;">Minimal compression by modern standards</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; border-right: 3px solid black;">Metadata human readible</td>
+<td style="text-align: left;">Error checking makes parsing slow</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; border-right: 3px solid black;">Compression formats can be manually detangled for checking</td>
+<td style="text-align: left;">Error checking probably no longer needed</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; border-right: 3px solid black;"></td>
+<td style="text-align: left;">Vendors do not always follow the standard exactly</td>
+</tr>
 </tbody>
 </table>
+
 
 </div>
 </section>
@@ -357,47 +360,47 @@ cookieconsent.run({
 </section>
 </section>
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
-<div id="ref-Bumbach2001" class="csl-entry" role="doc-biblioentry">
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-Bumbach2001" class="csl-entry" role="listitem">
 Baumbach, JI, AN Davies, P Lampen, and H Schmidt. 2001. <span>“<span class="nocase">JCAMP-DX. A Standard Format for the Exchange of Ion Mobility Spectrometry Data - (IUPAC recommendations 2001)</span>.”</span> <em><span>Pure and Applied Chemistry</span></em> 73 (11): 1765–82. <a href="https://doi.org/10.1351/pac200173111765">https://doi.org/10.1351/pac200173111765</a>.
 </div>
-<div id="ref-Cammack2006" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Cammack2006" class="csl-entry" role="listitem">
 Cammack, R, Y Fann, RJ Lancashire, JP Maher, PS McIntyre, and R Morse. 2006. <span>“<span class="nocase">JCAMP-DX for electron magnetic resonance(EMR)</span>.”</span> <em><span>Pure and Applied Chemistry</span></em> 78 (3): 613–31. <a href="https://doi.org/10.1351/pac200678030613">https://doi.org/10.1351/pac200678030613</a>.
 </div>
-<div id="ref-Davies1993" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Davies1993" class="csl-entry" role="listitem">
 Davies, AN, and P Lampen. 1993. <span>“<span class="nocase">JCAMP-DX for NMR</span>.”</span> <em><span>Applied Spectroscopy</span></em> 47 (8): 1093–99. <a href="https://doi.org/10.1366/0003702934067874">https://doi.org/10.1366/0003702934067874</a>.
 </div>
-<div id="ref-Davies2001" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Davies2001" class="csl-entry" role="listitem">
 Davies, Antony N., Jörg Lambert, Robert J. Lancashire, and Peter Lampen. 2001. <span>“<span class="nocase">Guidelines for the Representation of Pulse Sequences for Solution-State Nuclear Magnetic Resonance Spectroscopy</span>.”</span> <em><span>Pure and Applied Chemistry</span></em> 73 (11): 1749–64.
 </div>
-<div id="ref-Gasteiger1991" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Gasteiger1991" class="csl-entry" role="listitem">
 Gasteiger, J., B. M. P. Hendricks, Hoever P., Jochum C., and Somberg H. 1991. <span>“<span class="nocase">JCAMP-CS: A Standard Exchange Format for Chemical Structure Information in a Computer-Readible Form</span>.”</span> <em><span>Applied Spectroscopy</span></em> 45 (1): 4–11.
 </div>
-<div id="ref-Grasselli1991" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Grasselli1991" class="csl-entry" role="listitem">
 Grasselli, JG. 1991. <span>“<span class="nocase">JCAMP-DX, A Standard Format for Exchange of Infrared-Spectra in Computer Readible Form</span>.”</span> <em><span>Pure and Applied Chemistry</span></em> 63 (12): 1781–92. <a href="https://doi.org/10.1351/pac199163121781">https://doi.org/10.1351/pac199163121781</a>.
 </div>
-<div id="ref-Lampen1994" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Lampen1994" class="csl-entry" role="listitem">
 Lampen, P, H Hillig, AN Davies, and M Linscheid. 1994. <span>“<span class="nocase">JCAMP-DX for Mass Spectrometry</span>.”</span> <em><span>Applied Spectroscopy</span></em> 48 (12): 1545–52.
 </div>
-<div id="ref-Lampen1999" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Lampen1999" class="csl-entry" role="listitem">
 Lampen, P, J Lambert, RJ Lancashire, RS McDonald, PS McIntyre, DN Rutledge, T Frohlich, and AN Davies. 1999. <span>“<span class="nocase">An Extension to the JCAMP-DX Standard File Format, JCAMP-DX V.5.01 (IUPAC Recommendations 1999)</span>.”</span> <em><span>Pure and Applied Chemistry</span></em> 71 (8): 1549–56. <a href="https://doi.org/10.1351/pac199971081549">https://doi.org/10.1351/pac199971081549</a>.
 </div>
-<div id="ref-McDonald1988" class="csl-entry" role="doc-biblioentry">
+<div id="ref-McDonald1988" class="csl-entry" role="listitem">
 McDonald, RS, and PA Wilks. 1988. <span>“<span class="nocase">JCAMP-DX, A Standard Format for Exchange of Infrared-Spectra in Computer Readible Form</span>.”</span> <em><span>Applied Spectroscopy</span></em> 42 (1): 151–62. <a href="https://doi.org/10.1366/0003702884428734">https://doi.org/10.1366/0003702884428734</a>.
 </div>
-<div id="ref-Woollett2012" class="csl-entry" role="doc-biblioentry">
+<div id="ref-Woollett2012" class="csl-entry" role="listitem">
 Woollett, Benjamin, Daniel Klose, Richard Cammack, Robert W. Janes, and B. A. Wallace. 2012. <span>“<span class="nocase">JCAMP-DX for circular dichroism spectra and metadata (IUPAC Recommendations 2012)</span>.”</span> <em><span>Pure and Applied Chemistry</span></em> 84 (10): 2171–82. <a href="https://doi.org/10.1351/PAC-REC-12-02-03">https://doi.org/10.1351/PAC-REC-12-02-03</a>.
 </div>
-</div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
-  author = {Bryan Hanson},
+</div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
+  author = {Hanson, Bryan},
   title = {Data {Sharing} in the {Age} of {Coronavirus,} {Part} 1},
   date = {2020-03-21},
-  url = {http://chemospec.org/2020-03-21-Data-Formats-Pt1.html},
+  url = {http://chemospec.org/posts/2020-03-21-Data-Formats-Pt1/2020-03-21-Data-Formats-Pt1.html},
   langid = {en}
 }
-</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2020" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
-Bryan Hanson. 2020. <span>“Data Sharing in the Age of Coronavirus, Part
-1.”</span> March 21, 2020. <a href="http://chemospec.org/2020-03-21-Data-Formats-Pt1.html">http://chemospec.org/2020-03-21-Data-Formats-Pt1.html</a>.
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2020" class="csl-entry quarto-appendix-citeas" role="listitem">
+Hanson, Bryan. 2020. <span>“Data Sharing in the Age of Coronavirus, Part
+1.”</span> March 21, 2020. <a href="http://chemospec.org/posts/2020-03-21-Data-Formats-Pt1/2020-03-21-Data-Formats-Pt1.html">http://chemospec.org/posts/2020-03-21-Data-Formats-Pt1/2020-03-21-Data-Formats-Pt1.html</a>.
 </div></div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
@@ -426,9 +429,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -464,10 +481,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -477,8 +493,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -493,6 +518,148 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    if (id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        for (let i = 0; i < 2; i++) {
+          container.appendChild(note.children[i].cloneNode(true));
+        }
+        return container.innerHTML
+      } else {
+        return note.innerHTML;
+      }
+    } else {
+      return note.innerHTML;
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      try { hash = new URL(url).hash; } catch {}
+      const id = hash.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note !== null) {
+        try {
+          const html = processXRef(id, note);
+          instance.setContent(html);
+        } finally {
+          instance.enable();
+          instance.show();
+        }
+      } else {
+        // See if we can fetch this
+        fetch(url.split('#')[0])
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.getElementById(id);
+          console.log(htmlDoc.body.innerHTML);
+          if (note !== null) {
+            const html = processXRef(id, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
   const findCites = (el) => {
     const parentEl = el.parentElement;
     if (parentEl) {
@@ -537,9 +704,18 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
-      <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookies are used to track visits only</a></div></div>
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+
+<div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookies are used to track visits only</a></div></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
   </div>
 </footer>
+
 
 
 

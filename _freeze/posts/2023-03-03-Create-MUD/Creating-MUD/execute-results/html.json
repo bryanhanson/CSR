@@ -1,0 +1,16 @@
+{
+  "hash": "e0361f29b68f151a6a506b0e60420d9d",
+  "result": {
+    "markdown": "---\ntitle: \"Generating Simulated Data in 2D\"\ndescription: \"What I call MUD: Made Up Data\"\ndate: \"2022-10-05\"\ncategories: [R, Linear Algebra]\nformat:\n  html\ndraft: true\n---\n\n\nOne of the great virtues of `R` is the large number of functions returning random draws from a specified [distribution](). This makes it really easy to get realistic data for testing, teaching and demonstration purposes.  For instance, if you wanted to talk about histograms you could create the data and the plot on the fly as follows:\n\n\n::: {.cell}\n\n```{.r .cell-code}\nset.seed(123) # so our data is reproducible\nhist(rnorm(1000), breaks = 50)\n```\n\n::: {.cell-output-display}\n![](Creating-MUD_files/figure-html/unnamed-chunk-1-1.png){width=672}\n:::\n:::\n\n\nWhich is pretty much effortless.  No need to go find an appropriate data set, though `R` provides [many](), it takes time to find the right one for your purposes.  One-dimensional data is not that interesting though, so in this post I'm going to discuss how to generate two-dimensional data sets.\n\n## Generating 2D MUD\n\n### A Simple x,y Data Set\n\nThe arguments of `rnorm()` allow one to specify the number of samples, the desired mean (defaults to 0.0), and the desired variance (defaults to 1.0).  So we can easily create a 2D sample set:\n\n\n::: {.cell}\n\n```{.r .cell-code}\nx <- rnorm(n = 20, mean = 0, sd = 5)\ny <- rnorm(n = 20, mean = 0, sd = 1)\nplot(x, y, xlim = c(-7, 7), ylim = c(-7, 7))\n```\n\n::: {.cell-output-display}\n![](Creating-MUD_files/figure-html/unnamed-chunk-2-1.png){width=672}\n:::\n:::\n\n\nClearly one can vary the parameters to center the data cloud anywhere and give it an approximate shape, from circular to elliptical, by varying the parameters.\n\n### Rotating the Data Cloud\n\nLet's say you were creating this data set so that you could demonstrate linear regression.  In that case, the above is not great as the slope of the line is going to be near zero.  But, [affine transformations]() can be used to rotate the cloud to a desired angle.\n\n### A Linear Algebra Approach\n\n",
+    "supporting": [
+      "Creating-MUD_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

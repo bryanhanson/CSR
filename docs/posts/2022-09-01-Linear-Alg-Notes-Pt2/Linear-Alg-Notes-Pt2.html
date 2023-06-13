@@ -20,9 +20,10 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -49,43 +50,13 @@ pre.numberSource code > span > a:first-child::before
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
     padding: 0 4px; width: 4em;
-    color: #aaaaaa;
   }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
 div.sourceCode
   {   }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { color: #008000; } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { color: #008000; font-weight: bold; } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
@@ -114,6 +85,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   "panel-placement": "end",
   "type": "overlay",
   "limit": 20,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -123,7 +99,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 
@@ -138,11 +115,14 @@ cookieconsent.run({
   "notice_banner_reject_button_hide":false,
   "preferences_center_close_button_hide":false,
   "website_name":""
+  ,
+"language":"en"
   });
 });
 </script> 
   
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="../../styles.css">
@@ -157,56 +137,58 @@ cookieconsent.run({
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Chemometrics and Spectroscopy Using R</span>
     </a>
   </div>
+            <div id="quarto-search" class="" title="Search"></div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../about.html" rel="">
+    <a class="nav-link" href="../../about.html" rel="" target="">
  <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../projects.html" rel="">
+    <a class="nav-link" href="../../projects.html" rel="" target="">
  <span class="menu-text">Projects</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="https://www.r-bloggers.com/" rel="">
+    <a class="nav-link" href="https://www.r-bloggers.com/" rel="" target="">
  <span class="menu-text">R-Bloggers</span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="mailto:hanson@depauw.edu" rel=""><i class="bi bi-envelope-fill" role="img">
+    <a class="nav-link" href="mailto:hanson@depauw.edu" rel="" target=""><i class="bi bi-envelope-fill" role="img">
 </i> 
  <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://twitter.com/profbryanhanson" rel=""><i class="bi bi-twitter" role="img">
+    <a class="nav-link" href="https://twitter.com/profbryanhanson" rel="" target=""><i class="bi bi-twitter" role="img">
 </i> 
  <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://fosstodon.org/@ProfBryanHanson" rel="me"><i class="bi bi-mastodon" role="img" aria-label="Mastodon">
+    <a class="nav-link" href="https://fosstodon.org/@ProfBryanHanson" rel="me" target=""><i class="bi bi-mastodon" role="img" aria-label="Mastodon">
 </i> 
  <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/bryanhanson" rel=""><i class="bi bi-git" role="img">
+    <a class="nav-link" href="https://github.com/bryanhanson" rel="" target=""><i class="bi bi-git" role="img">
 </i> 
  <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="../../index.xml" rel=""><i class="bi bi-rss" role="img">
+    <a class="nav-link" href="../../index.xml" rel="" target=""><i class="bi bi-rss" role="img">
 </i> 
  <span class="menu-text"></span></a>
   </li>  
 </ul>
-              <div id="quarto-search" class="" title="Search"></div>
           </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -418,7 +400,7 @@ y = mx + b
 \end{bmatrix}
 \tag{9}\]</span></span></p>
 <p>If we multiply this out, each row works out to be an instance of <span class="math inline">\(y_i = \beta_1 x_i + \beta_0\)</span>. Hopefully you can appreciate that <span class="math inline">\(\beta_1\)</span> corresponds to <span class="math inline">\(m\)</span> and <span class="math inline">\(\beta_0\)</span> corresponds to <span class="math inline">\(b\)</span>.<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a></p>
-<p>This looks similar to <span class="math inline">\(\mathbf{A}\mathbf{x} = \mathbf{b}\)</span> seen in <a href="#eq-3">Equation&nbsp;3</a>, if you set <span class="math inline">\(\mathbf{b}\)</span> to <span class="math inline">\(\mathbf{y}\)</span>, <span class="math inline">\(\mathbf{A}\)</span> to <span class="math inline">\(\mathbf{X}\)</span> and <span class="math inline">\(\mathbf{x}\)</span> to <span class="math inline">\(\beta\)</span>:</p>
+<p>This looks similar to <span class="math inline">\(\mathbf{A}\mathbf{x} = \mathbf{b}\)</span> seen in <a href="#eq-3" class="quarto-xref">Equation&nbsp;3</a>, if you set <span class="math inline">\(\mathbf{b}\)</span> to <span class="math inline">\(\mathbf{y}\)</span>, <span class="math inline">\(\mathbf{A}\)</span> to <span class="math inline">\(\mathbf{X}\)</span> and <span class="math inline">\(\mathbf{x}\)</span> to <span class="math inline">\(\beta\)</span>:</p>
 <p><span id="eq-11"><span class="math display">\[
 \begin{align}
 \mathbf{b} &amp;\approx \mathbf{A}\mathbf{x} \\
@@ -431,7 +413,7 @@ y = mx + b
 <p><span id="eq-9"><span class="math display">\[
 \hat{\beta} = (\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{X}^{\mathsf{T}}y
 \tag{11}\]</span></span></p>
-<p>The key point here is that once again we need to invert a matrix to solve this. The details of where <a href="#eq-9">Equation&nbsp;11</a> comes from are covered in a number of places, but I will note here that <span class="math inline">\(\hat{\beta}\)</span> refers to the best estimate of <span class="math inline">\(\beta\)</span>.<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a></p>
+<p>The key point here is that once again we need to invert a matrix to solve this. The details of where <a href="#eq-9" class="quarto-xref">Equation&nbsp;11</a> comes from are covered in a number of places, but I will note here that <span class="math inline">\(\hat{\beta}\)</span> refers to the best estimate of <span class="math inline">\(\beta\)</span>.<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a></p>
 </section>
 <section id="inverting-matrices" class="level2">
 <h2 class="anchored" data-anchor-id="inverting-matrices">Inverting Matrices</h2>
@@ -502,7 +484,7 @@ y = mx + b
 </section>
 <section id="solving-systems-of-linear-equations" class="level3">
 <h3 class="anchored" data-anchor-id="solving-systems-of-linear-equations">Solving Systems of Linear Equations</h3>
-<p>Let’s solve the system from <a href="#eq-2">Equation&nbsp;2</a>. It turns out that the <code>solve</code> function also handles this case, if you give it two arguments. Remember, <code>solve</code> is using the LU decomposition behind the scenes, no matrix inversion is required.</p>
+<p>Let’s solve the system from <a href="#eq-2" class="quarto-xref">Equation&nbsp;2</a>. It turns out that the <code>solve</code> function also handles this case, if you give it two arguments. Remember, <code>solve</code> is using the LU decomposition behind the scenes, no matrix inversion is required.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>A3 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">2</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">2</span>, <span class="sc">-</span><span class="dv">3</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>), <span class="at">ncol =</span> <span class="dv">3</span>)</span>
 <span id="cb11-2"><a href="#cb11-2"></a>A3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -521,19 +503,19 @@ y = mx + b
 </div>
 </div>
 <p>The answer is the values of <span class="math inline">\(x, y, z\)</span> that make the system of equations true.</p>
-<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<div class="callout-caption-container flex-fill">
+<div class="callout-title-container flex-fill">
 How does LU decomposition avoid inversion?
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
 <div id="callout-1" class="callout-1-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>While we’ve emphasized the importance and challenges of inverting matrices, we’ve also pointed out that to solve a linear system there are alternatives to looking at the problem from the perspective of <a href="#eq-5">Equation&nbsp;5</a>. Here’s an approach using the LU decomposition, starting with substituting <span class="math inline">\(\mathbf{A}\)</span> with <span class="math inline">\(\mathbf{L}\mathbf{U}\)</span>:</p>
+<p>While we’ve emphasized the importance and challenges of inverting matrices, we’ve also pointed out that to solve a linear system there are alternatives to looking at the problem from the perspective of <a href="#eq-5" class="quarto-xref">Equation&nbsp;5</a>. Here’s an approach using the LU decomposition, starting with substituting <span class="math inline">\(\mathbf{A}\)</span> with <span class="math inline">\(\mathbf{L}\mathbf{U}\)</span>:</p>
 <p><span id="eq-20"><span class="math display">\[
 \mathbf{A}\mathbf{x} = \mathbf{L}\mathbf{U}\mathbf{x} = \mathbf{b}
 \tag{13}\]</span></span></p>
@@ -548,7 +530,7 @@ How does LU decomposition avoid inversion?
 </section>
 <section id="computing-linear-regression" class="level3">
 <h3 class="anchored" data-anchor-id="computing-linear-regression">Computing Linear Regression</h3>
-<p>Let’s compute the values for <span class="math inline">\(m, b\)</span> in our regression data shown in <a href="#eq-6">Equation&nbsp;6</a>. First, let’s set up the needed matrices and plot the data since visualizing the data is always a good idea.</p>
+<p>Let’s compute the values for <span class="math inline">\(m, b\)</span> in our regression data shown in <a href="#eq-6" class="quarto-xref">Equation&nbsp;6</a>. First, let’s set up the needed matrices and plot the data since visualizing the data is always a good idea.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>y <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fl">11.8</span>, <span class="fl">7.2</span>, <span class="fl">21.5</span>, <span class="fl">17.2</span>, <span class="fl">26.8</span>), <span class="at">ncol =</span> <span class="dv">1</span>)</span>
 <span id="cb15-2"><a href="#cb15-2"></a>X <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">5</span>), <span class="fl">2.1</span>, <span class="fl">0.9</span>, <span class="fl">3.9</span>, <span class="fl">3.2</span>, <span class="fl">5.1</span>), <span class="at">ncol =</span> <span class="dv">2</span>) <span class="co"># design matrix</span></span>
@@ -566,7 +548,7 @@ How does LU decomposition avoid inversion?
 <p><img src="Linear-Alg-Notes-Pt2_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>The value of <span class="math inline">\(\hat{\beta}\)</span> can be found via <a href="#eq-9">Equation&nbsp;11</a>:</p>
+<p>The value of <span class="math inline">\(\hat{\beta}\)</span> can be found via <a href="#eq-9" class="quarto-xref">Equation&nbsp;11</a>:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="fu">solve</span>((<span class="fu">t</span>(X) <span class="sc">%*%</span> X)) <span class="sc">%*%</span>  <span class="fu">t</span>(X) <span class="sc">%*%</span> y</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -590,7 +572,7 @@ Coefficients:
        2.40         4.77  </code></pre>
 </div>
 </div>
-<p>We have good agreement! If you care to learn about the goodness of the fit, the residuals etc, then you can look at the help file <code>?lm</code> and <code>str(fit)</code>. <code>lm</code> returns pretty much all one needs to know about the results, but if you wish to calculate all the interesting values yourself you can do so by manipulating <a href="#eq-9">Equation&nbsp;11</a> and its relatives.</p>
+<p>We have good agreement! If you care to learn about the goodness of the fit, the residuals etc, then you can look at the help file <code>?lm</code> and <code>str(fit)</code>. <code>lm</code> returns pretty much all one needs to know about the results, but if you wish to calculate all the interesting values yourself you can do so by manipulating <a href="#eq-9" class="quarto-xref">Equation&nbsp;11</a> and its relatives.</p>
 <p>Finally, let’s plot the line of best fit found by <code>lm</code> to make sure everything looks reasonable.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="fu">plot</span>(X[,<span class="dv">2</span>], y, <span class="at">xlab =</span> <span class="st">"x"</span>)</span>
@@ -622,19 +604,17 @@ Coefficients:
 </ul></li>
 <li><em>Linear Models with R</em> by Julian J. Faraway, Chapman and Hall/CRC, 2005.
 <ul>
-<li>Sections 2.1-2.4: Linear regression from the algebraic and matrix perspectives, derivation of <a href="#eq-9">Equation&nbsp;11</a>.</li>
+<li>Sections 2.1-2.4: Linear regression from the algebraic and matrix perspectives, derivation of <a href="#eq-9" class="quarto-xref">Equation&nbsp;11</a>.</li>
 </ul></li>
 <li>The vignettes of the <code>matlib</code> package are very helpful.</li>
 </ul>
 
 
 </section>
-
-
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
-
+<aside id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
 <ol>
-<li id="fn1"><p>Here we have the slightly unfortunate circumstance where symbol conventions cannot be completely harmonized. We are saying that <span class="math inline">\(\mathbf{x} = x, y, z\)</span> which seems a bit silly since vector <span class="math inline">\(\mathbf{x}\)</span> contains <span class="math inline">\(y\)</span> and <span class="math inline">\(z\)</span> components in addition to <span class="math inline">\(x\)</span>. I ask you to accept this for two reasons: First, most linear algebra texts use the symbols in <a href="#eq-3">Equation&nbsp;3</a> as the general form for this topic, so if you go to study this further that’s what you’ll find. Second, I feel like using <span class="math inline">\(x\)</span>, <span class="math inline">\(y\)</span> and <span class="math inline">\(z\)</span> in <a href="#eq-1">Equation&nbsp;1</a> will be familar to the most people. If you want to get rid of this infelicity, then you have to write <a href="#eq-1">Equation&nbsp;1</a> (in part) as <span class="math inline">\(x_1 + 2x_2 + 3x_3 = 3\)</span> which I think clouds the interpretation. Perhaps however you feel my choices are equally bad.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>Here we have the slightly unfortunate circumstance where symbol conventions cannot be completely harmonized. We are saying that <span class="math inline">\(\mathbf{x} = x, y, z\)</span> which seems a bit silly since vector <span class="math inline">\(\mathbf{x}\)</span> contains <span class="math inline">\(y\)</span> and <span class="math inline">\(z\)</span> components in addition to <span class="math inline">\(x\)</span>. I ask you to accept this for two reasons: First, most linear algebra texts use the symbols in <a href="#eq-3" class="quarto-xref">Equation&nbsp;3</a> as the general form for this topic, so if you go to study this further that’s what you’ll find. Second, I feel like using <span class="math inline">\(x\)</span>, <span class="math inline">\(y\)</span> and <span class="math inline">\(z\)</span> in <a href="#eq-1" class="quarto-xref">Equation&nbsp;1</a> will be familar to the most people. If you want to get rid of this infelicity, then you have to write <a href="#eq-1" class="quarto-xref">Equation&nbsp;1</a> (in part) as <span class="math inline">\(x_1 + 2x_2 + 3x_3 = 3\)</span> which I think clouds the interpretation. Perhaps however you feel my choices are equally bad.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2"><p>Conformable means that the number of columns in the first matrix equals the number of rows in the second matrix. This is necessary because of the dot product definition of matrix multiplication. More details <a href="https://chemospec.org/posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html">here</a>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn3"><p>Remember “story problems” where you had to read closely to express what was given in terms of equations, and find enough equations? “If Sally bought 10 pieces of candy and a drink for $1.50…”<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4"><p>We could also write this as <span class="math inline">\(\mathbf{x} = (x, y, z)^\mathsf{T}\)</span> to emphasize that it is a column vector. One might prefer this because the only vector one can write in a row of text is a row vector, so if we mean a column vector many people would prefer to write it transposed.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
@@ -643,20 +623,22 @@ Coefficients:
 <li id="fn7"><p>In truth, there are other ways to solve <span class="math inline">\(\mathbf{A}\mathbf{x} = \mathbf{b}\)</span> that don’t require inversion of a matrix. However, if a matrix <span class="math inline">\(\mathbf{A}\)</span> isn’t invertible, these other methods will also break down. We’ll demonstrate this later when we talk about the LU decomposition.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn8"><p>A very good discussion of the algebraic approach is available <a href="https://en.wikipedia.org/wiki/Simple_linear_regression#Fitting_the_regression_line">here</a>.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn9"><p>This is another example of an infelicity of symbol conventions. The typical math/statistics text symbols are not the same as the symbols a student in Physics 101 would likely encounter.<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn10"><p>The careful reader will note that the data set shown in <a href="#eq-8">Equation&nbsp;9</a> is not square, there are more observations (rows) than variables (columns). This is fine and desireable for a linear regression, we don’t want to use just two data points as that would have no error but not necessarily be accurate. However, only square matrices have inverses, so what’s going on here? In practice, what’s happening is we are using something called a pseudoinverse. The first part of the right side of <a href="#eq-9">Equation&nbsp;11</a> is in fact the pseudoinverse: <span class="math inline">\((\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{X}^{\mathsf{T}}\)</span>. Perhaps we’ll cover this in a future post.<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn11"><p>The switch in the order of matrices on the last line of <a href="#eq-12">Equation&nbsp;12</a> is one of the properties of the inverse operator.<a href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10"><p>The careful reader will note that the data set shown in <a href="#eq-8" class="quarto-xref">Equation&nbsp;9</a> is not square, there are more observations (rows) than variables (columns). This is fine and desireable for a linear regression, we don’t want to use just two data points as that would have no error but not necessarily be accurate. However, only square matrices have inverses, so what’s going on here? In practice, what’s happening is we are using something called a pseudoinverse. The first part of the right side of <a href="#eq-9" class="quarto-xref">Equation&nbsp;11</a> is in fact the pseudoinverse: <span class="math inline">\((\mathbf{X}^{\mathsf{T}}\mathbf{X})^{-1}\mathbf{X}^{\mathsf{T}}\)</span>. Perhaps we’ll cover this in a future post.<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn11"><p>The switch in the order of matrices on the last line of <a href="#eq-12" class="quarto-xref">Equation&nbsp;12</a> is one of the properties of the inverse operator.<a href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn12"><p>This means that the rank of the matrix is less than the number of columns. You can get the rank of a matrix by counting the number of non-zero eigenvalues via <code>eigen(A2)$values</code>, which in this case gives 8.9330344, -5.9330344, -3.5953271^{-16}. There are only two non-zero values, so the rank is two. Perhaps in another post we’ll discuss this in more detail.<a href="#fnref12" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
-</section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div quarto-reuse="quarto-reuse" class="quarto-appendix-contents"><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
-  author = {Bryan Hanson},
+</aside>
+
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
+  author = {Hanson, Bryan},
   title = {Notes on {Linear} {Algebra} {Part} 2},
   date = {2022-09-01},
-  url = {http://chemospec.org/Linear-Alg-Notes-Pt2.html},
+  url = {http://chemospec.org/posts/2022-09-01-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2.html},
   langid = {en}
 }
-</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2022" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
-Bryan Hanson. 2022. <span>“Notes on Linear Algebra Part 2.”</span>
-September 1, 2022. <a href="http://chemospec.org/Linear-Alg-Notes-Pt2.html">http://chemospec.org/Linear-Alg-Notes-Pt2.html</a>.
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2022" class="csl-entry quarto-appendix-citeas" role="listitem">
+Hanson, Bryan. 2022. <span>“Notes on Linear Algebra Part 2.”</span>
+September 1, 2022. <a href="http://chemospec.org/posts/2022-09-01-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2.html">http://chemospec.org/posts/2022-09-01-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2.html</a>.
 </div></div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
@@ -685,9 +667,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
     }
   });
   clipboard.on('success', function(e) {
@@ -723,10 +719,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -736,8 +731,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -752,6 +756,148 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    if (id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        for (let i = 0; i < 2; i++) {
+          container.appendChild(note.children[i].cloneNode(true));
+        }
+        return container.innerHTML
+      } else {
+        return note.innerHTML;
+      }
+    } else {
+      return note.innerHTML;
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      try { hash = new URL(url).hash; } catch {}
+      const id = hash.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note !== null) {
+        try {
+          const html = processXRef(id, note);
+          instance.setContent(html);
+        } finally {
+          instance.enable();
+          instance.show();
+        }
+      } else {
+        // See if we can fetch this
+        fetch(url.split('#')[0])
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.getElementById(id);
+          console.log(htmlDoc.body.innerHTML);
+          if (note !== null) {
+            const html = processXRef(id, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
   const findCites = (el) => {
     const parentEl = el.parentElement;
     if (parentEl) {
@@ -796,9 +942,18 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
-      <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookies are used to track visits only</a></div></div>
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+
+<div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookies are used to track visits only</a></div></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
   </div>
 </footer>
+
 
 
 
