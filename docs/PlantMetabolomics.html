@@ -133,7 +133,7 @@ cookieconsent.run({
  <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://fosstodon.org/@ProfBryanHanson" rel="me" target=""><i class="bi bi-mastodon" role="img" aria-label="Mastodon">
+    <a class="nav-link" href="https://fosstodon.org/%40ProfBryanHanson" rel="me" target=""><i class="bi bi-mastodon" role="img" aria-label="Mastodon">
 </i> 
  <span class="menu-text"></span></a>
   </li>  
@@ -225,7 +225,7 @@ cookieconsent.run({
 
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="images/Bkgnd.jpg" class="img-fluid" width="750"></p>
+<p><img src="images/Bkgnd.jpg" class="img-fluid"></p>
 </div>
 </div>
 <p><em>This page honors and makes available the research of my students. However, it is no longer being updated, as I retired in June 2018.</em></p>
@@ -234,12 +234,12 @@ cookieconsent.run({
 <p>Our approach is to blend metabolomic and ecological methods. Metabolomics is the study of an organism’s metabolites under a controlled set of conditions, in our case, normal versus stressful conditions. As far as possible, one tries to measure all the metabolites at once, in a holistic fashion, which is not an easy feat. Typically, this is done with NMR, MS, IR, or other forms of spectroscopy. We also supplement these instrumental techniques with more traditional single point chemical measurements such as antioxidant levels. From the ecological perspective, we record parameters of plant growth that represent measures of fitness, such as biomass produced, the number of flowers, and so forth. To be meaningful, we need to conduct these experiments on large numbers of plants. The resulting data sets, composed of very different sorts of measurements, represent the state of the plant under the conditions tested. We use various statistical methods to figure out which treatments have produced an interesting response, and whether those responses vary with genotype. Our statistical analyses are done with the open source computational statistical program <a href="http://www.r-project.org/">R</a> and in the case of spectroscopic data, with the <a href="https://CRAN.R-project.org/package=ChemoSpec">ChemoSpec</a> package for R, written by Bryan.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="images/KristinaMulry.jpg" class="img-fluid" width="2010"></p>
+<p><img src="images/KristinaMulry.jpg" class="img-fluid"></p>
 </div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="images/DaGroup.jpg" class="img-fluid" width="1870"></p>
+<p><img src="images/DaGroup.jpg" class="img-fluid"></p>
 </div>
 </div>
 <p>The following students have carried out this research. Click on their names to download the posters they prepared about their work:</p>
@@ -287,17 +287,17 @@ cookieconsent.run({
 </ul>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="images/Elizabeth.jpg" class="img-fluid" width="752"></p>
+<p><img src="images/Elizabeth.jpg" class="img-fluid"></p>
 </div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="images/Matt.jpg" class="img-fluid" width="720"></p>
+<p><img src="images/Matt.jpg" class="img-fluid"></p>
 </div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="images/ShannonBrian.jpg" class="img-fluid" width="1824"></p>
+<p><img src="images/ShannonBrian.jpg" class="img-fluid"></p>
 </div>
 </div>
 
@@ -462,7 +462,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
           const parser = new DOMParser();
           const htmlDoc = parser.parseFromString(html, "text/html");
           const note = htmlDoc.getElementById(id);
-          console.log(htmlDoc.body.innerHTML);
           if (note !== null) {
             const html = processXRef(id, note);
             instance.setContent(html);

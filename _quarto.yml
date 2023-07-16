@@ -1,6 +1,8 @@
 project:
   type: website
   output-dir: docs
+  resources:
+    - slow-blink.mp4
 website:
   title: "Chemometrics and Spectroscopy Using R"
   site-url: http://chemospec.org
@@ -30,7 +32,7 @@ website:
         href: https://twitter.com/profbryanhanson
       - icon: mastodon
         aria-label: Mastodon
-        href: https://fosstodon.org/@ProfBryanHanson
+        href: https://fosstodon.org/%40ProfBryanHanson
         rel: "me"
       - icon: git
         href: https://github.com/bryanhanson

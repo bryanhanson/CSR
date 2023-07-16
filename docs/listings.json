@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/2023-07-16-Photometer/Photometer.html",
       "/posts/2023-06-12-DIY-NMR/DIY-NMR.html",
       "/posts/2022-11-07-Announce-Subscribe/Announce-Subscribe.html",
       "/posts/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html",
@@ -33,8 +34,8 @@
       "/posts/2020-02-19-CS2D-update/2020-02-19-CS2D-update.html",
       "/posts/2020-01-25-GH-Topics/2020-01-25-GH-Topics.html",
       "/posts/2020-01-24-CS-update/2020-01-24-CS-update.html",
-      "/posts/2020-01-22-CSU-update/2020-01-22-CSU-update.html",
       "/posts/2020-01-22-F4S-update/2020-01-22-F4S-update.html",
+      "/posts/2020-01-22-CSU-update/2020-01-22-CSU-update.html",
       "/posts/2020-01-02-readJDX-update/2020-01-02-readJDX-update.html",
       "/posts/2020-01-01-Intro-F4S/2021-01-01-Intro-F4S.html"
     ]
