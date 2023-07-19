@@ -273,6 +273,7 @@ cookieconsent.run({
   </div>
   
 
+
 </header>
 
 <p>I’ve been developing packages in <code>R</code> for over a decade now. When adding new features to a package, I often import functions from another package, and of course that package goes in the <code>Imports:</code> field of the <code>DESCRIPTION</code> file. Later, I might change my approach entirely and no longer need that package. Do I remember to remove it from <code>DESCRIPTION</code>? Generally not. The same thing happens when writing a new vignette, and it can happen with the <code>Suggests:</code> field as well. It can also happen when one splits a packages into several smaller packages. If one forgets to delete a package from the <code>DESCRIPTION</code> file, the dependencies become bloated, because all the imported and suggested packages have to be available to install the package. This adds overhead to the project, and increases the possibility of a namespace conflict.</p>
@@ -599,33 +600,39 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       instance.disable();
       let url = xref.getAttribute('href');
       let hash = undefined; 
-      try { hash = new URL(url).hash; } catch {}
-      const id = hash.replace(/^#\/?/, "");
-      const note = window.document.getElementById(id);
-      if (note !== null) {
-        try {
-          const html = processXRef(id, note);
-          instance.setContent(html);
-        } finally {
-          instance.enable();
-          instance.show();
-        }
+      if (url.startsWith('#')) {
+        hash = url;
       } else {
-        // See if we can fetch this
-        fetch(url.split('#')[0])
-        .then(res => res.text())
-        .then(html => {
-          const parser = new DOMParser();
-          const htmlDoc = parser.parseFromString(html, "text/html");
-          const note = htmlDoc.getElementById(id);
-          if (note !== null) {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
             const html = processXRef(id, note);
             instance.setContent(html);
-          } 
-        }).finally(() => {
-          instance.enable();
-          instance.show();
-        });
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
       }
     }, function(instance) {
     });

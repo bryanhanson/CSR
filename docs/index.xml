@@ -10,7 +10,166 @@
 <atom:link href="http://chemospec.org/index.xml" rel="self" type="application/rss+xml"/>
 <description>Applying chemometrics to spectroscopy using R</description>
 <generator>quarto-99.9.9</generator>
-<lastBuildDate>Sun, 16 Jul 2023 07:00:00 GMT</lastBuildDate>
+<lastBuildDate>Wed, 26 Jul 2023 07:00:00 GMT</lastBuildDate>
+<item>
+  <title>Earth’s Field NMR</title>
+  <dc:creator>Bryan Hanson</dc:creator>
+  <link>http://chemospec.org/posts/2023-07-19-EF-NMR-1/EF-NMR-1.html</link>
+  <description><![CDATA[ 
+
+
+
+<section id="tldr" class="level2">
+<h2 class="anchored" data-anchor-id="tldr">TL;DR</h2>
+<ul>
+<li>In EF-NMR the line widths are extremely narrow but there is no chemical shift dispersion.</li>
+<li>We can observe heteronuclear couplings in EF-NMR as they are field-invariant.</li>
+<li>In EF-NMR the population of the two energy states is essentially equal, eliminating any signal. We can get around this with pre-polarization.</li>
+<li>The resonance frequency of <img src="https://latex.codecogs.com/png.latex?%5Cce%7B%5E%7B1%7DH%7D"> NMR in EF is in the audio range, greatly simplifying the electronics.</li>
+</ul>
+<hr>
+<p>Let’s take a closer look from first principles what kinds of information one can glean from EF-NMR. We’ll restrict our discussion to spin <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B1%7D%7B2%7D"> nuclei with ~100% abundance, like <img src="https://latex.codecogs.com/png.latex?%5Cce%7B%5E%7B1%7DH%7D">, <img src="https://latex.codecogs.com/png.latex?%5Cce%7B%5E%7B31%7DP%7D"> or <img src="https://latex.codecogs.com/png.latex?%5Cce%7B%5E%7B19%7DF%7D"> – you’ll see why soon enough. Table&nbsp;1 gives some relevant physical parameters for these nuclei.</p>
+<div id="tbl-params" class="anchored">
+<table class="table">
+<caption>Table&nbsp;1: Important NMR parameters for ~100% abundant spin <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B1%7D%7B2%7D"> nuclei. The units of <img src="https://latex.codecogs.com/png.latex?%5Cgamma"> are <img src="https://latex.codecogs.com/png.latex?10%5E7"> rad <img src="https://latex.codecogs.com/png.latex?T%5E%7B-1%7D"> <img src="https://latex.codecogs.com/png.latex?s%5E%7B-1%7D">. Larmor frequency is relative in MHz.</caption>
+<thead>
+<tr class="header">
+<th>Nuclei</th>
+<th style="text-align: right;">Gyromagnetic ratio <img src="https://latex.codecogs.com/png.latex?%5Cgamma"></th>
+<th style="text-align: right;">Larmor Freq.</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><img src="https://latex.codecogs.com/png.latex?%5Cce%7B%5E%7B1%7DH%7D"></td>
+<td style="text-align: right;">26.7522</td>
+<td style="text-align: right;">100</td>
+</tr>
+<tr class="even">
+<td><img src="https://latex.codecogs.com/png.latex?%5Cce%7B%5E%7B19%7DF%7D"></td>
+<td style="text-align: right;">25.1815</td>
+<td style="text-align: right;">94</td>
+</tr>
+<tr class="odd">
+<td><img src="https://latex.codecogs.com/png.latex?%5Cce%7B%5E%7B31%7DP%7D"></td>
+<td style="text-align: right;">10.8394</td>
+<td style="text-align: right;">40.5</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Excellent general references on NMR theory are Friebolin <span class="citation" data-cites="Friebolin2011">(Friebolin 2011)</span> and Claridge <span class="citation" data-cites="Claridge2016">(Claridge 2016)</span>.</p>
+</section>
+<section id="line-widths-are-very-narrow" class="level2">
+<h2 class="anchored" data-anchor-id="line-widths-are-very-narrow">Line Widths are Very Narrow</h2>
+<p>The line width of an NMR signal is primarily dependent on the homogeneity of the <img src="https://latex.codecogs.com/png.latex?B_o"> field, which in the case of earth’s field is very good. <span class="citation" data-cites="Appelt2006">Appelt et al. (2006)</span> state that when observations are made &gt;100 meters from buildings and ferrous structures<sup>1</sup> the homogeneity of the earth’s magnetic field for small sample volumes is in the range of <img src="https://latex.codecogs.com/png.latex?%5CDelta%20B/B%20%3C%2010%5E%7B-6%7D">. They further state that when <img src="https://latex.codecogs.com/png.latex?T_1%20%5Csim%20T_2%20%3E%203"> seconds line widths will be less than 0.1 Hz.<sup>2</sup> This all sounds very promising: narrow lines imply good separation between peaks.</p>
+</section>
+<section id="no-chemical-shift-information" class="level2">
+<h2 class="anchored" data-anchor-id="no-chemical-shift-information">No Chemical Shift Information</h2>
+<p>One of the characteristics of high-field NMR which makes it so useful is the dispersion of chemical shifts as a function of structure. Unfortunately, EF-NMR has effectively zero chemical shift dispersion. The equation for computing chemical shift, <img src="https://latex.codecogs.com/png.latex?%5Cdelta">, is:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cdelta%20=%20%5Cfrac%7B%5Cnu_%7Bsample%7D%20-%20%5Cnu_%7Breference%7D%7D%7B%5Cnu_%7BB_o%7D%7D%0A"></p>
+<p>where the units are:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0Appm%20=%20%5Cfrac%7BHz%7D%7BMHz%7D%0A"></p>
+<p>since <img src="https://latex.codecogs.com/png.latex?%5Cdelta"> is a field strength independent quantity. Taking <img src="https://latex.codecogs.com/png.latex?%5Cnu_%7Breference%7D"> to be zero, e.g.&nbsp;TMS added to the sample, we can rearrange the equation to get <img src="https://latex.codecogs.com/png.latex?%5Cnu_%7Bsample%7D">. Consider the compound <img src="https://latex.codecogs.com/png.latex?%5Cce%7BCH3Br%7D"> whose methyl group has a chemical shift of 2.63 ppm. Using an earth’s field <img src="https://latex.codecogs.com/png.latex?%5Cce%7B%5E%7B1%7DH%7D"> Larmor frequency of 19.1 KHz, we can compute the shift of <img src="https://latex.codecogs.com/png.latex?%5Cce%7BCH3Br%7D"> in Hz as 0.0191 Hz. This is an extremely small value, smaller than the typical line width in earth’s field (so the promise of narrow line widths is not going to save us).</p>
+<p>For further comparison, we can do the same calculation for <img src="https://latex.codecogs.com/png.latex?%5Cce%7BCH2Br2%7D"> which has a shift of 4.90 ppm. The result is exactly the same, 0.0191 Hz. We can see that these two compounds with differing numbers of halogens, which would be trivial to distinguish with a low field bench-top instrument operating at 80 MHz, are indistinguishable in earth’s field. This is due to the very small value of earth’s magnetic field.</p>
+</section>
+<section id="heteronuclear-couplings" class="level2">
+<h2 class="anchored" data-anchor-id="heteronuclear-couplings">Heteronuclear Couplings</h2>
+<p>While the chemical shift dispersion in earth’s field is clearly nil, heteronuclear J couplings are readily observed due to their greater magnitude, up to about 200 Hz. <span class="citation" data-cites="Appelt2006">Appelt et al. (2006)</span> gives a number of interesting examples involving <img src="https://latex.codecogs.com/png.latex?%5Cce%7B%5E%7B1%7DH%7D">, <img src="https://latex.codecogs.com/png.latex?%5Cce%7B%5E%7B19%7DF%7D"> and <img src="https://latex.codecogs.com/png.latex?%5Cce%7B%5E%7B29%7DSi%7D"> containing compounds.</p>
+</section>
+<section id="populations-of-quantum-states" class="level2">
+<h2 class="anchored" data-anchor-id="populations-of-quantum-states">Populations of Quantum States</h2>
+<p>Basic NMR theory tells us that the energy difference between the two quantum states for a spin <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B1%7D%7B2%7D"> nucleus is proportional to the field strength <img src="https://latex.codecogs.com/png.latex?B_o">:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5CDelta%20E%20=%20%5Cgamma%20%5Chbar%20B_o%0A"></p>
+<p>where <img src="https://latex.codecogs.com/png.latex?%5Chbar"> is <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7Bh%7D%7B2%5Cpi%7D">. A plot for <img src="https://latex.codecogs.com/png.latex?%5Cce%7B%5E%7B1%7DH%7D"> is shown in Figure&nbsp;1; the right-most point corresponds to a 1,000 MHz instrument. Clearly as <img src="https://latex.codecogs.com/png.latex?B_o"> goes to zero the <img src="https://latex.codecogs.com/png.latex?%5CDelta%20E"> goes to zero in a simple linear fashion.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-DeltaE" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="http://chemospec.org/posts/2023-07-19-EF-NMR-1/EF-NMR-1_files/figure-html/fig-DeltaE-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Figure&nbsp;1: <img src="https://latex.codecogs.com/png.latex?%5CDelta">E as a function of field strength <img src="https://latex.codecogs.com/png.latex?B_o"></figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>We can then relate the number of nuclei in the upper energy state, <img src="https://latex.codecogs.com/png.latex?N_%7B%5Cbeta%7D">, to that in the lower energy state, <img src="https://latex.codecogs.com/png.latex?N_%7B%5Calpha%7D">, at thermal equilibrium as:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cfrac%7BN_%7B%5Cbeta%7D%7D%7BN_%7B%5Calpha%7D%7D%20=%20e%5E%7B-%20%5CDelta%20E/kT%7D%20%5Capprox%201%20-%20%5Cfrac%7B%5CDelta%20E%7D%7BkT%7D%20=%201-%20%5Cfrac%7B%5Cgamma%20%5Chbar%20B_o%7D%7BkT%7D%0A"></p>
+<p>where <img src="https://latex.codecogs.com/png.latex?k"> is the Boltzman constant and <img src="https://latex.codecogs.com/png.latex?T"> is the temperature in Kelvin. The ratio of population states is nearly equal for any value of <img src="https://latex.codecogs.com/png.latex?B_o"> but of course gets even worse as <img src="https://latex.codecogs.com/png.latex?B_o"> decreases. This is the reason for the low overall sensitivity of NMR as an analytical technique. We can compute the ratio for <img src="https://latex.codecogs.com/png.latex?%5Cce%7B%5E%7B1%7DH%7D"> at room temperature; we’ll compare the value for earth’s field to those of a 100 and 1,000 MHz instruments:</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>      45 uT (Earth)    2.35 T (100 MHz) 23.49 T (1,000 MHz) 
+     1.000000000000      0.999999999998      0.999999999982 </code></pre>
+</div>
+</div>
+<p>As you can see, in earth’s field there is basically no difference in the two population states, meaning there is no signal to observe. Clearly a problem!</p>
+<p>If all the nuclei were in <img src="https://latex.codecogs.com/png.latex?N_%7B%5Calpha%7D"> we could measure the energy required to bump them up to <img src="https://latex.codecogs.com/png.latex?N_%7B%5Cbeta%7D">, or more commonly, bump them up and then watch the energy given off as equilibrium returns. Unfortunately, the signal produced is proportional to <img src="https://latex.codecogs.com/png.latex?N_%7B%5Calpha%7D%20-%20N_%7B%5Cbeta%7D">, which is effectively zero in earth’s field. At the same time however, the more spins we have, the higher the signal will be. More spins total in the detection coil sweet spot will be helpful, but there are other factors mitigating against making large coils to accommodate large samples. One way around this is to use signal averaging.</p>
+</section>
+<section id="pre-polarization" class="level2">
+<h2 class="anchored" data-anchor-id="pre-polarization">Pre-Polarization</h2>
+<p>In the case of earth’s field NMR, the usual way around this problem of very limited signal is to pre-polarize the sample.<sup>3</sup> This basically involves subjecting the sample to a fairly high magnetic field for a brief period before measuring the any signals. This pre-polarization field forces more of the <img src="https://latex.codecogs.com/png.latex?N_%7B%5Cbeta%7D"> nuclei to assume the lower energy <img src="https://latex.codecogs.com/png.latex?N_%7B%5Calpha%7D"> state, thus increasing <img src="https://latex.codecogs.com/png.latex?N_%7B%5Calpha%7D%20-%20N_%7B%5Cbeta%7D"> which means there is a signal to be observed. Mohorič has an excellent but technical discussion of the details of this process <span class="citation" data-cites="Mohoric2009">(Mohorič and Stepišnick 2009)</span>.</p>
+</section>
+<section id="ef-nmr-signals-are-in-the-audio-range" class="level2">
+<h2 class="anchored" data-anchor-id="ef-nmr-signals-are-in-the-audio-range">EF-NMR Signals are in the Audio Range</h2>
+<p>What is the Larmor (resonance) frequency in earth’s field? Earth’s magnetic field <a href="https://en.wikipedia.org/wiki/Earth%27s_magnetic_field">varies</a> from about 25 to 65 <img src="https://latex.codecogs.com/png.latex?%5Cmu">T; we’ll use an intermediate value of 45 <img src="https://latex.codecogs.com/png.latex?%5Cmu">T for our calculations. The Larmor frequency is given by the equation:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cnu_%7BL%7D%20=%20%5Clvert%5Cfrac%7B%5Cgamma%7D%7B2%5Cpi%7D%5Crvert%20B_o%0A"></p>
+<p>Notice there is a simple linear relation between <img src="https://latex.codecogs.com/png.latex?%5Cnu_%7BL%7D"> and <img src="https://latex.codecogs.com/png.latex?B_o">.<sup>4</sup> If we plug in values for our nuclei we get the following values in Hz:</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>       1H       19F       31P 
+19159.852 18034.921  7763.148 </code></pre>
+</div>
+</div>
+<p>What we have shown here is that for EF-NMR, resonance frequencies are in the <a href="https://en.wikipedia.org/wiki/Audio_frequency">audio</a> (20 - 20,000 Hz) and lower <a href="https://en.wikipedia.org/wiki/Radio_frequency">radio</a> (20,000 Hz +) frequency range. Why is this important? It greatly simplifies signal detection because audio receivers are essentially radios, and the electronics for working in this frequency range are extremely well worked out, and not expensive to buy or build.</p>
+</section>
+<section id="historical-note" class="level2">
+<h2 class="anchored" data-anchor-id="historical-note">Historical Note</h2>
+<p>The first earth’s field NMR experiment was apparently conducted by Martin Packard and Russell Varian while at Varian Associates <span class="citation" data-cites="Packard1954">(Packard and Varian 1954)</span>. Varian Associates was of course a major instrument player, including NMR, and for a long time marketed their instruments largely toward colleges. <sup>5</sup></p>
+
+
+
+</section>
+
+
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-Appelt2006" class="csl-entry">
+Appelt, Stephan, Holger Kühn, F. Wolfgang Häsing, and Bernhard Blümich. 2006. <span>“Chemical Analysis by Ultrahigh-Resolution Nuclear Magnetic Resonance in the Earth’s Magnetic Field.”</span> <em>Nature Physics</em> 2. <a href="https://doi.org/10.1038/nphys211">https://doi.org/10.1038/nphys211</a>.
+</div>
+<div id="ref-Claridge2016" class="csl-entry">
+Claridge, Timothy D. W. 2016. <em>High-Resolution NMR Techniques in Organic Chemistry</em>. Elsevier.
+</div>
+<div id="ref-Friebolin2011" class="csl-entry">
+Friebolin, Horst. 2011. <em>Basic One- and Two-Dimensional NMR Spectroscopy</em>. Wiley-VCH.
+</div>
+<div id="ref-Mohoric2009" class="csl-entry">
+Mohorič, Aleš, and Janez Stepišnick. 2009. <span>“NMR in the Earth’s Magnetic Field.”</span> <em>Progress in Nuclear Magnetic Resonance Spectroscopy</em> 54: 166–82. <a href="https://doi.org/10.1016/j.pnmrs.2008.07.002">https://doi.org/10.1016/j.pnmrs.2008.07.002</a>.
+</div>
+<div id="ref-Packard1954" class="csl-entry">
+Packard, Martin, and Russell Varian. 1954. <span>“Free Nuclear Induction in the Earth’s Magnetic Field.”</span> <em>Physical Review</em> 93: 939.
+</div>
+</div></section><aside id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Keep in mind that buried utilities made of iron or carrying electrical current can interfere.↩︎</p></li>
+<li id="fn2"><p><img src="https://latex.codecogs.com/png.latex?T_1"> is the relaxation time for magnetization aligned with the <img src="https://latex.codecogs.com/png.latex?B_o"> axis, which corresponds to the <img src="https://latex.codecogs.com/png.latex?z"> axis. This is the relaxation time that affects the ability to pulse quickly. It’s also called the spin-lattice relaxation time. <img src="https://latex.codecogs.com/png.latex?T_2"> is the relaxation time corresponding to magnetization in the <img src="https://latex.codecogs.com/png.latex?x,y"> plane, and is also known as the spin-spin relaxation time. <img src="https://latex.codecogs.com/png.latex?T_2"> is largely determined by magnetic field inhomogeneity and the line width at half peak height is <img src="https://latex.codecogs.com/png.latex?%5CDelta%20%5Cnu_%7B1/2%7D%20=%20%5Cgamma%20%5CDelta%20B_o%20/2">. <img src="https://latex.codecogs.com/png.latex?T_1%20%5Cge%20T_2">. See Friebolin chapter 7 for a detailed discussion.↩︎</p></li>
+<li id="fn3"><p>In fact pre-polarizing or polarizing the sample is now en-vogue for higher field instruments as well, in the form of DNP, SABRE etc.↩︎</p></li>
+<li id="fn4"><p>The gyromagnetic ratio can be negative, hence the absolute value is taken here.↩︎</p></li>
+<li id="fn5"><p>Martin Packard is apparently <a href="https://hsm.stackexchange.com/q/15580/18707">unrelated</a> to David Packard, one of the founders of HP.↩︎</p></li>
+</ol>
+</aside><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2023,
+  author = {Hanson, Bryan},
+  title = {Earth’s {Field} {NMR}},
+  date = {2023-07-26},
+  url = {http://chemospec.org/posts/2023-07-19-EF-NMR-1/EF-NMR-1.html},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2023" class="csl-entry quarto-appendix-citeas">
+Hanson, Bryan. 2023. <span>“Earth’s Field NMR.”</span> July 26, 2023. <a href="http://chemospec.org/posts/2023-07-19-EF-NMR-1/EF-NMR-1.html">http://chemospec.org/posts/2023-07-19-EF-NMR-1/EF-NMR-1.html</a>.
+</div></div></section></div> ]]></description>
+  <category>NMR</category>
+  <category>EF-NMR</category>
+  <guid>http://chemospec.org/posts/2023-07-19-EF-NMR-1/EF-NMR-1.html</guid>
+  <pubDate>Wed, 26 Jul 2023 07:00:00 GMT</pubDate>
+</item>
 <item>
   <title>Home Built Photometer</title>
   <dc:creator>Bryan Hanson</dc:creator>
@@ -5623,214 +5782,6 @@ Hanson, Bryan. 2021. <span>“Spectroscopy Suite Update.”</span> March 27,
   <category>readJDX</category>
   <guid>http://chemospec.org/posts/2021-03-27-Spec-Suite-update/2021-03-27-Spec-Suite-update.html</guid>
   <pubDate>Sat, 27 Mar 2021 07:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>Interfacing ChemoSpec to PLS</title>
-  <dc:creator>Bryan Hanson</dc:creator>
-  <link>http://chemospec.org/posts/2021-02-08-PLS/2021-02-08-PLS.html</link>
-  <description><![CDATA[ 
-
-
-
-<p>The <code>ChemoSpec</code> package carries out exploratory data analysis (EDA) on spectroscopic data. EDA is often described as “letting that data speak”, meaning that one studies various descriptive plots, carries out clustering (HCA) as well as dimension reduction (e.g.&nbsp;PCA), with the ultimate goal of finding any natural structure in the data.</p>
-<p>As such, <code>ChemoSpec</code> does not feature any predictive modeling functions because other packages provide the necessary tools. I do however hear from users several times a year about how to interface a <code>ChemoSpec</code> object with these other packages, and it seems like a post about how to do this is overdue. I’ll illustrate how to carry out partial least squares (PLS) using data stored in a <code>ChemoSpec</code> object and the package <code>chemometrics</code> by Peter Filzmoser and Kurt Varmuza <span class="citation" data-cites="chemometrics2017">(Filzmoser and Varmuza 2017)</span>. One can also use the <code>pls</code> package <span class="citation" data-cites="PLS2020">(Mevik, Wehrens, and Liland 2020)</span>.</p>
-<p>PLS is a technique related to regression and PCA that tries to develop a mathematical model between a matrix of sample vectors, in our case, spectra, and one or more separately measured dependent variables that describe the same samples (typically, chemical analyses). If one can develop a reliable model, then going forward one can measure the spectrum of a new sample and use the model to predict the value of the dependent variables, presumably saving time and money. This post will focus on interfacing <code>ChemoSpec</code> objects with the needed functions in <code>chemometrics</code>. I won’t cover how to evaluate and refine your model, but you can find plenty on this in <span class="citation" data-cites="Filzmoser2009">Varmuza and Filzmoser (2009)</span> chapter 4, along with further background (there’s a lot of math in there, but if you aren’t too keen on the math, gloss over it to get the other nuggets). Alternatively, take a look at the vignette that ships with <code>chemometrics</code> via <code>browseVignettes("chemometrics")</code>.</p>
-<p>As our example we’ll use the marzipan NIR data set that one can download in Matlab format from <a href="http://www.models.life.ku.dk/Marzipan">here</a>.<sup>1</sup> The corresponding publication is <span class="citation" data-cites="Christensen2004">(Christensen et al. 2004)</span>. This data set contains NIR spectra of marzipan candies made with different recipes and recorded using several different instruments, along with data about moisture and sugar content. We’ll use the data recorded on the NIRSystems 6500 instrument, covering the 400-2500 nm range. The following code chunk gives a summary of the data set and shows a plot of the data. Because we are focused on how to carry out PLS, we won’t worry about whether this data needs to be normalized or otherwise pre-processed (see the Christensen paper for lots of details).</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"ChemoSpec"</span>)</span></code></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Loading required package: ChemoSpecUtils</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-As of version 6, ChemoSpec offers new graphics output options</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>For details, please see ?GraphicsOptions</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-The ChemoSpec graphics option is set to 'ggplot2'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>To change it, do
-    options(ChemoSpecGraphics = 'option'),
-    where 'option' is one of 'base' or 'ggplot2' or'plotly'.</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">load</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Marzipan.RData"</span>)</span>
-<span id="cb7-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">sumSpectra</span>(Marzipan)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
- Marzipan NIR data set from www.models.life.ku.dk/Marzipan 
-
-    There are 32 spectra in this set.
-    The y-axis unit is absorbance.
-
-    The frequency scale runs from
-    450 to 2448 wavelength (nm)
-    There are 1000 frequency values.
-    The frequency resolution is
-    2 wavelength (nm)/point.
-
-
-    The spectra are divided into 9 groups: 
-
-  group no.     color symbol alt.sym
-1     a   5 #FB0D16FF      1       a
-2     b   4 #FFC0CBFF     16       b
-3     c   4 #2AA30DFF      2       c
-4     d   4 #9BCD9BFF     17       d
-5     e   3 #700D87FF      3       e
-6     f   3 #A777F2FF      8       f
-7     g   2 #FD16D4FF      4       g
-8     h   3 #B9820DFF      5       h
-9     i   4 #B9820DFF      5       i
-
-
-*** Note: this is an S3 object
-of class 'Spectra'</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">plotSpectra</span>(Marzipan, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">which =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">32</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">lab.pos =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3000</span>)</span></code></pre></div>
-<div class="cell-output-display">
-<p><img src="http://chemospec.org/posts/2021-02-08-PLS/2021-02-08-PLS_files/figure-html/showSpectra-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<p>In order to carry out PLS, one needs to provide a matrix of spectroscopic data, with samples in rows (let’s call it <img src="https://latex.codecogs.com/png.latex?X">, you’ll see why in a moment). Fortunately this data is available directly from the <code>ChemoSpec</code> object as <code>Marzipan$data</code>.<sup>2</sup> One also needs to provide a matrix of the additional dependent data (let’s call it <img src="https://latex.codecogs.com/png.latex?Y">). It is critical that the order of rows in <img src="https://latex.codecogs.com/png.latex?Y"> correspond to the order of rows in the matrix of spectroscopic data, <img src="https://latex.codecogs.com/png.latex?X">.</p>
-<p>Since we are working in <code>R</code> we know there are a lot of ways to do most tasks. Likely you will have the additional data in a spreadsheet, so let’s see how to bring that into the workspace. You’ll need samples in rows, and variables in columns. For your sanity and error-avoidance, you should include a header of variable names and the names of the samples in the first column. Save the spreadsheet as a csv file. I did these steps using the sugar and moisture data from the original paper. Read the file in as follows.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1">Y <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">read.csv</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Marzipan.csv"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">header =</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span>)</span>
-<span id="cb10-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">str</span>(Y)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>'data.frame':   32 obs. of  3 variables:
- $ sample  : chr  "a1" "a2" "a3" "a4" ...
- $ sugar   : num  32.7 34.9 33.9 33.2 33.2 ...
- $ moisture: num  15 14.9 14.7 14.9 14.9 ...</code></pre>
-</div>
-</div>
-<p>The function we’ll be using wants a matrix as input, so convert the data frame that <code>read.csv</code> generates to a matrix. Note that we’ll select only the numeric variables on the fly, as unlike a data frame, a matrix can only be composed of one data type.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1">Y <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">as.matrix</span>(Y[, <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"sugar"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"moisture"</span>)])</span>
-<span id="cb12-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">str</span>(Y)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code> num [1:32, 1:2] 32.7 34.9 33.9 33.2 33.2 ...
- - attr(*, "dimnames")=List of 2
-  ..$ : NULL
-  ..$ : chr [1:2] "sugar" "moisture"</code></pre>
-</div>
-</div>
-<p>Now we are ready to carry out PLS. Since we have a multivariate <img src="https://latex.codecogs.com/png.latex?Y">, we need to use the appropriate function (use <code>pls1_nipals</code> if your <img src="https://latex.codecogs.com/png.latex?Y"> matrix is univariate).</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"chemometrics"</span>)</span></code></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Loading required package: rpart</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1">pls_out <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">pls2_nipals</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">X =</span> Marzipan<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>data, Y, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">a =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">5</span>)</span></code></pre></div>
-</div>
-<p>And we’re done! Be sure to take a look at <code>str(pls_out)</code> to see what you got back from the calculation. For the next steps in evaluating your model, see section 3.3 in the <code>chemometrics</code> vignette.</p>
-
-
-
-
-
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent">
-<div id="ref-Christensen2004" class="csl-entry">
-Christensen, Jakob, Lars Nørgaard, Hanne Heimdal, Joan Grønkjær Pedersen, and Søren Balling Engelsen. 2004. <span>“Rapid Spectroscopic Analysis of Marzipan-Comparative Instrumentation.”</span> <em>Journal of Near Infrared Spectroscopy</em> 12 (1): 63–75. <a href="https://doi.org/10.1255/jnirs.408">https://doi.org/10.1255/jnirs.408</a>.
-</div>
-<div id="ref-chemometrics2017" class="csl-entry">
-Filzmoser, Peter, and Kurt Varmuza. 2017. <em>Chemometrics: Multivariate Statistical Analysis in Chemometrics</em>. <a href="https://CRAN.R-project.org/package=chemometrics">https://CRAN.R-project.org/package=chemometrics</a>.
-</div>
-<div id="ref-PLS2020" class="csl-entry">
-Mevik, Bjørn-Helge, Ron Wehrens, and Kristian Hovde Liland. 2020. <em>Pls: Partial Least Squares and Principal Component Regression</em>. <a href="https://CRAN.R-project.org/package=pls">https://CRAN.R-project.org/package=pls</a>.
-</div>
-<div id="ref-Filzmoser2009" class="csl-entry">
-Varmuza, K., and P. Filzmoser. 2009. <em>Introduction to Multivariate Statistical Analysis in Chemometrics</em>. CRC Press.
-</div>
-</div></section><aside id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
-
-<ol>
-<li id="fn1"><p>I have converted the data from Matlab to a <code>ChemoSpec</code> object; if anyone wants to know how to do this let me know and I’ll put up a post on that process.↩︎</p></li>
-<li id="fn2"><p><code>str(Marzipan)</code> will show you the structure of the <code>ChemoSpec</code> object (or in general, any <code>R</code> object). The official definition of a <code>ChemoSpec</code> object can be seen via <code>?Spectra</code>.↩︎</p></li>
-</ol>
-</aside><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2021,
-  author = {Hanson, Bryan},
-  title = {Interfacing {ChemoSpec} to {PLS}},
-  date = {2021-02-08},
-  url = {http://chemospec.org/posts/2021-02-08-PLS/2021-02-08-PLS.html},
-  langid = {en}
-}
-</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2021" class="csl-entry quarto-appendix-citeas">
-Hanson, Bryan. 2021. <span>“Interfacing ChemoSpec to PLS.”</span>
-February 8, 2021. <a href="http://chemospec.org/posts/2021-02-08-PLS/2021-02-08-PLS.html">http://chemospec.org/posts/2021-02-08-PLS/2021-02-08-PLS.html</a>.
-</div></div></section></div> ]]></description>
-  <category>R</category>
-  <category>PLS</category>
-  <category>ChemoSpec</category>
-  <guid>http://chemospec.org/posts/2021-02-08-PLS/2021-02-08-PLS.html</guid>
-  <pubDate>Mon, 08 Feb 2021 07:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>

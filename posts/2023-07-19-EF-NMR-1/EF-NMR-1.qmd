@@ -1,0 +1,161 @@
+---
+title: "Earth's Field NMR"
+description: "What can we measure?  Why or Why Not? Pros? Cons?"
+date: "2023-07-26"
+categories: [NMR, EF-NMR]
+format:
+  html
+bibliography: references.bib
+---
+
+```{r}
+#| label: setup
+#| echo: false
+#| results: hide
+library("latex2exp")
+```
+
+## TL;DR
+
+* In EF-NMR the line widths are extremely narrow but there is no chemical shift dispersion.
+* We can observe heteronuclear couplings in EF-NMR as they are field-invariant.
+* In EF-NMR the population of the two energy states is essentially equal, eliminating any signal.  We can get around this with pre-polarization.
+* The resonance frequency of $\ce{^{1}H}$ NMR in EF is in the audio range, greatly simplifying the electronics.
+
+---
+
+Let's take a closer look from first principles what kinds of information one can glean from EF-NMR.  We'll restrict our discussion to spin $\frac{1}{2}$ nuclei with ~100% abundance, like $\ce{^{1}H}$, $\ce{^{31}P}$ or $\ce{^{19}F}$ -- you'll see why soon enough.  @tbl-params gives some relevant physical parameters for these nuclei.
+
+| Nuclei | Gyromagnetic ratio $\gamma$ | Larmor Freq. |
+| ------ | --------: | ------------: |
+| $\ce{^{1}H}$ | 26.7522 | 100 |
+| $\ce{^{19}F}$ | 25.1815 | 94 |
+| $\ce{^{31}P}$ | 10.8394 | 40.5 |
+
+: Important NMR parameters for ~100% abundant spin $\frac{1}{2}$  nuclei.  The units of $\gamma$ are $10^7$ rad $T^{-1}$ $s^{-1}$.  Larmor frequency is relative in MHz. {#tbl-params}
+
+Excellent general references on NMR theory are Friebolin [@Friebolin2011] and Claridge [@Claridge2016].
+
+## Line Widths are Very Narrow
+
+The line width of an NMR signal is primarily dependent on the homogeneity of the $B_o$ field, which in the case of earth's field is very good. @Appelt2006 state that when observations are made >100 meters from buildings and ferrous structures[^2] the homogeneity of the earth's magnetic field for small sample volumes is in the range of $\Delta B/B < 10^{-6}$.  They further state that when $T_1 \sim T_2 > 3$ seconds line widths will be less than 0.1 Hz.[^3]  This all sounds very promising: narrow lines imply good separation between peaks.
+
+## No Chemical Shift Information
+
+One of the characteristics of high-field NMR which makes it so useful is the dispersion of chemical shifts as a function of structure.  Unfortunately, EF-NMR has effectively zero chemical shift dispersion.  The equation for computing chemical shift, $\delta$, is:
+
+$$
+\delta = \frac{\nu_{sample} - \nu_{reference}}{\nu_{B_o}}
+$$
+
+where the units are:
+
+$$
+ppm = \frac{Hz}{MHz}
+$$
+
+since $\delta$ is a field strength independent quantity.  Taking $\nu_{reference}$ to be zero, e.g. TMS added to the sample, we can rearrange the equation to get $\nu_{sample}$.  Consider the compound $\ce{CH3Br}$ whose methyl group has a chemical shift of 2.63 ppm.  Using an earth's field $\ce{^{1}H}$ Larmor frequency of 19.1 KHz, we can compute the shift of $\ce{CH3Br}$ in Hz as 0.0191 Hz.  This is an extremely small value, smaller than the typical line width in earth's field (so the promise of narrow line widths is not going to save us).
+
+For further comparison, we can do the same calculation for $\ce{CH2Br2}$ which has a shift of 4.90 ppm.  The result is exactly the same, 0.0191 Hz.  We can see that these two compounds with differing numbers of halogens, which would be trivial to distinguish with a low field bench-top instrument operating at 80 MHz, are indistinguishable in earth's field.  This is due to the very small value of earth's magnetic field.
+
+## Heteronuclear Couplings
+
+While the chemical shift dispersion in earth's field is clearly nil, heteronuclear J couplings are readily observed due to their greater magnitude, up to about 200 Hz. @Appelt2006 gives a number of interesting examples involving $\ce{^{1}H}$, $\ce{^{19}F}$ and $\ce{^{29}Si}$ containing compounds.
+
+## Populations of Quantum States
+
+Basic NMR theory tells us that the energy difference between the two quantum states for a spin $\frac{1}{2}$ nucleus is proportional to the field strength $B_o$:
+
+$$
+\Delta E = \gamma \hbar B_o
+$$
+
+where $\hbar$ is $\frac{h}{2\pi}$. A plot for $\ce{^{1}H}$ is shown in @fig-DeltaE; the right-most point corresponds to a 1,000 MHz instrument.  Clearly as $B_o$ goes to zero the $\Delta E$ goes to zero in a simple linear fashion.
+
+```{r, echo = FALSE, results = "hide"}
+library("ggplot2")
+```
+
+```{r, echo = FALSE}
+planck <- 6.626e-34
+hbar <- planck/(2 * pi)
+gamma <- 26.7522
+B0 <- seq(0, 23.49,length.out = 20)
+larmor <- gamma * B0 / (2 * pi)
+DeltaE <- gamma * hbar * B0
+DF <- data.frame(B0, lower = -0.5*DeltaE, upper = 0.5*DeltaE)
+```
+
+```{r}
+#| label: fig-DeltaE
+#| fig.height: 3
+#| echo: false
+#| fig.cap: "$\\Delta$E as a function of field strength $B_o$"
+p <- ggplot(data = DF)
+p <- p + geom_line(aes(B0, upper)) + geom_line(aes(B0, lower))
+p <- p + geom_point(aes(B0, upper)) + geom_point(aes(B0, lower))
+p <- p + labs(x = "Field Strength, Tesla", y = TeX("$\\Delta$E, Joules"))
+p
+```
+
+We can then relate the number of nuclei in the upper energy state, $N_{\beta}$, to that in the lower energy state, $N_{\alpha}$, at thermal equilibrium as:
+
+$$
+\frac{N_{\beta}}{N_{\alpha}} = e^{- \Delta E/kT} \approx 1 - \frac{\Delta E}{kT} = 1- \frac{\gamma \hbar B_o}{kT}
+$$
+
+
+where $k$ is the Boltzman constant and $T$ is the temperature in Kelvin.  The ratio of population states is nearly equal for any value of $B_o$ but of course gets even worse as $B_o$ decreases. This is the reason for the low overall sensitivity of NMR as an analytical technique.  We can compute the ratio for $\ce{^{1}H}$ at room temperature; we'll compare the value for earth's field to those of a 100 and 1,000 MHz instruments:
+
+```{r}
+#| echo: false
+planck <- 6.626e-34
+hbar <- planck/(2 * pi)
+gamma <- 26.7522
+temp <- 273
+kb <- 1.38e-23
+B0 <- c(45e-6, 2.35, 23.49)
+DeltaE <- gamma * hbar * B0
+ratio <- 1 - DeltaE/(kb * temp)
+ratio <- exp(-DeltaE/(kb * temp))
+names(ratio) <- c("45 uT (Earth)", "2.35 T (100 MHz)", "23.49 T (1,000 MHz)")
+print(ratio, digits = 12)
+```
+
+As you can see, in earth's field there is basically no difference in the two population states, meaning there is no signal to observe. Clearly a problem!
+
+If all the nuclei were in $N_{\alpha}$ we could measure the energy required to bump them up to $N_{\beta}$, or more commonly, bump them up and then watch the energy given off as equilibrium returns. Unfortunately, the signal produced is proportional to $N_{\alpha} - N_{\beta}$, which is effectively zero in earth's field.  At the same time however, the more spins we have, the higher the signal will be.  More spins total in the detection coil sweet spot will be helpful, but there are other factors mitigating against making large coils to accommodate large samples.  One way around this is to use signal averaging.
+
+## Pre-Polarization
+
+In the case of earth's field NMR, the usual way around this problem of very limited signal is to pre-polarize the sample.[^4]  This basically involves subjecting the sample to a fairly high magnetic field for a brief period before measuring the any signals.  This pre-polarization field forces more of the $N_{\beta}$ nuclei to assume the lower energy $N_{\alpha}$ state, thus increasing $N_{\alpha} - N_{\beta}$ which means there is a signal to be observed.  Mohorič has an excellent but technical discussion of the details of this process [@Mohoric2009].
+
+## EF-NMR Signals are in the Audio Range
+
+What is the Larmor (resonance) frequency in earth's field? Earth's magnetic field [varies](https://en.wikipedia.org/wiki/Earth%27s_magnetic_field) from about 25 to 65 $\mu$T; we'll use an intermediate value of 45 $\mu$T for our calculations.  The Larmor frequency is given by the equation:
+
+$$
+\nu_{L} = \lvert\frac{\gamma}{2\pi}\rvert B_o
+$$
+
+Notice there is a simple linear relation between $\nu_{L}$ and $B_o$.[^1]  If we plug in values for our nuclei we get the following values in Hz:
+
+```{r, echo = FALSE}
+gammaS <- c(26.7522, 25.1815, 10.8394) * 10e7
+names(gammaS) <- c("1H", "19F", "31P")
+EF <- 45e-6
+nuL <- gammaS * EF/(2*pi)
+nuL
+```
+
+What we have shown here is that for EF-NMR, resonance frequencies are in the [audio](https://en.wikipedia.org/wiki/Audio_frequency) (20 - 20,000 Hz) and lower [radio](https://en.wikipedia.org/wiki/Radio_frequency) (20,000 Hz +) frequency range.  Why is this important?  It greatly simplifies signal detection because audio receivers are essentially radios, and the electronics for working in this frequency range are extremely well worked out, and not expensive to buy or build.
+
+## Historical Note
+
+The first earth's field NMR experiment was apparently conducted by Martin Packard and Russell Varian while at Varian Associates [@Packard1954].  Varian Associates was of course a major instrument player, including NMR, and for a long time marketed their instruments largely toward colleges.  [^5]
+
+[^1]: The gyromagnetic ratio can be negative, hence the absolute value is taken here.
+[^2]: Keep in mind that buried utilities made of iron or carrying electrical current can interfere.
+[^3]: $T_1$ is the relaxation time for magnetization aligned with the $B_o$ axis, which corresponds to the $z$ axis.  This is the relaxation time that affects the ability to pulse quickly.  It's also called the spin-lattice relaxation time.  $T_2$ is the relaxation time corresponding to magnetization in the $x,y$ plane, and is also known as the spin-spin relaxation time.  $T_2$ is largely determined by magnetic field inhomogeneity and the line width at half peak height is $\Delta \nu_{1/2} = \gamma \Delta B_o /2$.  $T_1 \ge T_2$. See Friebolin chapter 7 for a detailed discussion.
+[^4]: In fact pre-polarizing or polarizing the sample is now en-vogue for higher field instruments as well, in the form of DNP, SABRE etc.
+[^5]: Martin Packard is apparently [unrelated](https://hsm.stackexchange.com/q/15580/18707) to David Packard, one of the founders of HP.

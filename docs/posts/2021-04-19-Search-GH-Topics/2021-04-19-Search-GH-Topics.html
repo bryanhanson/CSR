@@ -274,6 +274,7 @@ cookieconsent.run({
   </div>
   
 
+
 </header>
 
 <p>One of the projects I maintain is the <a href="https://bryanhanson.github.io/FOSS4Spectroscopy/">FOSS for Spectroscopy web site</a>. The table at that site lists various software for use in spectroscopy. Historically, I have used the Github or Python Package Index search engines to manually search by topic such as “NMR” to find repositories of interest. Recently, I decided to try to automate at least some of this process. In this post I’ll present the code and steps I developed to search Github by topics. Fortunately, I wasn’t starting from scratch, as I had learned some basic web-scraping techniques when I wrote the functions that get the date of the most recent repository update. All the code for this website and project can be viewed <a href="https://github.com/bryanhanson/FOSS4Spectroscopy">here</a>. The steps reported here are current as of the publication of this post, but are subject to change in the future.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
@@ -535,33 +536,39 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       instance.disable();
       let url = xref.getAttribute('href');
       let hash = undefined; 
-      try { hash = new URL(url).hash; } catch {}
-      const id = hash.replace(/^#\/?/, "");
-      const note = window.document.getElementById(id);
-      if (note !== null) {
-        try {
-          const html = processXRef(id, note);
-          instance.setContent(html);
-        } finally {
-          instance.enable();
-          instance.show();
-        }
+      if (url.startsWith('#')) {
+        hash = url;
       } else {
-        // See if we can fetch this
-        fetch(url.split('#')[0])
-        .then(res => res.text())
-        .then(html => {
-          const parser = new DOMParser();
-          const htmlDoc = parser.parseFromString(html, "text/html");
-          const note = htmlDoc.getElementById(id);
-          if (note !== null) {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
             const html = processXRef(id, note);
             instance.setContent(html);
-          } 
-        }).finally(() => {
-          instance.enable();
-          instance.show();
-        });
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
       }
     }, function(instance) {
     });
