@@ -1,0 +1,125 @@
+---
+title: "FOSS4Spectroscopy Update"
+description: "What's changed in a year?"
+date: "2023-08-15"
+categories: [FOSS]
+format:
+  html
+---
+
+Yesterday I pushed a major update to the [FOSS for Spectroscopy](https://bryanhanson.github.io/FOSS4Spectroscopy/) web site.  Remember that this is a lightly curated and imperfect process; I have some scripts that automate the discovery of packages, but there is still a considerable amount of manual inspection and decision making.  If you think I've missed a package, please let me know.
+
+```{r}
+#| echo: false
+suppressPackageStartupMessages(library("readxl"))
+suppressPackageStartupMessages(library("VennDiagram"))
+suppressPackageStartupMessages(library("RColorBrewer"))
+suppressPackageStartupMessages(library("plyr"))
+suppressPackageStartupMessages(library("knitr"))
+suppressPackageStartupMessages(library("kableExtra"))
+```
+
+```{r}
+#| echo: false
+OLD <- as.data.frame(read_excel("FOSS4Spec_2022-11-01.xlsx"))
+NEW <- as.data.frame(read_excel("FOSS4Spec.xlsx"))
+```
+
+
+It's been nearly a year, and there are a number of new entries. Let's do a quick comparison of the results from November 2022 versus August 2023.  Back in November 2022 there were `r nrow(OLD)` packages; nearly a year later there are `r nrow(NEW)`. @fig-venn shows a Venn diagram of the changes.
+
+```{r}
+#| echo: false
+res <- venn.diagram(x = list(Nov_2022 = OLD$name, Aug_2023 = NEW$name),
+  category.names = c("Nov 2022", "Aug 2023"),
+  filename = "Venn.png", output = TRUE,
+  fill = c("#B3E2CD","#FDCDAC"),
+  fontface = "bold",
+  fontfamily = "sans",
+  cat.fontface = "bold",
+  cat.fontfamily = "sans")
+```
+
+![Venn diagram comparing the two sets of packages](Venn.png){#fig-venn width=60%}
+
+## Package Language
+
+Software development in spectroscopy is clearly actively occurring in the Python ecosystem; R has stalled (see @tbl-lang).  Interpretation of this observation is challenging.  A few thoughts:
+
+* One could claim that the R ecosystem for spectroscopy is mature and further development is naturally going to be limited.
+* The growing popularity of the Python language surely contributes significantly.
+* One motivation for people to write packages is to learn the language and the package delivery system.  There's nothing wrong with these motivations, however this leads to packages that largely overlap in their features.
+
+```{r}
+#| echo: false
+count1 <- count(OLD$language)
+count2 <- count(NEW$language)
+DF <- data.frame(count1)
+DF <- cbind(DF, count2[,"freq"])
+names(DF) <- c("language", "Nov 2022", "Aug 2023")
+DF <- DF[order(DF$"Nov 2022", decreasing = TRUE),]
+row.names(DF) <- NULL
+```
+
+```{r}
+#| echo: false
+#| label: tbl-lang
+#| tbl-cap: "Package language, 2022 vs 2023."
+options(knitr.kable.NA = '')
+kable(DF, table.attr = "quarto-disable-processing=true") %>%
+  kable_styling(c("striped", "bordered"), full_width = FALSE)
+```
+
+## Package Focus
+
+@tbl-focus shows the change in package focus.  Most categories grew modestly.
+
+```{r}
+#| echo: false
+Focus2022 <- data.frame(
+  category = c("Any", "Data Sharing", "EEM", "EPR, ESR", "IR (all flavors)", "Raman", "UV-Vis, UV, Vis", "LIBS", "Muon", "PES", "XRF, XAS", "NMR", "Time Series"),
+  count2022 = c(32, 33, 3, 5, 35, 28, 19, 3, 1, 1, 10, 87, 3))
+Focus2023 <- data.frame(
+  category = c("Any", "Data Sharing", "EEM", "EPR, ESR", "IR (all flavors)", "Raman", "UV-Vis, UV, Vis", "LIBS", "Muon", "PES", "XRF, XAS", "NMR", "Time Series"),
+  count2023 = c(34, 41, 3, 7, 38, 34, 20, 5, 0, 2, 15, 97, 3))
+Focus <- Focus2022
+Focus$count2023 <- Focus2023$count2023
+names(Focus) <- c("category", "Nov 2022", "Aug 2023")
+```
+
+```{r}
+#| echo: false
+#| label: tbl-focus
+#| tbl-cap: "Package focus, 2022 vs 2023."
+options(knitr.kable.NA = '')
+kable(Focus, table.attr = "quarto-disable-processing=true") %>%
+  kable_styling(c("striped", "bordered"), full_width = FALSE)
+```
+
+## Personal Perspective
+
+I've curated this site for several years now.  One thing that is clear is that there is a lot of duplication of effort and features. I mentioned above a few reasons for this, but at some point it makes more sense to add to an existing package than to write one from scratch.  However, this can only happen if people look around for existing software first.  That of course is one purpose of the [FOSS for Spectroscopy](https://bryanhanson.github.io/FOSS4Spectroscopy/) web site.
+
+As I look at it,
+
+* One-dimensional spectroscopic techniques produce collections of x,y data, usually spectra[^1], and can thus be stored in a matrix. *In terms of organization there's nothing different between an IR spectrum and a UV-Vis spectrum.*
+* Two-dimensional techniques produce data that can be stored in one of two ways:
+  + One spectrum (or one wavelength) can be stored as matrix, so a set of spectra is a stack of matrices (termed an array in some languages).  Think of 2D NMR spectra: one element of the stack is a single 2D spectrum.
+  + Alternatively, individual spectra can be stored in a matrix and an additional data structure provides a key to how each spectrum relates to the others.  Think of a Raman image: spectra are collected over a set of x,y locations.
+
+This design decision is the core of building a package.  Once you have decided on a structure:
+
+* You need import methods, these are always tedious to write.
+  + Broadly accepted formats, like JCAMP-DX or plain old csv.
+  + Manufacturer specific formats, some of which may be poorly documented.
+* You need processing methods.
+  + Widely used methods, like normalization and smoothing.
+  + Technique specific methods, such as zero-filling.
+* You need analysis methods.
+  + Common techniques like PCA.
+  + Analysis unique to a specific technique.
+* You need visualization methods.
+
+In an ideal world, a data storage structure is chosen and everything else can be built later, quickly at first and then more slowly.  The reality however is that people keep reinventing most of the wheel.  I suppose this is not too different from people inventing entirely new computer languages...
+
+[^1]: I say "usually spectra" because for some instruments, depending upon the goal of the package, one may store raw data that must be transformed in a separate step.  The best example is raw time-domain NMR data which must be Fourier transformed into frequency-domain spectra before analysis.

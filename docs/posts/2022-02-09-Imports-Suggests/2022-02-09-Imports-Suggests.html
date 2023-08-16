@@ -147,41 +147,41 @@ cookieconsent.run({
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../about.html" rel="" target="">
- <span class="menu-text">About</span></a>
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../projects.html" rel="" target="">
- <span class="menu-text">Projects</span></a>
+    <a class="nav-link" href="../../projects.html"> 
+<span class="menu-text">Projects</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="https://www.r-bloggers.com/" rel="" target="">
- <span class="menu-text">R-Bloggers</span></a>
+    <a class="nav-link" href="https://www.r-bloggers.com/"> 
+<span class="menu-text">R-Bloggers</span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="mailto:hanson@depauw.edu" rel="" target=""><i class="bi bi-envelope-fill" role="img">
+    <a class="nav-link" href="mailto:hanson@depauw.edu"> <i class="bi bi-envelope-fill" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://twitter.com/profbryanhanson" rel="" target=""><i class="bi bi-twitter" role="img">
+    <a class="nav-link" href="https://twitter.com/profbryanhanson"> <i class="bi bi-twitter" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://fosstodon.org/%40ProfBryanHanson" rel="me" target=""><i class="bi bi-mastodon" role="img" aria-label="Mastodon">
+    <a class="nav-link" href="https://fosstodon.org/%40ProfBryanHanson" rel="&quot;me&quot;"> <i class="bi bi-mastodon" role="img" aria-label="Mastodon">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/bryanhanson" rel="" target=""><i class="bi bi-git" role="img">
+    <a class="nav-link" href="https://github.com/bryanhanson"> <i class="bi bi-git" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="../../index.xml" rel="" target=""><i class="bi bi-rss" role="img">
+    <a class="nav-link" href="../../index.xml"> <i class="bi bi-rss" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -341,7 +341,7 @@ cookieconsent.run({
 <span id="cb9-3"><a href="#cb9-3"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(imp)) {</span>
 <span id="cb9-4"><a href="#cb9-4"></a>    args <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">"-r -e '"</span>, imp[i], <span class="st">"' *"</span>, <span class="at">sep =</span> <span class="st">""</span>) <span class="co"># assemble arguments for grep</span></span>
 <span id="cb9-5"><a href="#cb9-5"></a>    g_imp <span class="ot">&lt;-</span> <span class="fu">system2</span>(<span class="st">"grep"</span>, args, <span class="at">stdout =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb9-6"><a href="#cb9-6"></a>    <span class="cf">if</span> (<span class="fu">length</span>(g_imp) <span class="sc">&gt;</span> 1L) imp_res[i] <span class="ot">&lt;-</span> <span class="cn">TRUE</span> <span class="co"># Note 2</span></span>
+<span id="cb9-6"><a href="#cb9-6"></a>    <span class="cf">if</span> (<span class="fu">length</span>(g_imp) <span class="sc">&gt;</span> <span class="dv">1</span>L) imp_res[i] <span class="ot">&lt;-</span> <span class="cn">TRUE</span> <span class="co"># Note 2</span></span>
 <span id="cb9-7"><a href="#cb9-7"></a>  }</span>
 <span id="cb9-8"><a href="#cb9-8"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -367,27 +367,27 @@ cookieconsent.run({
 <span id="cb10-14"><a href="#cb10-14"></a></span>
 <span id="cb10-15"><a href="#cb10-15"></a>  <span class="co"># look for use of imported packages</span></span>
 <span id="cb10-16"><a href="#cb10-16"></a>  imp <span class="ot">&lt;-</span> <span class="fu">clean_up</span>(desc<span class="sc">$</span>Imports)</span>
-<span id="cb10-17"><a href="#cb10-17"></a>  <span class="cf">if</span> (<span class="fu">length</span>(imp) <span class="sc">==</span> 0L) <span class="fu">message</span>(<span class="st">"No Imports: entries found"</span>)</span>
+<span id="cb10-17"><a href="#cb10-17"></a>  <span class="cf">if</span> (<span class="fu">length</span>(imp) <span class="sc">==</span> <span class="dv">0</span>L) <span class="fu">message</span>(<span class="st">"No Imports: entries found"</span>)</span>
 <span id="cb10-18"><a href="#cb10-18"></a>  <span class="cf">if</span> (<span class="fu">length</span>(imp) <span class="sc">&gt;=</span> <span class="dv">1</span>) {</span>
 <span id="cb10-19"><a href="#cb10-19"></a>    imp_res <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="st">"FALSE"</span>, <span class="fu">length</span>(imp))</span>
 <span id="cb10-20"><a href="#cb10-20"></a>    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(imp)) {</span>
 <span id="cb10-21"><a href="#cb10-21"></a>      args <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">"-r -e '"</span>, imp[i], <span class="st">"' *"</span>, <span class="at">sep =</span> <span class="st">""</span>)</span>
 <span id="cb10-22"><a href="#cb10-22"></a>      g_imp <span class="ot">&lt;-</span> <span class="fu">system2</span>(<span class="st">"grep"</span>, args, <span class="at">stdout =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb10-23"><a href="#cb10-23"></a>      <span class="co"># always found once in DESCRIPTION, hence &gt; 1</span></span>
-<span id="cb10-24"><a href="#cb10-24"></a>      <span class="cf">if</span> (<span class="fu">length</span>(g_imp) <span class="sc">&gt;</span> 1L) imp_res[i] <span class="ot">&lt;-</span> <span class="cn">TRUE</span></span>
+<span id="cb10-24"><a href="#cb10-24"></a>      <span class="cf">if</span> (<span class="fu">length</span>(g_imp) <span class="sc">&gt;</span> <span class="dv">1</span>L) imp_res[i] <span class="ot">&lt;-</span> <span class="cn">TRUE</span></span>
 <span id="cb10-25"><a href="#cb10-25"></a>    }</span>
 <span id="cb10-26"><a href="#cb10-26"></a>  }</span>
 <span id="cb10-27"><a href="#cb10-27"></a></span>
 <span id="cb10-28"><a href="#cb10-28"></a>  <span class="co"># look for use of suggested packages</span></span>
 <span id="cb10-29"><a href="#cb10-29"></a>  sug <span class="ot">&lt;-</span> <span class="fu">clean_up</span>(desc<span class="sc">$</span>Suggests)</span>
-<span id="cb10-30"><a href="#cb10-30"></a>  <span class="cf">if</span> (<span class="fu">length</span>(sug) <span class="sc">==</span> 0L) <span class="fu">message</span>(<span class="st">"No Suggests: entries found"</span>)</span>
+<span id="cb10-30"><a href="#cb10-30"></a>  <span class="cf">if</span> (<span class="fu">length</span>(sug) <span class="sc">==</span> <span class="dv">0</span>L) <span class="fu">message</span>(<span class="st">"No Suggests: entries found"</span>)</span>
 <span id="cb10-31"><a href="#cb10-31"></a>  <span class="cf">if</span> (<span class="fu">length</span>(sug) <span class="sc">&gt;=</span> <span class="dv">1</span>) {</span>
 <span id="cb10-32"><a href="#cb10-32"></a>    sug_res <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="st">"FALSE"</span>, <span class="fu">length</span>(sug))</span>
 <span id="cb10-33"><a href="#cb10-33"></a>    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(sug)) {</span>
 <span id="cb10-34"><a href="#cb10-34"></a>      args <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">"-r -e '"</span>, sug[i], <span class="st">"' *"</span>, <span class="at">sep =</span> <span class="st">""</span>)</span>
 <span id="cb10-35"><a href="#cb10-35"></a>      g_sug <span class="ot">&lt;-</span> <span class="fu">system2</span>(<span class="st">"grep"</span>, args, <span class="at">stdout =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb10-36"><a href="#cb10-36"></a>      <span class="co"># always found once in DESCRIPTION, hence &gt; 1</span></span>
-<span id="cb10-37"><a href="#cb10-37"></a>      <span class="cf">if</span> (<span class="fu">length</span>(g_sug) <span class="sc">&gt;</span> 1L) sug_res[i] <span class="ot">&lt;-</span> <span class="cn">TRUE</span></span>
+<span id="cb10-37"><a href="#cb10-37"></a>      <span class="cf">if</span> (<span class="fu">length</span>(g_sug) <span class="sc">&gt;</span> <span class="dv">1</span>L) sug_res[i] <span class="ot">&lt;-</span> <span class="cn">TRUE</span></span>
 <span id="cb10-38"><a href="#cb10-38"></a>    }</span>
 <span id="cb10-39"><a href="#cb10-39"></a>  }</span>
 <span id="cb10-40"><a href="#cb10-40"></a></span>
@@ -579,6 +579,16 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
   const xrefs = window.document.querySelectorAll('a.quarto-xref');
   const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
     if (id.startsWith('sec-')) {
       // Special case sections, only their first couple elements
       const container = document.createElement("div");
@@ -591,6 +601,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         return note.innerHTML;
       }
     } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
       return note.innerHTML;
     }
   }
@@ -610,7 +625,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         const note = window.document.getElementById(id);
         if (note !== null) {
           try {
-            const html = processXRef(id, note);
+            const html = processXRef(id, note.cloneNode(true));
             instance.setContent(html);
           } finally {
             instance.enable();
@@ -704,6 +719,33 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        console.log("RESIZE");
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {

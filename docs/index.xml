@@ -10,7 +10,269 @@
 <atom:link href="http://chemospec.org/index.xml" rel="self" type="application/rss+xml"/>
 <description>Applying chemometrics to spectroscopy using R</description>
 <generator>quarto-99.9.9</generator>
-<lastBuildDate>Wed, 26 Jul 2023 07:00:00 GMT</lastBuildDate>
+<lastBuildDate>Tue, 15 Aug 2023 07:00:00 GMT</lastBuildDate>
+<item>
+  <title>FOSS4Spectroscopy Update</title>
+  <dc:creator>Bryan Hanson</dc:creator>
+  <link>http://chemospec.org/posts/2023-08-15-F4S-Update/F4S-Update.html</link>
+  <description><![CDATA[ 
+
+
+
+<p>Yesterday I pushed a major update to the <a href="https://bryanhanson.github.io/FOSS4Spectroscopy/">FOSS for Spectroscopy</a> web site. Remember that this is a lightly curated and imperfect process; I have some scripts that automate the discovery of packages, but there is still a considerable amount of manual inspection and decision making. If you think I’ve missed a package, please let me know.</p>
+<p>It’s been nearly a year, and there are a number of new entries. Let’s do a quick comparison of the results from November 2022 versus August 2023. Back in November 2022 there were 246 packages; nearly a year later there are 287. Figure&nbsp;1 shows a Venn diagram of the changes.</p>
+<div id="fig-venn" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="http://chemospec.org/posts/2023-08-15-F4S-Update/Venn.png" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;1: Venn diagram comparing the two sets of packages</figcaption>
+</figure>
+</div>
+<section id="package-language" class="level2">
+<h2 class="anchored" data-anchor-id="package-language">Package Language</h2>
+<p>Software development in spectroscopy is clearly actively occurring in the Python ecosystem; R has stalled (see Table&nbsp;1). Interpretation of this observation is challenging. A few thoughts:</p>
+<ul>
+<li>One could claim that the R ecosystem for spectroscopy is mature and further development is naturally going to be limited.</li>
+<li>The growing popularity of the Python language surely contributes significantly.</li>
+<li>One motivation for people to write packages is to learn the language and the package delivery system. There’s nothing wrong with these motivations, however this leads to packages that largely overlap in their features.</li>
+</ul>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-lang" class="anchored">
+<table quarto-disable-processing="true" class="table table-striped table-bordered" style="width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table&nbsp;1:  <p>Package language, 2022 vs 2023.</p> </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> language </th>
+   <th style="text-align:right;"> Nov 2022 </th>
+   <th style="text-align:right;"> Aug 2023 </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Python </td>
+   <td style="text-align:right;"> 162 </td>
+   <td style="text-align:right;"> 198 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> R </td>
+   <td style="text-align:right;"> 60 </td>
+   <td style="text-align:right;"> 61 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> C++ </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 5 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Java </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Julia </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 5 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> C </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Qt </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> C-shell </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> C# </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Fortran </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Go </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> html </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> JavaScript </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> TypeScript </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 1 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> XML </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 1 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="package-focus" class="level2">
+<h2 class="anchored" data-anchor-id="package-focus">Package Focus</h2>
+<p>Table&nbsp;2 shows the change in package focus. Most categories grew modestly.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-focus" class="anchored">
+<table quarto-disable-processing="true" class="table table-striped table-bordered" style="width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table&nbsp;2:  <p>Package focus, 2022 vs 2023.</p> </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> category </th>
+   <th style="text-align:right;"> Nov 2022 </th>
+   <th style="text-align:right;"> Aug 2023 </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Any </td>
+   <td style="text-align:right;"> 32 </td>
+   <td style="text-align:right;"> 34 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Data Sharing </td>
+   <td style="text-align:right;"> 33 </td>
+   <td style="text-align:right;"> 41 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> EEM </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 3 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> EPR, ESR </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 7 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> IR (all flavors) </td>
+   <td style="text-align:right;"> 35 </td>
+   <td style="text-align:right;"> 38 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Raman </td>
+   <td style="text-align:right;"> 28 </td>
+   <td style="text-align:right;"> 34 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> UV-Vis, UV, Vis </td>
+   <td style="text-align:right;"> 19 </td>
+   <td style="text-align:right;"> 20 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> LIBS </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 5 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Muon </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> PES </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> XRF, XAS </td>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 15 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> NMR </td>
+   <td style="text-align:right;"> 87 </td>
+   <td style="text-align:right;"> 97 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Time Series </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 3 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="personal-perspective" class="level2">
+<h2 class="anchored" data-anchor-id="personal-perspective">Personal Perspective</h2>
+<p>I’ve curated this site for several years now. One thing that is clear is that there is a lot of duplication of effort and features. I mentioned above a few reasons for this, but at some point it makes more sense to add to an existing package than to write one from scratch. However, this can only happen if people look around for existing software first. That of course is one purpose of the <a href="https://bryanhanson.github.io/FOSS4Spectroscopy/">FOSS for Spectroscopy</a> web site.</p>
+<p>As I look at it,</p>
+<ul>
+<li>One-dimensional spectroscopic techniques produce collections of x,y data, usually spectra<sup>1</sup>, and can thus be stored in a matrix. <em>In terms of organization there’s nothing different between an IR spectrum and a UV-Vis spectrum.</em></li>
+<li>Two-dimensional techniques produce data that can be stored in one of two ways:
+<ul>
+<li>One spectrum (or one wavelength) can be stored as matrix, so a set of spectra is a stack of matrices (termed an array in some languages). Think of 2D NMR spectra: one element of the stack is a single 2D spectrum.</li>
+<li>Alternatively, individual spectra can be stored in a matrix and an additional data structure provides a key to how each spectrum relates to the others. Think of a Raman image: spectra are collected over a set of x,y locations.</li>
+</ul></li>
+</ul>
+<p>This design decision is the core of building a package. Once you have decided on a structure:</p>
+<ul>
+<li>You need import methods, these are always tedious to write.
+<ul>
+<li>Broadly accepted formats, like JCAMP-DX or plain old csv.</li>
+<li>Manufacturer specific formats, some of which may be poorly documented.</li>
+</ul></li>
+<li>You need processing methods.
+<ul>
+<li>Widely used methods, like normalization and smoothing.</li>
+<li>Technique specific methods, such as zero-filling.</li>
+</ul></li>
+<li>You need analysis methods.
+<ul>
+<li>Common techniques like PCA.</li>
+<li>Analysis unique to a specific technique.</li>
+</ul></li>
+<li>You need visualization methods.</li>
+</ul>
+<p>In an ideal world, a data storage structure is chosen and everything else can be built later, quickly at first and then more slowly. The reality however is that people keep reinventing most of the wheel. I suppose this is not too different from people inventing entirely new computer languages…</p>
+
+
+</section>
+
+
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><aside id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>I say “usually spectra” because for some instruments, depending upon the goal of the package, one may store raw data that must be transformed in a separate step. The best example is raw time-domain NMR data which must be Fourier transformed into frequency-domain spectra before analysis.↩︎</p></li>
+</ol>
+</aside><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2023,
+  author = {Hanson, Bryan},
+  title = {FOSS4Spectroscopy {Update}},
+  date = {2023-08-15},
+  url = {http://chemospec.org/posts/2023-08-15-F4S-Update/F4S-Update.html},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2023" class="csl-entry quarto-appendix-citeas">
+Hanson, Bryan. 2023. <span>“FOSS4Spectroscopy Update.”</span> August 15,
+2023. <a href="http://chemospec.org/posts/2023-08-15-F4S-Update/F4S-Update.html">http://chemospec.org/posts/2023-08-15-F4S-Update/F4S-Update.html</a>.
+</div></div></section></div> ]]></description>
+  <category>FOSS</category>
+  <guid>http://chemospec.org/posts/2023-08-15-F4S-Update/F4S-Update.html</guid>
+  <pubDate>Tue, 15 Aug 2023 07:00:00 GMT</pubDate>
+</item>
 <item>
   <title>Earth’s Field NMR</title>
   <dc:creator>Bryan Hanson</dc:creator>
@@ -875,7 +1137,9 @@ font-style: inherit;"># instead, create a copy to be modified</span></span>
 background-color: null;
 font-style: inherit;">lower.tri</span>(A_upper)] <span class="ot" style="color: #003B4F;
 background-color: null;
-font-style: inherit;">&lt;-</span> 0L <span class="co" style="color: #5E5E5E;
+font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>L <span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># assign the lower entries to zero</span></span>
 <span id="cb13-3">A_upper</span></code></pre></div>
@@ -4138,7 +4402,9 @@ font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">length</span>(g_imp) <span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">&gt;</span> 1L) imp_res[i] <span class="ot" style="color: #003B4F;
+font-style: inherit;">&gt;</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>L) imp_res[i] <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cn" style="color: #8f5902;
 background-color: null;
@@ -4248,7 +4514,9 @@ font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">length</span>(imp) <span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">==</span> 0L) <span class="fu" style="color: #4758AB;
+font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>L) <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">message</span>(<span class="st" style="color: #20794D;
 background-color: null;
@@ -4315,7 +4583,9 @@ font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">length</span>(g_imp) <span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">&gt;</span> 1L) imp_res[i] <span class="ot" style="color: #003B4F;
+font-style: inherit;">&gt;</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>L) imp_res[i] <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cn" style="color: #8f5902;
 background-color: null;
@@ -4339,7 +4609,9 @@ font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">length</span>(sug) <span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">==</span> 0L) <span class="fu" style="color: #4758AB;
+font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>L) <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">message</span>(<span class="st" style="color: #20794D;
 background-color: null;
@@ -4406,7 +4678,9 @@ font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">length</span>(g_sug) <span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">&gt;</span> 1L) sug_res[i] <span class="ot" style="color: #003B4F;
+font-style: inherit;">&gt;</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>L) sug_res[i] <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cn" style="color: #8f5902;
 background-color: null;
@@ -4802,7 +5076,9 @@ font-style: inherit;">ifelse</span>(yvars<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span>genotype <span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">==</span> 1L, <span class="st" style="color: #20794D;
+font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>L, <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"WT"</span>, <span class="st" style="color: #20794D;
 background-color: null;
@@ -4817,7 +5093,9 @@ font-style: inherit;">ifelse</span>(yvars<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">$</span>stage <span class="sc" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">==</span> 1L, <span class="st" style="color: #20794D;
+font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>L, <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"L2"</span>, <span class="st" style="color: #20794D;
 background-color: null;
@@ -5733,55 +6011,6 @@ Packages.”</span> April 11, 2021. <a href="http://chemospec.org/posts/2021-04-
   <category>hyperSpec</category>
   <guid>http://chemospec.org/posts/2021-04-11-GHA-drat/2021-04-11-GHA-drat.html</guid>
   <pubDate>Sun, 11 Apr 2021 07:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>Spectroscopy Suite Update</title>
-  <dc:creator>Bryan Hanson</dc:creator>
-  <link>http://chemospec.org/posts/2021-03-27-Spec-Suite-update/2021-03-27-Spec-Suite-update.html</link>
-  <description><![CDATA[ 
-
-
-
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="http://chemospec.org/posts/2021-03-27-Spec-Suite-update/emAnnotated.png" class="img-fluid" width="700"></p>
-</div>
-</div>
-<p>My suite of spectroscopy <code>R</code> packages has been updated on CRAN. There are only a few small changes, but they will be important to some of you:</p>
-<ul>
-<li><code>ChemoSpecUtils</code> now provides a set of colorblind-friendly colors, see <code>?colorSymbol</code>. These are available for use in <code>ChemoSpec</code> and <code>ChemoSpec2D</code>.</li>
-<li>At the request of several folks, <code>readJDX</code> now includes a function, <a href="https://rdrr.io/cran/readJDX/man/splitMultiblockDX.html"><code>splitMultiblockDX</code></a>, that will split a multiblock JCAMP-DX file into separate files, which can then be imported via the usual functions in the package.</li>
-<li>All packages are built against the upcoming R 4.1 release (due in April).</li>
-</ul>
-<p>Here are the links to the documentation:</p>
-<ul>
-<li><a href="https://bryanhanson.github.io/ChemoSpec/"><code>ChemoSpec</code></a></li>
-<li><a href="https://bryanhanson.github.io/ChemoSpec2D/"><code>ChemSpec2D</code></a></li>
-<li><a href="https://rdrr.io/cran/ChemoSpecUtils/"><code>ChemoSpecUtils</code></a></li>
-<li><a href="https://rdrr.io/cran/readJDX/"><code>readJDX</code></a></li>
-</ul>
-<p>As always, let me know if you discover trouble or have questions.</p>
-
-
-
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2021,
-  author = {Hanson, Bryan},
-  title = {Spectroscopy {Suite} {Update}},
-  date = {2021-03-27},
-  url = {http://chemospec.org/posts/2021-03-27-Spec-Suite-update/2021-03-27-Spec-Suite-update.html},
-  langid = {en}
-}
-</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2021" class="csl-entry quarto-appendix-citeas">
-Hanson, Bryan. 2021. <span>“Spectroscopy Suite Update.”</span> March 27,
-2021. <a href="http://chemospec.org/posts/2021-03-27-Spec-Suite-update/2021-03-27-Spec-Suite-update.html">http://chemospec.org/posts/2021-03-27-Spec-Suite-update/2021-03-27-Spec-Suite-update.html</a>.
-</div></div></section></div> ]]></description>
-  <category>R</category>
-  <category>ChemoSpec</category>
-  <category>ChemoSpec2D</category>
-  <category>ChemoSpecUtils</category>
-  <category>readJDX</category>
-  <guid>http://chemospec.org/posts/2021-03-27-Spec-Suite-update/2021-03-27-Spec-Suite-update.html</guid>
-  <pubDate>Sat, 27 Mar 2021 07:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>
