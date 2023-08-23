@@ -1,0 +1,16 @@
+---
+title: "JEOL's Delta Now Includes ChemoSpec"
+description: "Pretty cool"
+date: "2023-08-23"
+categories: [NMR, FOSS]
+format:
+  html
+---
+
+Over on Twitter I caught news of a new application note from JEOL: Their Delta software for NMR now contains an interface to my R package [ChemoSpec](https://bryanhanson.github.io/ChemoSpec/).  The application note is [here](https://www.jeol.com/solutions/applications/details/nm220007.php) and gives a pretty complete overview of what they call the "chemometrics tool".  The JEOL software developers have added a number of short dialog boxes to access the various chemometric methods.  The dialog boxes capture the arguments for each underlying function and then the full function call is assembled and passed to [Rscript](https://stat.ethz.ch/R-manual/R-devel/library/utils/html/Rscript.html), which is a command line version of R intended for embedded uses such as this one.
+
+This is a good example of Free and Open Source Software (FOSS).  ChemoSpec is licensed under [GPL-3](https://www.gnu.org/licenses/gpl-3.0.html) which permits any reasonable use as long as there is attribution to the original authors.
+
+Check out the first line of the "About Delta" box:
+
+![](Splash.png){width=80%}
