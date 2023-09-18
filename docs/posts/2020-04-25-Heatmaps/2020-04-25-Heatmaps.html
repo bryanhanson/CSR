@@ -25,7 +25,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -90,6 +90,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "/",
     "s"
   ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -171,7 +172,7 @@ cookieconsent.run({
 <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://fosstodon.org/%40ProfBryanHanson" rel="&quot;me&quot;"> <i class="bi bi-mastodon" role="img" aria-label="Mastodon">
+    <a class="nav-link" href="https://fosstodon.org/%40ProfBryanHanson" rel="me"> <i class="bi bi-mastodon" role="img" aria-label="Mastodon">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
@@ -316,14 +317,26 @@ The ChemoSpec graphics option is set to 'ggplot2'</code></pre>
 <span id="cb7-3"><a href="#cb7-3"></a>IR <span class="ot">&lt;-</span> <span class="fu">removeFreq</span>(SrE.IR, <span class="at">rem.freq =</span> SrE.IR<span class="sc">$</span>freq <span class="sc">&gt;</span> <span class="dv">1775</span> <span class="sc">|</span> SrE.IR<span class="sc">$</span>freq <span class="sc">&lt;</span> <span class="dv">1660</span>)</span>
 <span id="cb7-4"><a href="#cb7-4"></a><span class="fu">plotSpectra</span>(IR, <span class="at">which =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">16</span>, <span class="at">lab.pos =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="2020-04-25-Heatmaps_files/figure-html/showSpectra-1.png" class="img-fluid" width="672"></p>
+<div id="fig-539a35d47e664c97a50115a146a7f1bd-1" class="quarto-figure quarto-figure-center anchored" width="672">
+<figure class="quarto-float quarto-float-fig figure">
+<div>
+<img src="2020-04-25-Heatmaps_files/figure-html/showSpectra-1.png" id="fig-539a35d47e664c97a50115a146a7f1bd-1" class="img-fluid figure-img" width="672">
+</div>
+</figure>
+</div>
 </div>
 </div>
 <p>The blue and green spectra are samples composed only of triglycerides, and hence the ester carbonyl is the primary feature. All other samples are clearly mixtures of ester and carboxylic acid stretching peaks. And now for the heatmap, using defaults:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>res <span class="ot">&lt;-</span> <span class="fu">hmapSpectra</span>(IR)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="2020-04-25-Heatmaps_files/figure-html/defaultMap-1.png" class="img-fluid" width="672"></p>
+<div id="fig-539a35d47e664c97a50115a146a7f1bd-2" class="quarto-figure quarto-figure-center anchored" width="672">
+<figure class="quarto-float quarto-float-fig figure">
+<div>
+<img src="2020-04-25-Heatmaps_files/figure-html/defaultMap-1.png" id="fig-539a35d47e664c97a50115a146a7f1bd-2" class="img-fluid figure-img" width="672">
+</div>
+</figure>
+</div>
 </div>
 </div>
 <p>In this default display, you’ll notice that the rows and column labels are indices to the underlying sample names and frequency list. This is not so helpful. The color scheme is not so exciting either. <code>hmapSpectra</code> uses the package <code>seriation</code> which in turn uses the <code>heatmap.2</code> function in package <code>gplots</code>. Fortunately we can use the <code>...</code> argument to pass additional arguments to <code>heatmap.2</code> to get a much more useful plot.</p>
@@ -339,7 +352,13 @@ The ChemoSpec graphics option is set to 'ggplot2'</code></pre>
 <span id="cb9-6"><a href="#cb9-6"></a>  <span class="at">margins =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">6</span>)</span>
 <span id="cb9-7"><a href="#cb9-7"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="2020-04-25-Heatmaps_files/figure-html/betterMap-1.png" class="img-fluid" width="672"></p>
+<div id="fig-539a35d47e664c97a50115a146a7f1bd-3" class="quarto-figure quarto-figure-center anchored" width="672">
+<figure class="quarto-float quarto-float-fig figure">
+<div>
+<img src="2020-04-25-Heatmaps_files/figure-html/betterMap-1.png" id="fig-539a35d47e664c97a50115a146a7f1bd-3" class="img-fluid figure-img" width="672">
+</div>
+</figure>
+</div>
 </div>
 </div>
 <p>This is a lot nicer plot, since the rows are labeled with the sample names, and the columns with frequencies. Note that not every column is labeled, only every few frequencies. If you need the actual frequencies, which you probably will, they can be obtained from the returned object (<code>res</code> in this case; see the end of this post for an example).</p>
@@ -366,7 +385,13 @@ The ChemoSpec graphics option is set to 'ggplot2'</code></pre>
   reorder.hclust seriation</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="2020-04-25-Heatmaps_files/figure-html/bestMap-1.png" class="img-fluid" width="672"></p>
+<div id="fig-539a35d47e664c97a50115a146a7f1bd-4" class="quarto-figure quarto-figure-center anchored" width="672">
+<figure class="quarto-float quarto-float-fig figure">
+<div>
+<img src="2020-04-25-Heatmaps_files/figure-html/bestMap-1.png" id="fig-539a35d47e664c97a50115a146a7f1bd-4" class="img-fluid figure-img" width="672">
+</div>
+</figure>
+</div>
 </div>
 </div>
 <p>You can see that using different distance measures and seriation algorithms gives a rather different result: the ester “hot spots” which were in the lower right corner are now almost in the lower left corner. Which settings are best will depend on your data set, the goal of your analysis, and there are a lot of options from which to choose. The settings used here are simply for demonstration purposes, I make no claim these settings are appropriate!</p>
@@ -390,9 +415,10 @@ The ChemoSpec graphics option is set to 'ggplot2'</code></pre>
 <ol>
 <li id="fn1"><p>Other functions in <code>ChemoSpec</code> that can help you explore which frequencies are important are <code>plotLoadings</code>, <code>plot2Loadings</code> and <code>sPlotSpectra</code>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
-</aside><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
+</aside><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
   author = {Hanson, Bryan},
   title = {Spectral {Heatmaps}},
+  pages = {undefined},
   date = {2020-04-25},
   url = {http://chemospec.org/posts/2020-04-25-Heatmaps/2020-04-25-Heatmaps.html},
   langid = {en}

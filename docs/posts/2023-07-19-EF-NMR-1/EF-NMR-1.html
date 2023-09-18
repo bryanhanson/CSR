@@ -27,6 +27,7 @@ ul.task-list li input[type="checkbox"] {
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
+  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -75,6 +76,7 @@ div.csl-indent {
     "/",
     "s"
   ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -156,7 +158,7 @@ cookieconsent.run({
 <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://fosstodon.org/%40ProfBryanHanson" rel="&quot;me&quot;"> <i class="bi bi-mastodon" role="img" aria-label="Mastodon">
+    <a class="nav-link" href="https://fosstodon.org/%40ProfBryanHanson" rel="me"> <i class="bi bi-mastodon" role="img" aria-label="Mastodon">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
@@ -273,8 +275,12 @@ cookieconsent.run({
 <hr>
 <p>Let’s take a closer look from first principles what kinds of information one can glean from EF-NMR. We’ll restrict our discussion to spin <span class="math inline">\(\frac{1}{2}\)</span> nuclei with ~100% abundance, like <span class="math inline">\(\ce{^{1}H}\)</span>, <span class="math inline">\(\ce{^{31}P}\)</span> or <span class="math inline">\(\ce{^{19}F}\)</span> – you’ll see why soon enough. <a href="#tbl-params" class="quarto-xref">Table&nbsp;1</a> gives some relevant physical parameters for these nuclei.</p>
 <div id="tbl-params" class="anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="table quarto-float-caption quarto-float-tbl" id="tbl-params-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Important NMR parameters for ~100% abundant spin <span class="math inline">\(\frac{1}{2}\)</span> nuclei. The units of <span class="math inline">\(\gamma\)</span> are <span class="math inline">\(10^7\)</span> rad <span class="math inline">\(T^{-1}\)</span> <span class="math inline">\(s^{-1}\)</span>. Larmor frequency is relative in MHz.
+</figcaption>
+<div aria-describedby="tbl-params-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <table class="table">
-<caption>Table&nbsp;1: Important NMR parameters for ~100% abundant spin <span class="math inline">\(\frac{1}{2}\)</span> nuclei. The units of <span class="math inline">\(\gamma\)</span> are <span class="math inline">\(10^7\)</span> rad <span class="math inline">\(T^{-1}\)</span> <span class="math inline">\(s^{-1}\)</span>. Larmor frequency is relative in MHz.</caption>
 <thead>
 <tr class="header">
 <th>Nuclei</th>
@@ -300,6 +306,8 @@ cookieconsent.run({
 </tr>
 </tbody>
 </table>
+</div>
+</figure>
 </div>
 <p>Excellent general references on NMR theory are Friebolin <span class="citation" data-cites="Friebolin2011">(<a href="#ref-Friebolin2011" role="doc-biblioref">Friebolin 2011</a>)</span> and Claridge <span class="citation" data-cites="Claridge2016">(<a href="#ref-Claridge2016" role="doc-biblioref">Claridge 2016</a>)</span>.</p>
 </section>
@@ -333,10 +341,14 @@ ppm = \frac{Hz}{MHz}
 <p>where <span class="math inline">\(\hbar\)</span> is <span class="math inline">\(\frac{h}{2\pi}\)</span>. A plot for <span class="math inline">\(\ce{^{1}H}\)</span> is shown in <a href="#fig-DeltaE" class="quarto-xref">Figure&nbsp;1</a>; the right-most point corresponds to a 1,000 MHz instrument. Clearly as <span class="math inline">\(B_o\)</span> goes to zero the <span class="math inline">\(\Delta E\)</span> goes to zero in a simple linear fashion.</p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-DeltaE" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="EF-NMR-1_files/figure-html/fig-DeltaE-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;1: <span class="math inline">\(\Delta\)</span>E as a function of field strength <span class="math inline">\(B_o\)</span></figcaption>
+<div id="fig-DeltaE" class="quarto-figure quarto-figure-center anchored" width="672">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-DeltaE-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="EF-NMR-1_files/figure-html/fig-DeltaE-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-DeltaE-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: <span class="math inline">\(\Delta\)</span>E as a function of field strength <span class="math inline">\(B_o\)</span>
+</figcaption>
 </figure>
 </div>
 </div>
@@ -383,7 +395,7 @@ ppm = \frac{Hz}{MHz}
 </section>
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-Appelt2006" class="csl-entry" role="listitem">
 Appelt, Stephan, Holger Kühn, F. Wolfgang Häsing, and Bernhard Blümich. 2006. <span>“Chemical Analysis by Ultrahigh-Resolution Nuclear Magnetic Resonance in the Earth’s Magnetic Field.”</span> <em>Nature Physics</em> 2. <a href="https://doi.org/10.1038/nphys211">https://doi.org/10.1038/nphys211</a>.
 </div>
@@ -408,9 +420,10 @@ Packard, Martin, and Russell Varian. 1954. <span>“Free Nuclear Induction in th
 <li id="fn4"><p>The gyromagnetic ratio can be negative, hence the absolute value is taken here.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn5"><p>Martin Packard is apparently <a href="https://hsm.stackexchange.com/q/15580/18707">unrelated</a> to David Packard, one of the founders of HP.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
-</aside><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2023,
+</aside><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2023,
   author = {Hanson, Bryan},
   title = {Earth’s {Field} {NMR}},
+  pages = {undefined},
   date = {2023-07-26},
   url = {http://chemospec.org/posts/2023-07-19-EF-NMR-1/EF-NMR-1.html},
   langid = {en}

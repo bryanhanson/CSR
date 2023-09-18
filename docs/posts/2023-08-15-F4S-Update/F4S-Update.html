@@ -56,6 +56,7 @@ ul.task-list li input[type="checkbox"] {
     "/",
     "s"
   ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -137,7 +138,7 @@ cookieconsent.run({
 <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://fosstodon.org/%40ProfBryanHanson" rel="&quot;me&quot;"> <i class="bi bi-mastodon" role="img" aria-label="Mastodon">
+    <a class="nav-link" href="https://fosstodon.org/%40ProfBryanHanson" rel="me"> <i class="bi bi-mastodon" role="img" aria-label="Mastodon">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
@@ -244,10 +245,14 @@ cookieconsent.run({
 
 <p>Yesterday I pushed a major update to the <a href="https://bryanhanson.github.io/FOSS4Spectroscopy/">FOSS for Spectroscopy</a> web site. Remember that this is a lightly curated and imperfect process; I have some scripts that automate the discovery of packages, but there is still a considerable amount of manual inspection and decision making. If you think I’ve missed a package, please let me know.</p>
 <p>It’s been nearly a year, and there are a number of new entries. Let’s do a quick comparison of the results from November 2022 versus August 2023. Back in November 2022 there were 246 packages; nearly a year later there are 287. <a href="#fig-venn" class="quarto-xref">Figure&nbsp;1</a> shows a Venn diagram of the changes.</p>
-<div id="fig-venn" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="Venn.png" class="img-fluid figure-img" style="width:60.0%"></p>
-<figcaption class="figure-caption">Figure&nbsp;1: Venn diagram comparing the two sets of packages</figcaption>
+<div id="fig-venn" class="quarto-figure quarto-figure-center anchored" width="60%">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-venn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="Venn.png" class="img-fluid figure-img" style="width:60.0%">
+</div>
+<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-venn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Venn diagram comparing the two sets of packages
+</figcaption>
 </figure>
 </div>
 <section id="package-language" class="level2">
@@ -258,10 +263,14 @@ cookieconsent.run({
 <li>The growing popularity of the Python language surely contributes significantly.</li>
 <li>One motivation for people to write packages is to learn the language and the package delivery system. There’s nothing wrong with these motivations, however this leads to packages that largely overlap in their features.</li>
 </ul>
-<div class="cell">
+<div id="tbl-lang" class="cell anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="table quarto-float-caption quarto-float-tbl" id="tbl-lang-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Package language, 2022 vs 2023.
+</figcaption>
+<div aria-describedby="tbl-lang-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="tbl-lang" class="anchored">
-<table quarto-disable-processing="true" class="table table-striped table-bordered" style="width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table&nbsp;1:  <p>Package language, 2022 vs 2023.</p> </caption>
+<table quarto-disable-processing="true" class="table table-striped table-bordered" style="width: auto !important; margin-left: auto; margin-right: auto;">
  <thead>
   <tr>
    <th style="text-align:left;"> language </th>
@@ -350,15 +359,20 @@ cookieconsent.run({
 
 </div>
 </div>
+</figure>
 </div>
 </section>
 <section id="package-focus" class="level2">
 <h2 class="anchored" data-anchor-id="package-focus">Package Focus</h2>
 <p><a href="#tbl-focus" class="quarto-xref">Table&nbsp;2</a> shows the change in package focus. Most categories grew modestly.</p>
-<div class="cell">
+<div id="tbl-focus" class="cell anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="table quarto-float-caption quarto-float-tbl" id="tbl-focus-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2: Package focus, 2022 vs 2023.
+</figcaption>
+<div aria-describedby="tbl-focus-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="tbl-focus" class="anchored">
-<table quarto-disable-processing="true" class="table table-striped table-bordered" style="width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table&nbsp;2:  <p>Package focus, 2022 vs 2023.</p> </caption>
+<table quarto-disable-processing="true" class="table table-striped table-bordered" style="width: auto !important; margin-left: auto; margin-right: auto;">
  <thead>
   <tr>
    <th style="text-align:left;"> category </th>
@@ -437,6 +451,7 @@ cookieconsent.run({
 
 </div>
 </div>
+</figure>
 </div>
 </section>
 <section id="personal-perspective" class="level2">
@@ -481,9 +496,10 @@ cookieconsent.run({
 <ol>
 <li id="fn1"><p>I say “usually spectra” because for some instruments, depending upon the goal of the package, one may store raw data that must be transformed in a separate step. The best example is raw time-domain NMR data which must be Fourier transformed into frequency-domain spectra before analysis.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
-</aside><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2023,
+</aside><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2023,
   author = {Hanson, Bryan},
   title = {FOSS4Spectroscopy {Update}},
+  pages = {undefined},
   date = {2023-08-15},
   url = {http://chemospec.org/posts/2023-08-15-F4S-Update/F4S-Update.html},
   langid = {en}

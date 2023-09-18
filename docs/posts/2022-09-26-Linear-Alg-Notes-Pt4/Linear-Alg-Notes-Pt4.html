@@ -25,7 +25,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -90,6 +90,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "/",
     "s"
   ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -175,7 +176,7 @@ cookieconsent.run({
 <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://fosstodon.org/%40ProfBryanHanson" rel="&quot;me&quot;"> <i class="bi bi-mastodon" role="img" aria-label="Mastodon">
+    <a class="nav-link" href="https://fosstodon.org/%40ProfBryanHanson" rel="me"> <i class="bi bi-mastodon" role="img" aria-label="Mastodon">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
@@ -320,7 +321,8 @@ cookieconsent.run({
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-flow" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-flow-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div>
 <pre class="mermaid mermaid-js" data-label="fig-flow">flowchart TD
 A(all matrices &lt;br/&gt; n x m) --&gt; C(row matrices &lt;br/&gt; 1 x n)
@@ -344,7 +346,10 @@ style J fill:#FFF0F5
 style N fill:#FFF0F5
 </pre>
 </div>
-<figcaption class="figure-caption">Figure&nbsp;1: Hierarchical relationships between different types of matrices. <em>Blue Rectangles</em> denote matrices with particular, recognizable <em>structures</em>. <em>Pink Hexagons</em> indicate properties that can be <em>queried</em>.</figcaption>
+</div>
+<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-flow-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Hierarchical relationships between different types of matrices. <em>Blue Rectangles</em> denote matrices with particular, recognizable <em>structures</em>. <em>Pink Hexagons</em> indicate properties that can be <em>queried</em>.
+</figcaption>
 </figure>
 </div>
 </div>
@@ -771,9 +776,10 @@ Some other properties of an orthogonal matrix
 <li id="fn7"><p>The <code>drop</code> argument to subsetting/extracting defaults to <code>TRUE</code> which means that if subsetting reduces the necessary number of dimensions, the unneeded dimension attributes are dropped. Under the default, selecting a single column of a matrix leads to a vector, not a one column vector. In this <code>all.equal()</code> expression we need both sides to evaluate to a matrix.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn8"><p>One might ask why <code>R</code> does not provide a user-facing version of such a function. I think a good argument can be made that the authors of <code>R</code> passed down a robust and lean set of linear algebra functions, geared toward getting work done, and throwing errors as necessary.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
-</aside><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
+</aside><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
   author = {Hanson, Bryan},
   title = {Notes on {Linear} {Algebra} {Part} 4},
+  pages = {undefined},
   date = {2022-09-26},
   url = {http://chemospec.org/posts/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html},
   langid = {en}

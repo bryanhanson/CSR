@@ -25,7 +25,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -61,6 +61,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
+  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -109,6 +110,7 @@ div.csl-indent {
     "/",
     "s"
   ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -188,7 +190,7 @@ cookieconsent.run({
 <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://fosstodon.org/%40ProfBryanHanson" rel="&quot;me&quot;"> <i class="bi bi-mastodon" role="img" aria-label="Mastodon">
+    <a class="nav-link" href="https://fosstodon.org/%40ProfBryanHanson" rel="me"> <i class="bi bi-mastodon" role="img" aria-label="Mastodon">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
@@ -443,10 +445,14 @@ of class 'Spectra'</code></pre>
 <span id="cb11-2"><a href="#cb11-2"></a>    <span class="at">yrange =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.05</span>, <span class="fl">1.1</span>))</span>
 <span id="cb11-3"><a href="#cb11-3"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="fig-samplePlot" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="2022-02-01-Protocol-Pt1_files/figure-html/fig-samplePlot-1.png" class="img-fluid figure-img" style="width:80.0%"></p>
-<figcaption class="figure-caption">Figure&nbsp;1: Sample spectra from each group.</figcaption>
+<div id="fig-samplePlot" class="quarto-figure quarto-figure-center anchored" data-fig-align="center" width="80%">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-samplePlot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="2022-02-01-Protocol-Pt1_files/figure-html/fig-samplePlot-1.png" class="img-fluid quarto-figure-center figure-img" style="width:80.0%">
+</div>
+<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-samplePlot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Sample spectra from each group.
+</figcaption>
 </figure>
 </div>
 </div>
@@ -460,16 +466,17 @@ of class 'Spectra'</code></pre>
 </section>
 </section>
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-Blaise2021" class="csl-entry" role="listitem">
 Blaise, Benjamin J., Gonçalo D. S. Correia, Gordon A. Haggart, Izabella Surowiec, Caroline Sands, Matthew R. Lewis, Jake T. M. Pearce, et al. 2021. <span>“Statistical Analysis in Metabolic Phenotyping.”</span> <em>Nature Protocols</em> 16: 4299–4326. <a href="https://doi.org/10.1038/s41596-021-00579-1">https://doi.org/10.1038/s41596-021-00579-1</a>.
 </div>
 <div id="ref-Blaise2007" class="csl-entry" role="listitem">
 Blaise, Benjamin J., Jean Giacomotto, Bénédicte Elena, Marc-Emmanuel Dumas, Pierre Toulhoat, Laurent Ségalat, and Lyndon Emsley. 2007. <span>“Metabotyping of Caenorhabditis Elegans Reveals Latent Phenotypes.”</span> <em>Proceedings of the National Academy of Sciences</em> 104 (50): 19808–12. <a href="https://doi.org/10.1073/pnas.0707393104">https://doi.org/10.1073/pnas.0707393104</a>.
 </div>
-</div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
+</div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
   author = {Hanson, Bryan},
   title = {Metabolic {Phenotyping} {Protocol} {Part} 1},
+  pages = {undefined},
   date = {2022-02-01},
   url = {http://chemospec.org/posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1.html},
   langid = {en}

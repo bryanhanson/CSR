@@ -6,11 +6,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Erick Oduniyi">
-<meta name="dcterms.date" content="2020-09-08">
-<meta name="description" content="Guest post by Erick Oduniyi">
+<meta name="author" content="Bryan Hanson">
+<meta name="dcterms.date" content="2023-08-18">
+<meta name="description" content="I did not know this…">
 
-<title>Chemometrics and Spectroscopy Using R - GSOC Wrap Up</title>
+<title>Chemometrics and Spectroscopy Using R - The n + 1 rule in Earth’s Field NMR</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,7 +23,61 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -89,10 +143,12 @@ cookieconsent.run({
 </script> 
   
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="../../styles.css">
-<meta name="twitter:title" content="Chemometrics and Spectroscopy Using R - GSOC Wrap Up">
-<meta name="twitter:description" content="Guest post by Erick Oduniyi">
+<meta name="twitter:title" content="Chemometrics and Spectroscopy Using R - The n + 1 rule in Earth’s Field NMR">
+<meta name="twitter:description" content="I did not know this…">
 <meta name="twitter:card" content="summary">
 </head>
 
@@ -205,18 +261,17 @@ cookieconsent.run({
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">GSOC Wrap Up</h1>
+<h1 class="title">The n + 1 rule in Earth’s Field NMR</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">R</div>
-    <div class="quarto-category">hyperSpec</div>
-    <div class="quarto-category">GSOC</div>
-    <div class="quarto-category">Guest Post</div>
+    <div class="quarto-category">NMR</div>
+    <div class="quarto-category">EF-NMR</div>
+    <div class="quarto-category">JCS</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    Guest post by Erick Oduniyi
+    I did not know this…
   </div>
 </div>
 
@@ -226,14 +281,14 @@ cookieconsent.run({
     <div>
     <div class="quarto-title-meta-heading">Author</div>
     <div class="quarto-title-meta-contents">
-             <p>Erick Oduniyi </p>
+             <p>Bryan Hanson </p>
           </div>
   </div>
     
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">September 8, 2020</p>
+      <p class="date">August 18, 2023</p>
     </div>
   </div>
   
@@ -244,55 +299,116 @@ cookieconsent.run({
 
 </header>
 
-<table>
-<tbody><tr>
-<td>
-<img src="og-image.png" alt="GSOC_logo" style="width:100px;">
-</td>
-<td>
-Well, things have been busy lately! As reported back in <a href="https://chemospec.org/posts/2020-05-07-GSOC-hyperSpec/"><em>May</em></a>, I’ve been participating in Google Summer of Code which has now wrapped up. This was very rewarding for me, but today I want to share a guest post by Erick Oduniyi, the very talented student on the project. Bryan
-</td>
-</tr>
-</tbody></table>
-<hr>
-<p>Checking in from Kansas!</p>
-<p>This past summer (2020) I had the amazing opportunity to participate in the <a href="https://summerofcode.withgoogle.com/">Google Summer of Code</a> (GSoC or GSOC). As stated on the the GSOC website, GSOC is a “global program focused on bringing more student developers into open source software development. Students work with an open-source organization on a 3-month programming project during their break from school.”</p>
-<p>This was a particularly meaningful experience as it was my last undergraduate summer internship. I’m a senior studying computer engineering at the University of Kansas, and at the beginning of the summer I still didn’t feel super comfortable working on public (open-source) projects. So, I thought this program would help build my confidence as a computer and software engineer. Moreover:</p>
-<ul>
-<li>I wanted to work with the <code>R</code> organization because that is my favorite programming language.</li>
-<li>I wanted to work with <code>r-hyperspec</code> because I thought that would be the most impactful in terms of practicing project management and software ecosystem development.</li>
-</ul>
-<p>In the process I hoped to:</p>
-<ul>
-<li>Become proficient using <code>Git/Github</code>, including continuous integration</li>
-<li>Become proficient in using <a href="https://trello.com/">Trello</a></li>
-<li>Become proficient in using <code>R</code></li>
-<li>Become familiar with the spectroscopy community</li>
-<li>Become inspired to code more</li>
-<li>Become inspired to document and write more open source projects.</li>
-<li>Become excited to collaborate more across various industrial, academic, and community domains.</li>
-</ul>
-<p>And through a lot of hard work all of those things came to be! Truthfully, even though the summer project was successful there is still a lot of work to do:</p>
-<ul>
-<li>Fortify <code>hyperSpec</code> for <code>baseline</code> with bridge packages</li>
-<li>Fortify <code>hyperSpec</code> for <code>EMSC</code> with bridge packages</li>
-<li>Fortify <code>hyperSpec</code> for <code>matrixStats</code> with bridge packages.</li>
-</ul>
-<p>So, I’m excited to continue to work with the team! I think there are a ton of ideas I and the team have and hopefully we will get to explore them in deeper context. Speaking of the <a href="https://github.com/orgs/r-hyperspec/teams/r-hyperspec/members">team</a>, I have them to thank for an awesome <code>GSOC 2020</code> experience. If you are interested in the journey that was the GSoC 2020 experience (perhaps you might be interested in trying the program next year), then please feel free to jump around <a href="https://eoduniyi.github.io/hyperSpec.gsoc2020/">here</a> to get a feel for the things that I learned and how I worked with the <code>r-hyperspec</code> team this summer.</p>
-<p>Best, E. Oduniyi</p>
+<p>I have been studying Earth’s Field NMR for a bit now. The other day I came across a paper that clued me into some additional interesting features of EF-NMR I was not aware of.</p>
+<p>As all organic chemists know, in NMR we use the <span class="math inline">\(n + 1\)</span> rule to determine splitting, and Pascal’s triangle as a nemonic to remember the relative areas of the peaks within a multiplet. For instance, we expect that the <span class="math inline">\(\ce{CH3}\)</span> group in ethanol to be a triplet with areas 1:2:1, due to the <span class="math inline">\(\ce{CH3}\)</span> group having two proton neighbors in the <span class="math inline">\(\ce{CH2}\)</span> group. We treat the two protons in <span class="math inline">\(\ce{CH2}\)</span> as magnetically equivalent.</p>
+<section id="j-coupled-specta" class="level2">
+<h2 class="anchored" data-anchor-id="j-coupled-specta">J-Coupled Specta</h2>
+<p>The <span class="math inline">\(n+1\)</span> rule works at typical fields used for structural determination, let’s say 60 MHz and above.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> At these fields one is working in the so-called “weak coupling” region. However, as one lowers the field to really low values, one encounters the “strong coupling” region, where one observes “J-coupled-spectra” or JCS. Under strong coupling, the <span class="math inline">\(\ce{CH2}\)</span> protons in ethanol are no longer magnetically equivalent, and each of them couples differently to other nuclei, and the <span class="math inline">\(n + 1\)</span> rule breaks down.</p>
+<p>The strict requirement for JCS is that there be two or more protons attached to a spin <span class="math inline">\(\frac{1}{2}\)</span> heteroatom and the magnetic field be quite small. For a simple system, let’s say <span class="math inline">\(\ce{H_i\bond{-}X\bond{-} H_j}\)</span>, the strict requirement to see separate lines for the no-longer-equivalent protons is:</p>
+<p><span class="math display">\[
+\lvert J_{XH_i} - J_{XH_j} \rvert \ge \lvert J_{H_{i}H_{j}} \rvert
+\]</span></p>
+<p>If this seems a bit strange, well, 1) it is, and 2) it has always been the case that the “equivalent” protons in for example a <span class="math inline">\(\ce{CH2}\)</span> group do couple, we just don’t normally see it or worry about it.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+</section>
+<section id="how-small-is-small" class="level2">
+<h2 class="anchored" data-anchor-id="how-small-is-small">How Small is Small?</h2>
+<p>How small does the magnetic field have to be for J-coupled spectra to appear? This is covered in detail in <span class="citation" data-cites="Appelt2010">Appelt et al. (<a href="#ref-Appelt2010" role="doc-biblioref">2010</a>)</span> but generally speaking JCS appear at around <span class="math inline">\(10^{-6}\)</span> to <span class="math inline">\(10^{-4}\)</span> Tesla.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> The magnetic field of earth is around 50 mT, right in the sweet spot. The Larmor resonance frequency for <span class="math inline">\(\ce{^{1}H}\)</span> at this field strength is around 2 kHz.</p>
+</section>
+<section id="what-replaces-the-n-1-rule" class="level2">
+<h2 class="anchored" data-anchor-id="what-replaces-the-n-1-rule">What Replaces the <span class="math inline">\(n + 1\)</span> Rule?</h2>
+<p>In the case of a system like <span class="math inline">\(\ce{X\bond{-}H_N}\)</span>, the number of lines that will be observed is</p>
+<p><span class="math display">\[
+\textrm{no. of lines} = 2 \sum_{n = 1, n \in U}^{N}N - n + 1
+\]</span></p>
+<p>Where <span class="math inline">\(U\)</span> is the set of odd numbers (for odd <span class="math inline">\(N\)</span>, one evaluates until <span class="math inline">\(N -n = 0\)</span>; for even <span class="math inline">\(N\)</span>, evaluate until <span class="math inline">\(N-n=1\)</span>). The leading multiplier of 2 accounts for the doublet due to <span class="math inline">\(\ce{J_{XH}}\)</span>. This formula doesn’t exactly roll off the tongue. We can evaluate it to get the first few terms:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>N <span class="ot">&lt;-</span> <span class="dv">5</span>L <span class="co"># evaluate 1:N terms</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a>no.lines <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA_integer_</span>, N) <span class="co"># initialize storage</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N) {</span>
+<span id="cb1-4"><a href="#cb1-4"></a>  odd <span class="ot">&lt;-</span> (<span class="dv">1</span><span class="sc">:</span>i) <span class="sc">%%</span> <span class="dv">2</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a>  n <span class="ot">&lt;-</span> (<span class="dv">1</span><span class="sc">:</span>i)[<span class="fu">as.logical</span>(odd)] <span class="co"># get odd n no larger than N</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a>  no.lines[i] <span class="ot">&lt;-</span> <span class="fu">sum</span>(i <span class="sc">-</span> n <span class="sc">+</span> <span class="dv">1</span>) <span class="co"># take advantage of R's vectorization</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a>}</span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="fu">names</span>(no.lines) <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">"N="</span>, <span class="dv">1</span><span class="sc">:</span>N, <span class="at">sep =</span> <span class="st">""</span>) <span class="co"># pretty it up</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a>no.lines <span class="ot">&lt;-</span> no.lines <span class="sc">*</span> <span class="dv">2</span> <span class="co"># account for J_HX</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a>no.lines</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>N=1 N=2 N=3 N=4 N=5 
+  2   4   8  12  18 </code></pre>
+</div>
+</div>
+</section>
+<section id="examples" class="level2">
+<h2 class="anchored" data-anchor-id="examples">Examples</h2>
+<p>A couple of examples should clarify the situation. All of these will be from the perspective of observing <span class="math inline">\(\ce{^{1}H}\)</span>.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> These examples are taken from <span class="citation" data-cites="Appelt2007">Appelt et al. (<a href="#ref-Appelt2007" role="doc-biblioref">2007</a>)</span>.</p>
+<section id="ceph2" class="level3">
+<h3 class="anchored" data-anchor-id="ceph2"><span class="math inline">\(\ce{PH2}\)</span></h3>
+<p>At <em>high field</em> the <span class="math inline">\(\ce{^{1}H}\)</span> spectrum of <span class="math inline">\(\ce{PH2}\)</span> would be a symmetric doublet with a peak separation of <span class="math inline">\(\ce{J_{PH}}\)</span>.</p>
+<p>In <em>earth’s field</em>, the spectrum is first split into a doublet by <span class="math inline">\(\ce{J_{PH}}\)</span>, but the spacing is not symmetric. Then, each part of the doublet is split further into two peaks, also asymmetrically and with varying linewidths. <a href="#fig-PH2" class="quarto-xref">Figure&nbsp;1</a> shows how the splitting changes as a function of field strength. Note that in the strong coupling region there are four peaks, as predicted above.</p>
+<div id="fig-PH2" class="quarto-figure quarto-figure-center anchored" alt="Appelt 2007 Fig. 4">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-PH2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="Appelt2007Fig4.png" class="img-fluid figure-img" alt="Appelt 2007 Fig. 4">
+</div>
+<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-PH2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Figure 4 from <span class="citation" data-cites="Appelt2007">Appelt et al. (<a href="#ref-Appelt2007" role="doc-biblioref">2007</a>)</span>, showing the field dependence of the <span class="math inline">\(\ce{PH2}\)</span> spectrum.
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="cech3oh" class="level3">
+<h3 class="anchored" data-anchor-id="cech3oh"><span class="math inline">\(\ce{CH3OH}\)</span></h3>
+<p>For the case of methanol in Earth’s field, the spectrum is first asymmetrically split by the <span class="math inline">\(\ce{^{13}C}\)</span> with spacing <span class="math inline">\(\ce{J_{CH}}\)</span>. Then each part of the doublet is further split into four peaks. <a href="#fig-methanol" class="quarto-xref">Figure&nbsp;2</a> shows the EF spectrum of methanol. The asymmetry of the line spacing and line widths is apparent.</p>
+<div id="fig-methanol" class="quarto-figure quarto-figure-center anchored" alt="Appelt 2007 Fig. 5">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-methanol-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="Appelt2007Fig5.png" class="img-fluid figure-img" alt="Appelt 2007 Fig. 5">
+</div>
+<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-methanol-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Figure 5 from <span class="citation" data-cites="Appelt2007">Appelt et al. (<a href="#ref-Appelt2007" role="doc-biblioref">2007</a>)</span>, showing the spectrum of methanol.
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="further-reading" class="level3">
+<h3 class="anchored" data-anchor-id="further-reading">Further Reading</h3>
+<p>For a broad overview of this topic, take a look at <span class="citation" data-cites="Kaseman2020">Kaseman et al. (<a href="#ref-Kaseman2020" role="doc-biblioref">2020</a>)</span>; for a detailed walk-through of the theory with many more examples, see <span class="citation" data-cites="Appelt2007">Appelt et al. (<a href="#ref-Appelt2007" role="doc-biblioref">2007</a>)</span>, and other papers by Appelt et al.&nbsp;Be prepared to spend some time with these papers.</p>
 
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{oduniyi2020,
-  author = {Oduniyi, Erick},
-  title = {GSOC {Wrap} {Up}},
+</section>
+</section>
+
+
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-Appelt2007" class="csl-entry" role="listitem">
+Appelt, Stephan, F. Wolfgang Häsing, Holger Kühn, and Bernhard Blümich. 2007. <span>“Phenomena in <span class="math inline">\(J\)</span>-Coupled Nuclear Magnetic Resonance Spectroscopy in Low Magnetic Fields.”</span> <em>Phys. Rev. A</em> 76 (August): 023420. <a href="https://doi.org/10.1103/PhysRevA.76.023420">https://doi.org/10.1103/PhysRevA.76.023420</a>.
+</div>
+<div id="ref-Appelt2010" class="csl-entry" role="listitem">
+Appelt, Stephan, F. W. Häsing, U. Sieling, A. Gordji-Nejad, S. Glöggler, and B. Blümich. 2010. <span>“Paths from Weak to Strong Coupling in NMR.”</span> <em>Phys. Rev. A</em> 81 (February): 023420. <a href="https://doi.org/10.1103/PhysRevA.81.023420">https://doi.org/10.1103/PhysRevA.81.023420</a>.
+</div>
+<div id="ref-Kaseman2020" class="csl-entry" role="listitem">
+Kaseman, Derrick C., Per E. Magnelind, Scarlett Widgeon Paisner, Jacob L. Yoder, Marc Alvarez, Algis V. Urbaitis, Michael T. Janicke, Pulak Nath, Michelle A. Espy, and Robert F. Williams. 2020. <span>“<span class="nocase">Design and implementation of a J-coupled spectrometer for multidimensional structure and relaxation detection at low magnetic fields</span>.”</span> <em>Review of Scientific Instruments</em> 91 (5): 054103. <a href="https://doi.org/10.1063/1.5130391">https://doi.org/10.1063/1.5130391</a>.
+</div>
+</div></section><aside id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>60 MHz chosen simply because commercial instruments have been available at that field <em>for forever</em>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>The protons in something like <span class="math inline">\(\ce{CH2Cl2}\)</span> actually do couple to each other. With <a href="http://u-of-o-nmr-facility.blogspot.com/2008/06/spin-spin-coupling-between-equivalent.html?m=1">a little trick</a>, you can measure <span class="math inline">\(J_{HH}\)</span>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>This is a general trend. The exact boundaries between various coupling regimes depends on the nuclei involved, the coupling constants and the peak separation in Larmor frequency (in Hz).<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>Remember, signals are very weak at EF so observing heteronuclei is significantly more challenging. See the <a href="https://chemospec.org/posts/2023-07-19-EF-NMR-1/EF-NMR-1.html">previous post</a> for details.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</aside><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2023,
+  author = {Hanson, Bryan},
+  title = {The n + 1 Rule in {Earth’s} {Field} {NMR}},
   pages = {undefined},
-  date = {2020-09-08},
-  url = {http://chemospec.org/posts/2020-09-08-GSOC-hyperSpec/2020-09-08-GSOC-hyperSpec.html},
+  date = {2023-09-18},
+  url = {http://chemospec.org/posts/2023-09-18-EF-NMR-2/EF-NMR-2.html},
   langid = {en}
 }
-</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-oduniyi2020" class="csl-entry quarto-appendix-citeas" role="listitem">
-Oduniyi, Erick. 2020. <span>“GSOC Wrap Up.”</span> September 8, 2020. <a href="http://chemospec.org/posts/2020-09-08-GSOC-hyperSpec/2020-09-08-GSOC-hyperSpec.html">http://chemospec.org/posts/2020-09-08-GSOC-hyperSpec/2020-09-08-GSOC-hyperSpec.html</a>.
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2023" class="csl-entry quarto-appendix-citeas" role="listitem">
+Hanson, Bryan. 2023. <span>“The n + 1 Rule in Earth’s Field NMR.”</span>
+September 18, 2023. <a href="http://chemospec.org/posts/2023-09-18-EF-NMR-2/EF-NMR-2.html">http://chemospec.org/posts/2023-09-18-EF-NMR-2/EF-NMR-2.html</a>.
 </div></div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {

@@ -25,7 +25,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -61,6 +61,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
+  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -109,6 +110,7 @@ div.csl-indent {
     "/",
     "s"
   ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -190,7 +192,7 @@ cookieconsent.run({
 <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://fosstodon.org/%40ProfBryanHanson" rel="&quot;me&quot;"> <i class="bi bi-mastodon" role="img" aria-label="Mastodon">
+    <a class="nav-link" href="https://fosstodon.org/%40ProfBryanHanson" rel="me"> <i class="bi bi-mastodon" role="img" aria-label="Mastodon">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
@@ -357,7 +359,13 @@ of class 'Spectra'</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">plotSpectra</span>(Marzipan, <span class="at">which =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">32</span>, <span class="at">lab.pos =</span> <span class="dv">3000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="2021-02-08-PLS_files/figure-html/showSpectra-1.png" class="img-fluid" width="672"></p>
+<div id="fig-539a35d47e664c97a50115a146a7f1bd-1" class="quarto-figure quarto-figure-center anchored" width="672">
+<figure class="quarto-float quarto-float-fig figure">
+<div>
+<img src="2021-02-08-PLS_files/figure-html/showSpectra-1.png" id="fig-539a35d47e664c97a50115a146a7f1bd-1" class="img-fluid figure-img" width="672">
+</div>
+</figure>
+</div>
 </div>
 </div>
 <p>In order to carry out PLS, one needs to provide a matrix of spectroscopic data, with samples in rows (let’s call it <span class="math inline">\(X\)</span>, you’ll see why in a moment). Fortunately this data is available directly from the <code>ChemoSpec</code> object as <code>Marzipan$data</code>.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> One also needs to provide a matrix of the additional dependent data (let’s call it <span class="math inline">\(Y\)</span>). It is critical that the order of rows in <span class="math inline">\(Y\)</span> correspond to the order of rows in the matrix of spectroscopic data, <span class="math inline">\(X\)</span>.</p>
@@ -397,7 +405,7 @@ of class 'Spectra'</code></pre>
 
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-Christensen2004" class="csl-entry" role="listitem">
 Christensen, Jakob, Lars Nørgaard, Hanne Heimdal, Joan Grønkjær Pedersen, and Søren Balling Engelsen. 2004. <span>“Rapid Spectroscopic Analysis of Marzipan-Comparative Instrumentation.”</span> <em>Journal of Near Infrared Spectroscopy</em> 12 (1): 63–75. <a href="https://doi.org/10.1255/jnirs.408">https://doi.org/10.1255/jnirs.408</a>.
 </div>
@@ -416,9 +424,10 @@ Varmuza, K., and P. Filzmoser. 2009. <em>Introduction to Multivariate Statistica
 <li id="fn1"><p>I have converted the data from Matlab to a <code>ChemoSpec</code> object; if anyone wants to know how to do this let me know and I’ll put up a post on that process.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2"><p><code>str(Marzipan)</code> will show you the structure of the <code>ChemoSpec</code> object (or in general, any <code>R</code> object). The official definition of a <code>ChemoSpec</code> object can be seen via <code>?Spectra</code>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
-</aside><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2021,
+</aside><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2021,
   author = {Hanson, Bryan},
   title = {Interfacing {ChemoSpec} to {PLS}},
+  pages = {undefined},
   date = {2021-02-08},
   url = {http://chemospec.org/posts/2021-02-08-PLS/2021-02-08-PLS.html},
   langid = {en}

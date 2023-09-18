@@ -25,7 +25,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -61,6 +61,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
+  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -111,6 +112,7 @@ div.csl-indent {
     "/",
     "s"
   ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -194,7 +196,7 @@ cookieconsent.run({
 <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://fosstodon.org/%40ProfBryanHanson" rel="&quot;me&quot;"> <i class="bi bi-mastodon" role="img" aria-label="Mastodon">
+    <a class="nav-link" href="https://fosstodon.org/%40ProfBryanHanson" rel="me"> <i class="bi bi-mastodon" role="img" aria-label="Mastodon">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
@@ -340,22 +342,34 @@ cookieconsent.run({
 <p>The main deviation from McClain’s design is that R2 needed to be set to 3M <span class="math inline">\(\ohm\)</span> in order to reach about 1V on the output. McClain gives a range of 100K to 1M. As the value of this resistor goes up, the output voltage goes up due to increasing amplification. This change is likely necessary as the photodiode in use here is a bit different than McClain specified. After some experimentation, the current on I1 (which replicates the current produced by the photodiode in the simulation) was set to 1/10,000 of the value of the current of D1, based upon currents observed when isolating D2 from the rest of the circuit.</p>
 <p>Monitoring the current and voltage across D2 as built and warmed up, the values were about 0.3 <span class="math inline">\(\mu\)</span>A and 0.23 V; if the LEGO holding D1 was moved immediately adjacent to that holding D2 these numbers were 0.7 <span class="math inline">\(\mu\)</span>A and 0.26 V. These readings support the discussion above that the photodiode was generating a relatively small response.</p>
 <div id="fig-mcclain-v1" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="mcclain-v1.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Figure&nbsp;1: Version 1 with simple LED power supply and a transimpedance amplifier as the detector.</figcaption>
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-mcclain-v1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="mcclain-v1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-mcclain-v1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Version 1 with simple LED power supply and a transimpedance amplifier as the detector.
+</figcaption>
 </figure>
 </div>
 <p><a href="#fig-build-v1-2" class="quarto-xref">Figure&nbsp;2</a> and <a href="#fig-build-v1-1" class="quarto-xref">Figure&nbsp;3</a> show the project from each side.</p>
 <div id="fig-build-v1-2" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="build-v1-2.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Figure&nbsp;2: View of project. The simplicity of the supply to the LED is apparent. The top rail is the negative supply, the lower rail is the positive supply, and the 2nd-from-bottom rail is the ground.</figcaption>
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-build-v1-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="build-v1-2.png" class="img-fluid figure-img">
+</div>
+<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-build-v1-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: View of project. The simplicity of the supply to the LED is apparent. The top rail is the negative supply, the lower rail is the positive supply, and the 2nd-from-bottom rail is the ground.
+</figcaption>
 </figure>
 </div>
 <div id="fig-build-v1-1" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="build-v1-1.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Figure&nbsp;3: View of project. The op amp for the detector is in the foreground.</figcaption>
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-build-v1-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="build-v1-1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-build-v1-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: View of project. The op amp for the detector is in the foreground.
+</figcaption>
 </figure>
 </div>
 </section>
@@ -366,15 +380,23 @@ cookieconsent.run({
 <h3 class="anchored" data-anchor-id="simulation">Simulation</h3>
 <p>The relaxation oscillator circuit was modeled in CircuitLab before building the circuit. The circuit is in <a href="#fig-mcclain-relax-osc" class="quarto-xref">Figure&nbsp;4</a> and the simulation results are shown in <a href="#fig-mcclain-relax-osc-out-2" class="quarto-xref">Figure&nbsp;5</a>.</p>
 <div id="fig-mcclain-relax-osc" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="mcclain-relax-osc.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Figure&nbsp;4: The relaxation oscillator circuit.</figcaption>
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-mcclain-relax-osc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="mcclain-relax-osc.png" class="img-fluid figure-img">
+</div>
+<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-mcclain-relax-osc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: The relaxation oscillator circuit.
+</figcaption>
 </figure>
 </div>
 <div id="fig-mcclain-relax-osc-out-2" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="mcclain-relax-osc-out-2.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Figure&nbsp;5: The relaxation oscillator simulation output. The gold/orange line indicates the charge on C2 building and decaying. When it reaches an extreme positive or negative value, the phase of the output square wave changes. The lower plot is the very small current produced at the output of the op amp.</figcaption>
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-mcclain-relax-osc-out-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="mcclain-relax-osc-out-2.png" class="img-fluid figure-img">
+</div>
+<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-mcclain-relax-osc-out-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: The relaxation oscillator simulation output. The gold/orange line indicates the charge on C2 building and decaying. When it reaches an extreme positive or negative value, the phase of the output square wave changes. The lower plot is the very small current produced at the output of the op amp.
+</figcaption>
 </figure>
 </div>
 </section>
@@ -384,15 +406,23 @@ cookieconsent.run({
 <p><em>Note that all oscilloscope traces have two vertical scales, one on the left and one on the right, color coordinated with the trace.</em></p>
 <div class="quarto-video"><video id="video_shortcode_videojs_video1" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="slow-blink.mp4"></video></div>
 <div id="fig-relax-osc-1uF" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="TP-A-vs-B-1uF.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Figure&nbsp;6: Relaxation oscillator with a 1<span class="math inline">\(\mu\)</span>F capcitor for C2. The blue curve is the output of the op amp, the red line is the charging and discharging of C2. Note the box at the bottom which reports the period of the square wave, which corresponds to a frequency of about 8 Hz.</figcaption>
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-relax-osc-1uF-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="TP-A-vs-B-1uF.png" class="img-fluid figure-img">
+</div>
+<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-relax-osc-1uF-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: Relaxation oscillator with a 1<span class="math inline">\(\mu\)</span>F capcitor for C2. The blue curve is the output of the op amp, the red line is the charging and discharging of C2. Note the box at the bottom which reports the period of the square wave, which corresponds to a frequency of about 8 Hz.
+</figcaption>
 </figure>
 </div>
 <div id="fig-relax-osc-4700pF" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="TP-A-vs-B.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Figure&nbsp;7: Relaxation oscillator with C2 at 4700 pF. Note the horizontal scale range is much smaller than in the previous figure, as the frequency is much higher.</figcaption>
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-relax-osc-4700pF-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="TP-A-vs-B.png" class="img-fluid figure-img">
+</div>
+<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-relax-osc-4700pF-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: Relaxation oscillator with C2 at 4700 pF. Note the horizontal scale range is much smaller than in the previous figure, as the frequency is much higher.
+</figcaption>
 </figure>
 </div>
 <p>The built version of the relaxation oscillator corresponds well with the simulation.</p>
@@ -403,9 +433,13 @@ cookieconsent.run({
 <p>This final version contains all the circuits as described by McClain. I decided to measure voltages directly at the output rather than use an Arduino and display to provide an absorbance value.</p>
 <p><a href="#fig-complete-circuit" class="quarto-xref">Figure&nbsp;8</a> shows the final circuit. Note that several test points are labeled and referred to in the discussion below.</p>
 <div id="fig-complete-circuit" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="complete-circuit.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Figure&nbsp;8: Completed project with key modules labeled. <a href="imgs/complete-circuit.png">Click</a> for full size.</figcaption>
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-complete-circuit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="complete-circuit.png" class="img-fluid figure-img">
+</div>
+<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-complete-circuit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8: Completed project with key modules labeled. <a href="imgs/complete-circuit.png">Click</a> for full size.
+</figcaption>
 </figure>
 </div>
 <section id="relaxation-oscillator" class="level3">
@@ -424,15 +458,23 @@ cookieconsent.run({
 <h3 class="anchored" data-anchor-id="high-pass-filter">High Pass Filter</h3>
 <p>A high pass filter takes a signal that is time-varying, in our case a square wave, and filters it so that only high frequency components are kept. This is a key part of the detector design, since we create an approximately 1,500 Hz square wave and any other component, like 60 Hz flicker from room lights, should be eliminated. <a href="#fig-high-pass-circuit" class="quarto-xref">Figure&nbsp;9</a> shows an isolated version of our high pass filter, and <a href="#fig-high-pass-performance" class="quarto-xref">Figure&nbsp;10</a> shows the frequency dependency filtering.</p>
 <div id="fig-high-pass-circuit" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="high-pass-circuit.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Figure&nbsp;9: Isolated high pass filter circuit.</figcaption>
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-high-pass-circuit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="high-pass-circuit.png" class="img-fluid figure-img">
+</div>
+<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-high-pass-circuit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9: Isolated high pass filter circuit.
+</figcaption>
 </figure>
 </div>
 <div id="fig-high-pass-performance" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="high-pass-performance.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Figure&nbsp;10: Frequency dependence of the high pass filter. Lower values on the vertical axis means greater attenuation.</figcaption>
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-high-pass-performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="high-pass-performance.png" class="img-fluid figure-img">
+</div>
+<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-high-pass-performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10: Frequency dependence of the high pass filter. Lower values on the vertical axis means greater attenuation.
+</figcaption>
 </figure>
 </div>
 </section>
@@ -440,9 +482,13 @@ cookieconsent.run({
 <h3 class="anchored" data-anchor-id="half-wave-rectifier">Half Wave Rectifier</h3>
 <p>A half wave rectifier converts an alternating current, alternating between positive and negative values, into a positive only form. Essentially, the negative portion of the signal is converted to positive values, and the positive portion is set to zero. <a href="#fig-half-wave" class="quarto-xref">Figure&nbsp;11</a> shows the action of the rectifier.</p>
 <div id="fig-half-wave" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="TP-D-vs-E.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Figure&nbsp;11: Action of the half wave rectifier. The red trace is observed at test point D, and fluctuates positive and negative. The blue trace is the rectified wave observed at test point E. Notice that its voltage is always positive.</figcaption>
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-half-wave-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="TP-D-vs-E.png" class="img-fluid figure-img">
+</div>
+<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-half-wave-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;11: Action of the half wave rectifier. The red trace is observed at test point D, and fluctuates positive and negative. The blue trace is the rectified wave observed at test point E. Notice that its voltage is always positive.
+</figcaption>
 </figure>
 </div>
 </section>
@@ -450,30 +496,46 @@ cookieconsent.run({
 <h3 class="anchored" data-anchor-id="active-low-pass-filter">Active Low Pass Filter</h3>
 <p>The final step is an active low pass filter which only passes signals below a certain frequency <em>and</em> amplifies them (that’s the active part). Importantly, in addition to amplifying the signal, the op amp emits a steady DC voltage which is ultimately proportional to the current hitting the photodiode. This is the value we are after when making absorbance measurements. <a href="#fig-low-pass" class="quarto-xref">Figure&nbsp;12</a> shows the actual output.</p>
 <div id="fig-low-pass" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="TP-E-vs-F.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Figure&nbsp;12: Effect of the low pass filter. The red curve is the same as in the previous figure, namely test poiont D. The blue line is the final DC output at test point F. This is where the final voltages are measured.</figcaption>
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-low-pass-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="TP-E-vs-F.png" class="img-fluid figure-img">
+</div>
+<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-low-pass-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;12: Effect of the low pass filter. The red curve is the same as in the previous figure, namely test poiont D. The blue line is the final DC output at test point F. This is where the final voltages are measured.
+</figcaption>
 </figure>
 </div>
 <p>If we isolate the low pass filter circuit we can try to understand its operation in greater detail. <a href="#fig-active-LPF-circuit" class="quarto-xref">Figure&nbsp;13</a> shows the isolated circuit with simulation inputs configured to match the measured inputs.</p>
 <div id="fig-active-LPF-circuit" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="active-LPF-circuit.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Figure&nbsp;13: Isolated active low pass filter circuit.</figcaption>
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-active-LPF-circuit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="active-LPF-circuit.png" class="img-fluid figure-img">
+</div>
+<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-active-LPF-circuit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13: Isolated active low pass filter circuit.
+</figcaption>
 </figure>
 </div>
 <p>If we look at the frequency dependence of this circuit, we see that low frequencies are passed relatively unattenuated (<a href="#fig-active-LPF-frequency" class="quarto-xref">Figure&nbsp;14</a>), as expected. The combination of the earlier high pass filter and this low pass filter amounts to a band pass filter. This suggests a potential follow up design which uses a band pass filter followed by rectification and conversion to DC by some combination of op amps.</p>
 <div id="fig-active-LPF-frequency" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="active-LPF-frequency.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Figure&nbsp;14: Attenuation of high frequencies by the low pass filter.</figcaption>
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-active-LPF-frequency-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="active-LPF-frequency.png" class="img-fluid figure-img">
+</div>
+<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-active-LPF-frequency-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14: Attenuation of high frequencies by the low pass filter.
+</figcaption>
 </figure>
 </div>
 <p>In addition to the filtering behavior, we know that the circuit produces a steady DC current from the approximately square wave input. Let’s check this using the simulator again, but this time looking at output voltages. <a href="#fig-active-LPF-voltage" class="quarto-xref">Figure&nbsp;15</a> shows the results, which should ideally be close to those in <a href="#fig-low-pass" class="quarto-xref">Figure&nbsp;12</a>.</p>
 <div id="fig-active-LPF-voltage" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="active-LPF-voltage.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Figure&nbsp;15: Voltages produce by the active low pass filer. The square wave is the simulated input. The gold/orange line is the output DC voltage, which is higher than observed, probably due to an imperfect simulation configuration. The key point is that a steady DC voltage is produced.</figcaption>
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-active-LPF-voltage-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="active-LPF-voltage.png" class="img-fluid figure-img">
+</div>
+<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-active-LPF-voltage-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;15: Voltages produce by the active low pass filer. The square wave is the simulated input. The gold/orange line is the output DC voltage, which is higher than observed, probably due to an imperfect simulation configuration. The key point is that a steady DC voltage is produced.
+</figcaption>
 </figure>
 </div>
 </section>
@@ -481,30 +543,43 @@ cookieconsent.run({
 <h3 class="anchored" data-anchor-id="calibration-curve">Calibration Curve</h3>
 <p>A calibration curve was prepared using a 10 mL plastic syringe and some small bottles. Two drops of red food coloring were added to 10 mL of water to create the first solution. Three mL of the stock solution was added to seven mL of water. This 2nd solution was then diluted in similar fashion and so forth, to get five total solutions. Tap water was used. The green LED was disconnected and the dark current was measured. Next, tap water was used as a blank. Then the voltage for each sample was recorded (voltage measurements are taken at point F in <a href="#fig-complete-circuit" class="quarto-xref">Figure&nbsp;8</a>). <a href="#lst-comp" class="quarto-xref">Listing&nbsp;1</a> shows the computational steps. <a href="#fig-cal-samples" class="quarto-xref">Figure&nbsp;16</a> shows the samples from most concentrated to least concentrated.</p>
 <div id="fig-cal-samples" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="cal-samples.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Figure&nbsp;16: Calibration samples.</figcaption>
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cal-samples-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="cal-samples.png" class="img-fluid figure-img">
+</div>
+<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-cal-samples-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;16: Calibration samples.
+</figcaption>
 </figure>
 </div>
 <div class="cell">
-<div id="lst-comp" class="listing">
-<p>Listing&nbsp;1: Computation of absorbance values.</p>
-<div class="sourceCode cell-code" id="lst-comp" data-lst-cap="Computation of absorbance values."><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="lst-comp-1"><a href="#lst-comp-1"></a>dark <span class="ot">&lt;-</span> <span class="fl">6.0e-3</span> <span class="co"># dark voltage</span></span>
-<span id="lst-comp-2"><a href="#lst-comp-2"></a>blank <span class="ot">&lt;-</span> <span class="fl">0.281</span> <span class="co"># tap water</span></span>
-<span id="lst-comp-3"><a href="#lst-comp-3"></a>voltage <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">26.2e-3</span>, <span class="fl">26.8e-3</span>, <span class="fl">34.0e-3</span>, <span class="fl">99.9e-3</span>, <span class="fl">196.0e-3</span>) <span class="co"># sample readings</span></span>
-<span id="lst-comp-4"><a href="#lst-comp-4"></a>stock <span class="ot">&lt;-</span> <span class="fl">1.0</span> <span class="co"># 2 drops red food coloring in 10 mL tap water</span></span>
-<span id="lst-comp-5"><a href="#lst-comp-5"></a>dil <span class="ot">&lt;-</span> <span class="dv">3</span><span class="sc">/</span><span class="dv">10</span> <span class="co"># serial dilution factor</span></span>
-<span id="lst-comp-6"><a href="#lst-comp-6"></a>conc <span class="ot">&lt;-</span> <span class="fu">c</span>(stock, dil<span class="sc">^</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>))</span>
-<span id="lst-comp-7"><a href="#lst-comp-7"></a>DF <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Concentration =</span> conc, <span class="at">Voltage =</span> voltage)</span>
-<span id="lst-comp-8"><a href="#lst-comp-8"></a>DF<span class="sc">$</span>Absorbance <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fu">log</span>((DF<span class="sc">$</span>Voltage <span class="sc">-</span> dark)<span class="sc">/</span>(blank <span class="sc">-</span> dark))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="lst-comp" class="r cell-code listing">
+<figure class="quarto-float quarto-float-lst figure">
+<figcaption class="listing quarto-float-caption quarto-float-lst" id="lst-comp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Listing&nbsp;1: Computation of absorbance values.
+</figcaption>
+<div aria-describedby="lst-comp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="sourceCode cell-code" id="lst-comp"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="lst-comp-1"><a href="#lst-comp-1" aria-hidden="true" tabindex="-1"></a>dark <span class="ot">&lt;-</span> <span class="fl">6.0e-3</span> <span class="co"># dark voltage</span></span>
+<span id="lst-comp-2"><a href="#lst-comp-2" aria-hidden="true" tabindex="-1"></a>blank <span class="ot">&lt;-</span> <span class="fl">0.281</span> <span class="co"># tap water</span></span>
+<span id="lst-comp-3"><a href="#lst-comp-3" aria-hidden="true" tabindex="-1"></a>voltage <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">26.2e-3</span>, <span class="fl">26.8e-3</span>, <span class="fl">34.0e-3</span>, <span class="fl">99.9e-3</span>, <span class="fl">196.0e-3</span>) <span class="co"># sample readings</span></span>
+<span id="lst-comp-4"><a href="#lst-comp-4" aria-hidden="true" tabindex="-1"></a>stock <span class="ot">&lt;-</span> <span class="fl">1.0</span> <span class="co"># 2 drops red food coloring in 10 mL tap water</span></span>
+<span id="lst-comp-5"><a href="#lst-comp-5" aria-hidden="true" tabindex="-1"></a>dil <span class="ot">&lt;-</span> <span class="dv">3</span><span class="sc">/</span><span class="dv">10</span> <span class="co"># serial dilution factor</span></span>
+<span id="lst-comp-6"><a href="#lst-comp-6" aria-hidden="true" tabindex="-1"></a>conc <span class="ot">&lt;-</span> <span class="fu">c</span>(stock, dil<span class="sc">^</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>))</span>
+<span id="lst-comp-7"><a href="#lst-comp-7" aria-hidden="true" tabindex="-1"></a>DF <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Concentration =</span> conc, <span class="at">Voltage =</span> voltage)</span>
+<span id="lst-comp-8"><a href="#lst-comp-8" aria-hidden="true" tabindex="-1"></a>DF<span class="sc">$</span>Absorbance <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fu">log</span>((DF<span class="sc">$</span>Voltage <span class="sc">-</span> dark)<span class="sc">/</span>(blank <span class="sc">-</span> dark))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</figure>
 </div>
 </div>
 <p><a href="#tbl-results" class="quarto-xref">Table&nbsp;1</a> shows the results. A calibration curve is shown in <a href="#fig-calcurve1" class="quarto-xref">Figure&nbsp;17</a>. Clearly the most concentrated samples exceed the linear behavior expected for Beer’s Law (as observed by McClain). If the two most concentrated samples are dropped, the result is a nice linear relationship, as seen in <a href="#fig-calcurve2" class="quarto-xref">Figure&nbsp;18</a> and the summary of the fit in <a href="#lst-fit" class="quarto-xref">Listing&nbsp;2</a>.</p>
-<div class="cell">
+<div id="tbl-results" class="cell anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="table quarto-float-caption quarto-float-tbl" id="tbl-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Relative sample concentrations and corresponding voltages and absorbances.
+</figcaption>
+<div aria-describedby="tbl-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="tbl-results" class="anchored">
-<table quarto-disable-processing="true" class="table table-striped table-bordered" style="width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table&nbsp;1:  <p>Relative sample concentrations and corresponding voltages and
-absorbances.</p> </caption>
+<table quarto-disable-processing="true" class="table table-striped table-bordered" style="width: auto !important; margin-left: auto; margin-right: auto;">
  <thead>
   <tr>
    <th style="text-align:right;"> Concentration </th>
@@ -543,23 +618,34 @@ absorbances.</p> </caption>
 
 </div>
 </div>
+</figure>
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-calcurve1" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="Photometer_files/figure-html/fig-calcurve1-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;17: Calibration curve, hardware version 3.</figcaption>
+<div id="fig-calcurve1" class="quarto-figure quarto-figure-center anchored" width="672">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-calcurve1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="Photometer_files/figure-html/fig-calcurve1-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-calcurve1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;17: Calibration curve, hardware version 3.
+</figcaption>
 </figure>
 </div>
 </div>
 </div>
 <div class="cell">
-<div id="lst-fit" class="listing">
-<p>Listing&nbsp;2: Results of fitting the three lowest concentration samples.</p>
-<div class="sourceCode cell-code" id="lst-fit" data-lst-cap="Results of fitting the three lowest concentration samples."><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="lst-fit-1"><a href="#lst-fit-1"></a>DF35 <span class="ot">&lt;-</span> DF[<span class="dv">3</span><span class="sc">:</span><span class="dv">5</span>,]</span>
-<span id="lst-fit-2"><a href="#lst-fit-2"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(DF35<span class="sc">$</span>Absorbance <span class="sc">~</span> DF35<span class="sc">$</span>Concentration)</span>
-<span id="lst-fit-3"><a href="#lst-fit-3"></a><span class="fu">summary</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="lst-fit" class="r cell-code listing">
+<figure class="quarto-float quarto-float-lst figure">
+<figcaption class="listing quarto-float-caption quarto-float-lst" id="lst-fit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Listing&nbsp;2: Results of fitting the three lowest concentration samples.
+</figcaption>
+<div aria-describedby="lst-fit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="sourceCode cell-code" id="lst-fit"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="lst-fit-1"><a href="#lst-fit-1" aria-hidden="true" tabindex="-1"></a>DF35 <span class="ot">&lt;-</span> DF[<span class="dv">3</span><span class="sc">:</span><span class="dv">5</span>,]</span>
+<span id="lst-fit-2"><a href="#lst-fit-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(DF35<span class="sc">$</span>Absorbance <span class="sc">~</span> DF35<span class="sc">$</span>Concentration)</span>
+<span id="lst-fit-3"><a href="#lst-fit-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</figure>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -584,10 +670,14 @@ F-statistic: 43.64 on 1 and 1 DF,  p-value: 0.09564</code></pre>
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-calcurve2" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="Photometer_files/figure-html/fig-calcurve2-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;18: Calibration curve, hardware version 3, dropping the two most concentrated samples.</figcaption>
+<div id="fig-calcurve2" class="quarto-figure quarto-figure-center anchored" width="672">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-calcurve2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="Photometer_files/figure-html/fig-calcurve2-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-calcurve2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18: Calibration curve, hardware version 3, dropping the two most concentrated samples.
+</figcaption>
 </figure>
 </div>
 </div>
@@ -603,7 +693,7 @@ F-statistic: 43.64 on 1 and 1 DF,  p-value: 0.09564</code></pre>
 </section>
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-Kvittingen2017" class="csl-entry" role="listitem">
 Kvittingen, Eivind V, Lise Kvittingen, Thor Bernt Melo, Birte Johanne Sjursnes, and Richard Verley. 2017. <span>“Demonstrating Basic Properties of Spectroscopy Using a Self-Constructed Combined Fluorimeter and UV-Photometer.”</span> <em>Journal of Chemical Education</em> 94: 1486–91.
 </div>
@@ -615,9 +705,10 @@ McClain, Robert L. 2014. <span>“Construction of a Photometer as an Instruction
 <ol>
 <li id="fn1"><p>I have not tested the fluoresence measurement as other projects are calling me. In addition to changing the position of the photodiode, a few resistors may need to be changed in order to achieve sufficient signal.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
-</aside><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2023,
+</aside><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2023,
   author = {Hanson, Bryan},
   title = {Home {Built} {Photometer}},
+  pages = {undefined},
   date = {2023-07-16},
   url = {http://chemospec.org/posts/2023-07-16-Photometer/Photometer.html},
   langid = {en}
