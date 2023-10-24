@@ -106,7 +106,7 @@ div.csl-indent {
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 20,
+  "limit": 50,
   "keyboard-shortcut": [
     "f",
     "/",
@@ -160,7 +160,7 @@ cookieconsent.run({
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../../index.html">
@@ -324,6 +324,7 @@ cookieconsent.run({
 
 
 </header>
+
 
 <p>Way back in 2014, I ordered the parts and started to build a photometer according to the plans laid out by <span class="citation" data-cites="McClain2014">McClain (<a href="#ref-McClain2014" role="doc-biblioref">2014</a>)</span>. I didn’t get very far, it was a busy time. Well, I have finally completed the project!</p>
 <p>A number of simple designs for photometers and spectrometers have been published. What drew me to McClain’s approach is that his goal is to teach some basic electronics relevant to instrument design, which is something I have wanted to learn for sometime (apparently since 2014, though actually I think this goes back to watching my father build a Heath Kit stereo receiver which used <em>tubes</em>). Further, McClain starts with a very simple design, and then adds circuit modules to improve the design. Everything is laid out logically and is easy to follow. At each step there is an opportunity to go further to understand how the circuit actually works in detail.</p>
@@ -572,6 +573,7 @@ Listing&nbsp;1: Computation of absorbance values.
 </div>
 </div>
 <p><a href="#tbl-results" class="quarto-xref">Table&nbsp;1</a> shows the results. A calibration curve is shown in <a href="#fig-calcurve1" class="quarto-xref">Figure&nbsp;17</a>. Clearly the most concentrated samples exceed the linear behavior expected for Beer’s Law (as observed by McClain). If the two most concentrated samples are dropped, the result is a nice linear relationship, as seen in <a href="#fig-calcurve2" class="quarto-xref">Figure&nbsp;18</a> and the summary of the fit in <a href="#lst-fit" class="quarto-xref">Listing&nbsp;2</a>.</p>
+<div class="cell" data-tbl-colwidths="[30,30,30]">
 <div id="tbl-results" class="cell anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="table quarto-float-caption quarto-float-tbl" id="tbl-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -619,6 +621,7 @@ Table&nbsp;1: Relative sample concentrations and corresponding voltages and abso
 </div>
 </div>
 </figure>
+</div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -845,15 +848,38 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       }
     }
     stripColumnClz(note)
-    if (id.startsWith('sec-')) {
+    const typesetMath = (el) => {
+      if (window.MathJax) {
+        // MathJax Typeset
+        window.MathJax.typeset([el]);
+      } else if (window.katex) {
+        // KaTeX Render
+        var mathElements = el.getElementsByClassName("math");
+        var macros = [];
+        for (var i = 0; i < mathElements.length; i++) {
+          var texText = mathElements[i].firstChild;
+          if (mathElements[i].tagName == "SPAN") {
+            window.katex.render(texText.data, mathElements[i], {
+              displayMode: mathElements[i].classList.contains('display'),
+              throwOnError: false,
+              macros: macros,
+              fleqn: false
+            });
+          }
+        }
+      }
+    }
+    if (id === null || id.startsWith('sec-')) {
       // Special case sections, only their first couple elements
       const container = document.createElement("div");
       if (note.children && note.children.length > 2) {
         for (let i = 0; i < 2; i++) {
           container.appendChild(note.children[i].cloneNode(true));
         }
+        typesetMath(container);
         return container.innerHTML
       } else {
+        typesetMath(note);
         return note.innerHTML;
       }
     } else {
@@ -862,6 +888,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (anchorLink) {
         anchorLink.remove();
       }
+      typesetMath(note);
       return note.innerHTML;
     }
   }
@@ -904,6 +931,29 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             instance.show();
           });
         }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
       }
     }, function(instance) {
     });
@@ -979,7 +1029,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     window.addEventListener(
       "resize",
       throttle(() => {
-        console.log("RESIZE");
         elRect = undefined;
         if (selectedAnnoteEl) {
           selectCodeLines(selectedAnnoteEl);
