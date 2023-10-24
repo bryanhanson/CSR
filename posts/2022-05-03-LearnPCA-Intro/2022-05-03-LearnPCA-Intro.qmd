@@ -3,7 +3,6 @@ title: "Introducing LearnPCA"
 description: "Improve your understanding of PCA"
 date: "2022-05-03"
 categories: [R, PCA]
-server: shiny
 ---
 
 PCA, or principal components analysis, is one of the most wide-spread statistical methods in use.  It shows up in many disciplines, from political science and psychology, to chemistry and biology.  PCA is also really challenging to understand.
