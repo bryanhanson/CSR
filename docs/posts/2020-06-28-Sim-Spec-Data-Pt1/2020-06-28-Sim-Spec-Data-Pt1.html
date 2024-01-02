@@ -119,6 +119,7 @@ div.csl-indent {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -145,6 +146,33 @@ cookieconsent.run({
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../styles.css">
 <meta name="twitter:title" content="Chemometrics and Spectroscopy Using R - Simulating Spectroscopic Data Part 1">
@@ -316,7 +344,11 @@ cookieconsent.run({
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="2020-06-28-Sim-Spec-Data-Pt1_files/figure-html/widgetPlot-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="2020-06-28-Sim-Spec-Data-Pt1_files/figure-html/widgetPlot-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Variations on this approach can be used to simulate spectral data sets.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> The information I will share here is accumulated knowledge. I have no formal training in the theory behind the issues discussed, just skills I have picked up in various places and by experimenting. If you see something that is wrong or needs clarification or elaboration, please use the comments to set me straight!</p>
@@ -335,7 +367,11 @@ cookieconsent.run({
 <span id="cb4-3"><a href="#cb4-3"></a><span class="fu">plot</span>(std_deviations, Gaussian_1, <span class="at">type =</span> <span class="st">"l"</span>,</span>
 <span id="cb4-4"><a href="#cb4-4"></a>  <span class="at">xlab =</span> <span class="st">"standard deviations"</span>, <span class="at">ylab =</span> <span class="st">"Gaussian Density"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="2020-06-28-Sim-Spec-Data-Pt1_files/figure-html/dnorm1-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="2020-06-28-Sim-Spec-Data-Pt1_files/figure-html/dnorm1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>If we want this to look more like a “real” peak, we can increase the x range and use x values with realistic frequency values. And if we want our spectrum to be more complex, we can add several of these curves together. Keep in mind that the area under the density curve is 1.0, and the peak width is determined by the value of argument <code>sd</code> (the standard deviation). For example if you want to simulate the UV spectrum of <a href="https://webbook.nist.gov/cgi/cbook.cgi?ID=C121335&amp;Units=SI&amp;Mask=400">vanillin</a>, which has maxima at about 230, 280 and 315 nm, one can do something along these lines:</p>
@@ -348,7 +384,11 @@ cookieconsent.run({
 <span id="cb5-6"><a href="#cb5-6"></a><span class="fu">plot</span>(wavelengths, Peaks123, <span class="at">type =</span> <span class="st">"l"</span>,</span>
 <span id="cb5-7"><a href="#cb5-7"></a>  <span class="at">xlab =</span> <span class="st">"wavelengths (nm)"</span>, <span class="at">ylab =</span> <span class="st">"arbitrary intensity"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="2020-06-28-Sim-Spec-Data-Pt1_files/figure-html/vanillin-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="2020-06-28-Sim-Spec-Data-Pt1_files/figure-html/vanillin-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>The coefficient on <code>Peak1</code> is needed to increase the contribution of that peak in order to better resemble the linked spectrum (note that the linked spectrum y-axis is <span class="math inline">\(log \epsilon\)</span>; we’re just going for a rough visual approximation).</p>
@@ -361,7 +401,11 @@ cookieconsent.run({
 <span id="cb6-4"><a href="#cb6-4"></a>  <span class="at">xlab =</span> <span class="st">"standard deviations"</span>, <span class="at">ylab =</span> <span class="st">"density"</span>)</span>
 <span id="cb6-5"><a href="#cb6-5"></a><span class="fu">lines</span>(std_deviations, Cauchy_1, <span class="at">col =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="2020-06-28-Sim-Spec-Data-Pt1_files/figure-html/GvC-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="2020-06-28-Sim-Spec-Data-Pt1_files/figure-html/GvC-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -399,7 +443,11 @@ cookieconsent.run({
 <span id="cb10-6"><a href="#cb10-6"></a><span class="fu">lines</span>(wavelengths, Spec123[<span class="dv">3</span>,], <span class="at">col =</span> <span class="st">"blue"</span>)</span>
 <span id="cb10-7"><a href="#cb10-7"></a><span class="fu">lines</span>(wavelengths, <span class="fu">colSums</span>(Spec123) <span class="sc">+</span> <span class="fl">0.2</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="2020-06-28-Sim-Spec-Data-Pt1_files/figure-html/showThree-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="2020-06-28-Sim-Spec-Data-Pt1_files/figure-html/showThree-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>One clever way to introduce baseline anomalies is to use a <a href="https://en.wikipedia.org/wiki/Vandermonde_matrix">Vandermonde matrix</a>. This is a trick I learned while working with the team on the <code>hyperSpec</code> overhaul funded by <a href="https://chemospec.org/posts/2020-05-07-GSOC-hyperSpec/">GSOC</a>.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> It’s easiest to explain by an example:</p>
@@ -452,7 +500,11 @@ cookieconsent.run({
 <span id="cb21-6"><a href="#cb21-6"></a><span class="fu">lines</span>(wavelengths, fit<span class="sc">$</span>coef[<span class="dv">2</span>]<span class="sc">*</span>wavelengths <span class="sc">+</span> fit<span class="sc">$</span>coef[<span class="dv">1</span>],</span>
 <span id="cb21-7"><a href="#cb21-7"></a>  <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lty =</span> <span class="dv">2</span>) <span class="co"># good ol' y = mx + b</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="2020-06-28-Sim-Spec-Data-Pt1_files/figure-html/vdm4-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="2020-06-28-Sim-Spec-Data-Pt1_files/figure-html/vdm4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>The Vandermonde matrix approach works by creating offsets that are added to the original spectrum. However, it is limited to creating baseline distortions that generally increase at higher values. To create other types of distortions, you can use your imagination. For instance, you could reverse the order of the rows of <code>offsets</code> and/or use higher terms, scale a row, etc. One could also play with various polynomial functions to create the desired effect over the wavelength range of interest. For instance, the following code adds a piece of an inverted parabola to the original spectrum to simulate a baseline hump.</p>
@@ -464,7 +516,11 @@ cookieconsent.run({
 <span id="cb22-5"><a href="#cb22-5"></a>  <span class="at">xlab =</span> <span class="st">"wavelengths (nm)"</span>, <span class="at">ylab =</span> <span class="st">"intensity"</span>)</span>
 <span id="cb22-6"><a href="#cb22-6"></a><span class="fu">lines</span>(wavelengths, hump <span class="sc">*</span> <span class="fl">0.1</span>, <span class="at">lty =</span> <span class="dv">2</span>) <span class="co"># trace the hump</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="2020-06-28-Sim-Spec-Data-Pt1_files/figure-html/hump-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="2020-06-28-Sim-Spec-Data-Pt1_files/figure-html/hump-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>In the plot, the dotted line traces out the value of <code>hump * 0.1</code>, the offset.</p>
@@ -475,11 +531,11 @@ cookieconsent.run({
 </section>
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-Goldenberg2016" class="csl-entry" role="listitem">
 Goldenberg, David P. 2016. <em><span class="nocase">Principles of NMR Spectroscopy: An Illustrated Guide</span></em>. University Science Books.
 </div>
-</div></section><aside id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>Of course, this is simply the t-test.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
@@ -487,10 +543,9 @@ Goldenberg, David P. 2016. <em><span class="nocase">Principles of NMR Spectrosco
 <li id="fn3"><p>The work I’m showing here is based on original code in package <a href="https://cran.r-project.org/web/packages/hyperSpec/index.html"><code>hyperSpec</code></a> by Claudia Belietes.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4"><p>As a vector of 1’s it will have no effect on the calculations to come. However, you could multiply this column by a value to add an offset to your simulated spectra. This would be a means of simulating a steady electronic bias in an instrument’s raw data.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
-</aside><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
+</section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
   author = {Hanson, Bryan},
   title = {Simulating {Spectroscopic} {Data} {Part} 1},
-  pages = {undefined},
   date = {2020-06-28},
   url = {http://chemospec.org/posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1.html},
   langid = {en}
@@ -627,38 +682,28 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       }
     }
     stripColumnClz(note)
-    const typesetMath = (el) => {
-      if (window.MathJax) {
-        // MathJax Typeset
-        window.MathJax.typeset([el]);
-      } else if (window.katex) {
-        // KaTeX Render
-        var mathElements = el.getElementsByClassName("math");
-        var macros = [];
-        for (var i = 0; i < mathElements.length; i++) {
-          var texText = mathElements[i].firstChild;
-          if (mathElements[i].tagName == "SPAN") {
-            window.katex.render(texText.data, mathElements[i], {
-              displayMode: mathElements[i].classList.contains('display'),
-              throwOnError: false,
-              macros: macros,
-              fleqn: false
-            });
-          }
-        }
-      }
-    }
     if (id === null || id.startsWith('sec-')) {
       // Special case sections, only their first couple elements
       const container = document.createElement("div");
       if (note.children && note.children.length > 2) {
-        for (let i = 0; i < 2; i++) {
-          container.appendChild(note.children[i].cloneNode(true));
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
         }
-        typesetMath(container);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
         return container.innerHTML
       } else {
-        typesetMath(note);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
         return note.innerHTML;
       }
     } else {
@@ -667,7 +712,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (anchorLink) {
         anchorLink.remove();
       }
-      typesetMath(note);
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
       return note.innerHTML;
     }
   }

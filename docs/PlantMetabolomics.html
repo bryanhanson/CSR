@@ -63,6 +63,7 @@ ul.task-list li input[type="checkbox"] {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -228,7 +229,11 @@ cookieconsent.run({
 
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="images/Bkgnd.jpg" class="img-fluid" width="750"></p>
+<div>
+<figure class="figure">
+<p><img src="images/Bkgnd.jpg" class="img-fluid figure-img" width="750"></p>
+</figure>
+</div>
 </div>
 </div>
 <p><em>This page honors and makes available the research of my students. However, it is no longer being updated, as I retired in June 2018.</em></p>
@@ -237,12 +242,20 @@ cookieconsent.run({
 <p>Our approach is to blend metabolomic and ecological methods. Metabolomics is the study of an organism’s metabolites under a controlled set of conditions, in our case, normal versus stressful conditions. As far as possible, one tries to measure all the metabolites at once, in a holistic fashion, which is not an easy feat. Typically, this is done with NMR, MS, IR, or other forms of spectroscopy. We also supplement these instrumental techniques with more traditional single point chemical measurements such as antioxidant levels. From the ecological perspective, we record parameters of plant growth that represent measures of fitness, such as biomass produced, the number of flowers, and so forth. To be meaningful, we need to conduct these experiments on large numbers of plants. The resulting data sets, composed of very different sorts of measurements, represent the state of the plant under the conditions tested. We use various statistical methods to figure out which treatments have produced an interesting response, and whether those responses vary with genotype. Our statistical analyses are done with the open source computational statistical program <a href="http://www.r-project.org/">R</a> and in the case of spectroscopic data, with the <a href="https://CRAN.R-project.org/package=ChemoSpec">ChemoSpec</a> package for R, written by Bryan.</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="images/KristinaMulry.jpg" class="img-fluid" width="2010"></p>
+<div>
+<figure class="figure">
+<p><img src="images/KristinaMulry.jpg" class="img-fluid figure-img" width="2010"></p>
+</figure>
+</div>
 </div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="images/DaGroup.jpg" class="img-fluid" width="1870"></p>
+<div>
+<figure class="figure">
+<p><img src="images/DaGroup.jpg" class="img-fluid figure-img" width="1870"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>The following students have carried out this research. Click on their names to download the posters they prepared about their work:</p>
@@ -290,17 +303,29 @@ cookieconsent.run({
 </ul>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="images/Elizabeth.jpg" class="img-fluid" width="752"></p>
+<div>
+<figure class="figure">
+<p><img src="images/Elizabeth.jpg" class="img-fluid figure-img" width="752"></p>
+</figure>
+</div>
 </div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="images/Matt.jpg" class="img-fluid" width="720"></p>
+<div>
+<figure class="figure">
+<p><img src="images/Matt.jpg" class="img-fluid figure-img" width="720"></p>
+</figure>
+</div>
 </div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="images/ShannonBrian.jpg" class="img-fluid" width="1824"></p>
+<div>
+<figure class="figure">
+<p><img src="images/ShannonBrian.jpg" class="img-fluid figure-img" width="1824"></p>
+</figure>
+</div>
 </div>
 </div>
 
@@ -435,38 +460,28 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       }
     }
     stripColumnClz(note)
-    const typesetMath = (el) => {
-      if (window.MathJax) {
-        // MathJax Typeset
-        window.MathJax.typeset([el]);
-      } else if (window.katex) {
-        // KaTeX Render
-        var mathElements = el.getElementsByClassName("math");
-        var macros = [];
-        for (var i = 0; i < mathElements.length; i++) {
-          var texText = mathElements[i].firstChild;
-          if (mathElements[i].tagName == "SPAN") {
-            window.katex.render(texText.data, mathElements[i], {
-              displayMode: mathElements[i].classList.contains('display'),
-              throwOnError: false,
-              macros: macros,
-              fleqn: false
-            });
-          }
-        }
-      }
-    }
     if (id === null || id.startsWith('sec-')) {
       // Special case sections, only their first couple elements
       const container = document.createElement("div");
       if (note.children && note.children.length > 2) {
-        for (let i = 0; i < 2; i++) {
-          container.appendChild(note.children[i].cloneNode(true));
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
         }
-        typesetMath(container);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
         return container.innerHTML
       } else {
-        typesetMath(note);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
         return note.innerHTML;
       }
     } else {
@@ -475,7 +490,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (anchorLink) {
         anchorLink.remove();
       }
-      typesetMath(note);
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
       return note.innerHTML;
     }
   }

@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-99.9.9">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Bryan Hanson">
+<meta name="dcterms.date" content="2022-09-26">
+<meta name="description" content="A Taxonomy of Matrices">
+
+<title>Chemometrics and Spectroscopy Using R - Notes on Linear Algebra Part 4</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<script src="../../../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../../../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({
+  "notice_banner_type":"simple",
+  "consent_type":"implied",
+  "palette":"light",
+  "language":"en",
+  "page_load_consent_levels":["strictly-necessary","functionality","tracking","targeting"],
+  "notice_banner_reject_button_hide":false,
+  "preferences_center_close_button_hide":false,
+  "website_name":""
+  ,
+"language":"en"
+  });
+});
+</script> 
+  
+<meta name="mermaid-theme" content="default">
+<script src="../../../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../../../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../../../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../../styles.css">
+<meta name="twitter:title" content="Chemometrics and Spectroscopy Using R - Notes on Linear Algebra Part 4">
+<meta name="twitter:description" content="A Taxonomy of Matrices">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../../index.html">
+    <span class="navbar-title">Chemometrics and Spectroscopy Using R</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../projects.html"> 
+<span class="menu-text">Projects</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://www.r-bloggers.com/"> 
+<span class="menu-text">R-Bloggers</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="mailto:hanson@depauw.edu"> <i class="bi bi-envelope-fill" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/profbryanhanson"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://fosstodon.org/%40ProfBryanHanson" rel="me"> <i class="bi bi-mastodon" role="img" aria-label="Mastodon">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/bryanhanson"> <i class="bi bi-git" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../../index.xml"> <i class="bi bi-rss" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><div class="quarto-margin-header"><div class="margin-header-item">
+<!-- Begin Mailchimp Signup Form -->
+<link href="//cdn-images.mailchimp.com/embedcode/classic-071822.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+    #mc_embed_signup{background:#fcfcfc; clear:left; font:14px Helvetica,Arial,sans-serif; }
+    /* Add your own Mailchimp form style overrides in your site stylesheet or in this style block.
+       We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
+</style>
+<div id="mc_embed_signup">
+    <form action="https://chemospec.us21.list-manage.com/subscribe/post?u=1e9f5b8abbc42dc8ff815ba3d&amp;id=d824c5574e&amp;f_id=00b9c6e1f0" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate="">
+        <div id="mc_embed_signup_scroll">
+        <h2>Subscribe</h2>
+        <!-- <div class="indicates-required"><span class="asterisk">*</span> indicates required</div> -->
+<div class="mc-field-group">
+    <label for="mce-EMAIL">Email Address  <span class="asterisk">*</span>
+</label>
+    <input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL" required="">
+    <span id="mce-EMAIL-HELPERTEXT" class="helper_text"></span>
+</div>
+    <div id="mce-responses" class="clear foot">
+        <div class="response" id="mce-error-response" style="display:none"></div>
+        <div class="response" id="mce-success-response" style="display:none"></div>
+    </div>    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+    <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_1e9f5b8abbc42dc8ff815ba3d_d824c5574e" tabindex="-1" value=""></div>
+        <div class="optionalParent">
+            <div class="clear foot">
+                <input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button">
+                <!-- <p class="brandingLogo"><a href="http://eepurl.com/ic07Vr" title="Mailchimp - email marketing made easy and fun"><img src="https://eep.io/mc-cdn-images/template_images/branding_logo_text_dark_dtp.svg"></a></p> -->
+            </div>
+        </div>
+    </div>
+</form>
+</div>
+<script type="text/javascript" src="//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js"></script><script type="text/javascript">(function($) {window.fnames = new Array(); window.ftypes = new Array();fnames[0]='EMAIL';ftypes[0]='email';fnames[1]='FNAME';ftypes[1]='text';fnames[2]='LNAME';ftypes[2]='text';fnames[3]='ADDRESS';ftypes[3]='address';fnames[4]='PHONE';ftypes[4]='phone';fnames[5]='BIRTHDAY';ftypes[5]='birthday';}(jQuery));var $mcj = jQuery.noConflict(true);</script>
+<!--End mc_embed_signup-->
+
+</div></div>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#a-taxonomy-of-matrices" id="toc-a-taxonomy-of-matrices" class="nav-link active" data-scroll-target="#a-taxonomy-of-matrices">A Taxonomy of Matrices</a></li>
+  <li><a href="#touring-the-taxonomy" id="toc-touring-the-taxonomy" class="nav-link" data-scroll-target="#touring-the-taxonomy">Touring the Taxonomy</a>
+  <ul class="collapse">
+  <li><a href="#structure-examples" id="toc-structure-examples" class="nav-link" data-scroll-target="#structure-examples">Structure Examples</a>
+  <ul class="collapse">
+  <li><a href="#rectangular-matrix-m-times-n" id="toc-rectangular-matrix-m-times-n" class="nav-link" data-scroll-target="#rectangular-matrix-m-times-n">Rectangular Matrix <span class="math inline">\(m \times n\)</span></a></li>
+  <li><a href="#row-matrixvector-1-times-n" id="toc-row-matrixvector-1-times-n" class="nav-link" data-scroll-target="#row-matrixvector-1-times-n">Row Matrix/Vector <span class="math inline">\(1 \times n\)</span></a></li>
+  <li><a href="#column-matrixvector-m-times-1" id="toc-column-matrixvector-m-times-1" class="nav-link" data-scroll-target="#column-matrixvector-m-times-1">Column Matrix/Vector <span class="math inline">\(m \times 1\)</span></a></li>
+  <li><a href="#square-matrix-n-times-n" id="toc-square-matrix-n-times-n" class="nav-link" data-scroll-target="#square-matrix-n-times-n">Square Matrix <span class="math inline">\(n \times n\)</span></a></li>
+  <li><a href="#upper-and-lower-triangular-matrices" id="toc-upper-and-lower-triangular-matrices" class="nav-link" data-scroll-target="#upper-and-lower-triangular-matrices">Upper and Lower Triangular Matrices</a></li>
+  <li><a href="#identity-matrix" id="toc-identity-matrix" class="nav-link" data-scroll-target="#identity-matrix">Identity Matrix</a></li>
+  <li><a href="#diagonal-matrix" id="toc-diagonal-matrix" class="nav-link" data-scroll-target="#diagonal-matrix">Diagonal Matrix</a></li>
+  <li><a href="#symmetric-matrices" id="toc-symmetric-matrices" class="nav-link" data-scroll-target="#symmetric-matrices">Symmetric Matrices</a></li>
+  </ul></li>
+  <li><a href="#the-queries" id="toc-the-queries" class="nav-link" data-scroll-target="#the-queries">The Queries</a>
+  <ul class="collapse">
+  <li><a href="#is-the-matrix-singular-or-invertible" id="toc-is-the-matrix-singular-or-invertible" class="nav-link" data-scroll-target="#is-the-matrix-singular-or-invertible">Is the Matrix Singular or Invertible?</a></li>
+  <li><a href="#is-the-matrix-diagonalizable" id="toc-is-the-matrix-diagonalizable" class="nav-link" data-scroll-target="#is-the-matrix-diagonalizable">Is the Matrix Diagonalizable?</a></li>
+  <li><a href="#is-the-matrix-normal" id="toc-is-the-matrix-normal" class="nav-link" data-scroll-target="#is-the-matrix-normal">Is the Matrix Normal?</a></li>
+  <li><a href="#is-the-matrix-orthogonal" id="toc-is-the-matrix-orthogonal" class="nav-link" data-scroll-target="#is-the-matrix-orthogonal">Is the Matrix Orthogonal?</a></li>
+  <li><a href="#appreciating-the-queries" id="toc-appreciating-the-queries" class="nav-link" data-scroll-target="#appreciating-the-queries">Appreciating the Queries</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#an-emerging-theme" id="toc-an-emerging-theme" class="nav-link" data-scroll-target="#an-emerging-theme">An Emerging Theme?</a></li>
+  <li><a href="#annotated-bibliography" id="toc-annotated-bibliography" class="nav-link" data-scroll-target="#annotated-bibliography">Annotated Bibliography</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Notes on Linear Algebra Part 4</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">Linear Algebra</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    A Taxonomy of Matrices
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Bryan Hanson </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 26, 2022</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Series: <a href="https://chemospec.org/posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html">Part 1</a> <a href="https://chemospec.org/posts/2022-09-01-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2.html">Part 2</a> <a href="https://chemospec.org/posts/2022-09-10-Linear-Alg-Notes-Pt3/Linear-Alg-Notes-Pt3.html">Part 3</a></p>
+<p>Back in Part 2 I mentioned some of the challenges of learning linear algebra. One of those challenges is making sense of all the special types of matrices one encounters. In this post I hope to shed a little light on that topic.</p>
+<section id="a-taxonomy-of-matrices" class="level1">
+<h1>A Taxonomy of Matrices</h1>
+<p>I am strongly drawn to thinking in terms of categories and relationships. I find visual presentations like phylogenies showing the relationships between species very useful. In the course of my linear algebra journey, I came across an interesting Venn diagram developed by the very creative thinker <a href="https://github.com/kenjihiranabe/The-Art-of-Linear-Algebra">Kenji Hiranabe</a>. The diagram is discussed at <a href="https://anagileway.com/2020/09/29/matrix-world-in-linear-algebra-for-everyone/">Matrix World</a>, but the latest version is at the Github link. A Venn diagram is a useful format, but I was inspired to recast the information in different format. <a href="#fig-flow" class="quarto-xref">Figure&nbsp;1</a> shows a taxonomy I created using a portion of the information in Hiranabe’s Venn diagram.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> The taxonomy is primarily organized around what I am calling the <em>structure</em> of a matrix: what does it look like upon visual inspection? Of course this is most obvious with small matrices. To me at least, structure is one of the most obvious characteristics of a matrix: an upper triangular matrix really stands out for instance. Secondarily, the taxonomy includes a number of queries that one can ask about a matrix: for instance, is the matrix invertible? We’ll need to expand on all of this of course, but first take a look at the figure.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<div style="page-break-after: always;"></div>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div id="fig-flow" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-flow-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<pre class="mermaid mermaid-js" data-label="fig-flow">flowchart TD
+A(all matrices &lt;br/&gt; n x m) --&gt; C(row matrices &lt;br/&gt; 1 x n)
+A --&gt; D(column matrices &lt;br/&gt; n x 1)
+A ---&gt; B(square matrices &lt;br/&gt; n x n)
+B --&gt; E(upper triangular&lt;br/&gt;matrices)
+B --&gt; F(lower triangular&lt;br/&gt;matrices)
+B --&gt; G{{either:&lt;br/&gt;is singular?}}
+B --&gt; H{{or:&lt;br/&gt;is invertible?}}
+H --&gt; I{{is diagonalizable?}}
+I --&gt; J{{is normal?}}
+J --&gt; K(symmetric)
+K --&gt; L(diagonal)
+L --&gt; M(identity)
+J --&gt; N{{is orthogonal?}}
+N --&gt; M
+style G fill:#FFF0F5
+style H fill:#FFF0F5
+style I fill:#FFF0F5
+style J fill:#FFF0F5
+style N fill:#FFF0F5
+</pre>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-flow-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Hierarchical relationships between different types of matrices. <em>Blue Rectangles</em> denote matrices with particular, recognizable <em>structures</em>. <em>Pink Hexagons</em> indicate properties that can be <em>queried</em>.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="touring-the-taxonomy" class="level1">
+<h1>Touring the Taxonomy</h1>
+<section id="structure-examples" class="level2">
+<h2 class="anchored" data-anchor-id="structure-examples">Structure Examples</h2>
+<p>Let’s use <code>R</code> to construct and inspect examples of each type of matrix. We’ll use integer matrices to keep the print output nice and neat, but of course real numbers could be used as well.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> Most of these are pretty straightforward so we’ll keep comments to a minimum for the simple cases.</p>
+<section id="rectangular-matrix-m-times-n" class="level3">
+<h3 class="anchored" data-anchor-id="rectangular-matrix-m-times-n">Rectangular Matrix <span class="math inline">\(m \times n\)</span></h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>A_rect <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>, <span class="at">nrow =</span> <span class="dv">3</span>) <span class="co"># if you give nrow,</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a>A_rect <span class="co"># R will compute ncol from the length of the data</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3] [,4]
+[1,]    1    4    7   10
+[2,]    2    5    8   11
+[3,]    3    6    9   12</code></pre>
+</div>
+</div>
+<p>Notice that <code>R</code> is “column major” meaning data fills the first column, then the second column and so forth.</p>
+</section>
+<section id="row-matrixvector-1-times-n" class="level3">
+<h3 class="anchored" data-anchor-id="row-matrixvector-1-times-n">Row Matrix/Vector <span class="math inline">\(1 \times n\)</span></h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>A_row <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">nrow =</span> <span class="dv">1</span>)</span>
+<span id="cb3-2"><a href="#cb3-2"></a>A_row</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3] [,4]
+[1,]    1    2    3    4</code></pre>
+</div>
+</div>
+</section>
+<section id="column-matrixvector-m-times-1" class="level3">
+<h3 class="anchored" data-anchor-id="column-matrixvector-m-times-1">Column Matrix/Vector <span class="math inline">\(m \times 1\)</span></h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>A_col <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">ncol =</span> <span class="dv">1</span>)</span>
+<span id="cb5-2"><a href="#cb5-2"></a>A_col</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1]
+[1,]    1
+[2,]    2
+[3,]    3
+[4,]    4</code></pre>
+</div>
+</div>
+<p>Keep in mind that to save space in a text-dense document one would often write <code>A_col</code> as its transpose.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
+</section>
+<section id="square-matrix-n-times-n" class="level3">
+<h3 class="anchored" data-anchor-id="square-matrix-n-times-n">Square Matrix <span class="math inline">\(n \times n\)</span></h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>A_sq <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>, <span class="at">nrow =</span> <span class="dv">3</span>)</span>
+<span id="cb7-2"><a href="#cb7-2"></a>A_sq</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3]
+[1,]    1    4    7
+[2,]    2    5    8
+[3,]    3    6    9</code></pre>
+</div>
+</div>
+</section>
+<section id="upper-and-lower-triangular-matrices" class="level3">
+<h3 class="anchored" data-anchor-id="upper-and-lower-triangular-matrices">Upper and Lower Triangular Matrices</h3>
+<p>Creating an upper triangular matrix requires a few more steps. Function <code>upper.tri()</code> returns a logical matrix which can be used as a mask to select entries. Function <code>lower.tri()</code> can be used similarly. Both functions have an argument <code>diag = TRUE/FALSE</code> indicating whether to include the diagonal.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">upper.tri</span>(A_sq, <span class="at">diag =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      [,1]  [,2] [,3]
+[1,]  TRUE  TRUE TRUE
+[2,] FALSE  TRUE TRUE
+[3,] FALSE FALSE TRUE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>A_upper <span class="ot">&lt;-</span> A_sq[<span class="fu">upper.tri</span>(A_sq)] <span class="co"># gives a logical matrix</span></span>
+<span id="cb11-2"><a href="#cb11-2"></a>A_upper <span class="co"># notice that a vector is returned, not quite what might have been expected!</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4 7 8</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>A_upper <span class="ot">&lt;-</span> A_sq <span class="co"># instead, create a copy to be modified</span></span>
+<span id="cb13-2"><a href="#cb13-2"></a>A_upper[<span class="fu">lower.tri</span>(A_upper)] <span class="ot">&lt;-</span> <span class="dv">0</span>L <span class="co"># assign the lower entries to zero</span></span>
+<span id="cb13-3"><a href="#cb13-3"></a>A_upper</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3]
+[1,]    1    4    7
+[2,]    0    5    8
+[3,]    0    0    9</code></pre>
+</div>
+</div>
+<p>Notice to create an upper triangular matrix we use <code>lower.tri()</code> to assign zeros to the lower part of an existing matrix.</p>
+</section>
+<section id="identity-matrix" class="level3">
+<h3 class="anchored" data-anchor-id="identity-matrix">Identity Matrix</h3>
+<p>If you give <code>diag()</code> a single value it defines the dimensions and creates a matrix with ones on the diagonal, in other words, an identity matrix.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>A_ident <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="dv">4</span>)</span>
+<span id="cb15-2"><a href="#cb15-2"></a>A_ident</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3] [,4]
+[1,]    1    0    0    0
+[2,]    0    1    0    0
+[3,]    0    0    1    0
+[4,]    0    0    0    1</code></pre>
+</div>
+</div>
+</section>
+<section id="diagonal-matrix" class="level3">
+<h3 class="anchored" data-anchor-id="diagonal-matrix">Diagonal Matrix</h3>
+<p>If instead you give <code>diag()</code> a vector of values these go on the diagonal and the length of the vector determines the dimensions.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>A_diag <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>)</span>
+<span id="cb17-2"><a href="#cb17-2"></a>A_diag</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3] [,4]
+[1,]    1    0    0    0
+[2,]    0    2    0    0
+[3,]    0    0    3    0
+[4,]    0    0    0    4</code></pre>
+</div>
+</div>
+</section>
+<section id="symmetric-matrices" class="level3">
+<h3 class="anchored" data-anchor-id="symmetric-matrices">Symmetric Matrices</h3>
+<p>Matrices created by <code>diag()</code> are symmetric matrices, but any matrix where <span class="math inline">\(a_{ij} = a_{ji}\)</span> is symmetric. There is no general function to create symmetric matrices since there is no way to know what data should be used. However, one can ask if a matrix is symmetric, using the function <code>isSymmetric()</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="fu">isSymmetric</span>(A_diag)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="the-queries" class="level2">
+<h2 class="anchored" data-anchor-id="the-queries">The Queries</h2>
+<p>Let’s take the queries in the taxonomy in order, as the hierarchy is everything.</p>
+<section id="is-the-matrix-singular-or-invertible" class="level3">
+<h3 class="anchored" data-anchor-id="is-the-matrix-singular-or-invertible">Is the Matrix Singular or Invertible?</h3>
+<p>A singular matrix is one in which one or more rows are multiples of another row, or alternatively, one or more columns are multiples of another column. Why do we care? Well, it turns out a singular matrix is a bit of a dead end, you can’t do much with it. An invertible matrix, however, is a very useful entity and has many applications. What is an invertible matrix? In simple terms, being invertible means the matrix has an inverse. This is not the same as the algebraic definition of an inverse, which is related to division:</p>
+<p><span id="eq-1"><span class="math display">\[
+x^{-1} = \frac{1}{x}
+\tag{1}\]</span></span></p>
+<p>Instead, for matrices, invertibility of <span class="math inline">\(\mathbf{A}\)</span> is defined as the existence of another matrix <span class="math inline">\(\mathbf{B}\)</span> such that</p>
+<p><span id="eq-2"><span class="math display">\[
+\mathbf{A}\mathbf{B} = \mathbf{B}\mathbf{A} = \mathbf{I}
+\tag{2}\]</span></span></p>
+<p>Just as <span class="math inline">\(x^{-1}\)</span> cancels out <span class="math inline">\(x\)</span> in <span class="math inline">\(x^{-1}x = \frac{x}{x} = 1\)</span>, <span class="math inline">\(\mathbf{B}\)</span> cancels out <span class="math inline">\(\mathbf{A}\)</span> to give the identity matrix. In other words, <span class="math inline">\(\mathbf{B}\)</span> is really <span class="math inline">\(\mathbf{A}^{-1}\)</span>.</p>
+<p>A singular matrix has determinant of zero. On the other hand, an invertible matrix has a non-zero determinant. So to determine which type of matrix we have before us, we can simply compute the determinant.</p>
+<p>Let’s look at a few simple examples.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a>A_singular <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="sc">-</span><span class="dv">2</span>, <span class="sc">-</span><span class="dv">3</span>, <span class="dv">6</span>), <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">ncol =</span> <span class="dv">2</span>)</span>
+<span id="cb21-2"><a href="#cb21-2"></a>A_singular <span class="co"># notice that col 2 is col 1 * -3, they are not independent</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2]
+[1,]    1   -3
+[2,]   -2    6</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a><span class="fu">det</span>(A_singular)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a>A_invertible <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">7</span>, <span class="dv">8</span>), <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">ncol =</span> <span class="dv">2</span>)</span>
+<span id="cb25-2"><a href="#cb25-2"></a>A_invertible</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2]
+[1,]    2    7
+[2,]    2    8</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a><span class="fu">det</span>(A_invertible)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2</code></pre>
+</div>
+</div>
+</section>
+<section id="is-the-matrix-diagonalizable" class="level3">
+<h3 class="anchored" data-anchor-id="is-the-matrix-diagonalizable">Is the Matrix Diagonalizable?</h3>
+<p>A matrix <span class="math inline">\(\mathbf{A}\)</span> that is diagonalizable can be expressed as:</p>
+<p><span id="eq-3"><span class="math display">\[
+\mathbf{\Lambda} = \mathbf{X}^{-1}\mathbf{A}\mathbf{X}
+\tag{3}\]</span></span></p>
+<p>where <span class="math inline">\(\mathbf{\Lambda}\)</span> is a diagonal matrix – the diagonalized version of the original matrix <span class="math inline">\(\mathbf{A}\)</span>. How do we find out if this is possible, and if possible, what are the values of <span class="math inline">\(\mathbf{X}\)</span> and <span class="math inline">\(\mathbf{\Lambda}\)</span>? The answer is to decompose <span class="math inline">\(\mathbf{A}\)</span> using the eigendecomposition:</p>
+<p><span id="eq-4"><span class="math display">\[
+\mathbf{A} = \mathbf{X}\mathbf{\Lambda}\mathbf{X}^{-1}
+\tag{4}\]</span></span></p>
+<p>Now there is a lot to know about the eigendecomposition, but for now let’s just focus on a few key points:</p>
+<ul>
+<li>The columns of <span class="math inline">\(\mathbf{X}\)</span> contains the eigenvectors. Eigenvectors are the most natural basis for describing the data in <span class="math inline">\(\mathbf{A}\)</span>.<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></li>
+<li><span class="math inline">\(\mathbf{\Lambda}\)</span> is a diagonal matrix with the eigenvalues on the diagonal, in descending order. The individual eigenvalues are typically denoted <span class="math inline">\(\lambda_i\)</span>.</li>
+<li>Eigenvectors and eigenvalues always come in pairs.</li>
+</ul>
+<p>We can answer the original question by using the <code>eigen()</code> function in <code>R</code>. Let’s do an example.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1"></a>A_eigen <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="sc">-</span><span class="dv">4</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">2</span>), <span class="at">ncol =</span> <span class="dv">3</span>)</span>
+<span id="cb29-2"><a href="#cb29-2"></a>A_eigen</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3]
+[1,]    1    2    0
+[2,]    0    3    0
+[3,]    2   -4    2</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1"></a>eA <span class="ot">&lt;-</span> <span class="fu">eigen</span>(A_eigen)</span>
+<span id="cb31-2"><a href="#cb31-2"></a>eA</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>eigen() decomposition
+$values
+[1] 3 2 1
+
+$vectors
+           [,1] [,2]       [,3]
+[1,]  0.4082483    0  0.4472136
+[2,]  0.4082483    0  0.0000000
+[3,] -0.8164966    1 -0.8944272</code></pre>
+</div>
+</div>
+<p>Since <code>eigen(A_eigen)</code> was successful, we can conclude that <code>A_eigen</code> was diagonalizable. You can see the eigenvalues and eigenvectors in the returned value. We can reconstruct <code>A_eigen</code> using <a href="#eq-4" class="quarto-xref">Equation&nbsp;4</a>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1"></a>eA<span class="sc">$</span>vectors <span class="sc">%*%</span> <span class="fu">diag</span>(eA<span class="sc">$</span>values) <span class="sc">%*%</span> <span class="fu">solve</span>(eA<span class="sc">$</span>vectors)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3]
+[1,]    1    2    0
+[2,]    0    3    0
+[3,]    2   -4    2</code></pre>
+</div>
+</div>
+<p>Remember, <code>diag()</code> creates a matrix with the values along the diagonal, and <code>solve()</code> computes the inverse when it gets only one argument.</p>
+<p>The only loose end is which matrices are <em>not</em> diagonalizable? These are covered in this <a href="https://en.wikipedia.org/wiki/Diagonalizable_matrix#Matrices_that_are_not_diagonalizable">Wikipedia article</a>. Briefly, most non-diagonalizable matrices are fairly exotic and real data sets will likely not be a problem.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Nuances About the Presentation of “Eigenstuff”
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>In texts, eigenvalues and eigenvectors are universally introduced as a scaling relationship</p>
+<p><span id="eq-4a"><span class="math display">\[
+\mathbf{A}\mathbf{v} = \lambda\mathbf{v}
+\tag{5}\]</span></span></p>
+<p>where <span class="math inline">\(\mathbf{v}\)</span> is a column eigenvector and <span class="math inline">\(\lambda\)</span> is a scalar eigenvalue. One says “<span class="math inline">\(\mathbf{A}\)</span> scales <span class="math inline">\(\mathbf{v}\)</span> by a factor of <span class="math inline">\(\lambda\)</span>.” A single vector is used as one can readily illustrate how that vector grows or shrinks in length when multiplied by <span class="math inline">\(\lambda\)</span>. Let’s call this the “bottom up” explanation.</p>
+<p>Let’s check that is true using our values from above by extracting the first eigenvector and eigenvalue from <code>eA</code>. Notice that we are using regular multiplication on the right-hand-side, i.e.&nbsp;<code>*</code>, rather than <code>%*%</code>, because <code>eA$values[1]</code> is a scalar. Also on the right-hand-side, we have to add <code>drop = FALSE</code> to the subsetting process or the result is no longer a matrix.<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1"></a><span class="fu">isTRUE</span>(<span class="fu">all.equal</span>(</span>
+<span id="cb35-2"><a href="#cb35-2"></a>  A_eigen <span class="sc">%*%</span> eA<span class="sc">$</span>vectors[,<span class="dv">1</span>],</span>
+<span id="cb35-3"><a href="#cb35-3"></a>  eA<span class="sc">$</span>values[<span class="dv">1</span>] <span class="sc">*</span> eA<span class="sc">$</span>vectors[,<span class="dv">1</span>, <span class="at">drop =</span> <span class="cn">FALSE</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<p>If instead we start from <a href="#eq-4" class="quarto-xref">Equation&nbsp;4</a> and rearrange it to show the relationship between <span class="math inline">\(\mathbf{A}\)</span> and <span class="math inline">\(\mathbf{\Lambda}\)</span> we get:</p>
+<p><span id="eq-4b"><span class="math display">\[
+\mathbf{A}\mathbf{X} = \mathbf{X}\mathbf{\Lambda}
+\tag{6}\]</span></span></p>
+<p>Let’s call this the “top down” explanation. We can verify this as well, making sure to convert <code>eA$values</code> to a diagonal matrix as the values are stored as a vector to save space.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1"></a><span class="fu">isTRUE</span>(<span class="fu">all.equal</span>(A_eigen <span class="sc">%*%</span> eA<span class="sc">$</span>vectors, eA<span class="sc">$</span>vectors <span class="sc">%*%</span> <span class="fu">diag</span>(eA<span class="sc">$</span>values)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<p>Notice that in <a href="#eq-4b" class="quarto-xref">Equation&nbsp;6</a> <span class="math inline">\(\Lambda\)</span> is on the right of <span class="math inline">\(\mathbf{X}\)</span>, but in <a href="#eq-4a" class="quarto-xref">Equation&nbsp;5</a> the corresponding value, <span class="math inline">\(\lambda\)</span>, is to the left of <span class="math inline">\(\mathbf{v}\)</span>. This is a bit confusing until one realizes that <a href="#eq-4a" class="quarto-xref">Equation&nbsp;5</a> could have been written</p>
+<p><span class="math display">\[
+\mathbf{A}\mathbf{v} = \mathbf{v}\lambda
+\]</span></p>
+<p>since <span class="math inline">\(\lambda\)</span> is a scalar. It’s too bad that the usual, bottom up, presentation seems to conflict with the top down approach. Perhaps the choice in <a href="#eq-4a" class="quarto-xref">Equation&nbsp;5</a> is a historical artifact.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="is-the-matrix-normal" class="level3">
+<h3 class="anchored" data-anchor-id="is-the-matrix-normal">Is the Matrix Normal?</h3>
+<p>A normal matrix is one where <span class="math inline">\(\mathbf{A}^{\mathsf{T}}\mathbf{A} = \mathbf{A}\mathbf{A}^{\mathsf{T}}\)</span>. As far as I know, there is no function in <code>R</code> to check this condition, but we’ll write our own in a moment. One reason being “normal” is interesting is if <span class="math inline">\(\mathbf{A}\)</span> is a normal matrix, then the results of the eigendecomposition change slightly:</p>
+<p><span id="eq-5"><span class="math display">\[
+\mathbf{A} = \mathbf{O}\mathbf{\Lambda}\mathbf{O}^{-1}
+\tag{7}\]</span></span></p>
+<p>where <span class="math inline">\(\mathbf{O}\)</span> is an orthogonal matrix, which we’ll talk about next.</p>
+</section>
+<section id="is-the-matrix-orthogonal" class="level3">
+<h3 class="anchored" data-anchor-id="is-the-matrix-orthogonal">Is the Matrix Orthogonal?</h3>
+<p>An orthogonal matrix takes the definition of a normal matrix one step further: <span class="math inline">\(\mathbf{A}^{\mathsf{T}}\mathbf{A} = \mathbf{A}\mathbf{A}^{\mathsf{T}} = \mathbb{I}\)</span>. If a matrix is orthogonal, then its transpose is equal to its inverse: <span class="math inline">\(\mathbf{A}^{-1} = \mathbf{A}^{\mathsf{T}}\)</span>, which of course makes any special computation of the inverse unnecessary. This is a significant advantage in computations.</p>
+<p>To aid our learning, let’s write a simple function that will report if a matrix is normal, orthogonal, or neither.<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1"></a>normal_or_orthogonal <span class="ot">&lt;-</span> <span class="cf">function</span>(M) {</span>
+<span id="cb39-2"><a href="#cb39-2"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">inherits</span>(M, <span class="st">"matrix"</span>)) <span class="fu">stop</span>(<span class="st">"M must be a matrix"</span>)</span>
+<span id="cb39-3"><a href="#cb39-3"></a>  norm <span class="ot">&lt;-</span> orthog <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span>
+<span id="cb39-4"><a href="#cb39-4"></a>  tst1 <span class="ot">&lt;-</span> M <span class="sc">%*%</span> <span class="fu">t</span>(M)</span>
+<span id="cb39-5"><a href="#cb39-5"></a>  tst2 <span class="ot">&lt;-</span> <span class="fu">t</span>(M) <span class="sc">%*%</span> M</span>
+<span id="cb39-6"><a href="#cb39-6"></a>  norm <span class="ot">&lt;-</span> <span class="fu">isTRUE</span>(<span class="fu">all.equal</span>(tst1, tst2))</span>
+<span id="cb39-7"><a href="#cb39-7"></a>  <span class="cf">if</span> (norm) orthog <span class="ot">&lt;-</span> <span class="fu">isTRUE</span>(<span class="fu">all.equal</span>(tst1, <span class="fu">diag</span>(<span class="fu">dim</span>(M)[<span class="dv">1</span>])))</span>
+<span id="cb39-8"><a href="#cb39-8"></a>  <span class="cf">if</span> (orthog) <span class="fu">message</span>(<span class="st">"This matrix is orthogonal</span><span class="sc">\n</span><span class="st">"</span>) <span class="cf">else</span> </span>
+<span id="cb39-9"><a href="#cb39-9"></a>    <span class="cf">if</span> (norm) <span class="fu">message</span>(<span class="st">"This matrix is normal</span><span class="sc">\n</span><span class="st">"</span>) <span class="cf">else</span></span>
+<span id="cb39-10"><a href="#cb39-10"></a>    <span class="fu">message</span>(<span class="st">"This matrix is neither orthogonal nor normal</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb39-11"><a href="#cb39-11"></a>  <span class="fu">invisible</span>(<span class="cn">NULL</span>)</span>
+<span id="cb39-12"><a href="#cb39-12"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>And let’s run a couple of tests.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1"></a><span class="fu">normal_or_orthogonal</span>(A_singular)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>This matrix is neither orthogonal nor normal</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1"></a>Norm <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="at">nrow =</span> <span class="dv">3</span>)</span>
+<span id="cb42-2"><a href="#cb42-2"></a><span class="fu">normal_or_orthogonal</span>(Norm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>This matrix is normal</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1"></a><span class="fu">normal_or_orthogonal</span>(<span class="fu">diag</span>(<span class="dv">3</span>)) <span class="co"># the identity matrix is orthogonal</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>This matrix is orthogonal</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1"></a>Orth <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="at">nrow =</span> <span class="dv">4</span>)</span>
+<span id="cb46-2"><a href="#cb46-2"></a><span class="fu">normal_or_orthogonal</span>(Orth)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>This matrix is orthogonal</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Some other properties of an orthogonal matrix
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The columns of an orthogonal matrix are orthogonal to each other. We can show this by taking the dot product between any pair of columns. Remember is the dot product is zero the vectors are orthogonal.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1"></a><span class="fu">t</span>(Orth[,<span class="dv">1</span>]) <span class="sc">%*%</span> Orth[,<span class="dv">2</span>] <span class="co"># col 1 dot col 2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1]
+[1,]    0</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1"></a><span class="fu">t</span>(Orth[,<span class="dv">1</span>]) <span class="sc">%*%</span> Orth[,<span class="dv">3</span>] <span class="co"># col 1 dot col 3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1]
+[1,]    0</code></pre>
+</div>
+</div>
+<p>Finally, not only are the columns orthogonal, but each column vector has length one, making them orthonormal.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1"></a><span class="fu">sqrt</span>(<span class="fu">sum</span>(Orth[,<span class="dv">1</span>]<span class="sc">^</span><span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="appreciating-the-queries" class="level3">
+<h3 class="anchored" data-anchor-id="appreciating-the-queries">Appreciating the Queries</h3>
+<p>Taking these queries together, we see that symmetric and diagonal matrices are necessarily invertible, diagonalizable and normal. They are not however orthogonal. Identity matrices however, have all these properties. Let’s double-check these statements.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1"></a>A_sym <span class="ot">&lt;-</span> <span class="fu">matrix</span>(</span>
+<span id="cb54-2"><a href="#cb54-2"></a>  <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">2</span>, <span class="dv">9</span>, <span class="dv">4</span>, <span class="dv">9</span>, <span class="dv">3</span>),</span>
+<span id="cb54-3"><a href="#cb54-3"></a>  <span class="at">ncol =</span> <span class="dv">3</span>) <span class="co"># symmetric matrix, not diagonal</span></span>
+<span id="cb54-4"><a href="#cb54-4"></a>A_sym</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3]
+[1,]    1    5    4
+[2,]    5    2    9
+[3,]    4    9    3</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1"></a><span class="fu">normal_or_orthogonal</span>(A_sym)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>This matrix is normal</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1"></a><span class="fu">normal_or_orthogonal</span>(<span class="fu">diag</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)) <span class="co"># diagonal matrix, symmetric, but not the identity matrix</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>This matrix is normal</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1"></a><span class="fu">normal_or_orthogonal</span>(<span class="fu">diag</span>(<span class="dv">3</span>)) <span class="co"># identity matrix (also symmetric, diagonal)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>This matrix is orthogonal</code></pre>
+</div>
+</div>
+<p>So what’s the value of these queries? As mentioned, they help us understand the relationships between different types of matrices, so they help us learn more deeply. On a practical computational level they may not have much value, especially when dealing with real-world data sets. However, there are some other interesting aspects of these queries that deal with decompositions and eigenvalues. We might cover these in the future.</p>
+</section>
+</section>
+</section>
+<section id="an-emerging-theme" class="level1">
+<h1>An Emerging Theme?</h1>
+<p>A more personal thought: In the course of writing these posts, and learning more linear algebra, it increasingly seems to me that a lot of the “effort” that goes into linear algebra is about making tedious operations simpler. Anytime one can have more zeros in a matrix, or have orthogonal vectors, or break a matrix into parts, the simpler things become. However, I haven’t really seen this point driven home in texts or tutorials. I think linear algebra learners would do well to keep this in mind.</p>
+</section>
+<section id="annotated-bibliography" class="level1">
+<h1>Annotated Bibliography</h1>
+<p>These are the main sources I relied on for this post.</p>
+<ul>
+<li><em>The No Bullshit Guide to Linear Algebra</em> by <a href="https://minireference.com">Ivan Savov</a>.
+<ul>
+<li>Section 6.2 Special types of matrices</li>
+<li>Section 6.6 Eigendecomposition</li>
+</ul></li>
+<li><em>Linear Algebra: step by step</em> by Kuldeep Singh, Oxford Univerity Press, 2014.
+<ul>
+<li>Section 4.4 Orthogonal Matrices</li>
+<li>Section 7.3.2 Diagonalization</li>
+<li>Section 7.4 Diagonalization of Symmetric Matrices</li>
+</ul></li>
+<li>Wikipedia articles on the types of matrices.</li>
+</ul>
+
+
+</section>
+
+
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>I’m only using a portion because the Hiranbe’s original contains a bit too much information for someone trying to get their footing in the field.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>I’m using the term taxonomy a little loosely of course, you can call it whatever you want. The name is not so important really, what is important is the hierarchy of concepts.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>As could complex numbers.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>Usually in written text a row matrix, sometimes called a row vector, is written as <span class="math inline">\(\mathbf{x} = \begin{bmatrix}1 &amp; 2 &amp; 3\end{bmatrix}\)</span>. In order to save space in documents, rather than writing <span class="math inline">\(\mathbf{x} = \begin{bmatrix}1 \\ 2 \\ 3\end{bmatrix}\)</span>, a column matrix/vector can be kept to a single line by writing it as its transpose: <span class="math inline">\(\mathbf{x} = \begin{bmatrix}1 &amp; 2 &amp; 3\end{bmatrix}^{\mathsf{T}}\)</span>, but this requires a little mental gymnastics to visualize.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>Upper and lower triangular matrices play a special role in linear algebra. Because of the presence of many zeros, multiplying them and inverting them is relatively easy, because the zeros cause terms to drop out.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>This idea of the “most natural basis” is most easily visualized in two dimensions. If you have some data plotted on <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> axes, determining the line of best fit is one way of finding the most natural basis for describing the data. However, more generally and in more dimensions, principal component analysis (PCA) is the most rigorous way of finding this natural basis, and PCA can be calculated with the <code>eigen()</code> function. Lots more information <a href="https://bryanhanson.github.io/LearnPCA/">here</a>.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>The <code>drop</code> argument to subsetting/extracting defaults to <code>TRUE</code> which means that if subsetting reduces the necessary number of dimensions, the unneeded dimension attributes are dropped. Under the default, selecting a single column of a matrix leads to a vector, not a one column vector. In this <code>all.equal()</code> expression we need both sides to evaluate to a matrix.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>One might ask why <code>R</code> does not provide a user-facing version of such a function. I think a good argument can be made that the authors of <code>R</code> passed down a robust and lean set of linear algebra functions, geared toward getting work done, and throwing errors as necessary.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
+  author = {Hanson, Bryan},
+  title = {Notes on {Linear} {Algebra} {Part} 4},
+  date = {2022-09-26},
+  url = {http://chemospec.org/posts/2022-11-07-Announce-Subscribe/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2022" class="csl-entry quarto-appendix-citeas" role="listitem">
+Hanson, Bryan. 2022. <span>“Notes on Linear Algebra Part 4.”</span>
+September 26, 2022. <a href="http://chemospec.org/posts/2022-11-07-Announce-Subscribe/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html">http://chemospec.org/posts/2022-11-07-Announce-Subscribe/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html</a>.
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      return note.innerHTML;
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://utteranc.es/client.js" repo="bryanhanson/CSR" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+
+<div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookies are used to track visits only</a></div></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

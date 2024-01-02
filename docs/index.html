@@ -64,6 +64,7 @@ ul.task-list li input[type="checkbox"] {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -120,6 +121,33 @@ cookieconsent.run({
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 <link rel="alternate" type="application/rss+xml" title="Chemometrics and Spectroscopy Using R" href="index.xml" data-external="1"><meta name="twitter:title" content="Chemometrics and Spectroscopy Using R -">
@@ -229,7 +257,7 @@ cookieconsent.run({
 
 </div></div>
         
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(41)</span></div><div class="category" data-category="ASCII">ASCII <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Alignment">Alignment <span class="quarto-category-count">(3)</span></div><div class="category" data-category="Baseline">Baseline <span class="quarto-category-count">(1)</span></div><div class="category" data-category="ChemoSpec">ChemoSpec <span class="quarto-category-count">(10)</span></div><div class="category" data-category="ChemoSpec2D">ChemoSpec2D <span class="quarto-category-count">(5)</span></div><div class="category" data-category="ChemoSpecUtils">ChemoSpecUtils <span class="quarto-category-count">(4)</span></div><div class="category" data-category="DIY">DIY <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Data Formats">Data Formats <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Developers">Developers <span class="quarto-category-count">(1)</span></div><div class="category" data-category="EF-NMR">EF-NMR <span class="quarto-category-count">(4)</span></div><div class="category" data-category="FOSS">FOSS <span class="quarto-category-count">(4)</span></div><div class="category" data-category="GSOC">GSOC <span class="quarto-category-count">(5)</span></div><div class="category" data-category="Github">Github <span class="quarto-category-count">(3)</span></div><div class="category" data-category="Github Actions">Github Actions <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Guest Post">Guest Post <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Heatmap">Heatmap <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Housekeeping">Housekeeping <span class="quarto-category-count">(1)</span></div><div class="category" data-category="JCAMP-DX">JCAMP-DX <span class="quarto-category-count">(1)</span></div><div class="category" data-category="JCS">JCS <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Julia">Julia <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Linear Algebra">Linear Algebra <span class="quarto-category-count">(4)</span></div><div class="category" data-category="Literature">Literature <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Metabolomics">Metabolomics <span class="quarto-category-count">(3)</span></div><div class="category" data-category="NMR">NMR <span class="quarto-category-count">(7)</span></div><div class="category" data-category="NQR">NQR <span class="quarto-category-count">(1)</span></div><div class="category" data-category="PCA">PCA <span class="quarto-category-count">(1)</span></div><div class="category" data-category="PLS">PLS <span class="quarto-category-count">(2)</span></div><div class="category" data-category="PLS-DA">PLS-DA <span class="quarto-category-count">(1)</span></div><div class="category" data-category="PyPi">PyPi <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Python">Python <span class="quarto-category-count">(3)</span></div><div class="category" data-category="R">R <span class="quarto-category-count">(31)</span></div><div class="category" data-category="Seriation">Seriation <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Simulated Data">Simulated Data <span class="quarto-category-count">(1)</span></div><div class="category" data-category="SpecHelpers">SpecHelpers <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Utilities">Utilities <span class="quarto-category-count">(1)</span></div><div class="category" data-category="drat">drat <span class="quarto-category-count">(1)</span></div><div class="category" data-category="electronics">electronics <span class="quarto-category-count">(1)</span></div><div class="category" data-category="hardware">hardware <span class="quarto-category-count">(1)</span></div><div class="category" data-category="httr">httr <span class="quarto-category-count">(1)</span></div><div class="category" data-category="hyperSpec">hyperSpec <span class="quarto-category-count">(4)</span></div><div class="category" data-category="photometer">photometer <span class="quarto-category-count">(1)</span></div><div class="category" data-category="readJDX">readJDX <span class="quarto-category-count">(2)</span></div></div></div>
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(42)</span></div><div class="category" data-category="ASCII">ASCII <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Alignment">Alignment <span class="quarto-category-count">(3)</span></div><div class="category" data-category="Arduino">Arduino <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Baseline">Baseline <span class="quarto-category-count">(1)</span></div><div class="category" data-category="C">C <span class="quarto-category-count">(1)</span></div><div class="category" data-category="ChemoSpec">ChemoSpec <span class="quarto-category-count">(10)</span></div><div class="category" data-category="ChemoSpec2D">ChemoSpec2D <span class="quarto-category-count">(5)</span></div><div class="category" data-category="ChemoSpecUtils">ChemoSpecUtils <span class="quarto-category-count">(4)</span></div><div class="category" data-category="DIY">DIY <span class="quarto-category-count">(3)</span></div><div class="category" data-category="Data Formats">Data Formats <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Developers">Developers <span class="quarto-category-count">(1)</span></div><div class="category" data-category="EF-NMR">EF-NMR <span class="quarto-category-count">(5)</span></div><div class="category" data-category="FOSS">FOSS <span class="quarto-category-count">(4)</span></div><div class="category" data-category="GSOC">GSOC <span class="quarto-category-count">(5)</span></div><div class="category" data-category="Github">Github <span class="quarto-category-count">(3)</span></div><div class="category" data-category="Github Actions">Github Actions <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Guest Post">Guest Post <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Heatmap">Heatmap <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Housekeeping">Housekeeping <span class="quarto-category-count">(1)</span></div><div class="category" data-category="JCAMP-DX">JCAMP-DX <span class="quarto-category-count">(1)</span></div><div class="category" data-category="JCS">JCS <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Julia">Julia <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Linear Algebra">Linear Algebra <span class="quarto-category-count">(4)</span></div><div class="category" data-category="Literature">Literature <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Metabolomics">Metabolomics <span class="quarto-category-count">(3)</span></div><div class="category" data-category="NMR">NMR <span class="quarto-category-count">(7)</span></div><div class="category" data-category="NQR">NQR <span class="quarto-category-count">(1)</span></div><div class="category" data-category="PCA">PCA <span class="quarto-category-count">(1)</span></div><div class="category" data-category="PLS">PLS <span class="quarto-category-count">(2)</span></div><div class="category" data-category="PLS-DA">PLS-DA <span class="quarto-category-count">(1)</span></div><div class="category" data-category="PyPi">PyPi <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Python">Python <span class="quarto-category-count">(3)</span></div><div class="category" data-category="R">R <span class="quarto-category-count">(31)</span></div><div class="category" data-category="Seriation">Seriation <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Simulated Data">Simulated Data <span class="quarto-category-count">(1)</span></div><div class="category" data-category="SpecHelpers">SpecHelpers <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Utilities">Utilities <span class="quarto-category-count">(1)</span></div><div class="category" data-category="drat">drat <span class="quarto-category-count">(1)</span></div><div class="category" data-category="electronics">electronics <span class="quarto-category-count">(1)</span></div><div class="category" data-category="hardware">hardware <span class="quarto-category-count">(1)</span></div><div class="category" data-category="httr">httr <span class="quarto-category-count">(1)</span></div><div class="category" data-category="hyperSpec">hyperSpec <span class="quarto-category-count">(4)</span></div><div class="category" data-category="photometer">photometer <span class="quarto-category-count">(1)</span></div><div class="category" data-category="readJDX">readJDX <span class="quarto-category-count">(2)</span></div></div></div>
 <!-- main -->
 <main class="content column-page-left" id="quarto-document-content">
 
@@ -238,7 +266,11 @@ cookieconsent.run({
 
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/banner-1.png" class="img-fluid" width="960"></p>
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/banner-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
 </div>
 </div>
 
@@ -247,18 +279,60 @@ cookieconsent.run({
 
 <div class="quarto-listing quarto-listing-container-default" id="listing-listing">
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="EF-NMR,DIY" data-listing-date-sort="1698130800000" data-listing-file-modified-sort="1698164830165" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1338">
+<div class="quarto-post image-right" data-index="0" data-categories="EF-NMR,DIY,C,Arduino" data-listing-date-sort="1704092400000" data-listing-file-modified-sort="1704159682414" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1204">
 <div class="thumbnail">
-<p><a href="./posts/2023-10-24-EF-NMR-Build-1/EF-NMR-Build-1.html"></a></p><a href="./posts/2023-10-24-EF-NMR-Build-1/EF-NMR-Build-1.html">
-<p class="card-img-top"><img src="posts/2023-10-24-EF-NMR-Build-1/EF-NMR-Build-1_files/figure-html/fig-cs-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/2023-10-24-EF-NMR-Build-1/EF-NMR-Build-1.html"></a></p>
+<p><a href="./posts/2024-01-01-EF-NMR-Build-2/EF-NMR-Build-2.html" class="no-external"></a></p><a href="./posts/2024-01-01-EF-NMR-Build-2/EF-NMR-Build-2.html" class="no-external">
+<p class="card-img-top"><img src="posts/2024-01-01-EF-NMR-Build-2/EF-NMR-Build-2_files/figure-html/fig-timings-1.png"  class="thumbnail-image card-img"/></p>
+</a><p><a href="./posts/2024-01-01-EF-NMR-Build-2/EF-NMR-Build-2.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2023-10-24-EF-NMR-Build-1/EF-NMR-Build-1.html">Building an EF-NMR Part 1</a>
+<a href="./posts/2024-01-01-EF-NMR-Build-2/EF-NMR-Build-2.html" class="no-external">Building an EF-NMR Part 2</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2023-10-24-EF-NMR-Build-1/EF-NMR-Build-1.html"></a>
+<a href="./posts/2024-01-01-EF-NMR-Build-2/EF-NMR-Build-2.html" class="no-external"></a>
+</div>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('EF-NMR'); return false;">
+EF-NMR
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('DIY'); return false;">
+DIY
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('C'); return false;">
+C
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Arduino'); return false;">
+Arduino
+</div>
+</div>
+<div class="listing-description">
+<a href="./posts/2024-01-01-EF-NMR-Build-2/EF-NMR-Build-2.html" class="no-external">Proof of concept software, and a heckuva learning curve</a>
+</div>
+</div>
+<div class="metadata">
+<a href="./posts/2024-01-01-EF-NMR-Build-2/EF-NMR-Build-2.html" class="no-external">
+<div class="listing-date">
+Jan 1, 2024
+</div>
+<div class="listing-author">
+Bryan Hanson
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="1" data-categories="EF-NMR,DIY" data-listing-date-sort="1698130800000" data-listing-file-modified-sort="1698164830165" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1338">
+<div class="thumbnail">
+<p><a href="./posts/2023-10-24-EF-NMR-Build-1/EF-NMR-Build-1.html" class="no-external"></a></p><a href="./posts/2023-10-24-EF-NMR-Build-1/EF-NMR-Build-1.html" class="no-external">
+<p class="card-img-top"><img src="posts/2023-10-24-EF-NMR-Build-1/EF-NMR-Build-1_files/figure-html/fig-cs-1.png"  class="thumbnail-image card-img"/></p>
+</a><p><a href="./posts/2023-10-24-EF-NMR-Build-1/EF-NMR-Build-1.html" class="no-external"></a></p>
+</div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./posts/2023-10-24-EF-NMR-Build-1/EF-NMR-Build-1.html" class="no-external">Building an EF-NMR Part 1</a>
+</h3>
+<div class="listing-subtitle">
+<a href="./posts/2023-10-24-EF-NMR-Build-1/EF-NMR-Build-1.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('EF-NMR'); return false;">
@@ -269,11 +343,11 @@ DIY
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2023-10-24-EF-NMR-Build-1/EF-NMR-Build-1.html">The polarization coil</a>
+<a href="./posts/2023-10-24-EF-NMR-Build-1/EF-NMR-Build-1.html" class="no-external">The polarization coil</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2023-10-24-EF-NMR-Build-1/EF-NMR-Build-1.html">
+<a href="./posts/2023-10-24-EF-NMR-Build-1/EF-NMR-Build-1.html" class="no-external">
 <div class="listing-date">
 Oct 24, 2023
 </div>
@@ -283,18 +357,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="1" data-categories="NMR,EF-NMR,JCS" data-listing-date-sort="1695020400000" data-listing-file-modified-sort="1695050096295" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="838">
+<div class="quarto-post image-right" data-index="2" data-categories="NMR,EF-NMR,JCS" data-listing-date-sort="1695020400000" data-listing-file-modified-sort="1695050096295" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="838">
 <div class="thumbnail">
-<p><a href="./posts/2023-09-18-EF-NMR-2/EF-NMR-2.html"></a></p><a href="./posts/2023-09-18-EF-NMR-2/EF-NMR-2.html">
+<p><a href="./posts/2023-09-18-EF-NMR-2/EF-NMR-2.html" class="no-external"></a></p><a href="./posts/2023-09-18-EF-NMR-2/EF-NMR-2.html" class="no-external">
 <p class="card-img-top"><img src="posts/2023-09-18-EF-NMR-2/Appelt2007Fig4.png" alt="Appelt 2007 Fig. 4"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/2023-09-18-EF-NMR-2/EF-NMR-2.html"></a></p>
+</a><p><a href="./posts/2023-09-18-EF-NMR-2/EF-NMR-2.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2023-09-18-EF-NMR-2/EF-NMR-2.html">The n + 1 rule in Earth’s Field NMR</a>
+<a href="./posts/2023-09-18-EF-NMR-2/EF-NMR-2.html" class="no-external">The n + 1 rule in Earth’s Field NMR</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2023-09-18-EF-NMR-2/EF-NMR-2.html"></a>
+<a href="./posts/2023-09-18-EF-NMR-2/EF-NMR-2.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('NMR'); return false;">
@@ -308,11 +382,11 @@ JCS
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2023-09-18-EF-NMR-2/EF-NMR-2.html">I did not know this…</a>
+<a href="./posts/2023-09-18-EF-NMR-2/EF-NMR-2.html" class="no-external">I did not know this…</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2023-09-18-EF-NMR-2/EF-NMR-2.html">
+<a href="./posts/2023-09-18-EF-NMR-2/EF-NMR-2.html" class="no-external">
 <div class="listing-date">
 Sep 18, 2023
 </div>
@@ -322,18 +396,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="2" data-categories="NMR,FOSS" data-listing-date-sort="1692774000000" data-listing-file-modified-sort="1692813176617" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="145">
+<div class="quarto-post image-right" data-index="3" data-categories="NMR,FOSS" data-listing-date-sort="1692774000000" data-listing-file-modified-sort="1692813176617" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="145">
 <div class="thumbnail">
-<p><a href="./posts/2023-08-23-CS-Delta/CS-Delta.html"></a></p><a href="./posts/2023-08-23-CS-Delta/CS-Delta.html">
+<p><a href="./posts/2023-08-23-CS-Delta/CS-Delta.html" class="no-external"></a></p><a href="./posts/2023-08-23-CS-Delta/CS-Delta.html" class="no-external">
 <p class="card-img-top"><img src="posts/2023-08-23-CS-Delta/Splash.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/2023-08-23-CS-Delta/CS-Delta.html"></a></p>
+</a><p><a href="./posts/2023-08-23-CS-Delta/CS-Delta.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2023-08-23-CS-Delta/CS-Delta.html">JEOL’s Delta Now Includes ChemoSpec</a>
+<a href="./posts/2023-08-23-CS-Delta/CS-Delta.html" class="no-external">JEOL’s Delta Now Includes ChemoSpec</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2023-08-23-CS-Delta/CS-Delta.html"></a>
+<a href="./posts/2023-08-23-CS-Delta/CS-Delta.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('NMR'); return false;">
@@ -344,11 +418,11 @@ FOSS
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2023-08-23-CS-Delta/CS-Delta.html">Pretty cool</a>
+<a href="./posts/2023-08-23-CS-Delta/CS-Delta.html" class="no-external">Pretty cool</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2023-08-23-CS-Delta/CS-Delta.html">
+<a href="./posts/2023-08-23-CS-Delta/CS-Delta.html" class="no-external">
 <div class="listing-date">
 Aug 23, 2023
 </div>
@@ -358,18 +432,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="3" data-categories="FOSS" data-listing-date-sort="1692082800000" data-listing-file-modified-sort="1692152553637" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="852">
+<div class="quarto-post image-right" data-index="4" data-categories="FOSS" data-listing-date-sort="1692082800000" data-listing-file-modified-sort="1692152553637" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="852">
 <div class="thumbnail">
-<p><a href="./posts/2023-08-15-F4S-Update/F4S-Update.html"></a></p><a href="./posts/2023-08-15-F4S-Update/F4S-Update.html">
+<p><a href="./posts/2023-08-15-F4S-Update/F4S-Update.html" class="no-external"></a></p><a href="./posts/2023-08-15-F4S-Update/F4S-Update.html" class="no-external">
 <p class="card-img-top"><img src="posts/2023-08-15-F4S-Update/Venn.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/2023-08-15-F4S-Update/F4S-Update.html"></a></p>
+</a><p><a href="./posts/2023-08-15-F4S-Update/F4S-Update.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2023-08-15-F4S-Update/F4S-Update.html">FOSS4Spectroscopy Update</a>
+<a href="./posts/2023-08-15-F4S-Update/F4S-Update.html" class="no-external">FOSS4Spectroscopy Update</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2023-08-15-F4S-Update/F4S-Update.html"></a>
+<a href="./posts/2023-08-15-F4S-Update/F4S-Update.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('FOSS'); return false;">
@@ -377,11 +451,11 @@ FOSS
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2023-08-15-F4S-Update/F4S-Update.html">What’s changed in a year?</a>
+<a href="./posts/2023-08-15-F4S-Update/F4S-Update.html" class="no-external">What’s changed in a year?</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2023-08-15-F4S-Update/F4S-Update.html">
+<a href="./posts/2023-08-15-F4S-Update/F4S-Update.html" class="no-external">
 <div class="listing-date">
 Aug 15, 2023
 </div>
@@ -391,18 +465,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="4" data-categories="NMR,EF-NMR" data-listing-date-sort="1690354800000" data-listing-file-modified-sort="1689808481200" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8" data-listing-word-count-sort="1469">
+<div class="quarto-post image-right" data-index="5" data-categories="NMR,EF-NMR" data-listing-date-sort="1690354800000" data-listing-file-modified-sort="1689808481200" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8" data-listing-word-count-sort="1469">
 <div class="thumbnail">
-<p><a href="./posts/2023-07-19-EF-NMR-1/EF-NMR-1.html"></a></p><a href="./posts/2023-07-19-EF-NMR-1/EF-NMR-1.html">
+<p><a href="./posts/2023-07-19-EF-NMR-1/EF-NMR-1.html" class="no-external"></a></p><a href="./posts/2023-07-19-EF-NMR-1/EF-NMR-1.html" class="no-external">
 <p class="card-img-top"><img src="posts/2023-07-19-EF-NMR-1/EF-NMR-1_files/figure-html/fig-DeltaE-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/2023-07-19-EF-NMR-1/EF-NMR-1.html"></a></p>
+</a><p><a href="./posts/2023-07-19-EF-NMR-1/EF-NMR-1.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2023-07-19-EF-NMR-1/EF-NMR-1.html">Earth’s Field NMR</a>
+<a href="./posts/2023-07-19-EF-NMR-1/EF-NMR-1.html" class="no-external">Earth’s Field NMR</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2023-07-19-EF-NMR-1/EF-NMR-1.html"></a>
+<a href="./posts/2023-07-19-EF-NMR-1/EF-NMR-1.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('NMR'); return false;">
@@ -413,11 +487,11 @@ EF-NMR
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2023-07-19-EF-NMR-1/EF-NMR-1.html">What can we measure? Why or Why Not? Pros? Cons?</a>
+<a href="./posts/2023-07-19-EF-NMR-1/EF-NMR-1.html" class="no-external">What can we measure? Why or Why Not? Pros? Cons?</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2023-07-19-EF-NMR-1/EF-NMR-1.html">
+<a href="./posts/2023-07-19-EF-NMR-1/EF-NMR-1.html" class="no-external">
 <div class="listing-date">
 Jul 26, 2023
 </div>
@@ -427,18 +501,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="5" data-categories="hardware,electronics,photometer" data-listing-date-sort="1689490800000" data-listing-file-modified-sort="1689547616357" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="11" data-listing-word-count-sort="2152">
+<div class="quarto-post image-right" data-index="6" data-categories="hardware,electronics,photometer" data-listing-date-sort="1689490800000" data-listing-file-modified-sort="1689547616357" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="11" data-listing-word-count-sort="2152">
 <div class="thumbnail">
-<p><a href="./posts/2023-07-16-Photometer/Photometer.html"></a></p><a href="./posts/2023-07-16-Photometer/Photometer.html">
+<p><a href="./posts/2023-07-16-Photometer/Photometer.html" class="no-external"></a></p><a href="./posts/2023-07-16-Photometer/Photometer.html" class="no-external">
 <p class="card-img-top"><img src="posts/2023-07-16-Photometer/mcclain-v1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/2023-07-16-Photometer/Photometer.html"></a></p>
+</a><p><a href="./posts/2023-07-16-Photometer/Photometer.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2023-07-16-Photometer/Photometer.html">Home Built Photometer</a>
+<a href="./posts/2023-07-16-Photometer/Photometer.html" class="no-external">Home Built Photometer</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2023-07-16-Photometer/Photometer.html"></a>
+<a href="./posts/2023-07-16-Photometer/Photometer.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('hardware'); return false;">
@@ -452,11 +526,11 @@ photometer
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2023-07-16-Photometer/Photometer.html">Learning some practical electronics</a>
+<a href="./posts/2023-07-16-Photometer/Photometer.html" class="no-external">Learning some practical electronics</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2023-07-16-Photometer/Photometer.html">
+<a href="./posts/2023-07-16-Photometer/Photometer.html" class="no-external">
 <div class="listing-date">
 Jul 16, 2023
 </div>
@@ -466,18 +540,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="6" data-categories="NMR,EF-NMR,NQR,DIY" data-listing-date-sort="1686553200000" data-listing-file-modified-sort="1686623903190" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="457">
+<div class="quarto-post image-right" data-index="7" data-categories="NMR,EF-NMR,NQR,DIY" data-listing-date-sort="1686553200000" data-listing-file-modified-sort="1686623903190" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="457">
 <div class="thumbnail">
-<p><a href="./posts/2023-06-12-DIY-NMR/DIY-NMR.html"></a></p><a href="./posts/2023-06-12-DIY-NMR/DIY-NMR.html">
+<p><a href="./posts/2023-06-12-DIY-NMR/DIY-NMR.html" class="no-external"></a></p><a href="./posts/2023-06-12-DIY-NMR/DIY-NMR.html" class="no-external">
 <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./posts/2023-06-12-DIY-NMR/DIY-NMR.html"></a></p>
+</a><p><a href="./posts/2023-06-12-DIY-NMR/DIY-NMR.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2023-06-12-DIY-NMR/DIY-NMR.html">DIY NMR in Earth’s Field</a>
+<a href="./posts/2023-06-12-DIY-NMR/DIY-NMR.html" class="no-external">DIY NMR in Earth’s Field</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2023-06-12-DIY-NMR/DIY-NMR.html"></a>
+<a href="./posts/2023-06-12-DIY-NMR/DIY-NMR.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('NMR'); return false;">
@@ -494,11 +568,11 @@ DIY
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2023-06-12-DIY-NMR/DIY-NMR.html">A super simple design</a>
+<a href="./posts/2023-06-12-DIY-NMR/DIY-NMR.html" class="no-external">A super simple design</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2023-06-12-DIY-NMR/DIY-NMR.html">
+<a href="./posts/2023-06-12-DIY-NMR/DIY-NMR.html" class="no-external">
 <div class="listing-date">
 Jun 12, 2023
 </div>
@@ -508,18 +582,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="7" data-categories="Housekeeping" data-listing-date-sort="1667804400000" data-listing-file-modified-sort="1667836345476" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="74">
+<div class="quarto-post image-right" data-index="8" data-categories="Housekeeping" data-listing-date-sort="1667804400000" data-listing-file-modified-sort="1667836345476" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="74">
 <div class="thumbnail">
-<p><a href="./posts/2022-11-07-Announce-Subscribe/Announce-Subscribe.html"></a></p><a href="./posts/2022-11-07-Announce-Subscribe/Announce-Subscribe.html">
+<p><a href="./posts/2022-11-07-Announce-Subscribe/Announce-Subscribe.html" class="no-external"></a></p><a href="./posts/2022-11-07-Announce-Subscribe/Announce-Subscribe.html" class="no-external">
 <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./posts/2022-11-07-Announce-Subscribe/Announce-Subscribe.html"></a></p>
+</a><p><a href="./posts/2022-11-07-Announce-Subscribe/Announce-Subscribe.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2022-11-07-Announce-Subscribe/Announce-Subscribe.html">You Can Now Subscribe</a>
+<a href="./posts/2022-11-07-Announce-Subscribe/Announce-Subscribe.html" class="no-external">You Can Now Subscribe</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2022-11-07-Announce-Subscribe/Announce-Subscribe.html"></a>
+<a href="./posts/2022-11-07-Announce-Subscribe/Announce-Subscribe.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Housekeeping'); return false;">
@@ -527,11 +601,11 @@ Housekeeping
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2022-11-07-Announce-Subscribe/Announce-Subscribe.html">Remarkably, it seems to work!</a>
+<a href="./posts/2022-11-07-Announce-Subscribe/Announce-Subscribe.html" class="no-external">Remarkably, it seems to work!</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2022-11-07-Announce-Subscribe/Announce-Subscribe.html">
+<a href="./posts/2022-11-07-Announce-Subscribe/Announce-Subscribe.html" class="no-external">
 <div class="listing-date">
 Nov 7, 2022
 </div>
@@ -541,18 +615,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="8" data-categories="R,Linear Algebra" data-listing-date-sort="1664175600000" data-listing-file-modified-sort="1676919638616" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="13" data-listing-word-count-sort="2517">
+<div class="quarto-post image-right" data-index="9" data-categories="R,Linear Algebra" data-listing-date-sort="1664175600000" data-listing-file-modified-sort="1676919638616" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="13" data-listing-word-count-sort="2517">
 <div class="thumbnail">
-<p><a href="./posts/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html"></a></p><a href="./posts/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html">
+<p><a href="./posts/2022-11-07-Announce-Subscribe/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html" class="no-external"></a></p><a href="./posts/2022-11-07-Announce-Subscribe/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html" class="no-external">
 <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./posts/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html"></a></p>
+</a><p><a href="./posts/2022-11-07-Announce-Subscribe/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html">Notes on Linear Algebra Part 4</a>
+<a href="./posts/2022-11-07-Announce-Subscribe/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html" class="no-external">Notes on Linear Algebra Part 4</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html"></a>
+<a href="./posts/2022-11-07-Announce-Subscribe/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
@@ -563,11 +637,11 @@ Linear Algebra
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html">A Taxonomy of Matrices</a>
+<a href="./posts/2022-11-07-Announce-Subscribe/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html" class="no-external">A Taxonomy of Matrices</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html">
+<a href="./posts/2022-11-07-Announce-Subscribe/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html" class="no-external">
 <div class="listing-date">
 Sep 26, 2022
 </div>
@@ -577,18 +651,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="9" data-categories="R,Linear Algebra" data-listing-date-sort="1662793200000" data-listing-file-modified-sort="1663621571015" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1080">
+<div class="quarto-post image-right" data-index="10" data-categories="R,Linear Algebra" data-listing-date-sort="1662793200000" data-listing-file-modified-sort="1663621571015" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1080">
 <div class="thumbnail">
-<p><a href="./posts/2022-09-10-Linear-Alg-Notes-Pt3/Linear-Alg-Notes-Pt3.html"></a></p><a href="./posts/2022-09-10-Linear-Alg-Notes-Pt3/Linear-Alg-Notes-Pt3.html">
+<p><a href="./posts/2022-09-10-Linear-Alg-Notes-Pt3/Linear-Alg-Notes-Pt3.html" class="no-external"></a></p><a href="./posts/2022-09-10-Linear-Alg-Notes-Pt3/Linear-Alg-Notes-Pt3.html" class="no-external">
 <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./posts/2022-09-10-Linear-Alg-Notes-Pt3/Linear-Alg-Notes-Pt3.html"></a></p>
+</a><p><a href="./posts/2022-09-10-Linear-Alg-Notes-Pt3/Linear-Alg-Notes-Pt3.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2022-09-10-Linear-Alg-Notes-Pt3/Linear-Alg-Notes-Pt3.html">Notes on Linear Algebra Part 3</a>
+<a href="./posts/2022-09-10-Linear-Alg-Notes-Pt3/Linear-Alg-Notes-Pt3.html" class="no-external">Notes on Linear Algebra Part 3</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2022-09-10-Linear-Alg-Notes-Pt3/Linear-Alg-Notes-Pt3.html"></a>
+<a href="./posts/2022-09-10-Linear-Alg-Notes-Pt3/Linear-Alg-Notes-Pt3.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
@@ -599,11 +673,11 @@ Linear Algebra
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2022-09-10-Linear-Alg-Notes-Pt3/Linear-Alg-Notes-Pt3.html">Base R Functions Related to Linear Algebra</a>
+<a href="./posts/2022-09-10-Linear-Alg-Notes-Pt3/Linear-Alg-Notes-Pt3.html" class="no-external">Base R Functions Related to Linear Algebra</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2022-09-10-Linear-Alg-Notes-Pt3/Linear-Alg-Notes-Pt3.html">
+<a href="./posts/2022-09-10-Linear-Alg-Notes-Pt3/Linear-Alg-Notes-Pt3.html" class="no-external">
 <div class="listing-date">
 Sep 10, 2022
 </div>
@@ -613,18 +687,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="10" data-categories="R,Linear Algebra" data-listing-date-sort="1662015600000" data-listing-file-modified-sort="1662826153147" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="17" data-listing-word-count-sort="3221">
+<div class="quarto-post image-right" data-index="11" data-categories="R,Linear Algebra" data-listing-date-sort="1662015600000" data-listing-file-modified-sort="1662826153147" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="17" data-listing-word-count-sort="3221">
 <div class="thumbnail">
-<p><a href="./posts/2022-09-01-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2.html"></a></p><a href="./posts/2022-09-01-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2.html">
+<p><a href="./posts/2022-09-01-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2.html" class="no-external"></a></p><a href="./posts/2022-09-01-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2.html" class="no-external">
 <p class="card-img-top"><img src="posts/2022-09-01-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2_files/figure-html/unnamed-chunk-7-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/2022-09-01-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2.html"></a></p>
+</a><p><a href="./posts/2022-09-01-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2022-09-01-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2.html">Notes on Linear Algebra Part 2</a>
+<a href="./posts/2022-09-01-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2.html" class="no-external">Notes on Linear Algebra Part 2</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2022-09-01-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2.html"></a>
+<a href="./posts/2022-09-01-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
@@ -635,11 +709,11 @@ Linear Algebra
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2022-09-01-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2.html">Motivations - Bushwhacking through the thicket of linear algebra</a>
+<a href="./posts/2022-09-01-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2.html" class="no-external">Motivations - Bushwhacking through the thicket of linear algebra</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2022-09-01-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2.html">
+<a href="./posts/2022-09-01-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2.html" class="no-external">
 <div class="listing-date">
 Sep 1, 2022
 </div>
@@ -649,18 +723,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="11" data-categories="R,Linear Algebra" data-listing-date-sort="1660460400000" data-listing-file-modified-sort="1661263146401" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="12" data-listing-word-count-sort="2343">
+<div class="quarto-post image-right" data-index="12" data-categories="R,Linear Algebra" data-listing-date-sort="1660460400000" data-listing-file-modified-sort="1661263146401" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="12" data-listing-word-count-sort="2343">
 <div class="thumbnail">
-<p><a href="./posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html"></a></p><a href="./posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html">
+<p><a href="./posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html" class="no-external"></a></p><a href="./posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html" class="no-external">
 <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html"></a></p>
+</a><p><a href="./posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html">Notes on Linear Algebra Part 1</a>
+<a href="./posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html" class="no-external">Notes on Linear Algebra Part 1</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html"></a>
+<a href="./posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
@@ -671,11 +745,11 @@ Linear Algebra
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html">When is a cross product not a cross product? Terminology run amok!</a>
+<a href="./posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html" class="no-external">When is a cross product not a cross product? Terminology run amok!</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html">
+<a href="./posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html" class="no-external">
 <div class="listing-date">
 Aug 14, 2022
 </div>
@@ -685,18 +759,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="12" data-categories="FOSS,R,Python,Julia,Github,PyPi" data-listing-date-sort="1657090800000" data-listing-file-modified-sort="1657144342378" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="707">
+<div class="quarto-post image-right" data-index="13" data-categories="FOSS,R,Python,Julia,Github,PyPi" data-listing-date-sort="1657090800000" data-listing-file-modified-sort="1657144342378" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="707">
 <div class="thumbnail">
-<p><a href="./posts/2022-07-06-F4S-Update/2022-07-06-F4S-Update.html"></a></p><a href="./posts/2022-07-06-F4S-Update/2022-07-06-F4S-Update.html">
+<p><a href="./posts/2022-07-06-F4S-Update/2022-07-06-F4S-Update.html" class="no-external"></a></p><a href="./posts/2022-07-06-F4S-Update/2022-07-06-F4S-Update.html" class="no-external">
 <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./posts/2022-07-06-F4S-Update/2022-07-06-F4S-Update.html"></a></p>
+</a><p><a href="./posts/2022-07-06-F4S-Update/2022-07-06-F4S-Update.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2022-07-06-F4S-Update/2022-07-06-F4S-Update.html">FOSS4Spectroscopy: R vs Python</a>
+<a href="./posts/2022-07-06-F4S-Update/2022-07-06-F4S-Update.html" class="no-external">FOSS4Spectroscopy: R vs Python</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2022-07-06-F4S-Update/2022-07-06-F4S-Update.html"></a>
+<a href="./posts/2022-07-06-F4S-Update/2022-07-06-F4S-Update.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('FOSS'); return false;">
@@ -719,11 +793,11 @@ PyPi
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2022-07-06-F4S-Update/2022-07-06-F4S-Update.html">Now with more Python and Julia packages, and improved workflow</a>
+<a href="./posts/2022-07-06-F4S-Update/2022-07-06-F4S-Update.html" class="no-external">Now with more Python and Julia packages, and improved workflow</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2022-07-06-F4S-Update/2022-07-06-F4S-Update.html">
+<a href="./posts/2022-07-06-F4S-Update/2022-07-06-F4S-Update.html" class="no-external">
 <div class="listing-date">
 Jul 6, 2022
 </div>
@@ -733,18 +807,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="13" data-categories="R,PCA" data-listing-date-sort="1651561200000" data-listing-file-modified-sort="1698165119894" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="242">
+<div class="quarto-post image-right" data-index="14" data-categories="R,PCA" data-listing-date-sort="1651561200000" data-listing-file-modified-sort="1698165119894" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="242">
 <div class="thumbnail">
-<p><a href="./posts/2022-05-03-LearnPCA-Intro/2022-05-03-LearnPCA-Intro.html"></a></p><a href="./posts/2022-05-03-LearnPCA-Intro/2022-05-03-LearnPCA-Intro.html">
+<p><a href="./posts/2022-05-03-LearnPCA-Intro/2022-05-03-LearnPCA-Intro.html" class="no-external"></a></p><a href="./posts/2022-05-03-LearnPCA-Intro/2022-05-03-LearnPCA-Intro.html" class="no-external">
 <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./posts/2022-05-03-LearnPCA-Intro/2022-05-03-LearnPCA-Intro.html"></a></p>
+</a><p><a href="./posts/2022-05-03-LearnPCA-Intro/2022-05-03-LearnPCA-Intro.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2022-05-03-LearnPCA-Intro/2022-05-03-LearnPCA-Intro.html">Introducing LearnPCA</a>
+<a href="./posts/2022-05-03-LearnPCA-Intro/2022-05-03-LearnPCA-Intro.html" class="no-external">Introducing LearnPCA</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2022-05-03-LearnPCA-Intro/2022-05-03-LearnPCA-Intro.html"></a>
+<a href="./posts/2022-05-03-LearnPCA-Intro/2022-05-03-LearnPCA-Intro.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
@@ -755,11 +829,11 @@ PCA
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2022-05-03-LearnPCA-Intro/2022-05-03-LearnPCA-Intro.html">Improve your understanding of PCA</a>
+<a href="./posts/2022-05-03-LearnPCA-Intro/2022-05-03-LearnPCA-Intro.html" class="no-external">Improve your understanding of PCA</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2022-05-03-LearnPCA-Intro/2022-05-03-LearnPCA-Intro.html">
+<a href="./posts/2022-05-03-LearnPCA-Intro/2022-05-03-LearnPCA-Intro.html" class="no-external">
 <div class="listing-date">
 May 3, 2022
 </div>
@@ -769,18 +843,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="14" data-categories="R,ChemoSpec,Metabolomics,PLS,PLS-DA" data-listing-date-sort="1651388400000" data-listing-file-modified-sort="1651425191129" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="846">
+<div class="quarto-post image-right" data-index="15" data-categories="R,ChemoSpec,Metabolomics,PLS,PLS-DA" data-listing-date-sort="1651388400000" data-listing-file-modified-sort="1651425191129" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="846">
 <div class="thumbnail">
-<p><a href="./posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3.html"></a></p><a href="./posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3.html">
+<p><a href="./posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3.html" class="no-external"></a></p><a href="./posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3.html" class="no-external">
 <p class="card-img-top"><img src="posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-screeAlt-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3.html"></a></p>
+</a><p><a href="./posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3.html">Metabolic Phenotyping Protocol Part 3</a>
+<a href="./posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3.html" class="no-external">Metabolic Phenotyping Protocol Part 3</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3.html"></a>
+<a href="./posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
@@ -800,11 +874,11 @@ PLS-DA
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3.html">Implementing the Statistical Analysis in Metabolic Phenotyping Protocol of Blaise <em>et al.</em></a>
+<a href="./posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3.html" class="no-external">Implementing the Statistical Analysis in Metabolic Phenotyping Protocol of Blaise <em>et al.</em></a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3.html">
+<a href="./posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3.html" class="no-external">
 <div class="listing-date">
 May 1, 2022
 </div>
@@ -814,18 +888,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="15" data-categories="R,ChemoSpec,Metabolomics" data-listing-date-sort="1648105200000" data-listing-file-modified-sort="1651377125087" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1270">
+<div class="quarto-post image-right" data-index="16" data-categories="R,ChemoSpec,Metabolomics" data-listing-date-sort="1648105200000" data-listing-file-modified-sort="1651377125087" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1270">
 <div class="thumbnail">
-<p><a href="./posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2.html"></a></p><a href="./posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2.html">
+<p><a href="./posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2.html" class="no-external"></a></p><a href="./posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2.html" class="no-external">
 <p class="card-img-top"><img src="posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-screeAlt-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2.html"></a></p>
+</a><p><a href="./posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2.html">Metabolic Phenotyping Protocol Part 2</a>
+<a href="./posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2.html" class="no-external">Metabolic Phenotyping Protocol Part 2</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2.html"></a>
+<a href="./posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
@@ -839,11 +913,11 @@ Metabolomics
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2.html">Implementing the Statistical Analysis in Metabolic Phenotyping Protocol of Blaise <em>et al.</em></a>
+<a href="./posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2.html" class="no-external">Implementing the Statistical Analysis in Metabolic Phenotyping Protocol of Blaise <em>et al.</em></a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2.html">
+<a href="./posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2.html" class="no-external">
 <div class="listing-date">
 Mar 24, 2022
 </div>
@@ -853,18 +927,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="16" data-categories="Literature" data-listing-date-sort="1645167600000" data-listing-file-modified-sort="1651199834461" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="111">
+<div class="quarto-post image-right" data-index="17" data-categories="Literature" data-listing-date-sort="1645167600000" data-listing-file-modified-sort="1651199834461" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="111">
 <div class="thumbnail">
-<p><a href="./posts/2022-02-18-Key-References/2022-02-18-Key-References.html"></a></p><a href="./posts/2022-02-18-Key-References/2022-02-18-Key-References.html">
+<p><a href="./posts/2022-02-18-Key-References/2022-02-18-Key-References.html" class="no-external"></a></p><a href="./posts/2022-02-18-Key-References/2022-02-18-Key-References.html" class="no-external">
 <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./posts/2022-02-18-Key-References/2022-02-18-Key-References.html"></a></p>
+</a><p><a href="./posts/2022-02-18-Key-References/2022-02-18-Key-References.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2022-02-18-Key-References/2022-02-18-Key-References.html">Chemometrics in Spectroscopy: Key References</a>
+<a href="./posts/2022-02-18-Key-References/2022-02-18-Key-References.html" class="no-external">Chemometrics in Spectroscopy: Key References</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2022-02-18-Key-References/2022-02-18-Key-References.html"></a>
+<a href="./posts/2022-02-18-Key-References/2022-02-18-Key-References.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Literature'); return false;">
@@ -872,11 +946,11 @@ Literature
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2022-02-18-Key-References/2022-02-18-Key-References.html">Keep coming back to these sources</a>
+<a href="./posts/2022-02-18-Key-References/2022-02-18-Key-References.html" class="no-external">Keep coming back to these sources</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2022-02-18-Key-References/2022-02-18-Key-References.html">
+<a href="./posts/2022-02-18-Key-References/2022-02-18-Key-References.html" class="no-external">
 <div class="listing-date">
 Feb 18, 2022
 </div>
@@ -886,18 +960,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="17" data-categories="R,Utilities,Developers" data-listing-date-sort="1644390000000" data-listing-file-modified-sort="1651199834459" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8" data-listing-word-count-sort="1583">
+<div class="quarto-post image-right" data-index="18" data-categories="R,Utilities,Developers" data-listing-date-sort="1644390000000" data-listing-file-modified-sort="1651199834459" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8" data-listing-word-count-sort="1583">
 <div class="thumbnail">
-<p><a href="./posts/2022-02-09-Imports-Suggests/2022-02-09-Imports-Suggests.html"></a></p><a href="./posts/2022-02-09-Imports-Suggests/2022-02-09-Imports-Suggests.html">
+<p><a href="./posts/2022-02-09-Imports-Suggests/2022-02-09-Imports-Suggests.html" class="no-external"></a></p><a href="./posts/2022-02-09-Imports-Suggests/2022-02-09-Imports-Suggests.html" class="no-external">
 <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./posts/2022-02-09-Imports-Suggests/2022-02-09-Imports-Suggests.html"></a></p>
+</a><p><a href="./posts/2022-02-09-Imports-Suggests/2022-02-09-Imports-Suggests.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2022-02-09-Imports-Suggests/2022-02-09-Imports-Suggests.html">Do You have Stale Imports or Suggests?</a>
+<a href="./posts/2022-02-09-Imports-Suggests/2022-02-09-Imports-Suggests.html" class="no-external">Do You have Stale Imports or Suggests?</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2022-02-09-Imports-Suggests/2022-02-09-Imports-Suggests.html"></a>
+<a href="./posts/2022-02-09-Imports-Suggests/2022-02-09-Imports-Suggests.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
@@ -911,11 +985,11 @@ Developers
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2022-02-09-Imports-Suggests/2022-02-09-Imports-Suggests.html">Hints For Package Developers</a>
+<a href="./posts/2022-02-09-Imports-Suggests/2022-02-09-Imports-Suggests.html" class="no-external">Hints For Package Developers</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2022-02-09-Imports-Suggests/2022-02-09-Imports-Suggests.html">
+<a href="./posts/2022-02-09-Imports-Suggests/2022-02-09-Imports-Suggests.html" class="no-external">
 <div class="listing-date">
 Feb 9, 2022
 </div>
@@ -925,18 +999,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="18" data-categories="R,ChemoSpec,Metabolomics" data-listing-date-sort="1643698800000" data-listing-file-modified-sort="1651377261391" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1079">
+<div class="quarto-post image-right" data-index="19" data-categories="R,ChemoSpec,Metabolomics" data-listing-date-sort="1643698800000" data-listing-file-modified-sort="1651377261391" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1079">
 <div class="thumbnail">
-<p><a href="./posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1.html"></a></p><a href="./posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1.html">
+<p><a href="./posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1.html" class="no-external"></a></p><a href="./posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1.html" class="no-external">
 <p class="card-img-top"><img src="posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1_files/figure-html/fig-samplePlot-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1.html"></a></p>
+</a><p><a href="./posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1.html">Metabolic Phenotyping Protocol Part 1</a>
+<a href="./posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1.html" class="no-external">Metabolic Phenotyping Protocol Part 1</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1.html"></a>
+<a href="./posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
@@ -950,11 +1024,11 @@ Metabolomics
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1.html">Implementing the Statistical Analysis in Metabolic Phenotyping Protocol of Blaise <em>et al.</em></a>
+<a href="./posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1.html" class="no-external">Implementing the Statistical Analysis in Metabolic Phenotyping Protocol of Blaise <em>et al.</em></a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1.html">
+<a href="./posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1.html" class="no-external">
 <div class="listing-date">
 Feb 1, 2022
 </div>
@@ -964,18 +1038,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="19" data-categories="R,ChemoSpec,ChemoSpecUtils,ChemoSpec2D,GSOC" data-listing-date-sort="1634108400000" data-listing-file-modified-sort="1651199834434" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="296">
+<div class="quarto-post image-right" data-index="20" data-categories="R,ChemoSpec,ChemoSpecUtils,ChemoSpec2D,GSOC" data-listing-date-sort="1634108400000" data-listing-file-modified-sort="1651199834434" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="296">
 <div class="thumbnail">
-<p><a href="./posts/2021-10-13-GSOC-CS-Graphics/2021-10-13-GSOC-CS-Graphics.html"></a></p><a href="./posts/2021-10-13-GSOC-CS-Graphics/2021-10-13-GSOC-CS-Graphics.html">
+<p><a href="./posts/2021-10-13-GSOC-CS-Graphics/2021-10-13-GSOC-CS-Graphics.html" class="no-external"></a></p><a href="./posts/2021-10-13-GSOC-CS-Graphics/2021-10-13-GSOC-CS-Graphics.html" class="no-external">
 <p class="card-img-top"><img src="posts/2021-10-13-GSOC-CS-Graphics/og-image.png" alt="GSOC_logo"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/2021-10-13-GSOC-CS-Graphics/2021-10-13-GSOC-CS-Graphics.html"></a></p>
+</a><p><a href="./posts/2021-10-13-GSOC-CS-Graphics/2021-10-13-GSOC-CS-Graphics.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2021-10-13-GSOC-CS-Graphics/2021-10-13-GSOC-CS-Graphics.html">GSOC 2021: New Graphics for ChemoSpec</a>
+<a href="./posts/2021-10-13-GSOC-CS-Graphics/2021-10-13-GSOC-CS-Graphics.html" class="no-external">GSOC 2021: New Graphics for ChemoSpec</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2021-10-13-GSOC-CS-Graphics/2021-10-13-GSOC-CS-Graphics.html"></a>
+<a href="./posts/2021-10-13-GSOC-CS-Graphics/2021-10-13-GSOC-CS-Graphics.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
@@ -995,11 +1069,11 @@ GSOC
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2021-10-13-GSOC-CS-Graphics/2021-10-13-GSOC-CS-Graphics.html">Major improvements!</a>
+<a href="./posts/2021-10-13-GSOC-CS-Graphics/2021-10-13-GSOC-CS-Graphics.html" class="no-external">Major improvements!</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2021-10-13-GSOC-CS-Graphics/2021-10-13-GSOC-CS-Graphics.html">
+<a href="./posts/2021-10-13-GSOC-CS-Graphics/2021-10-13-GSOC-CS-Graphics.html" class="no-external">
 <div class="listing-date">
 Oct 13, 2021
 </div>
@@ -1009,18 +1083,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="20" data-categories="R,hyperSpec,ChemoSpec,GSOC" data-listing-date-sort="1621666800000" data-listing-file-modified-sort="1651199834433" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="131">
+<div class="quarto-post image-right" data-index="21" data-categories="R,hyperSpec,ChemoSpec,GSOC" data-listing-date-sort="1621666800000" data-listing-file-modified-sort="1651199834433" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="131">
 <div class="thumbnail">
-<p><a href="./posts/2021-05-22-GSOC-hyperSpec-ChemoSpec/2021-05-22-GSOC-hyperSpec-ChemoSpec.html"></a></p><a href="./posts/2021-05-22-GSOC-hyperSpec-ChemoSpec/2021-05-22-GSOC-hyperSpec-ChemoSpec.html">
+<p><a href="./posts/2021-05-22-GSOC-hyperSpec-ChemoSpec/2021-05-22-GSOC-hyperSpec-ChemoSpec.html" class="no-external"></a></p><a href="./posts/2021-05-22-GSOC-hyperSpec-ChemoSpec/2021-05-22-GSOC-hyperSpec-ChemoSpec.html" class="no-external">
 <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./posts/2021-05-22-GSOC-hyperSpec-ChemoSpec/2021-05-22-GSOC-hyperSpec-ChemoSpec.html"></a></p>
+</a><p><a href="./posts/2021-05-22-GSOC-hyperSpec-ChemoSpec/2021-05-22-GSOC-hyperSpec-ChemoSpec.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2021-05-22-GSOC-hyperSpec-ChemoSpec/2021-05-22-GSOC-hyperSpec-ChemoSpec.html">GSOC 2021: hyperSpec and ChemoSpec!</a>
+<a href="./posts/2021-05-22-GSOC-hyperSpec-ChemoSpec/2021-05-22-GSOC-hyperSpec-ChemoSpec.html" class="no-external">GSOC 2021: hyperSpec and ChemoSpec!</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2021-05-22-GSOC-hyperSpec-ChemoSpec/2021-05-22-GSOC-hyperSpec-ChemoSpec.html"></a>
+<a href="./posts/2021-05-22-GSOC-hyperSpec-ChemoSpec/2021-05-22-GSOC-hyperSpec-ChemoSpec.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
@@ -1037,11 +1111,11 @@ GSOC
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2021-05-22-GSOC-hyperSpec-ChemoSpec/2021-05-22-GSOC-hyperSpec-ChemoSpec.html">I’m gonna be busy!</a>
+<a href="./posts/2021-05-22-GSOC-hyperSpec-ChemoSpec/2021-05-22-GSOC-hyperSpec-ChemoSpec.html" class="no-external">I’m gonna be busy!</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2021-05-22-GSOC-hyperSpec-ChemoSpec/2021-05-22-GSOC-hyperSpec-ChemoSpec.html">
+<a href="./posts/2021-05-22-GSOC-hyperSpec-ChemoSpec/2021-05-22-GSOC-hyperSpec-ChemoSpec.html" class="no-external">
 <div class="listing-date">
 May 22, 2021
 </div>
@@ -1051,18 +1125,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="21" data-categories="R,Github,FOSS,httr" data-listing-date-sort="1618815600000" data-listing-file-modified-sort="1651199834432" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1255">
+<div class="quarto-post image-right" data-index="22" data-categories="R,Github,FOSS,httr" data-listing-date-sort="1618815600000" data-listing-file-modified-sort="1651199834432" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1255">
 <div class="thumbnail">
-<p><a href="./posts/2021-04-19-Search-GH-Topics/2021-04-19-Search-GH-Topics.html"></a></p><a href="./posts/2021-04-19-Search-GH-Topics/2021-04-19-Search-GH-Topics.html">
+<p><a href="./posts/2021-04-19-Search-GH-Topics/2021-04-19-Search-GH-Topics.html" class="no-external"></a></p><a href="./posts/2021-04-19-Search-GH-Topics/2021-04-19-Search-GH-Topics.html" class="no-external">
 <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./posts/2021-04-19-Search-GH-Topics/2021-04-19-Search-GH-Topics.html"></a></p>
+</a><p><a href="./posts/2021-04-19-Search-GH-Topics/2021-04-19-Search-GH-Topics.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2021-04-19-Search-GH-Topics/2021-04-19-Search-GH-Topics.html">Automatically Searching Github Repos by Topic</a>
+<a href="./posts/2021-04-19-Search-GH-Topics/2021-04-19-Search-GH-Topics.html" class="no-external">Automatically Searching Github Repos by Topic</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2021-04-19-Search-GH-Topics/2021-04-19-Search-GH-Topics.html"></a>
+<a href="./posts/2021-04-19-Search-GH-Topics/2021-04-19-Search-GH-Topics.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
@@ -1079,11 +1153,11 @@ httr
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2021-04-19-Search-GH-Topics/2021-04-19-Search-GH-Topics.html">How to find packages of interest</a>
+<a href="./posts/2021-04-19-Search-GH-Topics/2021-04-19-Search-GH-Topics.html" class="no-external">How to find packages of interest</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2021-04-19-Search-GH-Topics/2021-04-19-Search-GH-Topics.html">
+<a href="./posts/2021-04-19-Search-GH-Topics/2021-04-19-Search-GH-Topics.html" class="no-external">
 <div class="listing-date">
 Apr 19, 2021
 </div>
@@ -1093,18 +1167,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="22" data-categories="R,Github Actions,drat,GSOC,hyperSpec" data-listing-date-sort="1618124400000" data-listing-file-modified-sort="1651199834431" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="995">
+<div class="quarto-post image-right" data-index="23" data-categories="R,Github Actions,drat,GSOC,hyperSpec" data-listing-date-sort="1618124400000" data-listing-file-modified-sort="1651199834431" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="995">
 <div class="thumbnail">
-<p><a href="./posts/2021-04-11-GHA-drat/2021-04-11-GHA-drat.html"></a></p><a href="./posts/2021-04-11-GHA-drat/2021-04-11-GHA-drat.html">
+<p><a href="./posts/2021-04-11-GHA-drat/2021-04-11-GHA-drat.html" class="no-external"></a></p><a href="./posts/2021-04-11-GHA-drat/2021-04-11-GHA-drat.html" class="no-external">
 <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./posts/2021-04-11-GHA-drat/2021-04-11-GHA-drat.html"></a></p>
+</a><p><a href="./posts/2021-04-11-GHA-drat/2021-04-11-GHA-drat.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2021-04-11-GHA-drat/2021-04-11-GHA-drat.html">Using Github Actions and drat to Deploy R Packages</a>
+<a href="./posts/2021-04-11-GHA-drat/2021-04-11-GHA-drat.html" class="no-external">Using Github Actions and drat to Deploy R Packages</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2021-04-11-GHA-drat/2021-04-11-GHA-drat.html"></a>
+<a href="./posts/2021-04-11-GHA-drat/2021-04-11-GHA-drat.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
@@ -1124,11 +1198,11 @@ hyperSpec
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2021-04-11-GHA-drat/2021-04-11-GHA-drat.html">Automating a tedious task</a>
+<a href="./posts/2021-04-11-GHA-drat/2021-04-11-GHA-drat.html" class="no-external">Automating a tedious task</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2021-04-11-GHA-drat/2021-04-11-GHA-drat.html">
+<a href="./posts/2021-04-11-GHA-drat/2021-04-11-GHA-drat.html" class="no-external">
 <div class="listing-date">
 Apr 11, 2021
 </div>
@@ -1138,18 +1212,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="23" data-categories="R,ChemoSpec,ChemoSpec2D,ChemoSpecUtils,readJDX" data-listing-date-sort="1616828400000" data-listing-file-modified-sort="1651199834429" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="122">
+<div class="quarto-post image-right" data-index="24" data-categories="R,ChemoSpec,ChemoSpec2D,ChemoSpecUtils,readJDX" data-listing-date-sort="1616828400000" data-listing-file-modified-sort="1651199834429" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="122">
 <div class="thumbnail">
-<p><a href="./posts/2021-03-27-Spec-Suite-update/2021-03-27-Spec-Suite-update.html"></a></p><a href="./posts/2021-03-27-Spec-Suite-update/2021-03-27-Spec-Suite-update.html">
+<p><a href="./posts/2021-03-27-Spec-Suite-update/2021-03-27-Spec-Suite-update.html" class="no-external"></a></p><a href="./posts/2021-03-27-Spec-Suite-update/2021-03-27-Spec-Suite-update.html" class="no-external">
 <p class="card-img-top"><img src="posts/2021-03-27-Spec-Suite-update/emAnnotated.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/2021-03-27-Spec-Suite-update/2021-03-27-Spec-Suite-update.html"></a></p>
+</a><p><a href="./posts/2021-03-27-Spec-Suite-update/2021-03-27-Spec-Suite-update.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2021-03-27-Spec-Suite-update/2021-03-27-Spec-Suite-update.html">Spectroscopy Suite Update</a>
+<a href="./posts/2021-03-27-Spec-Suite-update/2021-03-27-Spec-Suite-update.html" class="no-external">Spectroscopy Suite Update</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2021-03-27-Spec-Suite-update/2021-03-27-Spec-Suite-update.html"></a>
+<a href="./posts/2021-03-27-Spec-Suite-update/2021-03-27-Spec-Suite-update.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
@@ -1169,11 +1243,11 @@ readJDX
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2021-03-27-Spec-Suite-update/2021-03-27-Spec-Suite-update.html">Updates for the new version of R</a>
+<a href="./posts/2021-03-27-Spec-Suite-update/2021-03-27-Spec-Suite-update.html" class="no-external">Updates for the new version of R</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2021-03-27-Spec-Suite-update/2021-03-27-Spec-Suite-update.html">
+<a href="./posts/2021-03-27-Spec-Suite-update/2021-03-27-Spec-Suite-update.html" class="no-external">
 <div class="listing-date">
 Mar 27, 2021
 </div>
@@ -1183,18 +1257,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="24" data-categories="R,PLS,ChemoSpec" data-listing-date-sort="1612767600000" data-listing-file-modified-sort="1651199834405" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="812">
+<div class="quarto-post image-right" data-index="25" data-categories="R,PLS,ChemoSpec" data-listing-date-sort="1612767600000" data-listing-file-modified-sort="1651199834405" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="812">
 <div class="thumbnail">
-<p><a href="./posts/2021-02-08-PLS/2021-02-08-PLS.html"></a></p><a href="./posts/2021-02-08-PLS/2021-02-08-PLS.html">
-<p class="card-img-top"><img src="posts/2021-02-08-PLS/2021-02-08-PLS_files/figure-html/showSpectra-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/2021-02-08-PLS/2021-02-08-PLS.html"></a></p>
+<p><a href="./posts/2021-02-08-PLS/2021-02-08-PLS.html" class="no-external"></a></p><a href="./posts/2021-02-08-PLS/2021-02-08-PLS.html" class="no-external">
+<p class="card-img-top"><img data-src="posts/2021-02-08-PLS/2021-02-08-PLS_files/figure-html/showSpectra-1.png"  class="thumbnail-image card-img"/></p>
+</a><p><a href="./posts/2021-02-08-PLS/2021-02-08-PLS.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2021-02-08-PLS/2021-02-08-PLS.html">Interfacing ChemoSpec to PLS</a>
+<a href="./posts/2021-02-08-PLS/2021-02-08-PLS.html" class="no-external">Interfacing ChemoSpec to PLS</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2021-02-08-PLS/2021-02-08-PLS.html"></a>
+<a href="./posts/2021-02-08-PLS/2021-02-08-PLS.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
@@ -1208,11 +1282,11 @@ ChemoSpec
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2021-02-08-PLS/2021-02-08-PLS.html">It’s easy to connect the two packages</a>
+<a href="./posts/2021-02-08-PLS/2021-02-08-PLS.html" class="no-external">It’s easy to connect the two packages</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2021-02-08-PLS/2021-02-08-PLS.html">
+<a href="./posts/2021-02-08-PLS/2021-02-08-PLS.html" class="no-external">
 <div class="listing-date">
 Feb 8, 2021
 </div>
@@ -1222,18 +1296,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="25" data-categories="R,hyperSpec,GSOC,Guest Post" data-listing-date-sort="1599548400000" data-listing-file-modified-sort="1651199834403" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="424">
+<div class="quarto-post image-right" data-index="26" data-categories="R,hyperSpec,GSOC,Guest Post" data-listing-date-sort="1599548400000" data-listing-file-modified-sort="1651199834403" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="424">
 <div class="thumbnail">
-<p><a href="./posts/2020-09-08-GSOC-hyperSpec/2020-09-08-GSOC-hyperSpec.html"></a></p><a href="./posts/2020-09-08-GSOC-hyperSpec/2020-09-08-GSOC-hyperSpec.html">
+<p><a href="./posts/2020-09-08-GSOC-hyperSpec/2020-09-08-GSOC-hyperSpec.html" class="no-external"></a></p><a href="./posts/2020-09-08-GSOC-hyperSpec/2020-09-08-GSOC-hyperSpec.html" class="no-external">
 <p class="card-img-top"><img data-src="posts/2020-09-08-GSOC-hyperSpec/og-image.png" alt="GSOC_logo"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/2020-09-08-GSOC-hyperSpec/2020-09-08-GSOC-hyperSpec.html"></a></p>
+</a><p><a href="./posts/2020-09-08-GSOC-hyperSpec/2020-09-08-GSOC-hyperSpec.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2020-09-08-GSOC-hyperSpec/2020-09-08-GSOC-hyperSpec.html">GSOC Wrap Up</a>
+<a href="./posts/2020-09-08-GSOC-hyperSpec/2020-09-08-GSOC-hyperSpec.html" class="no-external">GSOC Wrap Up</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2020-09-08-GSOC-hyperSpec/2020-09-08-GSOC-hyperSpec.html"></a>
+<a href="./posts/2020-09-08-GSOC-hyperSpec/2020-09-08-GSOC-hyperSpec.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
@@ -1250,11 +1324,11 @@ Guest Post
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2020-09-08-GSOC-hyperSpec/2020-09-08-GSOC-hyperSpec.html">Guest post by Erick Oduniyi</a>
+<a href="./posts/2020-09-08-GSOC-hyperSpec/2020-09-08-GSOC-hyperSpec.html" class="no-external">Guest post by Erick Oduniyi</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2020-09-08-GSOC-hyperSpec/2020-09-08-GSOC-hyperSpec.html">
+<a href="./posts/2020-09-08-GSOC-hyperSpec/2020-09-08-GSOC-hyperSpec.html" class="no-external">
 <div class="listing-date">
 Sep 8, 2020
 </div>
@@ -1264,18 +1338,18 @@ Erick Oduniyi
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="26" data-categories="R,Simulated Data,SpecHelpers,Baseline" data-listing-date-sort="1593327600000" data-listing-file-modified-sort="1651199834378" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="9" data-listing-word-count-sort="1737">
+<div class="quarto-post image-right" data-index="27" data-categories="R,Simulated Data,SpecHelpers,Baseline" data-listing-date-sort="1593327600000" data-listing-file-modified-sort="1651199834378" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="9" data-listing-word-count-sort="1737">
 <div class="thumbnail">
-<p><a href="./posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1.html"></a></p><a href="./posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1.html">
+<p><a href="./posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1.html" class="no-external"></a></p><a href="./posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1.html" class="no-external">
 <p class="card-img-top"><img data-src="posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1_files/figure-html/widgetPlot-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1.html"></a></p>
+</a><p><a href="./posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1.html">Simulating Spectroscopic Data Part 1</a>
+<a href="./posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1.html" class="no-external">Simulating Spectroscopic Data Part 1</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1.html"></a>
+<a href="./posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
@@ -1292,11 +1366,11 @@ Baseline
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1.html">Faking it…</a>
+<a href="./posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1.html" class="no-external">Faking it…</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1.html">
+<a href="./posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1.html" class="no-external">
 <div class="listing-date">
 Jun 28, 2020
 </div>
@@ -1306,18 +1380,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="27" data-categories="R,hyperSpec,GSOC" data-listing-date-sort="1588834800000" data-listing-file-modified-sort="1651199834377" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="486">
+<div class="quarto-post image-right" data-index="28" data-categories="R,hyperSpec,GSOC" data-listing-date-sort="1588834800000" data-listing-file-modified-sort="1651199834377" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="486">
 <div class="thumbnail">
-<p><a href="./posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html"></a></p><a href="./posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html">
+<p><a href="./posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html" class="no-external"></a></p><a href="./posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html" class="no-external">
 <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html"></a></p>
+</a><p><a href="./posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html">Fortifying hyperSpec: Getting Ready for GSOC</a>
+<a href="./posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html" class="no-external">Fortifying hyperSpec: Getting Ready for GSOC</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html"></a>
+<a href="./posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
@@ -1331,11 +1405,11 @@ GSOC
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html">Re-factoring hyperSpec</a>
+<a href="./posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html" class="no-external">Re-factoring hyperSpec</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html">
+<a href="./posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html" class="no-external">
 <div class="listing-date">
 May 7, 2020
 </div>
@@ -1345,18 +1419,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="28" data-categories="R,ChemoSpecUtils" data-listing-date-sort="1587970800000" data-listing-file-modified-sort="1651199834376" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="178">
+<div class="quarto-post image-right" data-index="29" data-categories="R,ChemoSpecUtils" data-listing-date-sort="1587970800000" data-listing-file-modified-sort="1651199834376" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="178">
 <div class="thumbnail">
-<p><a href="./posts/2020-04-27-CSU-update/2020-04-27-CSU-update.html"></a></p><a href="./posts/2020-04-27-CSU-update/2020-04-27-CSU-update.html">
+<p><a href="./posts/2020-04-27-CSU-update/2020-04-27-CSU-update.html" class="no-external"></a></p><a href="./posts/2020-04-27-CSU-update/2020-04-27-CSU-update.html" class="no-external">
 <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./posts/2020-04-27-CSU-update/2020-04-27-CSU-update.html"></a></p>
+</a><p><a href="./posts/2020-04-27-CSU-update/2020-04-27-CSU-update.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2020-04-27-CSU-update/2020-04-27-CSU-update.html">ChemoSpecUtils Update</a>
+<a href="./posts/2020-04-27-CSU-update/2020-04-27-CSU-update.html" class="no-external">ChemoSpecUtils Update</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2020-04-27-CSU-update/2020-04-27-CSU-update.html"></a>
+<a href="./posts/2020-04-27-CSU-update/2020-04-27-CSU-update.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
@@ -1367,11 +1441,11 @@ ChemoSpecUtils
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2020-04-27-CSU-update/2020-04-27-CSU-update.html">Improvments to ChemoSpecUtils</a>
+<a href="./posts/2020-04-27-CSU-update/2020-04-27-CSU-update.html" class="no-external">Improvments to ChemoSpecUtils</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2020-04-27-CSU-update/2020-04-27-CSU-update.html">
+<a href="./posts/2020-04-27-CSU-update/2020-04-27-CSU-update.html" class="no-external">
 <div class="listing-date">
 Apr 27, 2020
 </div>
@@ -1381,18 +1455,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="29" data-categories="R,Heatmap,Seriation,ChemoSpec" data-listing-date-sort="1587798000000" data-listing-file-modified-sort="1651199834349" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1157">
+<div class="quarto-post image-right" data-index="30" data-categories="R,Heatmap,Seriation,ChemoSpec" data-listing-date-sort="1587798000000" data-listing-file-modified-sort="1651199834349" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1157">
 <div class="thumbnail">
-<p><a href="./posts/2020-04-25-Heatmaps/2020-04-25-Heatmaps.html"></a></p><a href="./posts/2020-04-25-Heatmaps/2020-04-25-Heatmaps.html">
+<p><a href="./posts/2020-04-25-Heatmaps/2020-04-25-Heatmaps.html" class="no-external"></a></p><a href="./posts/2020-04-25-Heatmaps/2020-04-25-Heatmaps.html" class="no-external">
 <p class="card-img-top"><img data-src="posts/2020-04-25-Heatmaps/2020-04-25-Heatmaps_files/figure-html/showSpectra-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/2020-04-25-Heatmaps/2020-04-25-Heatmaps.html"></a></p>
+</a><p><a href="./posts/2020-04-25-Heatmaps/2020-04-25-Heatmaps.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2020-04-25-Heatmaps/2020-04-25-Heatmaps.html">Spectral Heatmaps</a>
+<a href="./posts/2020-04-25-Heatmaps/2020-04-25-Heatmaps.html" class="no-external">Spectral Heatmaps</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2020-04-25-Heatmaps/2020-04-25-Heatmaps.html"></a>
+<a href="./posts/2020-04-25-Heatmaps/2020-04-25-Heatmaps.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
@@ -1409,11 +1483,11 @@ ChemoSpec
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2020-04-25-Heatmaps/2020-04-25-Heatmaps.html">Insights into how samples and frequencies affect clustering</a>
+<a href="./posts/2020-04-25-Heatmaps/2020-04-25-Heatmaps.html" class="no-external">Insights into how samples and frequencies affect clustering</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2020-04-25-Heatmaps/2020-04-25-Heatmaps.html">
+<a href="./posts/2020-04-25-Heatmaps/2020-04-25-Heatmaps.html" class="no-external">
 <div class="listing-date">
 Apr 25, 2020
 </div>
@@ -1423,18 +1497,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="30" data-categories="Data Formats,JCAMP-DX,ASCII" data-listing-date-sort="1584774000000" data-listing-file-modified-sort="1651199834344" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1311">
+<div class="quarto-post image-right" data-index="31" data-categories="Data Formats,JCAMP-DX,ASCII" data-listing-date-sort="1584774000000" data-listing-file-modified-sort="1651199834344" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1311">
 <div class="thumbnail">
-<p><a href="./posts/2020-03-21-Data-Formats-Pt1/2020-03-21-Data-Formats-Pt1.html"></a></p><a href="./posts/2020-03-21-Data-Formats-Pt1/2020-03-21-Data-Formats-Pt1.html">
+<p><a href="./posts/2020-03-21-Data-Formats-Pt1/2020-03-21-Data-Formats-Pt1.html" class="no-external"></a></p><a href="./posts/2020-03-21-Data-Formats-Pt1/2020-03-21-Data-Formats-Pt1.html" class="no-external">
 <p class="card-img-top"><img data-src="posts/2020-03-21-Data-Formats-Pt1/P11_Sample_DX.png" alt="Sample JCAMP-DX File"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/2020-03-21-Data-Formats-Pt1/2020-03-21-Data-Formats-Pt1.html"></a></p>
+</a><p><a href="./posts/2020-03-21-Data-Formats-Pt1/2020-03-21-Data-Formats-Pt1.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2020-03-21-Data-Formats-Pt1/2020-03-21-Data-Formats-Pt1.html">Data Sharing in the Age of Coronavirus, Part 1</a>
+<a href="./posts/2020-03-21-Data-Formats-Pt1/2020-03-21-Data-Formats-Pt1.html" class="no-external">Data Sharing in the Age of Coronavirus, Part 1</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2020-03-21-Data-Formats-Pt1/2020-03-21-Data-Formats-Pt1.html"></a>
+<a href="./posts/2020-03-21-Data-Formats-Pt1/2020-03-21-Data-Formats-Pt1.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Data Formats'); return false;">
@@ -1448,11 +1522,11 @@ ASCII
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2020-03-21-Data-Formats-Pt1/2020-03-21-Data-Formats-Pt1.html">ASCII &amp; JCAMP-DX formats</a>
+<a href="./posts/2020-03-21-Data-Formats-Pt1/2020-03-21-Data-Formats-Pt1.html" class="no-external">ASCII &amp; JCAMP-DX formats</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2020-03-21-Data-Formats-Pt1/2020-03-21-Data-Formats-Pt1.html">
+<a href="./posts/2020-03-21-Data-Formats-Pt1/2020-03-21-Data-Formats-Pt1.html" class="no-external">
 <div class="listing-date">
 Mar 21, 2020
 </div>
@@ -1462,18 +1536,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="31" data-categories="R,ChemoSpec2D,Alignment,NMR" data-listing-date-sort="1583305200000" data-listing-file-modified-sort="1651199834322" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="804">
+<div class="quarto-post image-right" data-index="32" data-categories="R,ChemoSpec2D,Alignment,NMR" data-listing-date-sort="1583305200000" data-listing-file-modified-sort="1651199834322" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="804">
 <div class="thumbnail">
-<p><a href="./posts/2020-03-04-NMR-Align-Pt3/2020-03-04-NMR-Align-Pt3.html"></a></p><a href="./posts/2020-03-04-NMR-Align-Pt3/2020-03-04-NMR-Align-Pt3.html">
+<p><a href="./posts/2020-03-04-NMR-Align-Pt3/2020-03-04-NMR-Align-Pt3.html" class="no-external"></a></p><a href="./posts/2020-03-04-NMR-Align-Pt3/2020-03-04-NMR-Align-Pt3.html" class="no-external">
 <p class="card-img-top"><img data-src="posts/2020-03-04-NMR-Align-Pt3/P10_Dendrogram.png" alt="X Space"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/2020-03-04-NMR-Align-Pt3/2020-03-04-NMR-Align-Pt3.html"></a></p>
+</a><p><a href="./posts/2020-03-04-NMR-Align-Pt3/2020-03-04-NMR-Align-Pt3.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2020-03-04-NMR-Align-Pt3/2020-03-04-NMR-Align-Pt3.html">Aligning 2D NMR Spectra Part 3</a>
+<a href="./posts/2020-03-04-NMR-Align-Pt3/2020-03-04-NMR-Align-Pt3.html" class="no-external">Aligning 2D NMR Spectra Part 3</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2020-03-04-NMR-Align-Pt3/2020-03-04-NMR-Align-Pt3.html"></a>
+<a href="./posts/2020-03-04-NMR-Align-Pt3/2020-03-04-NMR-Align-Pt3.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
@@ -1490,11 +1564,11 @@ NMR
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2020-03-04-NMR-Align-Pt3/2020-03-04-NMR-Align-Pt3.html">Putting it all together</a>
+<a href="./posts/2020-03-04-NMR-Align-Pt3/2020-03-04-NMR-Align-Pt3.html" class="no-external">Putting it all together</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2020-03-04-NMR-Align-Pt3/2020-03-04-NMR-Align-Pt3.html">
+<a href="./posts/2020-03-04-NMR-Align-Pt3/2020-03-04-NMR-Align-Pt3.html" class="no-external">
 <div class="listing-date">
 Mar 4, 2020
 </div>
@@ -1504,18 +1578,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="32" data-categories="R,ChemoSpec2D,Alignment,NMR" data-listing-date-sort="1583132400000" data-listing-file-modified-sort="1651199834320" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="970">
+<div class="quarto-post image-right" data-index="33" data-categories="R,ChemoSpec2D,Alignment,NMR" data-listing-date-sort="1583132400000" data-listing-file-modified-sort="1651199834320" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="970">
 <div class="thumbnail">
-<p><a href="./posts/2020-03-02-NMR-Align-Pt2/2020-03-02-NMR-Align-Pt2.html"></a></p><a href="./posts/2020-03-02-NMR-Align-Pt2/2020-03-02-NMR-Align-Pt2.html">
+<p><a href="./posts/2020-03-02-NMR-Align-Pt2/2020-03-02-NMR-Align-Pt2.html" class="no-external"></a></p><a href="./posts/2020-03-02-NMR-Align-Pt2/2020-03-02-NMR-Align-Pt2.html" class="no-external">
 <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./posts/2020-03-02-NMR-Align-Pt2/2020-03-02-NMR-Align-Pt2.html"></a></p>
+</a><p><a href="./posts/2020-03-02-NMR-Align-Pt2/2020-03-02-NMR-Align-Pt2.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2020-03-02-NMR-Align-Pt2/2020-03-02-NMR-Align-Pt2.html">Aligning 2D NMR Spectra Part 2</a>
+<a href="./posts/2020-03-02-NMR-Align-Pt2/2020-03-02-NMR-Align-Pt2.html" class="no-external">Aligning 2D NMR Spectra Part 2</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2020-03-02-NMR-Align-Pt2/2020-03-02-NMR-Align-Pt2.html"></a>
+<a href="./posts/2020-03-02-NMR-Align-Pt2/2020-03-02-NMR-Align-Pt2.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
@@ -1532,11 +1606,11 @@ NMR
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2020-03-02-NMR-Align-Pt2/2020-03-02-NMR-Align-Pt2.html">Implementing the HATS-PR algorithm</a>
+<a href="./posts/2020-03-02-NMR-Align-Pt2/2020-03-02-NMR-Align-Pt2.html" class="no-external">Implementing the HATS-PR algorithm</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2020-03-02-NMR-Align-Pt2/2020-03-02-NMR-Align-Pt2.html">
+<a href="./posts/2020-03-02-NMR-Align-Pt2/2020-03-02-NMR-Align-Pt2.html" class="no-external">
 <div class="listing-date">
 Mar 2, 2020
 </div>
@@ -1546,18 +1620,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="33" data-categories="R,ChemoSpec,Alignment,NMR" data-listing-date-sort="1582182000000" data-listing-file-modified-sort="1651199834316" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="730">
+<div class="quarto-post image-right" data-index="34" data-categories="R,ChemoSpec,Alignment,NMR" data-listing-date-sort="1582182000000" data-listing-file-modified-sort="1651199834316" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="730">
 <div class="thumbnail">
-<p><a href="./posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1.html"></a></p><a href="./posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1.html">
+<p><a href="./posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1.html" class="no-external"></a></p><a href="./posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1.html" class="no-external">
 <p class="card-img-top"><img data-src="posts/2020-02-20-NMR-Align-Pt1/P8_Manual_Alignment.png" alt="Manual Alignment"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1.html"></a></p>
+</a><p><a href="./posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1.html">Aligning 2D NMR Spectra Part 1</a>
+<a href="./posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1.html" class="no-external">Aligning 2D NMR Spectra Part 1</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1.html"></a>
+<a href="./posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
@@ -1574,11 +1648,11 @@ NMR
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1.html">Quantifying the mis-alignment</a>
+<a href="./posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1.html" class="no-external">Quantifying the mis-alignment</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1.html">
+<a href="./posts/2020-02-20-NMR-Align-Pt1/2020-02-20-NMR-Align-Pt1.html" class="no-external">
 <div class="listing-date">
 Feb 20, 2020
 </div>
@@ -1588,18 +1662,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="34" data-categories="R,ChemoSpec2D" data-listing-date-sort="1582095600000" data-listing-file-modified-sort="1651199834315" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="386">
+<div class="quarto-post image-right" data-index="35" data-categories="R,ChemoSpec2D" data-listing-date-sort="1582095600000" data-listing-file-modified-sort="1651199834315" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="386">
 <div class="thumbnail">
-<p><a href="./posts/2020-02-19-CS2D-update/2020-02-19-CS2D-update.html"></a></p><a href="./posts/2020-02-19-CS2D-update/2020-02-19-CS2D-update.html">
+<p><a href="./posts/2020-02-19-CS2D-update/2020-02-19-CS2D-update.html" class="no-external"></a></p><a href="./posts/2020-02-19-CS2D-update/2020-02-19-CS2D-update.html" class="no-external">
 <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./posts/2020-02-19-CS2D-update/2020-02-19-CS2D-update.html"></a></p>
+</a><p><a href="./posts/2020-02-19-CS2D-update/2020-02-19-CS2D-update.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2020-02-19-CS2D-update/2020-02-19-CS2D-update.html">ChemoSpec2D Update</a>
+<a href="./posts/2020-02-19-CS2D-update/2020-02-19-CS2D-update.html" class="no-external">ChemoSpec2D Update</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2020-02-19-CS2D-update/2020-02-19-CS2D-update.html"></a>
+<a href="./posts/2020-02-19-CS2D-update/2020-02-19-CS2D-update.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
@@ -1610,11 +1684,11 @@ ChemoSpec2D
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2020-02-19-CS2D-update/2020-02-19-CS2D-update.html">Improvements to ChemoSpec2D</a>
+<a href="./posts/2020-02-19-CS2D-update/2020-02-19-CS2D-update.html" class="no-external">Improvements to ChemoSpec2D</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2020-02-19-CS2D-update/2020-02-19-CS2D-update.html">
+<a href="./posts/2020-02-19-CS2D-update/2020-02-19-CS2D-update.html" class="no-external">
 <div class="listing-date">
 Feb 19, 2020
 </div>
@@ -1624,18 +1698,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="35" data-categories="R,Github" data-listing-date-sort="1579935600000" data-listing-file-modified-sort="1651199834313" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="769">
+<div class="quarto-post image-right" data-index="36" data-categories="R,Github" data-listing-date-sort="1579935600000" data-listing-file-modified-sort="1651199834313" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="769">
 <div class="thumbnail">
-<p><a href="./posts/2020-01-25-GH-Topics/2020-01-25-GH-Topics.html"></a></p><a href="./posts/2020-01-25-GH-Topics/2020-01-25-GH-Topics.html">
+<p><a href="./posts/2020-01-25-GH-Topics/2020-01-25-GH-Topics.html" class="no-external"></a></p><a href="./posts/2020-01-25-GH-Topics/2020-01-25-GH-Topics.html" class="no-external">
 <p class="card-img-top"><img data-src="posts/2020-01-25-GH-Topics/P6_Repo_Topics.png" alt="Repo Topics"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/2020-01-25-GH-Topics/2020-01-25-GH-Topics.html"></a></p>
+</a><p><a href="./posts/2020-01-25-GH-Topics/2020-01-25-GH-Topics.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2020-01-25-GH-Topics/2020-01-25-GH-Topics.html">Exploring Github Topics</a>
+<a href="./posts/2020-01-25-GH-Topics/2020-01-25-GH-Topics.html" class="no-external">Exploring Github Topics</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2020-01-25-GH-Topics/2020-01-25-GH-Topics.html"></a>
+<a href="./posts/2020-01-25-GH-Topics/2020-01-25-GH-Topics.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
@@ -1646,11 +1720,11 @@ Github
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2020-01-25-GH-Topics/2020-01-25-GH-Topics.html">Scrape Github for Repos of Interest</a>
+<a href="./posts/2020-01-25-GH-Topics/2020-01-25-GH-Topics.html" class="no-external">Scrape Github for Repos of Interest</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2020-01-25-GH-Topics/2020-01-25-GH-Topics.html">
+<a href="./posts/2020-01-25-GH-Topics/2020-01-25-GH-Topics.html" class="no-external">
 <div class="listing-date">
 Jan 25, 2020
 </div>
@@ -1660,18 +1734,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="36" data-categories="R,ChemoSpec" data-listing-date-sort="1579849200000" data-listing-file-modified-sort="1651199834312" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="78">
+<div class="quarto-post image-right" data-index="37" data-categories="R,ChemoSpec" data-listing-date-sort="1579849200000" data-listing-file-modified-sort="1651199834312" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="78">
 <div class="thumbnail">
-<p><a href="./posts/2020-01-24-CS-update/2020-01-24-CS-update.html"></a></p><a href="./posts/2020-01-24-CS-update/2020-01-24-CS-update.html">
+<p><a href="./posts/2020-01-24-CS-update/2020-01-24-CS-update.html" class="no-external"></a></p><a href="./posts/2020-01-24-CS-update/2020-01-24-CS-update.html" class="no-external">
 <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./posts/2020-01-24-CS-update/2020-01-24-CS-update.html"></a></p>
+</a><p><a href="./posts/2020-01-24-CS-update/2020-01-24-CS-update.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2020-01-24-CS-update/2020-01-24-CS-update.html">ChemoSpec Update</a>
+<a href="./posts/2020-01-24-CS-update/2020-01-24-CS-update.html" class="no-external">ChemoSpec Update</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2020-01-24-CS-update/2020-01-24-CS-update.html"></a>
+<a href="./posts/2020-01-24-CS-update/2020-01-24-CS-update.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
@@ -1682,11 +1756,11 @@ ChemoSpec
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2020-01-24-CS-update/2020-01-24-CS-update.html">Improvements to ChemoSpec</a>
+<a href="./posts/2020-01-24-CS-update/2020-01-24-CS-update.html" class="no-external">Improvements to ChemoSpec</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2020-01-24-CS-update/2020-01-24-CS-update.html">
+<a href="./posts/2020-01-24-CS-update/2020-01-24-CS-update.html" class="no-external">
 <div class="listing-date">
 Jan 24, 2020
 </div>
@@ -1696,18 +1770,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="37" data-categories="R,Python" data-listing-date-sort="1579676400000" data-listing-file-modified-sort="1651199834311" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="167">
+<div class="quarto-post image-right" data-index="38" data-categories="R,Python" data-listing-date-sort="1579676400000" data-listing-file-modified-sort="1651199834311" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="167">
 <div class="thumbnail">
-<p><a href="./posts/2020-01-22-F4S-update/2020-01-22-F4S-update.html"></a></p><a href="./posts/2020-01-22-F4S-update/2020-01-22-F4S-update.html">
+<p><a href="./posts/2020-01-22-F4S-update/2020-01-22-F4S-update.html" class="no-external"></a></p><a href="./posts/2020-01-22-F4S-update/2020-01-22-F4S-update.html" class="no-external">
 <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./posts/2020-01-22-F4S-update/2020-01-22-F4S-update.html"></a></p>
+</a><p><a href="./posts/2020-01-22-F4S-update/2020-01-22-F4S-update.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2020-01-22-F4S-update/2020-01-22-F4S-update.html">FOSS for Spectroscopy Update</a>
+<a href="./posts/2020-01-22-F4S-update/2020-01-22-F4S-update.html" class="no-external">FOSS for Spectroscopy Update</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2020-01-22-F4S-update/2020-01-22-F4S-update.html"></a>
+<a href="./posts/2020-01-22-F4S-update/2020-01-22-F4S-update.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
@@ -1718,11 +1792,11 @@ Python
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2020-01-22-F4S-update/2020-01-22-F4S-update.html">Improvements to FOSS for Spectroscopy</a>
+<a href="./posts/2020-01-22-F4S-update/2020-01-22-F4S-update.html" class="no-external">Improvements to FOSS for Spectroscopy</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2020-01-22-F4S-update/2020-01-22-F4S-update.html">
+<a href="./posts/2020-01-22-F4S-update/2020-01-22-F4S-update.html" class="no-external">
 <div class="listing-date">
 Jan 22, 2020
 </div>
@@ -1732,18 +1806,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="38" data-categories="R,ChemoSpecUtils" data-listing-date-sort="1579676400000" data-listing-file-modified-sort="1651199834286" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="481">
+<div class="quarto-post image-right" data-index="39" data-categories="R,ChemoSpecUtils" data-listing-date-sort="1579676400000" data-listing-file-modified-sort="1651199834286" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="481">
 <div class="thumbnail">
-<p><a href="./posts/2020-01-22-CSU-update/2020-01-22-CSU-update.html"></a></p><a href="./posts/2020-01-22-CSU-update/2020-01-22-CSU-update.html">
+<p><a href="./posts/2020-01-22-CSU-update/2020-01-22-CSU-update.html" class="no-external"></a></p><a href="./posts/2020-01-22-CSU-update/2020-01-22-CSU-update.html" class="no-external">
 <p class="card-img-top"><img data-src="posts/2020-01-22-CSU-update/2020-01-22-CSU-update_files/figure-html/colors-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/2020-01-22-CSU-update/2020-01-22-CSU-update.html"></a></p>
+</a><p><a href="./posts/2020-01-22-CSU-update/2020-01-22-CSU-update.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2020-01-22-CSU-update/2020-01-22-CSU-update.html">ChemoSpecUtils Update</a>
+<a href="./posts/2020-01-22-CSU-update/2020-01-22-CSU-update.html" class="no-external">ChemoSpecUtils Update</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2020-01-22-CSU-update/2020-01-22-CSU-update.html"></a>
+<a href="./posts/2020-01-22-CSU-update/2020-01-22-CSU-update.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
@@ -1754,11 +1828,11 @@ ChemoSpecUtils
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2020-01-22-CSU-update/2020-01-22-CSU-update.html">New version of ChemoSpecUtils</a>
+<a href="./posts/2020-01-22-CSU-update/2020-01-22-CSU-update.html" class="no-external">New version of ChemoSpecUtils</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2020-01-22-CSU-update/2020-01-22-CSU-update.html">
+<a href="./posts/2020-01-22-CSU-update/2020-01-22-CSU-update.html" class="no-external">
 <div class="listing-date">
 Jan 22, 2020
 </div>
@@ -1768,18 +1842,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="39" data-categories="R,readJDX,Data Formats" data-listing-date-sort="1577948400000" data-listing-file-modified-sort="1651199834285" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="125">
+<div class="quarto-post image-right" data-index="40" data-categories="R,readJDX,Data Formats" data-listing-date-sort="1577948400000" data-listing-file-modified-sort="1651199834285" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="125">
 <div class="thumbnail">
-<p><a href="./posts/2020-01-02-readJDX-update/2020-01-02-readJDX-update.html"></a></p><a href="./posts/2020-01-02-readJDX-update/2020-01-02-readJDX-update.html">
+<p><a href="./posts/2020-01-02-readJDX-update/2020-01-02-readJDX-update.html" class="no-external"></a></p><a href="./posts/2020-01-02-readJDX-update/2020-01-02-readJDX-update.html" class="no-external">
 <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./posts/2020-01-02-readJDX-update/2020-01-02-readJDX-update.html"></a></p>
+</a><p><a href="./posts/2020-01-02-readJDX-update/2020-01-02-readJDX-update.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2020-01-02-readJDX-update/2020-01-02-readJDX-update.html">readJDX Overhaul</a>
+<a href="./posts/2020-01-02-readJDX-update/2020-01-02-readJDX-update.html" class="no-external">readJDX Overhaul</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2020-01-02-readJDX-update/2020-01-02-readJDX-update.html"></a>
+<a href="./posts/2020-01-02-readJDX-update/2020-01-02-readJDX-update.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
@@ -1793,11 +1867,11 @@ Data Formats
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2020-01-02-readJDX-update/2020-01-02-readJDX-update.html">Improvements to readJDX</a>
+<a href="./posts/2020-01-02-readJDX-update/2020-01-02-readJDX-update.html" class="no-external">Improvements to readJDX</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2020-01-02-readJDX-update/2020-01-02-readJDX-update.html">
+<a href="./posts/2020-01-02-readJDX-update/2020-01-02-readJDX-update.html" class="no-external">
 <div class="listing-date">
 Jan 2, 2020
 </div>
@@ -1807,18 +1881,18 @@ Bryan Hanson
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="40" data-categories="R,Python" data-listing-date-sort="1577862000000" data-listing-file-modified-sort="1651199834285" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="173">
+<div class="quarto-post image-right" data-index="41" data-categories="R,Python" data-listing-date-sort="1577862000000" data-listing-file-modified-sort="1651199834285" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="173">
 <div class="thumbnail">
-<p><a href="./posts/2020-01-01-Intro-F4S/2021-01-01-Intro-F4S.html"></a></p><a href="./posts/2020-01-01-Intro-F4S/2021-01-01-Intro-F4S.html">
+<p><a href="./posts/2020-01-01-Intro-F4S/2021-01-01-Intro-F4S.html" class="no-external"></a></p><a href="./posts/2020-01-01-Intro-F4S/2021-01-01-Intro-F4S.html" class="no-external">
 <div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./posts/2020-01-01-Intro-F4S/2021-01-01-Intro-F4S.html"></a></p>
+</a><p><a href="./posts/2020-01-01-Intro-F4S/2021-01-01-Intro-F4S.html" class="no-external"></a></p>
 </div>
 <div class="body">
 <h3 class="no-anchor listing-title">
-<a href="./posts/2020-01-01-Intro-F4S/2021-01-01-Intro-F4S.html">FOSS for Spectroscopy</a>
+<a href="./posts/2020-01-01-Intro-F4S/2021-01-01-Intro-F4S.html" class="no-external">FOSS for Spectroscopy</a>
 </h3>
 <div class="listing-subtitle">
-<a href="./posts/2020-01-01-Intro-F4S/2021-01-01-Intro-F4S.html"></a>
+<a href="./posts/2020-01-01-Intro-F4S/2021-01-01-Intro-F4S.html" class="no-external"></a>
 </div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
@@ -1829,11 +1903,11 @@ Python
 </div>
 </div>
 <div class="listing-description">
-<a href="./posts/2020-01-01-Intro-F4S/2021-01-01-Intro-F4S.html">A Collection of Free and Open Source Spectroscopy Resources</a>
+<a href="./posts/2020-01-01-Intro-F4S/2021-01-01-Intro-F4S.html" class="no-external">A Collection of Free and Open Source Spectroscopy Resources</a>
 </div>
 </div>
 <div class="metadata">
-<a href="./posts/2020-01-01-Intro-F4S/2021-01-01-Intro-F4S.html">
+<a href="./posts/2020-01-01-Intro-F4S/2021-01-01-Intro-F4S.html" class="no-external">
 <div class="listing-date">
 Jan 1, 2020
 </div>
@@ -1979,38 +2053,28 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       }
     }
     stripColumnClz(note)
-    const typesetMath = (el) => {
-      if (window.MathJax) {
-        // MathJax Typeset
-        window.MathJax.typeset([el]);
-      } else if (window.katex) {
-        // KaTeX Render
-        var mathElements = el.getElementsByClassName("math");
-        var macros = [];
-        for (var i = 0; i < mathElements.length; i++) {
-          var texText = mathElements[i].firstChild;
-          if (mathElements[i].tagName == "SPAN") {
-            window.katex.render(texText.data, mathElements[i], {
-              displayMode: mathElements[i].classList.contains('display'),
-              throwOnError: false,
-              macros: macros,
-              fleqn: false
-            });
-          }
-        }
-      }
-    }
     if (id === null || id.startsWith('sec-')) {
       // Special case sections, only their first couple elements
       const container = document.createElement("div");
       if (note.children && note.children.length > 2) {
-        for (let i = 0; i < 2; i++) {
-          container.appendChild(note.children[i].cloneNode(true));
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
         }
-        typesetMath(container);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
         return container.innerHTML
       } else {
-        typesetMath(note);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
         return note.innerHTML;
       }
     } else {
@@ -2019,7 +2083,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (anchorLink) {
         anchorLink.remove();
       }
-      typesetMath(note);
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
       return note.innerHTML;
     }
   }

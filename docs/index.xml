@@ -10,7 +10,307 @@
 <atom:link href="http://chemospec.org/index.xml" rel="self" type="application/rss+xml"/>
 <description>Applying chemometrics to spectroscopy using R</description>
 <generator>quarto-99.9.9</generator>
-<lastBuildDate>Tue, 24 Oct 2023 07:00:00 GMT</lastBuildDate>
+<lastBuildDate>Mon, 01 Jan 2024 07:00:00 GMT</lastBuildDate>
+<item>
+  <title>Building an EF-NMR Part 2</title>
+  <dc:creator>Bryan Hanson</dc:creator>
+  <link>http://chemospec.org/posts/2024-01-01-EF-NMR-Build-2/EF-NMR-Build-2.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p><a href="https://chemospec.org/posts/2023-10-24-EF-NMR-Build-1/EF-NMR-Build-1.html">Part 1</a></p>
+<p>With the polarization coil completed, I decided to take a stab at the software to control the instrument. I felt like I needed to get a feel for how to work with the Arduino so I would understand what kinds of signals I could send to the electronics. In turn that would (ideally) make it easier to understand how the circuits work.</p>
+<p>I started by studying Michal’s software (available <a href="https://phas.ubc.ca/~michal/Earthsfield/">here</a>). Michal’s software is designed for use with students in a lab course and includes a Python GUI, the actual Arduino control software, and several utilities. One of the utilities is a separate pulse programming module that produces a file accessed by the GUI. At least that appears to be the big picture. Inspection of the Arduino software made it clear that I had, and have, a lot to learn. Arduino code is written in <code>C++</code>, which encompases the earlier language <code>C</code>, which some have described as “dressed up assembly language”. Oh boy…</p>
+<p>After studying some basic Arduino tutorials, I decided the best way to learn was to write my own software, starting with a simple case of an NMR-like interface that would turn Arduino pins on and off to control the various pieces of hardware I will eventually build. Turning pins on and off is really simple on the Arduino, that’s not the challenge. For this instrument, the challenge is that there are several events that occur one after the other on very short time scales. Roughly, one must turn the polarization coil on, then off, then turn on the transmitter and turn it off, and then turn on the receiver and listen. Due to the realities of electronics, there need to be short delays between some of these events so that the electronic signals can “warm up”, or “cool down”. To make this initial version manageable, I decided to not worry about the time scale in detail for now, and focus on building an extensible framework that takes NMR-like inputs to turn things on and off.</p>
+<section id="prototype-in-r" class="level2">
+<h2 class="anchored" data-anchor-id="prototype-in-r">Prototype in R</h2>
+<p>Since R is my computational lingua franca, I decided to think about how I would set up a series of events in <code>R</code> and calculate their on/off times given the duration (or length) of each event. This was quite straightforward; if you know the duration of each event then the on/off times can be computed with a cumulative sum process.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#' </span></span>
+<span id="cb1-2"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#' Convert a Named Vector Giving Event Durations to a Data Frame</span></span>
+<span id="cb1-3"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#' </span></span>
+<span id="cb1-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#' @param event_lengths Numeric.  A named numeric vector giving the durations (lengths)</span></span>
+<span id="cb1-5"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#'        of a series of events which occur in the given order.</span></span>
+<span id="cb1-6"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#' @return A data frame containing the on and off times for each event.</span></span>
+<span id="cb1-7"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#'</span></span>
+<span id="cb1-8">event_length_to_event_on_off <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(event_lengths) {</span>
+<span id="cb1-9">  off <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">cumsum</span>(event_lengths)</span>
+<span id="cb1-10">  on <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, off[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(off) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)])</span>
+<span id="cb1-11">  DF <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">event =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">names</span>(event_lengths), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">on =</span> on, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">off =</span> off)</span>
+<span id="cb1-12">  DF</span>
+<span id="cb1-13">}</span></code></pre></div>
+</div>
+<p>And then I needed a function to visualize the result, which is basically a sort of Gantt chart where the events never overlap.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#'</span></span>
+<span id="cb2-2"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#' Create a Gantt Chart of NMR Event Timing</span></span>
+<span id="cb2-3"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#'</span></span>
+<span id="cb2-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#' @param my_events Data frame.</span></span>
+<span id="cb2-5"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#' @return `ggplot2` object.</span></span>
+<span id="cb2-6"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#'</span></span>
+<span id="cb2-7">events <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">function</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">my_events =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NULL</span>) {</span>
+<span id="cb2-8">  p <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(my_events, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> on, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xend =</span> off, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> event, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">yend =</span> event))</span>
+<span id="cb2-9">  p <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> p <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_segment</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">linewidth =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_bw</span>()</span>
+<span id="cb2-10">  p <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> p <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"NMR Event Timing"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"time, microseconds"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">""</span>)</span>
+<span id="cb2-11">  p <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> p <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_y_discrete</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">limits =</span> my_events<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>event)</span>
+<span id="cb2-12">  p</span>
+<span id="cb2-13">}</span></code></pre></div>
+</div>
+<p>Figure&nbsp;1 shows these functions in action. So far, so good.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1">f <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e6</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># conversion factor, seconds to microseconds</span></span>
+<span id="cb3-2">ev <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> f, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> f, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> f, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> f )</span>
+<span id="cb3-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">names</span>(ev) <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"pol_coil"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"del_pt"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"transmitter"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"del_tr"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"receiver"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"relax_delay"</span>)</span>
+<span id="cb3-4">p1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">events</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">event_length_to_event_on_off</span>(ev))</span>
+<span id="cb3-5">p1</span></code></pre></div>
+<div class="cell-output-display">
+<div id="fig-timings" class="quarto-figure quarto-figure-center quarto-float anchored" width="672">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-timings-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="http://chemospec.org/posts/2024-01-01-EF-NMR-Build-2/EF-NMR-Build-2_files/figure-html/fig-timings-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-timings-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Event timings. The short delays are too short to be visible.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="implementation-in-c" class="level2">
+<h2 class="anchored" data-anchor-id="implementation-in-c">Implementation in C</h2>
+<p>Next, I decided to write something more or less equivalent in <code>C</code>. This meant learning <code>C</code>. Suffice it to say, <code>C</code> provides none of the niceties of <code>R</code>. There are few atomic types in <code>C</code>, and in particular strings and arrays are not native entities. Instead, one must think in terms of pointers to particular memory addresses that hold the strings or arrays. So the entire paradigm is different, and requires thinking about solving problems in new ways. Overall, this has been a good experience. After a lot of struggle, I managed to write functions that carry out the equivalent of the <code>R</code> functions above, except instead of graphical output there is tabular output (there really is no graphical output in the usual sense for Arduino so we need to have other ways of verifying our results). I won’t give details of this work here, as the next section reviews how it was implemented for Arduino.</p>
+</section>
+<section id="implementation-for-arduino" class="level2">
+<h2 class="anchored" data-anchor-id="implementation-for-arduino">Implementation for Arduino</h2>
+<p>The version of event timing in <code>C</code> was adapted to the Arduino with relatively minor modifications, mostly related to how results are printed to the console (the <code>C</code> and <code>C++</code> languages for Arduino are specialized versions of the languages). I also wrote a system to control the starting and stopping of the scans, thinking ahead of how the program is actually going to be used. All user inputs are in a single file, including a simple version of a pulse program (tons of work will be needed in the future on this piece). My overall goal is to write an entire NMR control and acquistion program that runs completely on the Arduino IDE. Well, almost completely: some other entity will have to slurp up the data coming from the Arduino, as there is very little memory on the Arduino. Not sure if this can be done but that’s the goal. The code for this project is stored in a public repo <a href="https://github.com/bryanhanson/EF-NMR">here</a>.</p>
+<p>The output of a “run” on this “instrument” is shown in Figure&nbsp;2. The table lists the event name, the Arduino pin that should be activated, and the on/off times for the events. Times are in milliseconds in the example, and are relevant for testing, not an actual NMR scan. A pin value of -1 indicates no pin is active; such an event is just a delay period so the (not yet built) electronics can settle.</p>
+<div id="fig-output" class="quarto-figure quarto-figure-center quarto-float anchored" width="60%">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-output-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="http://chemospec.org/posts/2024-01-01-EF-NMR-Build-2/imgs/output.png" class="img-fluid figure-img" style="width:60.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-output-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Output of the NMR acquistion program.
+</figcaption>
+</figure>
+</div>
+<p>This program was further tested by wiring the Arduino to a breadboard with a few LEDs and resistors to limit the current to the LEDs appropriately. The video below shows the program in action, doing two scans with the durations as shown in Figure&nbsp;2. The pins from left represent polarization coil power, transmit, and receive signal (the latter of course should be listening, not powering something). As a proof of concept I’m pretty happy with this result.</p>
+<div class="quarto-video"><video id="video_shortcode_videojs_video1" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="imgs/action.mov"></video></div>
+</section>
+<section id="whats-next" class="level2">
+<h2 class="anchored" data-anchor-id="whats-next">What’s Next?</h2>
+<p>So much to do, but I’m not in a hurry and can choose to do things in any order that inspires me:</p>
+<ul>
+<li>Polarization coil power supply circuit (some work done on this, just needs to be built)</li>
+<li>Transmitter circuit</li>
+<li>Receiver circuit</li>
+<li>Details of T/R on the Arduino; this will require another round of intense learning I’m certain!</li>
+</ul>
+
+
+</section>
+
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2024,
+  author = {Hanson, Bryan},
+  title = {Building an {EF-NMR} {Part} 2},
+  date = {2024-01-01},
+  url = {http://chemospec.org/posts/2024-01-01-EF-NMR-Build-2/EF-NMR-Build-2.html},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2024" class="csl-entry quarto-appendix-citeas">
+Hanson, Bryan. 2024. <span>“Building an EF-NMR Part 2.”</span> January
+1, 2024. <a href="http://chemospec.org/posts/2024-01-01-EF-NMR-Build-2/EF-NMR-Build-2.html">http://chemospec.org/posts/2024-01-01-EF-NMR-Build-2/EF-NMR-Build-2.html</a>.
+</div></div></section></div> ]]></description>
+  <category>EF-NMR</category>
+  <category>DIY</category>
+  <category>C</category>
+  <category>Arduino</category>
+  <guid>http://chemospec.org/posts/2024-01-01-EF-NMR-Build-2/EF-NMR-Build-2.html</guid>
+  <pubDate>Mon, 01 Jan 2024 07:00:00 GMT</pubDate>
+</item>
 <item>
   <title>Building an EF-NMR Part 1</title>
   <dc:creator>Bryan Hanson</dc:creator>
@@ -25,12 +325,12 @@
 <p>Michal’s design uses two coils: a polarization coil, and a transmit/receive (T/R) coil. This post will cover the construction of the polarization coil. Michal’s polarization coil is a three-layer solenoid constructed with 18 AWG magnet wire. Each layer is a separate wire but in operation, the three layers are wired in parallel. I scaled the coil dimensions down somewhat so that I could use materials that are readily accessible to me.<sup>1</sup> The plan is to use a 50 mL centrifuge tube as the sample holder. The sample will be placed in a T/R coil wound around a 1.25” schedule 40 PVC pipe. The T/R coil will be located inside the polarization coil, which will be wound on a 2” schedule 40 PVC pipe. The dimensions of these pipes were chosen to allow the sample to nest easily inside the T/R coil which nests inside the polarization coil. Figure&nbsp;1 shows a cross-section of the design.<sup>2</sup></p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-cs" class="quarto-figure quarto-figure-center anchored" width="408">
+<div id="fig-cs" class="quarto-figure quarto-figure-center quarto-float anchored" width="408">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-cs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-10-24-EF-NMR-Build-1/EF-NMR-Build-1_files/figure-html/fig-cs-1.png" class="img-fluid figure-img" width="408">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-cs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;1: Cross section of the coils and sample. Grey indicates the PVC pipe components. Red indicates windings (dimensions approximate). Blue represents the sample. Dotted lines show the outer extent of the retainer rings. Scale is in mm.
 </figcaption>
 </figure>
@@ -40,33 +340,33 @@ Figure&nbsp;1: Cross section of the coils and sample. Grey indicates the PVC pip
 <section id="constructing-the-form" class="level2">
 <h2 class="anchored" data-anchor-id="constructing-the-form">Constructing the Form</h2>
 <p>The form for the polarization coil was made from a 12 cm length of 2” PVC pipe. Two retaining rings were very carefully cut from a 2” PVC coupling. The retaining rings were 1 cm wide. The parts are shown in Figure&nbsp;2. The rings were then glued to the ends of the form using a minimal amount of standard PVC glue. The inner edges of the rings correspond to the original end of the coupling which provides a clean and straight edge where it will rest against the magnet wire. The ends of the assembly were lightly sanded. As built, the length available for the windings is 102 mm.</p>
-<div id="fig-pieces" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-pieces" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-pieces-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-10-24-EF-NMR-Build-1/imgs/form-pieces.jpeg" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-pieces-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pieces-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;2: The form and two retaining rings before assembly.
 </figcaption>
 </figure>
 </div>
 <p>Next, three holes were drilled close to each of the retaining rings, about 1 cm apart. The magnet wire will pass through these holes, which will serve to keep the wire in place as it is wound. Figure&nbsp;3 shows these holes. A short length of wire was placed in the holes as a “keeper” as the winding was carried out. This ensured that the winding for the first layer did not block the holes for the second and third layers of wire (Figure&nbsp;4).</p>
-<div id="fig-holes" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-holes" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-holes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-10-24-EF-NMR-Build-1/imgs/form-1.jpeg" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-holes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-holes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;3: View of the holes on each end of the form assembly.
 </figcaption>
 </figure>
 </div>
-<div id="fig-keeper" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-keeper" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-keeper-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-10-24-EF-NMR-Build-1/imgs/keeper-detail.jpeg" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-keeper-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-keeper-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;4: Detail of the wire keepers. The open hole will be used for the first winding layer. The keepers will maintain access to the holes for the subsequent layers.
 </figcaption>
 </figure>
@@ -75,22 +375,22 @@ Figure&nbsp;4: Detail of the wire keepers. The open hole will be used for the fi
 <section id="the-winding-jig" class="level2">
 <h2 class="anchored" data-anchor-id="the-winding-jig">The Winding Jig</h2>
 <p>A winding jig was constructed from 1/4” hobby plywood. The base is 6 x 12”. Small nails and glue were used to assemble the sides and back. A 1/4” threaded rod serves as the rotational axis. Nuts and washers secure a simple handle as well as position the rod overall in the jig. Figure&nbsp;5 and Figure&nbsp;6 show the jig.</p>
-<div id="fig-jig-1" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-jig-1" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-jig-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-10-24-EF-NMR-Build-1/imgs/jig-1.jpeg" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-jig-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-jig-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;5: The winding jig.
 </figcaption>
 </figure>
 </div>
-<div id="fig-jig-2" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-jig-2" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-jig-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-10-24-EF-NMR-Build-1/imgs/jig-2.jpeg" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-jig-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-jig-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;6: Another view of the winding jig.
 </figcaption>
 </figure>
@@ -99,12 +399,12 @@ Figure&nbsp;6: Another view of the winding jig.
 <section id="wire-spool-holder" class="level2">
 <h2 class="anchored" data-anchor-id="wire-spool-holder">Wire Spool Holder</h2>
 <p>A holder for the wire spool was constructed with 1/16” x 1” aluminum bar. The bar was bent into a shape that would provide a way to apply friction to the sides of the spool, thus controlling the tension on the wire as it pays out. The spool is mounted on a 1/4” threaded rod and there are wingnuts on each side, which when tightened press the aluminum bar against the spool. The threaded rod does tend to unscrew as the wire is spooled out, but the process is slow enough that one can correct this as needed. If I were going to do this alot I would replace the wingnut on the side that tends to unwind with two nuts locked against each other. The holder is loosely attached to the work bench so that it can pivot as needed to accommodate the changing angle of the wire as it moves across the form. Figure&nbsp;7 shows the design.</p>
-<div id="fig-spool" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-spool" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-spool-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-10-24-EF-NMR-Build-1/imgs/spool.jpeg" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-spool-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-spool-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;7: The wire spool holder. Tightening the wingnuts pushes the aluminum bar against the spool and gives some control over the wire tension as it pays out.
 </figcaption>
 </figure>
@@ -113,44 +413,44 @@ Figure&nbsp;7: The wire spool holder. Tightening the wingnuts pushes the aluminu
 <section id="the-winding-process" class="level2">
 <h2 class="anchored" data-anchor-id="the-winding-process">The Winding Process</h2>
 <p>The form was more or less centered on the threaded rod using a couple of wooden guide pieces. The winding process is shown in Figure&nbsp;8. The wire for the first layer comes from inside the form and up through one of the holes and is wound on the form. The action of the keepers is apparent. The fingers are used to position the wire correctly. In principle tension on the wire is provided by tightening the wing nuts on the wire supply holder. However, I did not tighten them enough and I had to wrestle with getting layer one tight enough. This caused problems with the subsequent layers as you will see!</p>
-<div id="fig-process" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-process" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-process-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-10-24-EF-NMR-Build-1/imgs/winding-process.jpeg" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-process-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-process-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;8: Winding the first layer.
 </figcaption>
 </figure>
 </div>
 <p>The completed layer one is shown in Figure&nbsp;9. The winding looks even. Layer two is shown in Figure&nbsp;10. Because layer one was a little loose, the wire for layer two would sometimes slip in-between the wires of layer one and force them apart. This was exacerbated because I was using more tension on the wire supply for layer two. Clearly the layer is not even. In addition, winding layer two was more difficult because without the white background one cannot see the progress very well.</p>
-<div id="fig-layer-1" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-layer-1" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-layer-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-10-24-EF-NMR-Build-1/imgs/winding-layer-1.jpeg" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-layer-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-layer-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;9: Completed layer one. It looks nice and even but the winding is loose.
 </figcaption>
 </figure>
 </div>
-<div id="fig-layer-2" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-layer-2" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-layer-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-10-24-EF-NMR-Build-1/imgs/winding-layer-2.jpeg" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-layer-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-layer-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;10: Completed layer two. Technique short-comings are evident!
 </figcaption>
 </figure>
 </div>
 <p>The problems only worsened with layer 3 (Figure&nbsp;11). I am not happy with the final result, but the wire is positionally stable and it should carry out its function well enough. What I’ve learned here will help when winding the T/R coil.</p>
-<div id="fig-layer-3" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-layer-3" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-layer-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-10-24-EF-NMR-Build-1/imgs/winding-layer-3.jpeg" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-layer-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-layer-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;11: Completed layer three. Not nearly as pretty as I had hoped!
 </figcaption>
 </figure>
@@ -159,12 +459,12 @@ Figure&nbsp;11: Completed layer three. Not nearly as pretty as I had hoped!
 <section id="checking-continuity" class="level2">
 <h2 class="anchored" data-anchor-id="checking-continuity">Checking Continuity</h2>
 <p>The polymeric insulation on the leads was sanded off (Figure&nbsp;12) and the resistance of each coil was measured. Each gave a resistance of about 0.7 <img src="https://latex.codecogs.com/png.latex?%5Cohm"> and there were no shorts between the layers.</p>
-<div id="fig-sanded" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-sanded" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-sanded-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-10-24-EF-NMR-Build-1/imgs/sanded-leads.jpeg" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-sanded-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sanded-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;12: Leads for each layer with insulation sanded off.
 </figcaption>
 </figure>
@@ -179,20 +479,19 @@ Figure&nbsp;12: Leads for each layer with insulation sanded off.
 </section>
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
 <div id="ref-Michal2010" class="csl-entry">
 Michal, Carl T. 2010. <span>“A Low-Cost Spectrometer for NMR Measurements in the Earth’s Magnetic Field.”</span> <em>Meas. Sci. Technol.</em> 21. <a href="https://doi.org/10.1088/0957-0233/21/10/105902">https://doi.org/10.1088/0957-0233/21/10/105902</a>.
 </div>
-</div></section><aside id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>Of course, there will be less sample and therefore a smaller signal.↩︎</p></li>
 <li id="fn2"><p>The dimensions of schedule 40 PVC products are readily available online, which made planning the overall design much simpler.↩︎</p></li>
 </ol>
-</aside><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2023,
+</section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2023,
   author = {Hanson, Bryan},
   title = {Building an {EF-NMR} {Part} 1},
-  pages = {undefined},
   date = {2023-10-24},
   url = {http://chemospec.org/posts/2023-10-24-EF-NMR-Build-1/EF-NMR-Build-1.html},
   langid = {en}
@@ -337,12 +636,12 @@ font-style: inherit;"># account for J_HX</span></span>
 <h3 class="anchored" data-anchor-id="ceph2"><img src="https://latex.codecogs.com/png.latex?%5Cce%7BPH2%7D"></h3>
 <p>At <em>high field</em> the <img src="https://latex.codecogs.com/png.latex?%5Cce%7B%5E%7B1%7DH%7D"> spectrum of <img src="https://latex.codecogs.com/png.latex?%5Cce%7BPH2%7D"> would be a symmetric doublet with a peak separation of <img src="https://latex.codecogs.com/png.latex?%5Cce%7BJ_%7BPH%7D%7D">.</p>
 <p>In <em>earth’s field</em>, the spectrum is first split into a doublet by <img src="https://latex.codecogs.com/png.latex?%5Cce%7BJ_%7BPH%7D%7D">, but the spacing is not symmetric. Then, each part of the doublet is split further into two peaks, also asymmetrically and with varying linewidths. Figure&nbsp;1 shows how the splitting changes as a function of field strength. Note that in the strong coupling region there are four peaks, as predicted above.</p>
-<div id="fig-PH2" class="quarto-figure quarto-figure-center anchored" alt="Appelt 2007 Fig. 4">
+<div id="fig-PH2" class="quarto-figure quarto-figure-center quarto-float anchored" alt="Appelt 2007 Fig. 4">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-PH2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-09-18-EF-NMR-2/Appelt2007Fig4.png" class="img-fluid figure-img" alt="Appelt 2007 Fig. 4">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-PH2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-PH2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;1: Figure 4 from <span class="citation" data-cites="Appelt2007">Appelt et al. (2007)</span>, showing the field dependence of the <img src="https://latex.codecogs.com/png.latex?%5Cce%7BPH2%7D"> spectrum.
 </figcaption>
 </figure>
@@ -351,12 +650,12 @@ Figure&nbsp;1: Figure 4 from <span class="citation" data-cites="Appelt2007">Appe
 <section id="cech3oh" class="level3">
 <h3 class="anchored" data-anchor-id="cech3oh"><img src="https://latex.codecogs.com/png.latex?%5Cce%7BCH3OH%7D"></h3>
 <p>For the case of methanol in Earth’s field, the spectrum is first asymmetrically split by the <img src="https://latex.codecogs.com/png.latex?%5Cce%7B%5E%7B13%7DC%7D"> with spacing <img src="https://latex.codecogs.com/png.latex?%5Cce%7BJ_%7BCH%7D%7D">. Then each part of the doublet is further split into four peaks. Figure&nbsp;2 shows the EF spectrum of methanol. The asymmetry of the line spacing and line widths is apparent.</p>
-<div id="fig-methanol" class="quarto-figure quarto-figure-center anchored" alt="Appelt 2007 Fig. 5">
+<div id="fig-methanol" class="quarto-figure quarto-figure-center quarto-float anchored" alt="Appelt 2007 Fig. 5">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-methanol-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-09-18-EF-NMR-2/Appelt2007Fig5.png" class="img-fluid figure-img" alt="Appelt 2007 Fig. 5">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-methanol-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-methanol-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;2: Figure 5 from <span class="citation" data-cites="Appelt2007">Appelt et al. (2007)</span>, showing the spectrum of methanol.
 </figcaption>
 </figure>
@@ -372,7 +671,7 @@ Figure&nbsp;2: Figure 5 from <span class="citation" data-cites="Appelt2007">Appe
 </section>
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
 <div id="ref-Appelt2007" class="csl-entry">
 Appelt, Stephan, F. Wolfgang Häsing, Holger Kühn, and Bernhard Blümich. 2007. <span>“Phenomena in <img src="https://latex.codecogs.com/png.latex?J">-Coupled Nuclear Magnetic Resonance Spectroscopy in Low Magnetic Fields.”</span> <em>Phys. Rev. A</em> 76 (August): 023420. <a href="https://doi.org/10.1103/PhysRevA.76.023420">https://doi.org/10.1103/PhysRevA.76.023420</a>.
 </div>
@@ -382,7 +681,7 @@ Appelt, Stephan, F. W. Häsing, U. Sieling, A. Gordji-Nejad, S. Glöggler, and B
 <div id="ref-Kaseman2020" class="csl-entry">
 Kaseman, Derrick C., Per E. Magnelind, Scarlett Widgeon Paisner, Jacob L. Yoder, Marc Alvarez, Algis V. Urbaitis, Michael T. Janicke, Pulak Nath, Michelle A. Espy, and Robert F. Williams. 2020. <span>“<span class="nocase">Design and implementation of a J-coupled spectrometer for multidimensional structure and relaxation detection at low magnetic fields</span>.”</span> <em>Review of Scientific Instruments</em> 91 (5): 054103. <a href="https://doi.org/10.1063/1.5130391">https://doi.org/10.1063/1.5130391</a>.
 </div>
-</div></section><aside id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>60 MHz chosen simply because commercial instruments have been available at that field <em>for forever</em>.↩︎</p></li>
@@ -390,10 +689,9 @@ Kaseman, Derrick C., Per E. Magnelind, Scarlett Widgeon Paisner, Jacob L. Yoder,
 <li id="fn3"><p>This is a general trend. The exact boundaries between various coupling regimes depends on the nuclei involved, the coupling constants and the peak separation in Larmor frequency (in Hz).↩︎</p></li>
 <li id="fn4"><p>Remember, signals are very weak at EF so observing heteronuclei is significantly more challenging. See the <a href="https://chemospec.org/posts/2023-07-19-EF-NMR-1/EF-NMR-1.html">previous post</a> for details.↩︎</p></li>
 </ol>
-</aside><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2023,
+</section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2023,
   author = {Hanson, Bryan},
   title = {The n + 1 Rule in {Earth’s} {Field} {NMR}},
-  pages = {undefined},
   date = {2023-09-18},
   url = {http://chemospec.org/posts/2023-09-18-EF-NMR-2/EF-NMR-2.html},
   langid = {en}
@@ -424,10 +722,9 @@ September 18, 2023. <a href="http://chemospec.org/posts/2023-09-18-EF-NMR-2/EF-N
 
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2023,
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2023,
   author = {Hanson, Bryan},
   title = {JEOL’s {Delta} {Now} {Includes} {ChemoSpec}},
-  pages = {undefined},
   date = {2023-08-23},
   url = {http://chemospec.org/posts/2023-08-23-CS-Delta/CS-Delta.html},
   langid = {en}
@@ -452,12 +749,12 @@ August 23, 2023. <a href="http://chemospec.org/posts/2023-08-23-CS-Delta/CS-Delt
 
 <p>Yesterday I pushed a major update to the <a href="https://bryanhanson.github.io/FOSS4Spectroscopy/">FOSS for Spectroscopy</a> web site. Remember that this is a lightly curated and imperfect process; I have some scripts that automate the discovery of packages, but there is still a considerable amount of manual inspection and decision making. If you think I’ve missed a package, please let me know.</p>
 <p>It’s been nearly a year, and there are a number of new entries. Let’s do a quick comparison of the results from November 2022 versus August 2023. Back in November 2022 there were 246 packages; nearly a year later there are 287. Figure&nbsp;1 shows a Venn diagram of the changes.</p>
-<div id="fig-venn" class="quarto-figure quarto-figure-center anchored" width="60%">
+<div id="fig-venn" class="quarto-figure quarto-figure-center quarto-float anchored" width="60%">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-venn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-08-15-F4S-Update/Venn.png" class="img-fluid figure-img" style="width:60.0%">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-venn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-venn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;1: Venn diagram comparing the two sets of packages
 </figcaption>
 </figure>
@@ -471,9 +768,9 @@ Figure&nbsp;1: Venn diagram comparing the two sets of packages
 <li>One motivation for people to write packages is to learn the language and the package delivery system. There’s nothing wrong with these motivations, however this leads to packages that largely overlap in their features.</li>
 </ul>
 <div class="cell">
-<div id="tbl-lang" class="cell anchored">
+<div id="tbl-lang" class="cell quarto-float anchored">
 <figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="table quarto-float-caption quarto-float-tbl" id="tbl-lang-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-lang-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table&nbsp;1: Package language, 2022 vs 2023.
 </figcaption>
 <div aria-describedby="tbl-lang-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -575,9 +872,9 @@ Table&nbsp;1: Package language, 2022 vs 2023.
 <h2 class="anchored" data-anchor-id="package-focus">Package Focus</h2>
 <p>Table&nbsp;2 shows the change in package focus. Most categories grew modestly.</p>
 <div class="cell">
-<div id="tbl-focus" class="cell anchored">
+<div id="tbl-focus" class="cell quarto-float anchored">
 <figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="table quarto-float-caption quarto-float-tbl" id="tbl-focus-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-focus-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table&nbsp;2: Package focus, 2022 vs 2023.
 </figcaption>
 <div aria-describedby="tbl-focus-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -702,15 +999,14 @@ Table&nbsp;2: Package focus, 2022 vs 2023.
 </section>
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><aside id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>I say “usually spectra” because for some instruments, depending upon the goal of the package, one may store raw data that must be transformed in a separate step. The best example is raw time-domain NMR data which must be Fourier transformed into frequency-domain spectra before analysis.↩︎</p></li>
 </ol>
-</aside><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2023,
+</section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2023,
   author = {Hanson, Bryan},
   title = {FOSS4Spectroscopy {Update}},
-  pages = {undefined},
   date = {2023-08-15},
   url = {http://chemospec.org/posts/2023-08-15-F4S-Update/F4S-Update.html},
   langid = {en}
@@ -742,9 +1038,9 @@ Hanson, Bryan. 2023. <span>“FOSS4Spectroscopy Update.”</span> August 15,
 </ul>
 <hr>
 <p>Let’s take a closer look from first principles what kinds of information one can glean from EF-NMR. We’ll restrict our discussion to spin <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B1%7D%7B2%7D"> nuclei with ~100% abundance, like <img src="https://latex.codecogs.com/png.latex?%5Cce%7B%5E%7B1%7DH%7D">, <img src="https://latex.codecogs.com/png.latex?%5Cce%7B%5E%7B31%7DP%7D"> or <img src="https://latex.codecogs.com/png.latex?%5Cce%7B%5E%7B19%7DF%7D"> – you’ll see why soon enough. Table&nbsp;1 gives some relevant physical parameters for these nuclei.</p>
-<div id="tbl-params" class="anchored">
+<div id="tbl-params" class="quarto-float anchored">
 <figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="table quarto-float-caption quarto-float-tbl" id="tbl-params-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-params-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table&nbsp;1: Important NMR parameters for ~100% abundant spin <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7B1%7D%7B2%7D"> nuclei. The units of <img src="https://latex.codecogs.com/png.latex?%5Cgamma"> are <img src="https://latex.codecogs.com/png.latex?10%5E7"> rad <img src="https://latex.codecogs.com/png.latex?T%5E%7B-1%7D"> <img src="https://latex.codecogs.com/png.latex?s%5E%7B-1%7D">. Larmor frequency is relative in MHz.
 </figcaption>
 <div aria-describedby="tbl-params-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -803,12 +1099,12 @@ Table&nbsp;1: Important NMR parameters for ~100% abundant spin <img src="https:/
 <p>where <img src="https://latex.codecogs.com/png.latex?%5Chbar"> is <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7Bh%7D%7B2%5Cpi%7D">. A plot for <img src="https://latex.codecogs.com/png.latex?%5Cce%7B%5E%7B1%7DH%7D"> is shown in Figure&nbsp;1; the right-most point corresponds to a 1,000 MHz instrument. Clearly as <img src="https://latex.codecogs.com/png.latex?B_o"> goes to zero the <img src="https://latex.codecogs.com/png.latex?%5CDelta%20E"> goes to zero in a simple linear fashion.</p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-DeltaE" class="quarto-figure quarto-figure-center anchored" width="672">
+<div id="fig-DeltaE" class="quarto-figure quarto-figure-center quarto-float anchored" width="672">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-DeltaE-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-07-19-EF-NMR-1/EF-NMR-1_files/figure-html/fig-DeltaE-1.png" class="img-fluid figure-img" width="672">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-DeltaE-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-DeltaE-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;1: <img src="https://latex.codecogs.com/png.latex?%5CDelta">E as a function of field strength <img src="https://latex.codecogs.com/png.latex?B_o">
 </figcaption>
 </figure>
@@ -853,7 +1149,7 @@ Figure&nbsp;1: <img src="https://latex.codecogs.com/png.latex?%5CDelta">E as a f
 </section>
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
 <div id="ref-Appelt2006" class="csl-entry">
 Appelt, Stephan, Holger Kühn, F. Wolfgang Häsing, and Bernhard Blümich. 2006. <span>“Chemical Analysis by Ultrahigh-Resolution Nuclear Magnetic Resonance in the Earth’s Magnetic Field.”</span> <em>Nature Physics</em> 2. <a href="https://doi.org/10.1038/nphys211">https://doi.org/10.1038/nphys211</a>.
 </div>
@@ -869,7 +1165,7 @@ Mohorič, Aleš, and Janez Stepišnick. 2009. <span>“NMR in the Earth’s Magn
 <div id="ref-Packard1954" class="csl-entry">
 Packard, Martin, and Russell Varian. 1954. <span>“Free Nuclear Induction in the Earth’s Magnetic Field.”</span> <em>Physical Review</em> 93: 939.
 </div>
-</div></section><aside id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>Keep in mind that buried utilities made of iron or carrying electrical current can interfere.↩︎</p></li>
@@ -878,10 +1174,9 @@ Packard, Martin, and Russell Varian. 1954. <span>“Free Nuclear Induction in th
 <li id="fn4"><p>The gyromagnetic ratio can be negative, hence the absolute value is taken here.↩︎</p></li>
 <li id="fn5"><p>Martin Packard is apparently <a href="https://hsm.stackexchange.com/q/15580/18707">unrelated</a> to David Packard, one of the founders of HP.↩︎</p></li>
 </ol>
-</aside><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2023,
+</section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2023,
   author = {Hanson, Bryan},
   title = {Earth’s {Field} {NMR}},
-  pages = {undefined},
   date = {2023-07-26},
   url = {http://chemospec.org/posts/2023-07-19-EF-NMR-1/EF-NMR-1.html},
   langid = {en}
@@ -919,33 +1214,33 @@ Hanson, Bryan. 2023. <span>“Earth’s Field NMR.”</span> July 26, 2023. <a h
 <p>The detector in this version is a photodiode linked to a TIA, a transimpedance amplifier. This is an current to voltage (I to V) converter, and something similar can be used in any instrument where a detector generates a current. Figure&nbsp;1 shows the circuit.</p>
 <p>The main deviation from McClain’s design is that R2 needed to be set to 3M <img src="https://latex.codecogs.com/png.latex?%5Cohm"> in order to reach about 1V on the output. McClain gives a range of 100K to 1M. As the value of this resistor goes up, the output voltage goes up due to increasing amplification. This change is likely necessary as the photodiode in use here is a bit different than McClain specified. After some experimentation, the current on I1 (which replicates the current produced by the photodiode in the simulation) was set to 1/10,000 of the value of the current of D1, based upon currents observed when isolating D2 from the rest of the circuit.</p>
 <p>Monitoring the current and voltage across D2 as built and warmed up, the values were about 0.3 <img src="https://latex.codecogs.com/png.latex?%5Cmu">A and 0.23 V; if the LEGO holding D1 was moved immediately adjacent to that holding D2 these numbers were 0.7 <img src="https://latex.codecogs.com/png.latex?%5Cmu">A and 0.26 V. These readings support the discussion above that the photodiode was generating a relatively small response.</p>
-<div id="fig-mcclain-v1" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-mcclain-v1" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-mcclain-v1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-07-16-Photometer/mcclain-v1.png" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-mcclain-v1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mcclain-v1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;1: Version 1 with simple LED power supply and a transimpedance amplifier as the detector.
 </figcaption>
 </figure>
 </div>
 <p>Figure&nbsp;2 and Figure&nbsp;3 show the project from each side.</p>
-<div id="fig-build-v1-2" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-build-v1-2" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-build-v1-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-07-16-Photometer/build-v1-2.png" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-build-v1-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-build-v1-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;2: View of project. The simplicity of the supply to the LED is apparent. The top rail is the negative supply, the lower rail is the positive supply, and the 2nd-from-bottom rail is the ground.
 </figcaption>
 </figure>
 </div>
-<div id="fig-build-v1-1" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-build-v1-1" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-build-v1-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-07-16-Photometer/build-v1-1.png" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-build-v1-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-build-v1-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;3: View of project. The op amp for the detector is in the foreground.
 </figcaption>
 </figure>
@@ -957,22 +1252,22 @@ Figure&nbsp;3: View of project. The op amp for the detector is in the foreground
 <section id="simulation" class="level3">
 <h3 class="anchored" data-anchor-id="simulation">Simulation</h3>
 <p>The relaxation oscillator circuit was modeled in CircuitLab before building the circuit. The circuit is in Figure&nbsp;4 and the simulation results are shown in Figure&nbsp;5.</p>
-<div id="fig-mcclain-relax-osc" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-mcclain-relax-osc" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-mcclain-relax-osc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-07-16-Photometer/mcclain-relax-osc.png" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-mcclain-relax-osc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mcclain-relax-osc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;4: The relaxation oscillator circuit.
 </figcaption>
 </figure>
 </div>
-<div id="fig-mcclain-relax-osc-out-2" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-mcclain-relax-osc-out-2" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-mcclain-relax-osc-out-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-07-16-Photometer/mcclain-relax-osc-out-2.png" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-mcclain-relax-osc-out-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mcclain-relax-osc-out-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;5: The relaxation oscillator simulation output. The gold/orange line indicates the charge on C2 building and decaying. When it reaches an extreme positive or negative value, the phase of the output square wave changes. The lower plot is the very small current produced at the output of the op amp.
 </figcaption>
 </figure>
@@ -983,22 +1278,22 @@ Figure&nbsp;5: The relaxation oscillator simulation output. The gold/orange line
 <p>Capacitor C2 controls the frequency of the square wave produced by the relaxation oscillator. Figure&nbsp;6 shows the oscilloscope traces with C2 set to 1<img src="https://latex.codecogs.com/png.latex?%5Cmu">F which gives a frequency of about 8 Hz, as seen in the video below. This serves as visual “proof of concept”. Figure&nbsp;7 shows the oscilloscope traces for a value of 4700 pF for C2 which generates a square wave with frequency 1,500 Hz. This is higher than the frequency of any room light flickering and thus will serve as a “carrier” of the absorbance value unaltered by any stray room light, once we add the other modules to the detection side.</p>
 <p><em>Note that all oscilloscope traces have two vertical scales, one on the left and one on the right, color coordinated with the trace.</em></p>
 <div class="quarto-video"><video id="video_shortcode_videojs_video1" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="slow-blink.mp4"></video></div>
-<div id="fig-relax-osc-1uF" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-relax-osc-1uF" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-relax-osc-1uF-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-07-16-Photometer/TP-A-vs-B-1uF.png" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-relax-osc-1uF-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-relax-osc-1uF-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;6: Relaxation oscillator with a 1<img src="https://latex.codecogs.com/png.latex?%5Cmu">F capcitor for C2. The blue curve is the output of the op amp, the red line is the charging and discharging of C2. Note the box at the bottom which reports the period of the square wave, which corresponds to a frequency of about 8 Hz.
 </figcaption>
 </figure>
 </div>
-<div id="fig-relax-osc-4700pF" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-relax-osc-4700pF" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-relax-osc-4700pF-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-07-16-Photometer/TP-A-vs-B.png" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-relax-osc-4700pF-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-relax-osc-4700pF-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;7: Relaxation oscillator with C2 at 4700 pF. Note the horizontal scale range is much smaller than in the previous figure, as the frequency is much higher.
 </figcaption>
 </figure>
@@ -1010,12 +1305,12 @@ Figure&nbsp;7: Relaxation oscillator with C2 at 4700 pF. Note the horizontal sca
 <h2 class="anchored" data-anchor-id="version-3-almost-all-the-bells-and-whistles">Version 3: Almost All the Bells and Whistles</h2>
 <p>This final version contains all the circuits as described by McClain. I decided to measure voltages directly at the output rather than use an Arduino and display to provide an absorbance value.</p>
 <p>Figure&nbsp;8 shows the final circuit. Note that several test points are labeled and referred to in the discussion below.</p>
-<div id="fig-complete-circuit" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-complete-circuit" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-complete-circuit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-07-16-Photometer/complete-circuit.png" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-complete-circuit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-complete-circuit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;8: Completed project with key modules labeled. <a href="imgs/complete-circuit.png">Click</a> for full size.
 </figcaption>
 </figure>
@@ -1035,22 +1330,22 @@ Figure&nbsp;8: Completed project with key modules labeled. <a href="imgs/complet
 <section id="high-pass-filter" class="level3">
 <h3 class="anchored" data-anchor-id="high-pass-filter">High Pass Filter</h3>
 <p>A high pass filter takes a signal that is time-varying, in our case a square wave, and filters it so that only high frequency components are kept. This is a key part of the detector design, since we create an approximately 1,500 Hz square wave and any other component, like 60 Hz flicker from room lights, should be eliminated. Figure&nbsp;9 shows an isolated version of our high pass filter, and Figure&nbsp;10 shows the frequency dependency filtering.</p>
-<div id="fig-high-pass-circuit" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-high-pass-circuit" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-high-pass-circuit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-07-16-Photometer/high-pass-circuit.png" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-high-pass-circuit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-high-pass-circuit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;9: Isolated high pass filter circuit.
 </figcaption>
 </figure>
 </div>
-<div id="fig-high-pass-performance" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-high-pass-performance" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-high-pass-performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-07-16-Photometer/high-pass-performance.png" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-high-pass-performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-high-pass-performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;10: Frequency dependence of the high pass filter. Lower values on the vertical axis means greater attenuation.
 </figcaption>
 </figure>
@@ -1059,12 +1354,12 @@ Figure&nbsp;10: Frequency dependence of the high pass filter. Lower values on th
 <section id="half-wave-rectifier" class="level3">
 <h3 class="anchored" data-anchor-id="half-wave-rectifier">Half Wave Rectifier</h3>
 <p>A half wave rectifier converts an alternating current, alternating between positive and negative values, into a positive only form. Essentially, the negative portion of the signal is converted to positive values, and the positive portion is set to zero. Figure&nbsp;11 shows the action of the rectifier.</p>
-<div id="fig-half-wave" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-half-wave" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-half-wave-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-07-16-Photometer/TP-D-vs-E.png" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-half-wave-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-half-wave-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;11: Action of the half wave rectifier. The red trace is observed at test point D, and fluctuates positive and negative. The blue trace is the rectified wave observed at test point E. Notice that its voltage is always positive.
 </figcaption>
 </figure>
@@ -1073,45 +1368,45 @@ Figure&nbsp;11: Action of the half wave rectifier. The red trace is observed at 
 <section id="active-low-pass-filter" class="level3">
 <h3 class="anchored" data-anchor-id="active-low-pass-filter">Active Low Pass Filter</h3>
 <p>The final step is an active low pass filter which only passes signals below a certain frequency <em>and</em> amplifies them (that’s the active part). Importantly, in addition to amplifying the signal, the op amp emits a steady DC voltage which is ultimately proportional to the current hitting the photodiode. This is the value we are after when making absorbance measurements. Figure&nbsp;12 shows the actual output.</p>
-<div id="fig-low-pass" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-low-pass" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-low-pass-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-07-16-Photometer/TP-E-vs-F.png" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-low-pass-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-low-pass-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;12: Effect of the low pass filter. The red curve is the same as in the previous figure, namely test poiont D. The blue line is the final DC output at test point F. This is where the final voltages are measured.
 </figcaption>
 </figure>
 </div>
 <p>If we isolate the low pass filter circuit we can try to understand its operation in greater detail. Figure&nbsp;13 shows the isolated circuit with simulation inputs configured to match the measured inputs.</p>
-<div id="fig-active-LPF-circuit" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-active-LPF-circuit" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-active-LPF-circuit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-07-16-Photometer/active-LPF-circuit.png" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-active-LPF-circuit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-active-LPF-circuit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;13: Isolated active low pass filter circuit.
 </figcaption>
 </figure>
 </div>
 <p>If we look at the frequency dependence of this circuit, we see that low frequencies are passed relatively unattenuated (Figure&nbsp;14), as expected. The combination of the earlier high pass filter and this low pass filter amounts to a band pass filter. This suggests a potential follow up design which uses a band pass filter followed by rectification and conversion to DC by some combination of op amps.</p>
-<div id="fig-active-LPF-frequency" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-active-LPF-frequency" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-active-LPF-frequency-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-07-16-Photometer/active-LPF-frequency.png" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-active-LPF-frequency-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-active-LPF-frequency-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;14: Attenuation of high frequencies by the low pass filter.
 </figcaption>
 </figure>
 </div>
 <p>In addition to the filtering behavior, we know that the circuit produces a steady DC current from the approximately square wave input. Let’s check this using the simulator again, but this time looking at output voltages. Figure&nbsp;15 shows the results, which should ideally be close to those in Figure&nbsp;12.</p>
-<div id="fig-active-LPF-voltage" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-active-LPF-voltage" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-active-LPF-voltage-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-07-16-Photometer/active-LPF-voltage.png" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-active-LPF-voltage-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-active-LPF-voltage-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;15: Voltages produce by the active low pass filer. The square wave is the simulated input. The gold/orange line is the output DC voltage, which is higher than observed, probably due to an imperfect simulation configuration. The key point is that a steady DC voltage is produced.
 </figcaption>
 </figure>
@@ -1120,20 +1415,20 @@ Figure&nbsp;15: Voltages produce by the active low pass filer. The square wave i
 <section id="calibration-curve" class="level3">
 <h3 class="anchored" data-anchor-id="calibration-curve">Calibration Curve</h3>
 <p>A calibration curve was prepared using a 10 mL plastic syringe and some small bottles. Two drops of red food coloring were added to 10 mL of water to create the first solution. Three mL of the stock solution was added to seven mL of water. This 2nd solution was then diluted in similar fashion and so forth, to get five total solutions. Tap water was used. The green LED was disconnected and the dark current was measured. Next, tap water was used as a blank. Then the voltage for each sample was recorded (voltage measurements are taken at point F in Figure&nbsp;8). Listing&nbsp;1 shows the computational steps. Figure&nbsp;16 shows the samples from most concentrated to least concentrated.</p>
-<div id="fig-cal-samples" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-cal-samples" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-cal-samples-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-07-16-Photometer/cal-samples.png" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-cal-samples-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cal-samples-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;16: Calibration samples.
 </figcaption>
 </figure>
 </div>
 <div class="cell">
-<div id="lst-comp" class="r cell-code listing">
+<div id="lst-comp" class="r cell-code listing quarto-float">
 <figure class="quarto-float quarto-float-lst figure">
-<figcaption class="listing quarto-float-caption quarto-float-lst" id="lst-comp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-comp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Listing&nbsp;1: Computation of absorbance values.
 </figcaption>
 <div aria-describedby="lst-comp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -1231,9 +1526,9 @@ font-style: inherit;">-</span> dark))</span></code></pre></div>
 </div>
 <p>Table&nbsp;1 shows the results. A calibration curve is shown in Figure&nbsp;17. Clearly the most concentrated samples exceed the linear behavior expected for Beer’s Law (as observed by McClain). If the two most concentrated samples are dropped, the result is a nice linear relationship, as seen in Figure&nbsp;18 and the summary of the fit in Listing&nbsp;2.</p>
 <div class="cell" data-tbl-colwidths="[30,30,30]">
-<div id="tbl-results" class="cell anchored">
+<div id="tbl-results" class="cell quarto-float anchored">
 <figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="table quarto-float-caption quarto-float-tbl" id="tbl-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table&nbsp;1: Relative sample concentrations and corresponding voltages and absorbances.
 </figcaption>
 <div aria-describedby="tbl-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -1282,12 +1577,12 @@ Table&nbsp;1: Relative sample concentrations and corresponding voltages and abso
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-calcurve1" class="quarto-figure quarto-figure-center anchored" width="672">
+<div id="fig-calcurve1" class="quarto-figure quarto-figure-center quarto-float anchored" width="672">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-calcurve1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-07-16-Photometer/Photometer_files/figure-html/fig-calcurve1-1.png" class="img-fluid figure-img" width="672">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-calcurve1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-calcurve1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;17: Calibration curve, hardware version 3.
 </figcaption>
 </figure>
@@ -1295,9 +1590,9 @@ Figure&nbsp;17: Calibration curve, hardware version 3.
 </div>
 </div>
 <div class="cell">
-<div id="lst-fit" class="r cell-code listing">
+<div id="lst-fit" class="r cell-code listing quarto-float">
 <figure class="quarto-float quarto-float-lst figure">
-<figcaption class="listing quarto-float-caption quarto-float-lst" id="lst-fit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-fit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Listing&nbsp;2: Results of fitting the three lowest concentration samples.
 </figcaption>
 <div aria-describedby="lst-fit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -1350,12 +1645,12 @@ F-statistic: 43.64 on 1 and 1 DF,  p-value: 0.09564</code></pre>
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-calcurve2" class="quarto-figure quarto-figure-center anchored" width="672">
+<div id="fig-calcurve2" class="quarto-figure quarto-figure-center quarto-float anchored" width="672">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-calcurve2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-07-16-Photometer/Photometer_files/figure-html/fig-calcurve2-1.png" class="img-fluid figure-img" width="672">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-calcurve2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-calcurve2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;18: Calibration curve, hardware version 3, dropping the two most concentrated samples.
 </figcaption>
 </figure>
@@ -1373,22 +1668,21 @@ Figure&nbsp;18: Calibration curve, hardware version 3, dropping the two most con
 </section>
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
 <div id="ref-Kvittingen2017" class="csl-entry">
 Kvittingen, Eivind V, Lise Kvittingen, Thor Bernt Melo, Birte Johanne Sjursnes, and Richard Verley. 2017. <span>“Demonstrating Basic Properties of Spectroscopy Using a Self-Constructed Combined Fluorimeter and UV-Photometer.”</span> <em>Journal of Chemical Education</em> 94: 1486–91.
 </div>
 <div id="ref-McClain2014" class="csl-entry">
 McClain, Robert L. 2014. <span>“Construction of a Photometer as an Instructional Tool for Electronics and Instrumentation.”</span> <em>Journal of Chemical Education</em> 91: 747–50.
 </div>
-</div></section><aside id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>I have not tested the fluoresence measurement as other projects are calling me. In addition to changing the position of the photodiode, a few resistors may need to be changed in order to achieve sufficient signal.↩︎</p></li>
 </ol>
-</aside><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2023,
+</section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2023,
   author = {Hanson, Bryan},
   title = {Home {Built} {Photometer}},
-  pages = {undefined},
   date = {2023-07-16},
   url = {http://chemospec.org/posts/2023-07-16-Photometer/Photometer.html},
   langid = {en}
@@ -1421,7 +1715,7 @@ Hanson, Bryan. 2023. <span>“Home Built Photometer.”</span> July 16,
 
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
 <div id="ref-Bryden2021" class="csl-entry">
 Bryden, Nicolas, Michael Antonacci, Michele Kelley, and Rosa T. Branca. 2021. <span>“An Open-Source, Low-Cost NMR Spectrometer Operating in the mT Field Regime.”</span> <em>Journal Magnetic Resonance</em> 332. <a href="https://doi.org/10.1016/j.jmr.2021.107076">https://doi.org/10.1016/j.jmr.2021.107076</a>.
 </div>
@@ -1437,15 +1731,14 @@ Michal, Carl T. 2010. <span>“A Low-Cost Spectrometer for NMR Measurements in t
 <div id="ref-Michal2020" class="csl-entry">
 ———. 2020. <span>“Low-Cost Low-Field NMR and MRI: Instrumentation and Applications.”</span> <em>Journal Magnetic Resonance</em> 319. <a href="https://doi.org/10.1016/j.jmr.2020.106800">https://doi.org/10.1016/j.jmr.2020.106800</a>.
 </div>
-</div></section><aside id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>Locally homogeneous provided you are away from buildings, electrical transmission lines etc.↩︎</p></li>
 </ol>
-</aside><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2023,
+</section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2023,
   author = {Hanson, Bryan},
   title = {DIY {NMR} in {Earth’s} {Field}},
-  pages = {undefined},
   date = {2023-06-12},
   url = {http://chemospec.org/posts/2023-06-12-DIY-NMR/DIY-NMR.html},
   langid = {en}
@@ -1474,10 +1767,9 @@ Hanson, Bryan. 2023. <span>“DIY NMR in Earth’s Field.”</span> June 12,
 
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
   author = {Hanson, Bryan},
   title = {You {Can} {Now} {Subscribe}},
-  pages = {undefined},
   date = {2022-11-07},
   url = {http://chemospec.org/posts/2022-11-07-Announce-Subscribe/Announce-Subscribe.html},
   langid = {en}
@@ -1493,7 +1785,7 @@ Hanson, Bryan. 2022. <span>“You Can Now Subscribe.”</span> November 7,
 <item>
   <title>Notes on Linear Algebra Part 4</title>
   <dc:creator>Bryan Hanson</dc:creator>
-  <link>http://chemospec.org/posts/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html</link>
+  <link>http://chemospec.org/posts/2022-11-07-Announce-Subscribe/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html</link>
   <description><![CDATA[ 
 
 
@@ -1505,9 +1797,9 @@ Hanson, Bryan. 2022. <span>“You Can Now Subscribe.”</span> November 7,
 <h1>A Taxonomy of Matrices</h1>
 <p>I am strongly drawn to thinking in terms of categories and relationships. I find visual presentations like phylogenies showing the relationships between species very useful. In the course of my linear algebra journey, I came across an interesting Venn diagram developed by the very creative thinker <a href="https://github.com/kenjihiranabe/The-Art-of-Linear-Algebra">Kenji Hiranabe</a>. The diagram is discussed at <a href="https://anagileway.com/2020/09/29/matrix-world-in-linear-algebra-for-everyone/">Matrix World</a>, but the latest version is at the Github link. A Venn diagram is a useful format, but I was inspired to recast the information in different format. Figure&nbsp;1 shows a taxonomy I created using a portion of the information in Hiranabe’s Venn diagram.<sup>1</sup> The taxonomy is primarily organized around what I am calling the <em>structure</em> of a matrix: what does it look like upon visual inspection? Of course this is most obvious with small matrices. To me at least, structure is one of the most obvious characteristics of a matrix: an upper triangular matrix really stands out for instance. Secondarily, the taxonomy includes a number of queries that one can ask about a matrix: for instance, is the matrix invertible? We’ll need to expand on all of this of course, but first take a look at the figure.<sup>2</sup></p>
 <div style="page-break-after: always;"></div>
-<div class="cell">
+<div class="cell" data-layout-align="default">
 <div class="cell-output-display">
-<div id="fig-flow" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-flow" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-flow-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div>
@@ -1534,7 +1826,7 @@ style N fill:#FFF0F5
 </pre>
 </div>
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-flow-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-flow-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;1: Hierarchical relationships between different types of matrices. <em>Blue Rectangles</em> denote matrices with particular, recognizable <em>structures</em>. <em>Pink Hexagons</em> indicate properties that can be <em>queried</em>.
 </figcaption>
 </figure>
@@ -2437,7 +2729,7 @@ font-style: inherit;"># identity matrix (also symmetric, diagonal)</span></span>
 </section>
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><aside id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>I’m only using a portion because the Hiranbe’s original contains a bit too much information for someone trying to get their footing in the field.↩︎</p></li>
@@ -2449,21 +2741,20 @@ font-style: inherit;"># identity matrix (also symmetric, diagonal)</span></span>
 <li id="fn7"><p>The <code>drop</code> argument to subsetting/extracting defaults to <code>TRUE</code> which means that if subsetting reduces the necessary number of dimensions, the unneeded dimension attributes are dropped. Under the default, selecting a single column of a matrix leads to a vector, not a one column vector. In this <code>all.equal()</code> expression we need both sides to evaluate to a matrix.↩︎</p></li>
 <li id="fn8"><p>One might ask why <code>R</code> does not provide a user-facing version of such a function. I think a good argument can be made that the authors of <code>R</code> passed down a robust and lean set of linear algebra functions, geared toward getting work done, and throwing errors as necessary.↩︎</p></li>
 </ol>
-</aside><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
+</section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
   author = {Hanson, Bryan},
   title = {Notes on {Linear} {Algebra} {Part} 4},
-  pages = {undefined},
   date = {2022-09-26},
-  url = {http://chemospec.org/posts/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html},
+  url = {http://chemospec.org/posts/2022-11-07-Announce-Subscribe/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html},
   langid = {en}
 }
 </code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2022" class="csl-entry quarto-appendix-citeas">
 Hanson, Bryan. 2022. <span>“Notes on Linear Algebra Part 4.”</span>
-September 26, 2022. <a href="http://chemospec.org/posts/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html">http://chemospec.org/posts/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html</a>.
+September 26, 2022. <a href="http://chemospec.org/posts/2022-11-07-Announce-Subscribe/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html">http://chemospec.org/posts/2022-11-07-Announce-Subscribe/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
   <category>Linear Algebra</category>
-  <guid>http://chemospec.org/posts/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html</guid>
+  <guid>http://chemospec.org/posts/2022-11-07-Announce-Subscribe/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html</guid>
   <pubDate>Mon, 26 Sep 2022 07:00:00 GMT</pubDate>
 </item>
 <item>
@@ -2823,17 +3114,16 @@ font-style: inherit;">all.equal</span>(tst1, tst2)</span></code></pre></div>
 
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><aside id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>For details see the discussion in <a href="https://chemospec.org/posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html">Part 1</a>.↩︎</p></li>
 <li id="fn2"><p>Discussed in this <a href="https://stackoverflow.com/q/51687808/633251">Stackoverflow question</a>, which also has an implementation.↩︎</p></li>
 <li id="fn3"><p>In fact, for the default <code>outer()</code>, <code>FUN = "*"</code>, <code>outer()</code> actually calls <code>tcrossprod()</code>.↩︎</p></li>
 </ol>
-</aside><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
+</section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
   author = {Hanson, Bryan},
   title = {Notes on {Linear} {Algebra} {Part} 3},
-  pages = {undefined},
   date = {2022-09-10},
   url = {http://chemospec.org/posts/2022-09-10-Linear-Alg-Notes-Pt3/Linear-Alg-Notes-Pt3.html},
   langid = {en}
@@ -3248,7 +3538,11 @@ font-style: inherit;">"x"</span>) <span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># column 2 of X has the x values</span></span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="http://chemospec.org/posts/2022-09-01-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="http://chemospec.org/posts/2022-09-01-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>The value of <img src="https://latex.codecogs.com/png.latex?%5Chat%7B%5Cbeta%7D"> can be found via Equation&nbsp;11:</p>
@@ -3319,7 +3613,11 @@ font-style: inherit;">col =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"red"</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="http://chemospec.org/posts/2022-09-01-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="http://chemospec.org/posts/2022-09-01-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <hr>
@@ -3354,7 +3652,7 @@ font-style: inherit;">"red"</span>)</span></code></pre></div>
 </section>
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><aside id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>Here we have the slightly unfortunate circumstance where symbol conventions cannot be completely harmonized. We are saying that <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7Bx%7D%20=%20x,%20y,%20z"> which seems a bit silly since vector <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7Bx%7D"> contains <img src="https://latex.codecogs.com/png.latex?y"> and <img src="https://latex.codecogs.com/png.latex?z"> components in addition to <img src="https://latex.codecogs.com/png.latex?x">. I ask you to accept this for two reasons: First, most linear algebra texts use the symbols in Equation&nbsp;3 as the general form for this topic, so if you go to study this further that’s what you’ll find. Second, I feel like using <img src="https://latex.codecogs.com/png.latex?x">, <img src="https://latex.codecogs.com/png.latex?y"> and <img src="https://latex.codecogs.com/png.latex?z"> in Equation&nbsp;1 will be familar to the most people. If you want to get rid of this infelicity, then you have to write Equation&nbsp;1 (in part) as <img src="https://latex.codecogs.com/png.latex?x_1%20+%202x_2%20+%203x_3%20=%203"> which I think clouds the interpretation. Perhaps however you feel my choices are equally bad.↩︎</p></li>
@@ -3370,10 +3668,9 @@ font-style: inherit;">"red"</span>)</span></code></pre></div>
 <li id="fn11"><p>The switch in the order of matrices on the last line of Equation&nbsp;12 is one of the properties of the inverse operator.↩︎</p></li>
 <li id="fn12"><p>This means that the rank of the matrix is less than the number of columns. You can get the rank of a matrix by counting the number of non-zero eigenvalues via <code>eigen(A2)$values</code>, which in this case gives 8.9330344, -5.9330344, -3.5953271^{-16}. There are only two non-zero values, so the rank is two. Perhaps in another post we’ll discuss this in more detail.↩︎</p></li>
 </ol>
-</aside><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
+</section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
   author = {Hanson, Bryan},
   title = {Notes on {Linear} {Algebra} {Part} 2},
-  pages = {undefined},
   date = {2022-09-01},
   url = {http://chemospec.org/posts/2022-09-01-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2.html},
   langid = {en}
@@ -3726,7 +4023,7 @@ font-style: inherit;">dim</span>(tst)</span></code></pre></div>
 </section>
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><aside id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>An extensive dicussion of notations can be found <a href="https://mathoverflow.net/q/366070">here</a>.↩︎</p></li>
@@ -3735,10 +4032,9 @@ font-style: inherit;">dim</span>(tst)</span></code></pre></div>
 <li id="fn4"><p>Be careful, it turns out that “outer” may not be a great synonym for cross product, as explained later.↩︎</p></li>
 <li id="fn5"><p>OK fine, here is the answer when treating <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bu%7D"> and <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bv%7D"> as row vectors: <img src="https://latex.codecogs.com/png.latex?%5Cvec%7Bu%7D%20%5Ctimes%20%5Cvec%7Bv%7D%20=%20%5Cvec%7Bu%7D%5E%5Cmathsf%7BT%7D%20%5C%20%5Cvec%7Bv%7D"> which expands exactly as the right-hand side of Equation&nbsp;14.↩︎</p></li>
 </ol>
-</aside><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
+</section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
   author = {Hanson, Bryan},
   title = {Notes on {Linear} {Algebra} {Part} 1},
-  pages = {undefined},
   date = {2022-08-14},
   url = {http://chemospec.org/posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html},
   langid = {en}
@@ -3816,16 +4112,15 @@ August 14, 2022. <a href="http://chemospec.org/posts/2022-08-14-Linear-Alg-Notes
 </section>
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><aside id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>Once in a while users submit their own package to the repo, and I also find interesting packages in my literature reading.↩︎</p></li>
 <li id="fn2"><p><code>packagefinder</code> has recently been archived, but hopefully will be back soon.↩︎</p></li>
 </ol>
-</aside><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
+</section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
   author = {Hanson, Bryan},
   title = {FOSS4Spectroscopy: {R} Vs {Python}},
-  pages = {undefined},
   date = {2022-07-06},
   url = {http://chemospec.org/posts/2022-07-06-F4S-Update/2022-07-06-F4S-Update.html},
   langid = {en}
@@ -3923,10 +4218,9 @@ ojs_define <- function(..., .session = shiny::getDefaultReactiveDomain()) {
 
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
   author = {Hanson, Bryan},
   title = {Introducing {LearnPCA}},
-  pages = {undefined},
   date = {2022-05-03},
   url = {http://chemospec.org/posts/2022-05-03-LearnPCA-Intro/2022-05-03-LearnPCA-Intro.html},
   langid = {en}
@@ -4028,12 +4322,12 @@ font-style: inherit;">"autoscale"</span>)</span></code></pre></div>
 background-color: null;
 font-style: inherit;">plotScree</span>(c_pca)</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-screeAlt" class="quarto-figure quarto-figure-center anchored" data-fig-align="center" width="80%">
+<div id="fig-screeAlt" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" width="80%">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-screeAlt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-screeAlt-1.png" class="img-fluid quarto-figure-center figure-img" style="width:80.0%">
+<img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-screeAlt-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-screeAlt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-screeAlt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;1: Scree plot (recommended style).
 </figcaption>
 </figure>
@@ -4064,12 +4358,12 @@ background-color: null;
 font-style: inherit;">0.02</span>)</span>
 <span id="cb5-2">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-scores12" class="quarto-figure quarto-figure-center anchored" data-fig-align="center" width="80%">
+<div id="fig-scores12" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" width="80%">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-scores12-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-scores12-1.png" class="img-fluid quarto-figure-center figure-img" style="width:80.0%">
+<img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-scores12-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-scores12-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-scores12-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;2: Score plot for PCs 1 and 2. Compare to protocol figure 7d.
 </figcaption>
 </figure>
@@ -4105,12 +4399,12 @@ background-color: null;
 font-style: inherit;">0.02</span>)</span>
 <span id="cb6-3">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-scores23" class="quarto-figure quarto-figure-center anchored" data-fig-align="center" width="80%">
+<div id="fig-scores23" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" width="80%">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-scores23-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-scores23-1.png" class="img-fluid quarto-figure-center figure-img" style="width:80.0%">
+<img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-scores23-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-scores23-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-scores23-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;3: Score plot for PCS 2 and 3.
 </figcaption>
 </figure>
@@ -4134,12 +4428,12 @@ background-color: null;
 font-style: inherit;">2</span>)</span>
 <span id="cb7-2">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-loadings" class="quarto-figure quarto-figure-center anchored" data-fig-align="center" width="80%">
+<div id="fig-loadings" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" width="80%">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-loadings-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-loadings-1.png" class="img-fluid quarto-figure-center figure-img" style="width:80.0%">
+<img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-loadings-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-loadings-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-loadings-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;4: Loadings for PC1 and PC2.
 </figcaption>
 </figure>
@@ -4159,12 +4453,12 @@ background-color: null;
 font-style: inherit;">0.001</span>)</span>
 <span id="cb8-2">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-splot" class="quarto-figure quarto-figure-center anchored" data-fig-align="center" width="80%">
+<div id="fig-splot" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" width="80%">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-splot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-splot-1.png" class="img-fluid quarto-figure-center figure-img" style="width:80.0%">
+<img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-splot-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-splot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-splot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;5: s-Plot for PC1.
 </figcaption>
 </figure>
@@ -4258,12 +4552,12 @@ font-style: inherit;">ellipse =</span> <span class="cn" style="color: #8f5902;
 background-color: null;
 font-style: inherit;">TRUE</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-plsda-indiv" class="quarto-figure quarto-figure-center anchored" data-fig-align="center" width="80%">
+<div id="fig-plsda-indiv" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" width="80%">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-plsda-indiv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-plsda-indiv-1.png" class="img-fluid quarto-figure-center figure-img" style="width:80.0%">
+<img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-plsda-indiv-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-plsda-indiv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plsda-indiv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;6: sPLS-DA plot showing classification.
 </figcaption>
 </figure>
@@ -4289,12 +4583,12 @@ font-style: inherit;">5</span>)</span>
 background-color: null;
 font-style: inherit;">plot</span>(perf.splsda)</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-plsda-perf" class="quarto-figure quarto-figure-center anchored" data-fig-align="center" width="80%">
+<div id="fig-plsda-perf" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" width="80%">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-plsda-perf-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-plsda-perf-1.png" class="img-fluid quarto-figure-center figure-img" style="width:80.0%">
+<img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-plsda-perf-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-plsda-perf-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plsda-perf-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;7: Evaluation of the PLS-DA performance.
 </figcaption>
 </figure>
@@ -4310,7 +4604,7 @@ Figure&nbsp;7: Evaluation of the PLS-DA performance.
 </section>
 </section>
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
 <div id="ref-Blaise2021" class="csl-entry">
 Blaise, Benjamin J., Gonçalo D. S. Correia, Gordon A. Haggart, Izabella Surowiec, Caroline Sands, Matthew R. Lewis, Jake T. M. Pearce, et al. 2021. <span>“Statistical Analysis in Metabolic Phenotyping.”</span> <em>Nature Protocols</em> 16: 4299–4326. <a href="https://doi.org/10.1038/s41596-021-00579-1">https://doi.org/10.1038/s41596-021-00579-1</a>.
 </div>
@@ -4320,10 +4614,9 @@ F, Rohart, Gautier B, Singh A, and Le Cao K-A. 2017. <span>“mixOmics: An r Pac
 <div id="ref-bootsPLS" class="csl-entry">
 Rohart, Florian, Kim-Anh Le Cao, and Christine Wells. 2018. <em>bootsPLS: Bootstrap Subsamplings of Sparse Partial Least Squares - Discriminant Analysis for Classification and Signature Identification</em>. <a href="https://CRAN.R-project.org/package=bootsPLS">https://CRAN.R-project.org/package=bootsPLS</a>.
 </div>
-</div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
+</div></section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
   author = {Hanson, Bryan},
   title = {Metabolic {Phenotyping} {Protocol} {Part} 3},
-  pages = {undefined},
   date = {2022-05-01},
   url = {http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3.html},
   langid = {en}
@@ -4446,12 +4739,12 @@ font-style: inherit;"># no scaling is the default</span></span></code></pre></di
 background-color: null;
 font-style: inherit;">plotScree</span>(c_pca)</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-screeAlt" class="quarto-figure quarto-figure-center anchored" width="80%" data-fig-align="center">
+<div id="fig-screeAlt" class="quarto-figure quarto-figure-center quarto-float anchored" width="80%" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-screeAlt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-screeAlt-1.png" class="img-fluid quarto-figure-center figure-img" style="width:80.0%">
+<img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-screeAlt-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-screeAlt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-screeAlt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;1: Scree plot (recommended style).
 </figcaption>
 </figure>
@@ -4467,12 +4760,12 @@ font-style: inherit;">style =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"trad"</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-screeTrad" class="quarto-figure quarto-figure-center anchored" width="80%" data-fig-align="center">
+<div id="fig-screeTrad" class="quarto-figure quarto-figure-center quarto-float anchored" width="80%" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-screeTrad-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-screeTrad-1.png" class="img-fluid quarto-figure-center figure-img" style="width:80.0%">
+<img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-screeTrad-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-screeTrad-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-screeTrad-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;2: Scree plot (traditional style).
 </figcaption>
 </figure>
@@ -4492,12 +4785,12 @@ font-style: inherit;">pcs =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">10</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-cv-pca" class="quarto-figure quarto-figure-center anchored" width="80%" data-fig-align="center">
+<div id="fig-cv-pca" class="quarto-figure quarto-figure-center quarto-float anchored" width="80%" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-cv-pca-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-cv-pca-1.png" class="img-fluid quarto-figure-center figure-img" style="width:80.0%">
+<img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-cv-pca-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-cv-pca-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cv-pca-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;3: Scree plot using cross validation.
 </figcaption>
 </figure>
@@ -4533,12 +4826,12 @@ background-color: null;
 font-style: inherit;">0.02</span>)</span>
 <span id="cb8-2">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-scores12" class="quarto-figure quarto-figure-center anchored" width="80%" data-fig-align="center">
+<div id="fig-scores12" class="quarto-figure quarto-figure-center quarto-float anchored" width="80%" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-scores12-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-scores12-1.png" class="img-fluid quarto-figure-center figure-img" style="width:80.0%">
+<img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-scores12-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-scores12-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-scores12-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;4: Score plot for PCs 1 and 2. Compare to protocol figure 7a.
 </figcaption>
 </figure>
@@ -4573,12 +4866,12 @@ background-color: null;
 font-style: inherit;">0.02</span>)</span>
 <span id="cb9-2">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-scores23" class="quarto-figure quarto-figure-center anchored" width="80%" data-fig-align="center">
+<div id="fig-scores23" class="quarto-figure quarto-figure-center quarto-float anchored" width="80%" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-scores23-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-scores23-1.png" class="img-fluid quarto-figure-center figure-img" style="width:80.0%">
+<img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-scores23-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-scores23-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-scores23-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;5: Score plot for PCS 2 and 3.
 </figcaption>
 </figure>
@@ -4668,12 +4961,12 @@ background-color: null;
 font-style: inherit;">"black"</span>)</span>
 <span id="cb10-6">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-hotelling1" class="quarto-figure quarto-figure-center anchored" width="80%" data-fig-align="center">
+<div id="fig-hotelling1" class="quarto-figure quarto-figure-center quarto-float anchored" width="80%" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-hotelling1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-hotelling1-1.png" class="img-fluid quarto-figure-center figure-img" style="width:80.0%">
+<img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-hotelling1-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-hotelling1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-hotelling1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;6: Score plot for PCs 1 and 2 with Hotelling’s <em>T</em><sup>2</sup> ellipse. Compare to protocol figure 7a.
 </figcaption>
 </figure>
@@ -4694,12 +4987,12 @@ background-color: null;
 font-style: inherit;">"OD"</span>)</span>
 <span id="cb11-2">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-diagOD" class="quarto-figure quarto-figure-center anchored" width="80%" data-fig-align="center">
+<div id="fig-diagOD" class="quarto-figure quarto-figure-center quarto-float anchored" width="80%" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-diagOD-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-diagOD-1.png" class="img-fluid quarto-figure-center figure-img" style="width:80.0%">
+<img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-diagOD-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-diagOD-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-diagOD-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;7: Orthogonal distance plot based on the first three PCs.
 </figcaption>
 </figure>
@@ -4718,12 +5011,12 @@ background-color: null;
 font-style: inherit;">"SD"</span>)</span>
 <span id="cb12-2">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-diagSD" class="quarto-figure quarto-figure-center anchored" width="80%" data-fig-align="center">
+<div id="fig-diagSD" class="quarto-figure quarto-figure-center quarto-float anchored" width="80%" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-diagSD-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-diagSD-1.png" class="img-fluid quarto-figure-center figure-img" style="width:80.0%">
+<img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-diagSD-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-diagSD-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-diagSD-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;8: Score distance plot based on the first three PCs.
 </figcaption>
 </figure>
@@ -4765,14 +5058,14 @@ font-style: inherit;">"118_"</span>))</span></code></pre></div>
 </section>
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
 <div id="ref-Blaise2021" class="csl-entry">
 Blaise, Benjamin J., Gonçalo D. S. Correia, Gordon A. Haggart, Izabella Surowiec, Caroline Sands, Matthew R. Lewis, Jake T. M. Pearce, et al. 2021. <span>“Statistical Analysis in Metabolic Phenotyping.”</span> <em>Nature Protocols</em> 16: 4299–4326. <a href="https://doi.org/10.1038/s41596-021-00579-1">https://doi.org/10.1038/s41596-021-00579-1</a>.
 </div>
 <div id="ref-Filzmoser2009" class="csl-entry">
 Varmuza, K., and P. Filzmoser. 2009. <em>Introduction to Multivariate Statistical Analysis in Chemometrics</em>. CRC Press.
 </div>
-</div></section><aside id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>Without scaling, the largest peaks will drive the separation in the scores plot.↩︎</p></li>
@@ -4780,10 +5073,9 @@ Varmuza, K., and P. Filzmoser. 2009. <em>Introduction to Multivariate Statistica
 <li id="fn3"><p>We are sourcing in a corrected version of the function, as the CRAN version has a small <a href="https://github.com/ChristianGoueguel/HotellingEllipse/issues/2">error</a> in it.↩︎</p></li>
 <li id="fn4"><p>The <a href="https://github.com/Gscorreia89/chemometrics-tutorials">Jupyter notebook</a> has details about this.↩︎</p></li>
 </ol>
-</aside><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
+</section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
   author = {Hanson, Bryan},
   title = {Metabolic {Phenotyping} {Protocol} {Part} 2},
-  pages = {undefined},
   date = {2022-03-24},
   url = {http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2.html},
   langid = {en}
@@ -4817,10 +5109,9 @@ Hanson, Bryan. 2022. <span>“Metabolic Phenotyping Protocol Part
 
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
   author = {Hanson, Bryan},
   title = {Chemometrics in {Spectroscopy:} {Key} {References}},
-  pages = {undefined},
   date = {2022-02-18},
   url = {http://chemospec.org/posts/2022-02-18-Key-References/2022-02-18-Key-References.html},
   langid = {en}
@@ -5566,16 +5857,15 @@ font-style: inherit;">FALSE</span></span></code></pre></div>
 
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><aside id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>As you will see in a moment, during testing I found a bunch of stale entries I need to remove from several packages!↩︎</p></li>
 <li id="fn2"><p>In easy to use form as a <a href="https://gist.github.com/bryanhanson/4c8ac99903df65af9c7e11a972447bc5">Gist</a>.↩︎</p></li>
 </ol>
-</aside><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
+</section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
   author = {Hanson, Bryan},
   title = {Do {You} Have {Stale} {Imports} or {Suggests?}},
-  pages = {undefined},
   date = {2022-02-09},
   url = {http://chemospec.org/posts/2022-02-09-Imports-Suggests/2022-02-09-Imports-Suggests.html},
   langid = {en}
@@ -6147,12 +6437,12 @@ background-color: null;
 font-style: inherit;">1.1</span>))</span>
 <span id="cb11-3">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-samplePlot" class="quarto-figure quarto-figure-center anchored" width="80%" data-fig-align="center">
+<div id="fig-samplePlot" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" width="80%">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-samplePlot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="http://chemospec.org/posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1_files/figure-html/fig-samplePlot-1.png" class="img-fluid quarto-figure-center figure-img" style="width:80.0%">
+<img src="http://chemospec.org/posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1_files/figure-html/fig-samplePlot-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-samplePlot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-samplePlot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;1: Sample spectra from each group.
 </figcaption>
 </figure>
@@ -6168,17 +6458,16 @@ Figure&nbsp;1: Sample spectra from each group.
 </section>
 </section>
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
 <div id="ref-Blaise2021" class="csl-entry">
 Blaise, Benjamin J., Gonçalo D. S. Correia, Gordon A. Haggart, Izabella Surowiec, Caroline Sands, Matthew R. Lewis, Jake T. M. Pearce, et al. 2021. <span>“Statistical Analysis in Metabolic Phenotyping.”</span> <em>Nature Protocols</em> 16: 4299–4326. <a href="https://doi.org/10.1038/s41596-021-00579-1">https://doi.org/10.1038/s41596-021-00579-1</a>.
 </div>
 <div id="ref-Blaise2007" class="csl-entry">
 Blaise, Benjamin J., Jean Giacomotto, Bénédicte Elena, Marc-Emmanuel Dumas, Pierre Toulhoat, Laurent Ségalat, and Lyndon Emsley. 2007. <span>“Metabotyping of Caenorhabditis Elegans Reveals Latent Phenotypes.”</span> <em>Proceedings of the National Academy of Sciences</em> 104 (50): 19808–12. <a href="https://doi.org/10.1073/pnas.0707393104">https://doi.org/10.1073/pnas.0707393104</a>.
 </div>
-</div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
+</div></section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
   author = {Hanson, Bryan},
   title = {Metabolic {Phenotyping} {Protocol} {Part} 1},
-  pages = {undefined},
   date = {2022-02-01},
   url = {http://chemospec.org/posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1.html},
   langid = {en}
@@ -6192,67 +6481,6 @@ Hanson, Bryan. 2022. <span>“Metabolic Phenotyping Protocol Part
   <category>Metabolomics</category>
   <guid>http://chemospec.org/posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1.html</guid>
   <pubDate>Tue, 01 Feb 2022 07:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>GSOC 2021: New Graphics for ChemoSpec</title>
-  <dc:creator>Bryan Hanson</dc:creator>
-  <link>http://chemospec.org/posts/2021-10-13-GSOC-CS-Graphics/2021-10-13-GSOC-CS-Graphics.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<table>
-<tbody><tr>
-<td>
-<img src="http://chemospec.org/posts/2021-10-13-GSOC-CS-Graphics/og-image.png" alt="GSOC_logo" style="width:100px;">
-</td>
-<td>
-It’s been quiet around this blog because supervising two students for <a href="https://summerofcode.withgoogle.com/">Google Summer of Code</a> has kept me pretty busy! But we have some news…
-</td>
-</tr>
-</tbody></table>
-<p>Thanks to Mr.&nbsp;Tejasvi Gupta and the support of GSOC, <a href="https://bryanhanson.github.io/ChemoSpec/"><code>ChemoSpec</code></a> and <a href="https://bryanhanson.github.io/ChemoSpec2D/"><code>ChemoSpec2D</code></a> were extended to produce <code>ggplot2</code> graphics and <code>plotly</code> graphics! <code>ggplot2</code> is now the default output, and the <code>ggplot2</code> object is returned, so if one doesn’t like the choice of theme or any other aspect, one can customize the object to one’s desire. The <code>ggplot2</code> graphics output are generally similar in layout and spirit to the <code>base</code> graphics output, but significant improvements have been made in labeling data points using the <code>ggrepel</code> package. The original <code>base</code> graphics are still available as well. Much of this work required changes in <code>ChemoSpecUtils</code> which supports the common needs of both packages.</p>
-<p>Tejasvi did a really great job with this project, and I think users of these packages will really like the results. We have greatly expanded the pre-release testing of the graphics, and as far as we can see every thing works as intended. Of course, please file an issue if you see any problems or unexpected behavior.</p>
-<p>To see more about how the new graphics options work, take a look at <a href="https://rdrr.io/cran/ChemoSpecUtils/man/GraphicsOptions.html">GraphicsOptions</a>. Here are the functions that were updated:</p>
-<ul>
-<li><code>plotSpectra</code></li>
-<li><code>surveySpectra</code></li>
-<li><code>surveySpectra2</code></li>
-<li><code>reviewAllSpectra</code> (formerly <code>loopThruSpectra</code>)</li>
-<li><code>plotScree</code> (resides in <code>ChemoSpecUtils</code>)</li>
-<li><code>plotScores</code> (resides in <code>ChemoSpecUtils</code>)</li>
-<li><code>plotLoadings</code> (uses <code>patchwork</code> and hence <code>plotly</code> isn’t available)</li>
-<li><code>plot2Loadings</code></li>
-<li><code>sPlotSpectra</code></li>
-<li><code>pcaDiag</code></li>
-<li><code>plotSampleDist</code></li>
-<li><code>aovPCAscores</code></li>
-<li><code>aovPCAloadings</code> (uses <code>patchwork</code> and hence <code>plotly</code> isn’t available)</li>
-</ul>
-<p>Tejasvi and I are looking forward to your feedback. There are many other smaller changes that we’ll let users discover as they work. And there’s more work to be done, but other projects need attention and I need a little rest!</p>
-
-
-
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2021,
-  author = {Hanson, Bryan},
-  title = {GSOC 2021: {New} {Graphics} for {ChemoSpec}},
-  pages = {undefined},
-  date = {2021-10-13},
-  url = {http://chemospec.org/posts/2021-10-13-GSOC-CS-Graphics/2021-10-13-GSOC-CS-Graphics.html},
-  langid = {en}
-}
-</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2021" class="csl-entry quarto-appendix-citeas">
-Hanson, Bryan. 2021. <span>“GSOC 2021: New Graphics for
-ChemoSpec.”</span> October 13, 2021. <a href="http://chemospec.org/posts/2021-10-13-GSOC-CS-Graphics/2021-10-13-GSOC-CS-Graphics.html">http://chemospec.org/posts/2021-10-13-GSOC-CS-Graphics/2021-10-13-GSOC-CS-Graphics.html</a>.
-</div></div></section></div> ]]></description>
-  <category>R</category>
-  <category>ChemoSpec</category>
-  <category>ChemoSpecUtils</category>
-  <category>ChemoSpec2D</category>
-  <category>GSOC</category>
-  <guid>http://chemospec.org/posts/2021-10-13-GSOC-CS-Graphics/2021-10-13-GSOC-CS-Graphics.html</guid>
-  <pubDate>Wed, 13 Oct 2021 07:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>

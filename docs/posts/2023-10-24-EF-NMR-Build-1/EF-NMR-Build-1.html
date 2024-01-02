@@ -85,6 +85,7 @@ div.csl-indent {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -111,6 +112,33 @@ cookieconsent.run({
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../styles.css">
 <meta name="twitter:title" content="Chemometrics and Spectroscopy Using R - Building an EF-NMR Part 1">
@@ -281,12 +309,12 @@ cookieconsent.run({
 <p>Michal’s design uses two coils: a polarization coil, and a transmit/receive (T/R) coil. This post will cover the construction of the polarization coil. Michal’s polarization coil is a three-layer solenoid constructed with 18 AWG magnet wire. Each layer is a separate wire but in operation, the three layers are wired in parallel. I scaled the coil dimensions down somewhat so that I could use materials that are readily accessible to me.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> The plan is to use a 50 mL centrifuge tube as the sample holder. The sample will be placed in a T/R coil wound around a 1.25” schedule 40 PVC pipe. The T/R coil will be located inside the polarization coil, which will be wound on a 2” schedule 40 PVC pipe. The dimensions of these pipes were chosen to allow the sample to nest easily inside the T/R coil which nests inside the polarization coil. <a href="#fig-cs" class="quarto-xref">Figure&nbsp;1</a> shows a cross-section of the design.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-cs" class="quarto-figure quarto-figure-center anchored" width="408">
+<div id="fig-cs" class="quarto-figure quarto-figure-center quarto-float anchored" width="408">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-cs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="EF-NMR-Build-1_files/figure-html/fig-cs-1.png" class="img-fluid figure-img" width="408">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-cs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;1: Cross section of the coils and sample. Grey indicates the PVC pipe components. Red indicates windings (dimensions approximate). Blue represents the sample. Dotted lines show the outer extent of the retainer rings. Scale is in mm.
 </figcaption>
 </figure>
@@ -296,33 +324,33 @@ Figure&nbsp;1: Cross section of the coils and sample. Grey indicates the PVC pip
 <section id="constructing-the-form" class="level2">
 <h2 class="anchored" data-anchor-id="constructing-the-form">Constructing the Form</h2>
 <p>The form for the polarization coil was made from a 12 cm length of 2” PVC pipe. Two retaining rings were very carefully cut from a 2” PVC coupling. The retaining rings were 1 cm wide. The parts are shown in <a href="#fig-pieces" class="quarto-xref">Figure&nbsp;2</a>. The rings were then glued to the ends of the form using a minimal amount of standard PVC glue. The inner edges of the rings correspond to the original end of the coupling which provides a clean and straight edge where it will rest against the magnet wire. The ends of the assembly were lightly sanded. As built, the length available for the windings is 102 mm.</p>
-<div id="fig-pieces" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-pieces" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-pieces-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="imgs/form-pieces.jpeg" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-pieces-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pieces-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;2: The form and two retaining rings before assembly.
 </figcaption>
 </figure>
 </div>
 <p>Next, three holes were drilled close to each of the retaining rings, about 1 cm apart. The magnet wire will pass through these holes, which will serve to keep the wire in place as it is wound. <a href="#fig-holes" class="quarto-xref">Figure&nbsp;3</a> shows these holes. A short length of wire was placed in the holes as a “keeper” as the winding was carried out. This ensured that the winding for the first layer did not block the holes for the second and third layers of wire (<a href="#fig-keeper" class="quarto-xref">Figure&nbsp;4</a>).</p>
-<div id="fig-holes" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-holes" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-holes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="imgs/form-1.jpeg" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-holes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-holes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;3: View of the holes on each end of the form assembly.
 </figcaption>
 </figure>
 </div>
-<div id="fig-keeper" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-keeper" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-keeper-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="imgs/keeper-detail.jpeg" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-keeper-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-keeper-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;4: Detail of the wire keepers. The open hole will be used for the first winding layer. The keepers will maintain access to the holes for the subsequent layers.
 </figcaption>
 </figure>
@@ -331,22 +359,22 @@ Figure&nbsp;4: Detail of the wire keepers. The open hole will be used for the fi
 <section id="the-winding-jig" class="level2">
 <h2 class="anchored" data-anchor-id="the-winding-jig">The Winding Jig</h2>
 <p>A winding jig was constructed from 1/4” hobby plywood. The base is 6 x 12”. Small nails and glue were used to assemble the sides and back. A 1/4” threaded rod serves as the rotational axis. Nuts and washers secure a simple handle as well as position the rod overall in the jig. <a href="#fig-jig-1" class="quarto-xref">Figure&nbsp;5</a> and <a href="#fig-jig-2" class="quarto-xref">Figure&nbsp;6</a> show the jig.</p>
-<div id="fig-jig-1" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-jig-1" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-jig-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="imgs/jig-1.jpeg" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-jig-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-jig-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;5: The winding jig.
 </figcaption>
 </figure>
 </div>
-<div id="fig-jig-2" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-jig-2" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-jig-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="imgs/jig-2.jpeg" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-jig-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-jig-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;6: Another view of the winding jig.
 </figcaption>
 </figure>
@@ -355,12 +383,12 @@ Figure&nbsp;6: Another view of the winding jig.
 <section id="wire-spool-holder" class="level2">
 <h2 class="anchored" data-anchor-id="wire-spool-holder">Wire Spool Holder</h2>
 <p>A holder for the wire spool was constructed with 1/16” x 1” aluminum bar. The bar was bent into a shape that would provide a way to apply friction to the sides of the spool, thus controlling the tension on the wire as it pays out. The spool is mounted on a 1/4” threaded rod and there are wingnuts on each side, which when tightened press the aluminum bar against the spool. The threaded rod does tend to unscrew as the wire is spooled out, but the process is slow enough that one can correct this as needed. If I were going to do this alot I would replace the wingnut on the side that tends to unwind with two nuts locked against each other. The holder is loosely attached to the work bench so that it can pivot as needed to accommodate the changing angle of the wire as it moves across the form. <a href="#fig-spool" class="quarto-xref">Figure&nbsp;7</a> shows the design.</p>
-<div id="fig-spool" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-spool" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-spool-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="imgs/spool.jpeg" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-spool-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-spool-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;7: The wire spool holder. Tightening the wingnuts pushes the aluminum bar against the spool and gives some control over the wire tension as it pays out.
 </figcaption>
 </figure>
@@ -369,44 +397,44 @@ Figure&nbsp;7: The wire spool holder. Tightening the wingnuts pushes the aluminu
 <section id="the-winding-process" class="level2">
 <h2 class="anchored" data-anchor-id="the-winding-process">The Winding Process</h2>
 <p>The form was more or less centered on the threaded rod using a couple of wooden guide pieces. The winding process is shown in <a href="#fig-process" class="quarto-xref">Figure&nbsp;8</a>. The wire for the first layer comes from inside the form and up through one of the holes and is wound on the form. The action of the keepers is apparent. The fingers are used to position the wire correctly. In principle tension on the wire is provided by tightening the wing nuts on the wire supply holder. However, I did not tighten them enough and I had to wrestle with getting layer one tight enough. This caused problems with the subsequent layers as you will see!</p>
-<div id="fig-process" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-process" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-process-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="imgs/winding-process.jpeg" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-process-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-process-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;8: Winding the first layer.
 </figcaption>
 </figure>
 </div>
 <p>The completed layer one is shown in <a href="#fig-layer-1" class="quarto-xref">Figure&nbsp;9</a>. The winding looks even. Layer two is shown in <a href="#fig-layer-2" class="quarto-xref">Figure&nbsp;10</a>. Because layer one was a little loose, the wire for layer two would sometimes slip in-between the wires of layer one and force them apart. This was exacerbated because I was using more tension on the wire supply for layer two. Clearly the layer is not even. In addition, winding layer two was more difficult because without the white background one cannot see the progress very well.</p>
-<div id="fig-layer-1" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-layer-1" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-layer-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="imgs/winding-layer-1.jpeg" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-layer-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-layer-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;9: Completed layer one. It looks nice and even but the winding is loose.
 </figcaption>
 </figure>
 </div>
-<div id="fig-layer-2" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-layer-2" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-layer-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="imgs/winding-layer-2.jpeg" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-layer-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-layer-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;10: Completed layer two. Technique short-comings are evident!
 </figcaption>
 </figure>
 </div>
 <p>The problems only worsened with layer 3 (<a href="#fig-layer-3" class="quarto-xref">Figure&nbsp;11</a>). I am not happy with the final result, but the wire is positionally stable and it should carry out its function well enough. What I’ve learned here will help when winding the T/R coil.</p>
-<div id="fig-layer-3" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-layer-3" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-layer-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="imgs/winding-layer-3.jpeg" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-layer-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-layer-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;11: Completed layer three. Not nearly as pretty as I had hoped!
 </figcaption>
 </figure>
@@ -415,12 +443,12 @@ Figure&nbsp;11: Completed layer three. Not nearly as pretty as I had hoped!
 <section id="checking-continuity" class="level2">
 <h2 class="anchored" data-anchor-id="checking-continuity">Checking Continuity</h2>
 <p>The polymeric insulation on the leads was sanded off (<a href="#fig-sanded" class="quarto-xref">Figure&nbsp;12</a>) and the resistance of each coil was measured. Each gave a resistance of about 0.7 <span class="math inline">\(\ohm\)</span> and there were no shorts between the layers.</p>
-<div id="fig-sanded" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-sanded" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-sanded-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="imgs/sanded-leads.jpeg" class="img-fluid figure-img">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-sanded-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sanded-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;12: Leads for each layer with insulation sanded off.
 </figcaption>
 </figure>
@@ -435,20 +463,19 @@ Figure&nbsp;12: Leads for each layer with insulation sanded off.
 </section>
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-Michal2010" class="csl-entry" role="listitem">
 Michal, Carl T. 2010. <span>“A Low-Cost Spectrometer for NMR Measurements in the Earth’s Magnetic Field.”</span> <em>Meas. Sci. Technol.</em> 21. <a href="https://doi.org/10.1088/0957-0233/21/10/105902">https://doi.org/10.1088/0957-0233/21/10/105902</a>.
 </div>
-</div></section><aside id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>Of course, there will be less sample and therefore a smaller signal.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2"><p>The dimensions of schedule 40 PVC products are readily available online, which made planning the overall design much simpler.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
-</aside><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2023,
+</section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2023,
   author = {Hanson, Bryan},
   title = {Building an {EF-NMR} {Part} 1},
-  pages = {undefined},
   date = {2023-10-24},
   url = {http://chemospec.org/posts/2023-10-24-EF-NMR-Build-1/EF-NMR-Build-1.html},
   langid = {en}
@@ -585,38 +612,28 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       }
     }
     stripColumnClz(note)
-    const typesetMath = (el) => {
-      if (window.MathJax) {
-        // MathJax Typeset
-        window.MathJax.typeset([el]);
-      } else if (window.katex) {
-        // KaTeX Render
-        var mathElements = el.getElementsByClassName("math");
-        var macros = [];
-        for (var i = 0; i < mathElements.length; i++) {
-          var texText = mathElements[i].firstChild;
-          if (mathElements[i].tagName == "SPAN") {
-            window.katex.render(texText.data, mathElements[i], {
-              displayMode: mathElements[i].classList.contains('display'),
-              throwOnError: false,
-              macros: macros,
-              fleqn: false
-            });
-          }
-        }
-      }
-    }
     if (id === null || id.startsWith('sec-')) {
       // Special case sections, only their first couple elements
       const container = document.createElement("div");
       if (note.children && note.children.length > 2) {
-        for (let i = 0; i < 2; i++) {
-          container.appendChild(note.children[i].cloneNode(true));
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
         }
-        typesetMath(container);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
         return container.innerHTML
       } else {
-        typesetMath(note);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
         return note.innerHTML;
       }
     } else {
@@ -625,7 +642,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (anchorLink) {
         anchorLink.remove();
       }
-      typesetMath(note);
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
       return note.innerHTML;
     }
   }

@@ -119,6 +119,7 @@ div.csl-indent {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -145,6 +146,33 @@ cookieconsent.run({
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../styles.css">
 <meta name="twitter:title" content="Chemometrics and Spectroscopy Using R - The n + 1 rule in Earth’s Field NMR">
@@ -346,12 +374,12 @@ cookieconsent.run({
 <h3 class="anchored" data-anchor-id="ceph2"><span class="math inline">\(\ce{PH2}\)</span></h3>
 <p>At <em>high field</em> the <span class="math inline">\(\ce{^{1}H}\)</span> spectrum of <span class="math inline">\(\ce{PH2}\)</span> would be a symmetric doublet with a peak separation of <span class="math inline">\(\ce{J_{PH}}\)</span>.</p>
 <p>In <em>earth’s field</em>, the spectrum is first split into a doublet by <span class="math inline">\(\ce{J_{PH}}\)</span>, but the spacing is not symmetric. Then, each part of the doublet is split further into two peaks, also asymmetrically and with varying linewidths. <a href="#fig-PH2" class="quarto-xref">Figure&nbsp;1</a> shows how the splitting changes as a function of field strength. Note that in the strong coupling region there are four peaks, as predicted above.</p>
-<div id="fig-PH2" class="quarto-figure quarto-figure-center anchored" alt="Appelt 2007 Fig. 4">
+<div id="fig-PH2" class="quarto-figure quarto-figure-center quarto-float anchored" alt="Appelt 2007 Fig. 4">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-PH2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="Appelt2007Fig4.png" class="img-fluid figure-img" alt="Appelt 2007 Fig. 4">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-PH2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-PH2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;1: Figure 4 from <span class="citation" data-cites="Appelt2007">Appelt et al. (<a href="#ref-Appelt2007" role="doc-biblioref">2007</a>)</span>, showing the field dependence of the <span class="math inline">\(\ce{PH2}\)</span> spectrum.
 </figcaption>
 </figure>
@@ -360,12 +388,12 @@ Figure&nbsp;1: Figure 4 from <span class="citation" data-cites="Appelt2007">Appe
 <section id="cech3oh" class="level3">
 <h3 class="anchored" data-anchor-id="cech3oh"><span class="math inline">\(\ce{CH3OH}\)</span></h3>
 <p>For the case of methanol in Earth’s field, the spectrum is first asymmetrically split by the <span class="math inline">\(\ce{^{13}C}\)</span> with spacing <span class="math inline">\(\ce{J_{CH}}\)</span>. Then each part of the doublet is further split into four peaks. <a href="#fig-methanol" class="quarto-xref">Figure&nbsp;2</a> shows the EF spectrum of methanol. The asymmetry of the line spacing and line widths is apparent.</p>
-<div id="fig-methanol" class="quarto-figure quarto-figure-center anchored" alt="Appelt 2007 Fig. 5">
+<div id="fig-methanol" class="quarto-figure quarto-figure-center quarto-float anchored" alt="Appelt 2007 Fig. 5">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-methanol-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="Appelt2007Fig5.png" class="img-fluid figure-img" alt="Appelt 2007 Fig. 5">
 </div>
-<figcaption class="figure quarto-float-caption quarto-float-fig" id="fig-methanol-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-methanol-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;2: Figure 5 from <span class="citation" data-cites="Appelt2007">Appelt et al. (<a href="#ref-Appelt2007" role="doc-biblioref">2007</a>)</span>, showing the spectrum of methanol.
 </figcaption>
 </figure>
@@ -381,7 +409,7 @@ Figure&nbsp;2: Figure 5 from <span class="citation" data-cites="Appelt2007">Appe
 </section>
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-Appelt2007" class="csl-entry" role="listitem">
 Appelt, Stephan, F. Wolfgang Häsing, Holger Kühn, and Bernhard Blümich. 2007. <span>“Phenomena in <span class="math inline">\(J\)</span>-Coupled Nuclear Magnetic Resonance Spectroscopy in Low Magnetic Fields.”</span> <em>Phys. Rev. A</em> 76 (August): 023420. <a href="https://doi.org/10.1103/PhysRevA.76.023420">https://doi.org/10.1103/PhysRevA.76.023420</a>.
 </div>
@@ -391,7 +419,7 @@ Appelt, Stephan, F. W. Häsing, U. Sieling, A. Gordji-Nejad, S. Glöggler, and B
 <div id="ref-Kaseman2020" class="csl-entry" role="listitem">
 Kaseman, Derrick C., Per E. Magnelind, Scarlett Widgeon Paisner, Jacob L. Yoder, Marc Alvarez, Algis V. Urbaitis, Michael T. Janicke, Pulak Nath, Michelle A. Espy, and Robert F. Williams. 2020. <span>“<span class="nocase">Design and implementation of a J-coupled spectrometer for multidimensional structure and relaxation detection at low magnetic fields</span>.”</span> <em>Review of Scientific Instruments</em> 91 (5): 054103. <a href="https://doi.org/10.1063/1.5130391">https://doi.org/10.1063/1.5130391</a>.
 </div>
-</div></section><aside id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>60 MHz chosen simply because commercial instruments have been available at that field <em>for forever</em>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
@@ -399,10 +427,9 @@ Kaseman, Derrick C., Per E. Magnelind, Scarlett Widgeon Paisner, Jacob L. Yoder,
 <li id="fn3"><p>This is a general trend. The exact boundaries between various coupling regimes depends on the nuclei involved, the coupling constants and the peak separation in Larmor frequency (in Hz).<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4"><p>Remember, signals are very weak at EF so observing heteronuclei is significantly more challenging. See the <a href="https://chemospec.org/posts/2023-07-19-EF-NMR-1/EF-NMR-1.html">previous post</a> for details.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
-</aside><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div id="quarto-reuse" class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2023,
+</section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2023,
   author = {Hanson, Bryan},
   title = {The n + 1 Rule in {Earth’s} {Field} {NMR}},
-  pages = {undefined},
   date = {2023-09-18},
   url = {http://chemospec.org/posts/2023-09-18-EF-NMR-2/EF-NMR-2.html},
   langid = {en}
@@ -539,38 +566,28 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       }
     }
     stripColumnClz(note)
-    const typesetMath = (el) => {
-      if (window.MathJax) {
-        // MathJax Typeset
-        window.MathJax.typeset([el]);
-      } else if (window.katex) {
-        // KaTeX Render
-        var mathElements = el.getElementsByClassName("math");
-        var macros = [];
-        for (var i = 0; i < mathElements.length; i++) {
-          var texText = mathElements[i].firstChild;
-          if (mathElements[i].tagName == "SPAN") {
-            window.katex.render(texText.data, mathElements[i], {
-              displayMode: mathElements[i].classList.contains('display'),
-              throwOnError: false,
-              macros: macros,
-              fleqn: false
-            });
-          }
-        }
-      }
-    }
     if (id === null || id.startsWith('sec-')) {
       // Special case sections, only their first couple elements
       const container = document.createElement("div");
       if (note.children && note.children.length > 2) {
-        for (let i = 0; i < 2; i++) {
-          container.appendChild(note.children[i].cloneNode(true));
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
         }
-        typesetMath(container);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
         return container.innerHTML
       } else {
-        typesetMath(note);
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
         return note.innerHTML;
       }
     } else {
@@ -579,7 +596,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (anchorLink) {
         anchorLink.remove();
       }
-      typesetMath(note);
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
       return note.innerHTML;
     }
   }
