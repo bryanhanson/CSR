@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2024-01-01">
 <meta name="description" content="Proof of concept software, and a heckuva learning curve">
 
-<title>Chemometrics and Spectroscopy Using R - Building an EF-NMR Part 2</title>
+<title>Chemometrics and Spectroscopy Using R – Building an EF-NMR Part 2</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -337,7 +337,7 @@ cookieconsent.run({
 <span id="cb3-4"><a href="#cb3-4"></a>p1 <span class="ot">&lt;-</span> <span class="fu">events</span>(<span class="fu">event_length_to_event_on_off</span>(ev))</span>
 <span id="cb3-5"><a href="#cb3-5"></a>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="fig-timings" class="quarto-figure quarto-figure-center quarto-float anchored" width="672">
+<div id="fig-timings" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-timings-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="EF-NMR-Build-2_files/figure-html/fig-timings-1.png" class="img-fluid figure-img" width="672">
@@ -358,7 +358,7 @@ Figure&nbsp;1: Event timings. The short delays are too short to be visible.
 <h2 class="anchored" data-anchor-id="implementation-for-arduino">Implementation for Arduino</h2>
 <p>The version of event timing in <code>C</code> was adapted to the Arduino with relatively minor modifications, mostly related to how results are printed to the console (the <code>C</code> and <code>C++</code> languages for Arduino are specialized versions of the languages). I also wrote a system to control the starting and stopping of the scans, thinking ahead of how the program is actually going to be used. All user inputs are in a single file, including a simple version of a pulse program (tons of work will be needed in the future on this piece). My overall goal is to write an entire NMR control and acquistion program that runs completely on the Arduino IDE. Well, almost completely: some other entity will have to slurp up the data coming from the Arduino, as there is very little memory on the Arduino. Not sure if this can be done but that’s the goal. The code for this project is stored in a public repo <a href="https://github.com/bryanhanson/EF-NMR">here</a>.</p>
 <p>The output of a “run” on this “instrument” is shown in <a href="#fig-output" class="quarto-xref">Figure&nbsp;2</a>. The table lists the event name, the Arduino pin that should be activated, and the on/off times for the events. Times are in milliseconds in the example, and are relevant for testing, not an actual NMR scan. A pin value of -1 indicates no pin is active; such an event is just a delay period so the (not yet built) electronics can settle.</p>
-<div id="fig-output" class="quarto-figure quarto-figure-center quarto-float anchored" width="60%">
+<div id="fig-output" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-output-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="imgs/output.png" class="img-fluid figure-img" style="width:60.0%">
@@ -556,7 +556,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      return note.innerHTML;
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
     }
   }
   for (var i=0; i<xrefs.length; i++) {

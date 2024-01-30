@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2023-06-12">
 <meta name="description" content="A super simple design">
 
-<title>Chemometrics and Spectroscopy Using R - DIY NMR in Earth’s Field</title>
+<title>Chemometrics and Spectroscopy Using R – DIY NMR in Earth’s Field</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -497,7 +497,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      return note.innerHTML;
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
     }
   }
   for (var i=0; i<xrefs.length; i++) {

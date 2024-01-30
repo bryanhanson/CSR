@@ -10,7 +10,464 @@
 <atom:link href="http://chemospec.org/index.xml" rel="self" type="application/rss+xml"/>
 <description>Applying chemometrics to spectroscopy using R</description>
 <generator>quarto-99.9.9</generator>
-<lastBuildDate>Mon, 01 Jan 2024 07:00:00 GMT</lastBuildDate>
+<lastBuildDate>Tue, 30 Jan 2024 07:00:00 GMT</lastBuildDate>
+<item>
+  <title>Bitwise Operators in C</title>
+  <dc:creator>Bryan Hanson</dc:creator>
+  <link>http://chemospec.org/posts/2024-01-30-Bitwise-Operators/Bitwise-Operators.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p>For the EF-NMR project, I’ve turned my attention to writing the software to capture the FID, which <em>seemed</em> easier than writing a pulse transmitter.<sup>1</sup> This requires the use of the ADC (analog to digital converter) on the Arduino. Configuring, starting, and stopping the ADC is handled by directly setting bits in a particular register on the Arduino. New territory! This post will serve as a set of notes on what I’ve learned about how this is done. In particular, I want to focus on the code people <em>actually write</em>, which is generally more complex than what one sees in the language reference.</p>
+<section id="the-bitwise-operators-in-c" class="level2">
+<h2 class="anchored" data-anchor-id="the-bitwise-operators-in-c">The Bitwise Operators in <code>C</code></h2>
+<p>The definitions of the bitwise <code>C</code> operators can be found in numerous places, stated with various levels of clarity and understandability. Sometimes the definitions are very terse and seemingly quite clear, but after reading, one simply doesn’t know how to use it. The revered text known as “K &amp; R” doesn’t even devote much space to them, though that may be because microcontrollers were a relatively new thing at the time of <span class="citation" data-cites="KR1988">Kernighan and Ritchie (1988)</span>. The Arduino reference documents give quite a bit more detail but don’t have the complexity seen in the wild.</p>
+<p>The following gives my own interpretation and understanding of the individual operators. To be clear, these definitions don’t really give a sense of <em>why</em> they might be useful or <em>how</em> one would use them.</p>
+<ul>
+<li><strong>OR</strong> (operator: |) compares two bits and sets the destination bit to 1 unless both inputs are 0. It <em>sets</em> a bit.</li>
+<li><strong>AND</strong> (operator: &amp;) compares two bits and sets the destination bit to 0 unless both inputs are 1. It <em>clears</em> a bit.</li>
+<li><strong>XOR</strong> (operator: ^) compares two bits and if they are the same, returns 0, if different, returns 1. It <em>toggles</em> a bit.</li>
+<li><strong>NOT</strong> (operator: ~) is a unary operator which <em>flips</em> all 1’s to 0’s and vice versa.</li>
+<li><strong>Left Shift</strong> (operator: &lt;&lt;) shifts a series of bits left and fills the space with 0’s. Equivalent to multiplying by 2^n.</li>
+<li><strong>Right Shift</strong> (operator: &gt;&gt;) shifts a series of bits right and fills the space with 0’s. Equivalent to dividing by 2^n.</li>
+</ul>
+<p>A key thing to note is that these operators <em>compare</em> two bits (which are either 0 or 1) and returns an updated bit. The exceptions are:</p>
+<ul>
+<li>The left and right shift operators: These operate on a series of bits. You can’t shift a single bit without stomping on adjacent memory. Very ungraceful!</li>
+<li>NOT, the toggle: This flips or toggles a single bit, nothing is compared.</li>
+</ul>
+<p>The reality is that one rarely sees these operators used on a single bit, even NOT. More often, one sees them applied to a byte, a set of 8 bits residing contiguously in memory. Those bytes, at least in the current use, turn out to be registers on the Arduino, our next topic.</p>
+</section>
+<section id="adc-registers" class="level2">
+<h2 class="anchored" data-anchor-id="adc-registers">ADC Registers</h2>
+<p>The ATmega328P microcontroller used in the Arduino Uno has several registers that control the ADC:<sup>2</sup></p>
+<ul>
+<li>ADMUX = ADC multiplexer selection register</li>
+<li>ADCSRA = ADC status and control register A</li>
+<li>ADCSRB = ADC status and control register B</li>
+<li>ADCL and ADCH = ADC data registers</li>
+</ul>
+<p>We’ll use ADCSRA as our example. ADCSRA is of course an acronym. If you look at the iom238p.h file where these things are defined, you find that ADCSRA is an alias for a specific memory address(Figure&nbsp;1).<sup>3</sup> It is the address of the first bit of a single byte, composed of 8 bits, numbered 0-7. In the datasheet we can see what is stored in this register. Each of the individual bits has a name, for instance ADEN, which stands for “ADc ENable”, and in the header file, the name ADEN is aliased to bit 7 (Figure&nbsp;2). So we have an 8 bit memory address with a name and each bit has its own name to make remembering their roles easier. These are the bits we need to control with the bitwise operators in order to configure the ADC.</p>
+<div id="fig-header" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-header-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="http://chemospec.org/posts/2024-01-30-Bitwise-Operators/imgs/header.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-header-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: A portion of the iom328p.h header file showing how acronyms are aliased to memory locations.
+</figcaption>
+</figure>
+</div>
+<div id="fig-register" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-register-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="http://chemospec.org/posts/2024-01-30-Bitwise-Operators/imgs/register.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-register-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Documentation of the ADCSRA register from the datasheet.
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="wild-type-operator-constructs-in-use" class="level2">
+<h2 class="anchored" data-anchor-id="wild-type-operator-constructs-in-use">Wild-Type Operator Constructs in Use</h2>
+<p>As I hinted at earlier, what people actually write is rather different from the simple definitions seen in the reference documents (or my version above). So let’s explore these <em>wild-type</em> examples in detail.</p>
+<section id="simple-direct-assignment" class="level3">
+<h3 class="anchored" data-anchor-id="simple-direct-assignment">Simple Direct Assignment</h3>
+<p>One simple example often seen doesn’t even use the bitwise operators.</p>
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb1-1">ADCSRA <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span></span></code></pre></div>
+<p>In this case, the right-hand-side (RHS) <code>0</code> is interpreted as an 8 bit binary number, <code>0000 0000</code> and this sets all 8 bits to zero at once. This incantation is probably most appropriate to reset the entire register, as all zeros is the default setting for this particular register (though not necessarily other registers).</p>
+</section>
+<section id="direct-assignment-via-binary-literals" class="level3">
+<h3 class="anchored" data-anchor-id="direct-assignment-via-binary-literals">Direct Assignment via Binary Literals</h3>
+<p>If you know the value for every bit you want to set, and want to set them all at once, you can use a binary literal:</p>
+<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb2-1">ADCSRA <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> B00101010<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">// prefix binary number with B, or</span></span>
+<span id="cb2-2">ADCSRA <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bn" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0b00101010</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">// prefix binary number with 0b</span></span></code></pre></div>
+<p>The downside here is that future readers of your code have to look up the details of a register’s bit settings everytime they look at your code. Other methods discussed here use aliases for particular bits (e.g.&nbsp;<code>ADEN</code>) which provide at least some mnemonic assistance. Binary literals are only supported in more recent versions of <code>C</code> but you are likely to be using such a version.</p>
+</section>
+<section id="typical-bitwise-operator-use-in-the-wild" class="level3">
+<h3 class="anchored" data-anchor-id="typical-bitwise-operator-use-in-the-wild">Typical Bitwise Operator Use in the Wild</h3>
+<section id="example-1" class="level4">
+<h4 class="anchored" data-anchor-id="example-1">Example 1</h4>
+<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb3-1">ADCSRA <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|=</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;&lt;</span> ADEN<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">);</span></span></code></pre></div>
+<p>In this incantation there are several interesting things going on. Let’s unpack it starting from the RHS. We see this expression: <code>(1 &lt;&lt; ADEN)</code>, which uses the left shift operator. This means take 1 in binary, so <code>0000 0001</code>, and shift the 1 left <code>ADEN</code> times. If we look at either Figure&nbsp;2 or Figure&nbsp;1, we see that <code>ADEN</code> is 7, so we shift the first bit left 7 places, which gives <code>1000 0000</code> in binary. This is a “bit mask”, it’s used in the next step.</p>
+<p>The operator <code>|=</code> is a variation on the OR operator. It means take whatever is on the RHS, and OR it against the left-hand-side (LHS), and put the result in the LHS.<sup>4</sup> What is the current value of <code>ADCSRA</code> in the LHS? We don’t know in this simple example; presumably you would know in a real life example. Whatever it is, when we OR it with the RHS, bit 7, <code>ADEN</code>, gets set to 1, because of how OR is defined. So bit 7 is <em>set</em> to 1, and all other positions are unchanged.</p>
+<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb4-1">xxxx xxxx <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">// whatever is in ADCSRA</span></span>
+<span id="cb4-2"><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1000</span> <span class="bn" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0000</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">// bitmask from RHS</span></span>
+<span id="cb4-3"><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="er" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">xxx</span> xxxx <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">// result of OR (used to overwrite existing ADCSRA)</span></span></code></pre></div>
+</section>
+<section id="example-2" class="level4">
+<h4 class="anchored" data-anchor-id="example-2">Example 2</h4>
+<p>A more involved example using direct assignment as well as bitwise operators is:</p>
+<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb5-1">ADCSRA <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;&lt;</span> ADPS2<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;&lt;</span> ADPS1<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;&lt;</span> ADPS0<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">);</span></span></code></pre></div>
+<p>which can be unpacked as three bitmasks, OR’d against each other to get a final result to be put directly into <code>ADCSRA</code>. Using the values of <code>ADPS*</code>, we have:</p>
+<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb6-1"><span class="bn" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0000</span> <span class="bn" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0001</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">// 1 &lt;&lt; ADPS0 (note ADPS0 = 0 so this is no shift at all)</span></span>
+<span id="cb6-2"><span class="bn" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0000</span> <span class="bn" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0010</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">// 1 &lt;&lt; ADPS1</span></span>
+<span id="cb6-3"><span class="bn" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0000</span> <span class="bn" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0100</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">// 1 &lt;&lt; ADPS2</span></span>
+<span id="cb6-4"><span class="bn" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0000</span> <span class="bn" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0111</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">// result put directly into ADCSRA overwriting what is there originally</span></span></code></pre></div>
+<p>Note that the result overwrites the current value of <code>ADCSRA</code>; the four most significant bits are set to zero, regardless of whatever value was there. The next example shows you how to avoid that.</p>
+</section>
+<section id="example-3" class="level4">
+<h4 class="anchored" data-anchor-id="example-3">Example 3</h4>
+<p><em>Almost</em> the same action can be accomplished with the following code, except it preserves the current settings in <code>ADCSRA</code> and uses a helper function, <code>bit()</code>, which is specific to Arduino:</p>
+<div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb7-1">ADCSRA <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|=</span> bit<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>ADPS0<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|</span> bit<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>ADPS1<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|</span> bit<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>ADPS2<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">);</span></span></code></pre></div>
+<p><code>bit()</code> is an Arduino function that takes an integer argument and returns an 8 bit value with 1 in the position given by the argument, and zeros elsewhere.<sup>5</sup> Thus it unpacks to:</p>
+<div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb8-1"><span class="bn" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0000</span> <span class="bn" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0001</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">// bit(ADPS0)</span></span>
+<span id="cb8-2"><span class="bn" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0000</span> <span class="bn" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0010</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">// bit(ADPS1)</span></span>
+<span id="cb8-3"><span class="bn" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0000</span> <span class="bn" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0100</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">// bit(ADPS2)</span></span>
+<span id="cb8-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">// the above 3 lines create the same bitmasks as in Example 2; together they become:</span></span>
+<span id="cb8-5"><span class="bn" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0000</span> <span class="bn" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0111</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">// result of OR the above 3 bitmasks</span></span>
+<span id="cb8-6">xxxx xxxx <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">// whatever is in ADCSRA</span></span>
+<span id="cb8-7">xxxx x111 <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">// result of OR ADCSRA against 0000 0111</span></span></code></pre></div>
+<p>In the previous two examples <code>1 &lt;&lt; ADPS0</code> or <code>bit(ADPS0)</code> does very little since <code>ADPS0</code> is 0. However, many coders seem to prefer a little verbosity to make clear what they are trying to achieve.<sup>6</sup></p>
+</section>
+<section id="example-4" class="level4">
+<h4 class="anchored" data-anchor-id="example-4">Example 4</h4>
+<p>Let’s say you wanted to turn the ADC on if it was off, and off if it was on. This is a job for the <code>^</code> or toggle operator. You can use <code>ADCSRA ^= (1 &lt;&lt; ADEN)</code> which unpacks as follows (<code>ADEN</code> is 7):</p>
+<div class="sourceCode" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb9-1"><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="er" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">xxx</span> xxxx <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">// initial (on state) of the ADC; other bits unknown</span></span>
+<span id="cb9-2"><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1000</span> <span class="bn" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0000</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">// result of (1 &lt;&lt; ADEN) </span></span>
+<span id="cb9-3"><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span><span class="er" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">xxx</span> xxxx <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">// result of toggling lines 1 and 2; put into ADCSRA; ADC is off</span></span>
+<span id="cb9-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">// or, starting with ADC off</span></span>
+<span id="cb9-5"><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span><span class="er" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">xxx</span> xxxx <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">// ADC is off</span></span>
+<span id="cb9-6"><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1000</span> <span class="bn" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0000</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">// result of (1 &lt;&lt; ADEN)</span></span>
+<span id="cb9-7"><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="er" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">xxx</span> xxxx <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">// result put into ADCSRA; ADC is now on</span></span></code></pre></div>
+<p>Note that the <code>x</code> bits are toggled against <code>0</code>, which means they are <em>unchanged</em>. See the <a href="https://en.wikipedia.org/wiki/Bitwise_operations_in_C">truth table here</a>.</p>
+</section>
+</section>
+<section id="functions-that-are-collections-of-bitwise-operators" class="level3">
+<h3 class="anchored" data-anchor-id="functions-that-are-collections-of-bitwise-operators">Functions that are collections of bitwise operators</h3>
+<p>The function <code>_BV(bit)</code> is aliased to <code>(1 &lt;&lt; (bit))</code> and for Arduino you can use <code>bitSet(x, n)</code> or <code>sbi(x, n)</code> to write a 1 to the <code>n</code>-th position of register <code>x</code>. Thus,</p>
+<div class="sourceCode" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb10-1">ADCSRA <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|=</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;&lt;</span> ADEN<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">);</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">// seen earlier</span></span>
+<span id="cb10-2">ADCSRA <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|=</span> _BV<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>ADEN<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">);</span></span>
+<span id="cb10-3">bitSet<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>ADCSRA<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span> ADEN<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">);</span></span>
+<span id="cb10-4">sbi<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>ADCSRA<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span> ADEN<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">);</span></span></code></pre></div>
+<p>are equivalent ways to change bit 7 in <code>ADCSRA</code>.</p>
+<p>For Arduino, you also have <code>bitClear(x, n)</code> which writes a 0 at the <code>n</code>-th position of register <code>x</code>, essentially the complement of <code>bitSet(x, n)</code>. Internally, it is defined as <code>((x) &amp;= ~(1 &lt;&lt; (n)))</code>. Alternatively, one can use <code>cbi(x, n)</code>, the complement of <code>sbi(x, n)</code>. Let’s say you had <code>0000 0110</code> in <code>ADCSRA</code> and wanted to clear the 2nd bit.</p>
+<div class="sourceCode" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb11-1">bitClear<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>ADCSRA<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">);</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">// expands to the following steps:</span></span>
+<span id="cb11-2"><span class="bn" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0000</span> <span class="bn" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0110</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">// initial value in ADCSRA</span></span>
+<span id="cb11-3"><span class="bn" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0000</span> <span class="bn" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0010</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">// value of bit mask (1 &lt;&lt; 1)</span></span>
+<span id="cb11-4"><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1111</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1101</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">// value of ~(1 &lt;&lt; 1) where all bits have been toggled/flipped</span></span>
+<span id="cb11-5"><span class="bn" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0000</span> <span class="bn" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0100</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">// value after &amp; comparing line 2 to line 3, writing 1 if each mask position is 1</span></span></code></pre></div>
+<p>Notice that the 2nd bit has been cleared. The <code>=</code> part of <code>&amp;=</code> assigns the result to the LHS, namely <code>ADCSRA</code>.</p>
+<p><em>Note that <code>sbi()</code> and <code>cbi()</code> only work for certain registers on Arduino.</em></p>
+<p>This <a href="https://stackoverflow.com/questions/47981/how-to-set-clear-and-toggle-a-single-bit/47990#47990">StackOverflow Question</a> has examples of more functions and an interesting discussion of pros, cons and caveats.</p>
+</section>
+</section>
+<section id="sanity-preserving-helper-function" class="level2">
+<h2 class="anchored" data-anchor-id="sanity-preserving-helper-function">Sanity-Preserving Helper Function</h2>
+<p>I modified the function found <a href="https://forum.arduino.cc/t/how-can-i-serial-println-a-binary-output-that-will-give-all-the-leading-zeros-of-a-variable/962247/2">here</a> to print register contents (well, bytes generally) in an easy-to-read format.</p>
+<div class="sourceCode" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode numberSource {c} number-lines code-with-copy"><code class="sourceCode"><span id="cb12-1">void print_bin(byte aByte) {</span>
+<span id="cb12-2">  for (int8_t aBit = 7; aBit &gt;= 0; aBit--) {</span>
+<span id="cb12-3">    if (aBit == 3) {</span>
+<span id="cb12-4">      Serial.print(" "); // space between nibbles</span>
+<span id="cb12-5">    }</span>
+<span id="cb12-6">    Serial.print(bitRead(aByte, aBit) ? '1' : '0');</span>
+<span id="cb12-7">  }</span>
+<span id="cb12-8">  Serial.println(" ");</span>
+<span id="cb12-9">}</span></code></pre></div>
+<p>Let’s use it to check a set of operations which blend Example 2 and Example 3 above, and stick to pure <code>C</code> operations. This code chunk</p>
+<div class="sourceCode" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode numberSource {c} number-lines code-with-copy"><code class="sourceCode"><span id="cb13-1">  ADCSRA = B10001000; // arbitrary initial value</span>
+<span id="cb13-2">  print_bin(ADCSRA);</span>
+<span id="cb13-3">  ADCSRA |= (1 &lt;&lt; ADPS2) | (1 &lt;&lt; ADPS1) | (1 &lt;&lt; ADPS0);</span>
+<span id="cb13-4">  print_bin(ADCSRA);</span></code></pre></div>
+<p>displays the following:</p>
+<div class="sourceCode" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb14-1"><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1000</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1000</span> </span>
+<span id="cb14-2"><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1000</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1111</span></span></code></pre></div>
+<p>Use it to check your work!</p>
+
+
+
+</section>
+
+
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
+<div id="ref-KR1988" class="csl-entry">
+Kernighan, Brian W., and Dennis M. Ritchie. 1988. <em>The <span>C</span> Programming Language (2nd Edition)</em>. Many reprint publishers exist.
+</div>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Let me state for the record that this is just a first version; additional complexity will almost certainly be needed later.↩︎</p></li>
+<li id="fn2"><p>The details on each of these can be found on the datasheet which can be found via a search engine.↩︎</p></li>
+<li id="fn3"><p>The header file is available many places on the internet.↩︎</p></li>
+<li id="fn4"><p>All the operators can be used the same way: <code>|=</code>, <code>^=</code>, <code>&amp;=</code>, <code>&lt;&lt;=</code> and <code>&gt;&gt;=</code>. For example <code>C &amp;= 2</code> should be thought of as <code>C = C &amp; 2</code>. See this <a href="https://stackoverflow.com/a/14296609/633251">SO answer</a>.↩︎</p></li>
+<li id="fn5"><p>It’s essential to be careful with language to be clear. A byte is 8 bits, numbered from the right position as 0, i.e.&nbsp;76543210. So the first bit is at position 0, etc. Thus <code>bit(0)</code> returns <code>0000 0001</code>.↩︎</p></li>
+<li id="fn6"><p>These three bits are used as a group to set the clock speed of the ADC, so it makes sense to make it clear you are using all three values <em>together</em>.↩︎</p></li>
+</ol>
+</section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2024,
+  author = {Hanson, Bryan},
+  title = {Bitwise {Operators} in {C}},
+  date = {2024-01-30},
+  url = {http://chemospec.org/posts/2024-01-30-Bitwise-Operators/Bitwise-Operators.html},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2024" class="csl-entry quarto-appendix-citeas">
+Hanson, Bryan. 2024. <span>“Bitwise Operators in C.”</span> January 30,
+2024. <a href="http://chemospec.org/posts/2024-01-30-Bitwise-Operators/Bitwise-Operators.html">http://chemospec.org/posts/2024-01-30-Bitwise-Operators/Bitwise-Operators.html</a>.
+</div></div></section></div> ]]></description>
+  <category>C</category>
+  <category>Arduino</category>
+  <guid>http://chemospec.org/posts/2024-01-30-Bitwise-Operators/Bitwise-Operators.html</guid>
+  <pubDate>Tue, 30 Jan 2024 07:00:00 GMT</pubDate>
+</item>
 <item>
   <title>Building an EF-NMR Part 2</title>
   <dc:creator>Bryan Hanson</dc:creator>
@@ -53,6 +510,7 @@ font-style: inherit;">#'</span></span>
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">function</span>(event_lengths) {</span>
 <span id="cb1-9">  off <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -116,6 +574,7 @@ font-style: inherit;">#'</span></span>
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">function</span>(<span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">my_events =</span> <span class="cn" style="color: #8f5902;
@@ -246,7 +705,7 @@ background-color: null;
 font-style: inherit;">event_length_to_event_on_off</span>(ev))</span>
 <span id="cb3-5">p1</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-timings" class="quarto-figure quarto-figure-center quarto-float anchored" width="672">
+<div id="fig-timings" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-timings-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2024-01-01-EF-NMR-Build-2/EF-NMR-Build-2_files/figure-html/fig-timings-1.png" class="img-fluid figure-img" width="672">
@@ -267,7 +726,7 @@ Figure&nbsp;1: Event timings. The short delays are too short to be visible.
 <h2 class="anchored" data-anchor-id="implementation-for-arduino">Implementation for Arduino</h2>
 <p>The version of event timing in <code>C</code> was adapted to the Arduino with relatively minor modifications, mostly related to how results are printed to the console (the <code>C</code> and <code>C++</code> languages for Arduino are specialized versions of the languages). I also wrote a system to control the starting and stopping of the scans, thinking ahead of how the program is actually going to be used. All user inputs are in a single file, including a simple version of a pulse program (tons of work will be needed in the future on this piece). My overall goal is to write an entire NMR control and acquistion program that runs completely on the Arduino IDE. Well, almost completely: some other entity will have to slurp up the data coming from the Arduino, as there is very little memory on the Arduino. Not sure if this can be done but that’s the goal. The code for this project is stored in a public repo <a href="https://github.com/bryanhanson/EF-NMR">here</a>.</p>
 <p>The output of a “run” on this “instrument” is shown in Figure&nbsp;2. The table lists the event name, the Arduino pin that should be activated, and the on/off times for the events. Times are in milliseconds in the example, and are relevant for testing, not an actual NMR scan. A pin value of -1 indicates no pin is active; such an event is just a delay period so the (not yet built) electronics can settle.</p>
-<div id="fig-output" class="quarto-figure quarto-figure-center quarto-float anchored" width="60%">
+<div id="fig-output" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-output-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2024-01-01-EF-NMR-Build-2/imgs/output.png" class="img-fluid figure-img" style="width:60.0%">
@@ -325,7 +784,7 @@ Hanson, Bryan. 2024. <span>“Building an EF-NMR Part 2.”</span> January
 <p>Michal’s design uses two coils: a polarization coil, and a transmit/receive (T/R) coil. This post will cover the construction of the polarization coil. Michal’s polarization coil is a three-layer solenoid constructed with 18 AWG magnet wire. Each layer is a separate wire but in operation, the three layers are wired in parallel. I scaled the coil dimensions down somewhat so that I could use materials that are readily accessible to me.<sup>1</sup> The plan is to use a 50 mL centrifuge tube as the sample holder. The sample will be placed in a T/R coil wound around a 1.25” schedule 40 PVC pipe. The T/R coil will be located inside the polarization coil, which will be wound on a 2” schedule 40 PVC pipe. The dimensions of these pipes were chosen to allow the sample to nest easily inside the T/R coil which nests inside the polarization coil. Figure&nbsp;1 shows a cross-section of the design.<sup>2</sup></p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-cs" class="quarto-figure quarto-figure-center quarto-float anchored" width="408">
+<div id="fig-cs" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-cs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-10-24-EF-NMR-Build-1/EF-NMR-Build-1_files/figure-html/fig-cs-1.png" class="img-fluid figure-img" width="408">
@@ -551,8 +1010,10 @@ background-color: null;
 font-style: inherit;"># initialize storage</span></span>
 <span id="cb1-3"><span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">for</span> (i <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">in</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
@@ -749,7 +1210,7 @@ August 23, 2023. <a href="http://chemospec.org/posts/2023-08-23-CS-Delta/CS-Delt
 
 <p>Yesterday I pushed a major update to the <a href="https://bryanhanson.github.io/FOSS4Spectroscopy/">FOSS for Spectroscopy</a> web site. Remember that this is a lightly curated and imperfect process; I have some scripts that automate the discovery of packages, but there is still a considerable amount of manual inspection and decision making. If you think I’ve missed a package, please let me know.</p>
 <p>It’s been nearly a year, and there are a number of new entries. Let’s do a quick comparison of the results from November 2022 versus August 2023. Back in November 2022 there were 246 packages; nearly a year later there are 287. Figure&nbsp;1 shows a Venn diagram of the changes.</p>
-<div id="fig-venn" class="quarto-figure quarto-figure-center quarto-float anchored" width="60%">
+<div id="fig-venn" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-venn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-08-15-F4S-Update/Venn.png" class="img-fluid figure-img" style="width:60.0%">
@@ -1099,7 +1560,7 @@ Table&nbsp;1: Important NMR parameters for ~100% abundant spin <img src="https:/
 <p>where <img src="https://latex.codecogs.com/png.latex?%5Chbar"> is <img src="https://latex.codecogs.com/png.latex?%5Cfrac%7Bh%7D%7B2%5Cpi%7D">. A plot for <img src="https://latex.codecogs.com/png.latex?%5Cce%7B%5E%7B1%7DH%7D"> is shown in Figure&nbsp;1; the right-most point corresponds to a 1,000 MHz instrument. Clearly as <img src="https://latex.codecogs.com/png.latex?B_o"> goes to zero the <img src="https://latex.codecogs.com/png.latex?%5CDelta%20E"> goes to zero in a simple linear fashion.</p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-DeltaE" class="quarto-figure quarto-figure-center quarto-float anchored" width="672">
+<div id="fig-DeltaE" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-DeltaE-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-07-19-EF-NMR-1/EF-NMR-1_files/figure-html/fig-DeltaE-1.png" class="img-fluid figure-img" width="672">
@@ -1577,7 +2038,7 @@ Table&nbsp;1: Relative sample concentrations and corresponding voltages and abso
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-calcurve1" class="quarto-figure quarto-figure-center quarto-float anchored" width="672">
+<div id="fig-calcurve1" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-calcurve1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-07-16-Photometer/Photometer_files/figure-html/fig-calcurve1-1.png" class="img-fluid figure-img" width="672">
@@ -1645,7 +2106,7 @@ F-statistic: 43.64 on 1 and 1 DF,  p-value: 0.09564</code></pre>
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-calcurve2" class="quarto-figure quarto-figure-center quarto-float anchored" width="672">
+<div id="fig-calcurve2" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-calcurve2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2023-07-16-Photometer/Photometer_files/figure-html/fig-calcurve2-1.png" class="img-fluid figure-img" width="672">
@@ -2350,9 +2811,11 @@ font-style: inherit;">$</span>values)))</span></code></pre></div>
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">function</span>(M) {</span>
 <span id="cb39-2">  <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> (<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">!</span><span class="fu" style="color: #4758AB;
@@ -2394,6 +2857,7 @@ background-color: null;
 font-style: inherit;">all.equal</span>(tst1, tst2))</span>
 <span id="cb39-7">  <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> (norm) orthog <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
@@ -2409,6 +2873,7 @@ background-color: null;
 font-style: inherit;">1</span>])))</span>
 <span id="cb39-8">  <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> (orthog) <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">message</span>(<span class="st" style="color: #20794D;
@@ -2419,9 +2884,11 @@ font-style: inherit;">\n</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"</span>) <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">else</span> </span>
 <span id="cb39-9">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> (norm) <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">message</span>(<span class="st" style="color: #20794D;
@@ -2432,6 +2899,7 @@ font-style: inherit;">\n</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"</span>) <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">else</span></span>
 <span id="cb39-10">    <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -2942,6 +3410,7 @@ font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">20</span>, <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">function</span>(x,y) <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">sin</span>(<span class="fu" style="color: #4758AB;
@@ -4322,7 +4791,7 @@ font-style: inherit;">"autoscale"</span>)</span></code></pre></div>
 background-color: null;
 font-style: inherit;">plotScree</span>(c_pca)</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-screeAlt" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" width="80%">
+<div id="fig-screeAlt" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-screeAlt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-screeAlt-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -4358,7 +4827,7 @@ background-color: null;
 font-style: inherit;">0.02</span>)</span>
 <span id="cb5-2">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-scores12" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" width="80%">
+<div id="fig-scores12" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-scores12-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-scores12-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -4399,7 +4868,7 @@ background-color: null;
 font-style: inherit;">0.02</span>)</span>
 <span id="cb6-3">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-scores23" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" width="80%">
+<div id="fig-scores23" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-scores23-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-scores23-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -4428,7 +4897,7 @@ background-color: null;
 font-style: inherit;">2</span>)</span>
 <span id="cb7-2">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-loadings" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" width="80%">
+<div id="fig-loadings" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-loadings-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-loadings-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -4453,7 +4922,7 @@ background-color: null;
 font-style: inherit;">0.001</span>)</span>
 <span id="cb8-2">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-splot" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" width="80%">
+<div id="fig-splot" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-splot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-splot-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -4552,7 +5021,7 @@ font-style: inherit;">ellipse =</span> <span class="cn" style="color: #8f5902;
 background-color: null;
 font-style: inherit;">TRUE</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-plsda-indiv" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" width="80%">
+<div id="fig-plsda-indiv" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-plsda-indiv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-plsda-indiv-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -4583,7 +5052,7 @@ font-style: inherit;">5</span>)</span>
 background-color: null;
 font-style: inherit;">plot</span>(perf.splsda)</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-plsda-perf" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" width="80%">
+<div id="fig-plsda-perf" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-plsda-perf-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-plsda-perf-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -4739,7 +5208,7 @@ font-style: inherit;"># no scaling is the default</span></span></code></pre></di
 background-color: null;
 font-style: inherit;">plotScree</span>(c_pca)</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-screeAlt" class="quarto-figure quarto-figure-center quarto-float anchored" width="80%" data-fig-align="center">
+<div id="fig-screeAlt" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-screeAlt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-screeAlt-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -4760,7 +5229,7 @@ font-style: inherit;">style =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"trad"</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-screeTrad" class="quarto-figure quarto-figure-center quarto-float anchored" width="80%" data-fig-align="center">
+<div id="fig-screeTrad" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-screeTrad-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-screeTrad-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -4785,7 +5254,7 @@ font-style: inherit;">pcs =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">10</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-cv-pca" class="quarto-figure quarto-figure-center quarto-float anchored" width="80%" data-fig-align="center">
+<div id="fig-cv-pca" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-cv-pca-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-cv-pca-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -4826,7 +5295,7 @@ background-color: null;
 font-style: inherit;">0.02</span>)</span>
 <span id="cb8-2">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-scores12" class="quarto-figure quarto-figure-center quarto-float anchored" width="80%" data-fig-align="center">
+<div id="fig-scores12" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-scores12-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-scores12-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -4866,7 +5335,7 @@ background-color: null;
 font-style: inherit;">0.02</span>)</span>
 <span id="cb9-2">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-scores23" class="quarto-figure quarto-figure-center quarto-float anchored" width="80%" data-fig-align="center">
+<div id="fig-scores23" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-scores23-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-scores23-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -4961,7 +5430,7 @@ background-color: null;
 font-style: inherit;">"black"</span>)</span>
 <span id="cb10-6">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-hotelling1" class="quarto-figure quarto-figure-center quarto-float anchored" width="80%" data-fig-align="center">
+<div id="fig-hotelling1" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-hotelling1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-hotelling1-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -4987,7 +5456,7 @@ background-color: null;
 font-style: inherit;">"OD"</span>)</span>
 <span id="cb11-2">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-diagOD" class="quarto-figure quarto-figure-center quarto-float anchored" width="80%" data-fig-align="center">
+<div id="fig-diagOD" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-diagOD-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-diagOD-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -5011,7 +5480,7 @@ background-color: null;
 font-style: inherit;">"SD"</span>)</span>
 <span id="cb12-2">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-diagSD" class="quarto-figure quarto-figure-center quarto-float anchored" width="80%" data-fig-align="center">
+<div id="fig-diagSD" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-diagSD-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-diagSD-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -5197,6 +5666,7 @@ font-style: inherit;">$</span>Imports)</span></code></pre></div>
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">function</span>(string) {</span>
 <span id="cb6-2">  string <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -5271,6 +5741,7 @@ font-style: inherit;">$</span>Imports)</span>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">length</span>(imp) <span class="sc" style="color: #5E5E5E;
@@ -5293,8 +5764,10 @@ background-color: null;
 font-style: inherit;"># Boolean to keep track of whether we found a package or not</span></span>
 <span id="cb9-3">  <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">for</span> (i <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">in</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
@@ -5330,6 +5803,7 @@ background-color: null;
 font-style: inherit;">TRUE</span>)</span>
 <span id="cb9-6">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">length</span>(g_imp) <span class="sc" style="color: #5E5E5E;
@@ -5359,6 +5833,7 @@ font-style: inherit;"># run from the package top level</span></span>
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">function</span>() {</span>
 <span id="cb10-3"></span>
 <span id="cb10-4">  <span class="co" style="color: #5E5E5E;
@@ -5371,6 +5846,7 @@ font-style: inherit;"># from strings read by read.dcf</span></span>
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">function</span>(string) {</span>
 <span id="cb10-7">    string <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -5442,6 +5918,7 @@ background-color: null;
 font-style: inherit;">$</span>Imports)</span>
 <span id="cb10-17">  <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">length</span>(imp) <span class="sc" style="color: #5E5E5E;
@@ -5455,6 +5932,7 @@ background-color: null;
 font-style: inherit;">"No Imports: entries found"</span>)</span>
 <span id="cb10-18">  <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">length</span>(imp) <span class="sc" style="color: #5E5E5E;
@@ -5473,8 +5951,10 @@ background-color: null;
 font-style: inherit;">length</span>(imp))</span>
 <span id="cb10-20">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">for</span> (i <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">in</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
@@ -5511,6 +5991,7 @@ background-color: null;
 font-style: inherit;"># always found once in DESCRIPTION, hence &gt; 1</span></span>
 <span id="cb10-24">      <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">length</span>(g_imp) <span class="sc" style="color: #5E5E5E;
@@ -5537,6 +6018,7 @@ background-color: null;
 font-style: inherit;">$</span>Suggests)</span>
 <span id="cb10-30">  <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">length</span>(sug) <span class="sc" style="color: #5E5E5E;
@@ -5550,6 +6032,7 @@ background-color: null;
 font-style: inherit;">"No Suggests: entries found"</span>)</span>
 <span id="cb10-31">  <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">length</span>(sug) <span class="sc" style="color: #5E5E5E;
@@ -5568,8 +6051,10 @@ background-color: null;
 font-style: inherit;">length</span>(sug))</span>
 <span id="cb10-33">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">for</span> (i <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">in</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
@@ -5606,6 +6091,7 @@ background-color: null;
 font-style: inherit;"># always found once in DESCRIPTION, hence &gt; 1</span></span>
 <span id="cb10-37">      <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">length</span>(g_sug) <span class="sc" style="color: #5E5E5E;
@@ -5879,608 +6365,6 @@ Suggests?”</span> February 9, 2022. <a href="http://chemospec.org/posts/2022-0
   <category>Developers</category>
   <guid>http://chemospec.org/posts/2022-02-09-Imports-Suggests/2022-02-09-Imports-Suggests.html</guid>
   <pubDate>Wed, 09 Feb 2022 07:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>Metabolic Phenotyping Protocol Part 1</title>
-  <dc:creator>Bryan Hanson</dc:creator>
-  <link>http://chemospec.org/posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<p>If you aren’t familiar with <code>ChemoSpec</code>, you might wish to look at the introductory <a href="https://bryanhanson.github.io/ChemoSpec/articles/ChemoSpec.html">vignette</a> first.</p>
-<section id="background" class="level1">
-<h1>Background</h1>
-<p><span class="citation" data-cites="Blaise2021">Blaise et al. (2021)</span> have published a detailed protocol for metabolomic phenotyping. They illustrate the protocol using a data set composed of 139 <sup>1</sup>H HR-MAS SS-NMR spectra <span class="citation" data-cites="Blaise2007">(Blaise et al. 2007)</span> of the model organism <em>Caenorhabditis elegans</em>. There are two genotypes, wild type and a mutant, and worms from two life stages.</p>
-<p><em>This series of posts follows the published protocol closely in order to illustrate how to implement the protocol using <code>ChemoSpec</code>. As in any chemometric analysis, there are decisions to be made about how to process the data. In these posts we are interested in which functions to use, and how to examine the results. We are not exploring all possible data processing choices, and argument choices are not necessarily optimized.</em></p>
-</section>
-<section id="import-the-data" class="level1">
-<h1>Import the Data</h1>
-<p>The data set is large, over 30 Mb, so we will grab it directly from the Github repo where it is stored. We will use a custom function to grab the data (you can see the function in the source for this document if interested). The URLs given below point to the frequency scale, the raw data matrix and the variables that describe the sample classification by genotype and life stage (L2 are gravid adults, L4 are larvae).</p>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1">urls <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"https://raw.githubusercontent.com/Gscorreia89/chemometrics-tutorials/master/data/ppm.csv"</span>,</span>
-<span id="cb1-2">    <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"https://raw.githubusercontent.com/Gscorreia89/chemometrics-tutorials/master/data/X_spectra.csv"</span>,</span>
-<span id="cb1-3">    <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"https://raw.githubusercontent.com/Gscorreia89/chemometrics-tutorials/master/data/worm_yvars.csv"</span>)</span>
-<span id="cb1-4">raw <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">get_csvs_from_github</span>(urls, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">sep =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">","</span>)  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># a list of data sets</span></span>
-<span id="cb1-5"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">names</span>(raw)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "ppm.csv"        "X_spectra.csv"  "worm_yvars.csv"</code></pre>
-</div>
-</div>
-</section>
-<section id="construct-the-spectra-object" class="level1">
-<h1>Construct the Spectra Object</h1>
-<p>The format of the data as provided in Github is not really suited to using either of the built-in import functions in <code>ChemoSpec</code>. Therefore we will construct the <code>Spectra</code> object by hand, a useful exercise in its own right. The requirements for a <code>Spectra</code> object are described in <code>?Spectra</code>.</p>
-<section id="process-the-raw-data" class="level2">
-<h2 class="anchored" data-anchor-id="process-the-raw-data">Process the Raw Data</h2>
-<p>First, we’ll take the results in <code>raw</code> and convert them to the proper form. Each element of <code>raw</code> is a data frame.</p>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># frequencies are in the 1st list element</span></span>
-<span id="cb3-2">freq <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">unlist</span>(raw[[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>]], <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">use.names =</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">FALSE</span>)</span>
-<span id="cb3-3"></span>
-<span id="cb3-4"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># intensities are in the 2nd list element</span></span>
-<span id="cb3-5">data <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">as.matrix</span>(raw[[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>]])</span>
-<span id="cb3-6"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">dimnames</span>(data) <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">NULL</span>  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># remove the default data frame col names</span></span>
-<span id="cb3-7">ns <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">nrow</span>(data)  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># ns = number of samples - used later</span></span>
-<span id="cb3-8"></span>
-<span id="cb3-9"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># get genotype &amp; lifestage, recode into something more readible</span></span>
-<span id="cb3-10">yvars <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> raw[[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span>]]</span>
-<span id="cb3-11"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">names</span>(yvars) <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"genotype"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"stage"</span>)</span>
-<span id="cb3-12">yvars<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>genotype <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ifelse</span>(yvars<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>genotype <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>L, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"WT"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Mut"</span>)</span>
-<span id="cb3-13">yvars<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>stage <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ifelse</span>(yvars<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>stage <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>L, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"L2"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"L4"</span>)</span>
-<span id="cb3-14"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">table</span>(yvars)  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># quick look at how many in each group</span></span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>        stage
-genotype L2 L4
-     Mut 32 33
-     WT  34 40</code></pre>
-</div>
-</div>
-</section>
-<section id="assemble-the-spectra-object-by-hand" class="level2">
-<h2 class="anchored" data-anchor-id="assemble-the-spectra-object-by-hand">Assemble the Spectra Object by Hand</h2>
-<p>Next we’ll construct some useful sample names, create the groups vector, assign the colors and symbols, and finally put it all together into a <code>Spectra</code> object.</p>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># build up sample names to include the group membership</span></span>
-<span id="cb5-2">sample_names <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">as.character</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span>ns)</span>
-<span id="cb5-3">sample_names <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">paste</span>(sample_names, yvars<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>genotype, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">sep =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"_"</span>)</span>
-<span id="cb5-4">sample_names <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">paste</span>(sample_names, yvars<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>stage, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">sep =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"_"</span>)</span>
-<span id="cb5-5"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">head</span>(sample_names)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "1_WT_L4"  "2_Mut_L4" "3_Mut_L4" "4_WT_L4"  "5_Mut_L4" "6_WT_L4" </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># use the sample names to create the groups vector</span></span>
-<span id="cb7-2">grp <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">gsub</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"[0-9]+_"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">""</span>, sample_names)  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># remove 1_ etc, leaving WT_L2 etc</span></span>
-<span id="cb7-3">groups <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">as.factor</span>(grp)</span>
-<span id="cb7-4"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">levels</span>(groups)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "Mut_L2" "Mut_L4" "WT_L2"  "WT_L4" </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># set up the colors based on group membership</span></span>
-<span id="cb9-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">data</span>(Col12)  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># see ?colorSymbol for a swatch</span></span>
-<span id="cb9-3">colors <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> grp</span>
-<span id="cb9-4">colors <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ifelse</span>(colors <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"WT_L2"</span>, Col12[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>], colors)</span>
-<span id="cb9-5">colors <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ifelse</span>(colors <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"WT_L4"</span>, Col12[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>], colors)</span>
-<span id="cb9-6">colors <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ifelse</span>(colors <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Mut_L2"</span>, Col12[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span>], colors)</span>
-<span id="cb9-7">colors <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ifelse</span>(colors <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Mut_L4"</span>, Col12[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">4</span>], colors)</span>
-<span id="cb9-8"></span>
-<span id="cb9-9"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># set up the symbols based on group membership</span></span>
-<span id="cb9-10">sym <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> grp  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># see ?points for the symbol codes</span></span>
-<span id="cb9-11">sym <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ifelse</span>(sym <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"WT_L2"</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>, sym)</span>
-<span id="cb9-12">sym <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ifelse</span>(sym <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"WT_L4"</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">16</span>, sym)</span>
-<span id="cb9-13">sym <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ifelse</span>(sym <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Mut_L2"</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, sym)</span>
-<span id="cb9-14">sym <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ifelse</span>(sym <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Mut_L4"</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">15</span>, sym)</span>
-<span id="cb9-15">sym <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">as.integer</span>(sym)</span>
-<span id="cb9-16"></span>
-<span id="cb9-17"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># set up the alt symbols based on group membership</span></span>
-<span id="cb9-18">alt.sym <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> grp</span>
-<span id="cb9-19">alt.sym <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ifelse</span>(alt.sym <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"WT_L2"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"w2"</span>, alt.sym)</span>
-<span id="cb9-20">alt.sym <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ifelse</span>(alt.sym <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"WT_L4"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"w4"</span>, alt.sym)</span>
-<span id="cb9-21">alt.sym <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ifelse</span>(alt.sym <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Mut_L2"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"m2"</span>, alt.sym)</span>
-<span id="cb9-22">alt.sym <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">ifelse</span>(alt.sym <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Mut_L4"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"m4"</span>, alt.sym)</span>
-<span id="cb9-23"></span>
-<span id="cb9-24"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># put it all together; see ?Spectra for requirements</span></span>
-<span id="cb9-25">Worms <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">list</span>()</span>
-<span id="cb9-26">Worms<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>freq <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> freq</span>
-<span id="cb9-27">Worms<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>data <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> data</span>
-<span id="cb9-28">Worms<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>names <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> sample_names</span>
-<span id="cb9-29">Worms<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>groups <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> groups</span>
-<span id="cb9-30">Worms<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>colors <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> colors</span>
-<span id="cb9-31">Worms<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>sym <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> sym</span>
-<span id="cb9-32">Worms<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>alt.sym <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> alt.sym</span>
-<span id="cb9-33">Worms<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>unit <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"ppm"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"intensity"</span>)</span>
-<span id="cb9-34">Worms<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>desc <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"C. elegans metabolic phenotyping study (Blaise 2007)"</span></span>
-<span id="cb9-35"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">class</span>(Worms) <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Spectra"</span></span>
-<span id="cb9-36"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">chkSpectra</span>(Worms)  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># verify we have everything correct</span></span>
-<span id="cb9-37"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">sumSpectra</span>(Worms)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
- C. elegans metabolic phenotyping study (Blaise 2007) 
-
-    There are 139 spectra in this set.
-    The y-axis unit is intensity.
-
-    The frequency scale runs from
-    8.9995 to 5e-04 ppm
-    There are 8600 frequency values.
-    The frequency resolution is
-    0.001 ppm/point.
-
-    This data set is not continuous
-    along the frequency axis.
-    Here are the data chunks:
-
-  beg.freq end.freq   size beg.indx end.indx
-1   8.9995   5.0005 -3.999        1     4000
-2   4.5995   0.0005 -4.599     4001     8600
-
-    The spectra are divided into 4 groups: 
-
-   group no.     color symbol alt.sym
-1 Mut_L2  32 #FB0D16FF      0      m2
-2 Mut_L4  33 #FFC0CBFF     15      m4
-3  WT_L2  34 #511CFCFF      1      w2
-4  WT_L4  40 #2E94E9FF     16      w4
-
-
-*** Note: this is an S3 object
-of class 'Spectra'</code></pre>
-</div>
-</div>
-</section>
-<section id="plot-it-to-check-it" class="level2">
-<h2 class="anchored" data-anchor-id="plot-it-to-check-it">Plot it to check it</h2>
-<p>Let’s look at one sample from each group to make sure everything looks reasonable (Figure Figure&nbsp;1). At least these four spectra look good. Note that we are using the latest <code>ChemoSpec</code> that uses <code>ggplot2</code> graphics by default (announced <a href="https://chemospec.org/posts/2021-10-13-GSOC-CS-Graphics/">here</a>).</p>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1">p <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">plotSpectra</span>(Worms, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">which =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">35</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">34</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">lab.pos =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">7.5</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">offset =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.008</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">amplify =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">35</span>,</span>
-<span id="cb11-2">    <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">yrange =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.05</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1.1</span>))</span>
-<span id="cb11-3">p</span></code></pre></div>
-<div class="cell-output-display">
-<div id="fig-samplePlot" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" width="80%">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-samplePlot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="http://chemospec.org/posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1_files/figure-html/fig-samplePlot-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-samplePlot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: Sample spectra from each group.
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<p>In the next post we’ll continue with some basic exploratory data analysis.</p>
-<hr>
-<p>This post was created using <code>ChemoSpec</code> version 6.1.3 and <code>ChemoSpecUtils</code> version 1.0.0.</p>
-
-
-
-</section>
-</section>
-
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
-<div id="ref-Blaise2021" class="csl-entry">
-Blaise, Benjamin J., Gonçalo D. S. Correia, Gordon A. Haggart, Izabella Surowiec, Caroline Sands, Matthew R. Lewis, Jake T. M. Pearce, et al. 2021. <span>“Statistical Analysis in Metabolic Phenotyping.”</span> <em>Nature Protocols</em> 16: 4299–4326. <a href="https://doi.org/10.1038/s41596-021-00579-1">https://doi.org/10.1038/s41596-021-00579-1</a>.
-</div>
-<div id="ref-Blaise2007" class="csl-entry">
-Blaise, Benjamin J., Jean Giacomotto, Bénédicte Elena, Marc-Emmanuel Dumas, Pierre Toulhoat, Laurent Ségalat, and Lyndon Emsley. 2007. <span>“Metabotyping of Caenorhabditis Elegans Reveals Latent Phenotypes.”</span> <em>Proceedings of the National Academy of Sciences</em> 104 (50): 19808–12. <a href="https://doi.org/10.1073/pnas.0707393104">https://doi.org/10.1073/pnas.0707393104</a>.
-</div>
-</div></section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
-  author = {Hanson, Bryan},
-  title = {Metabolic {Phenotyping} {Protocol} {Part} 1},
-  date = {2022-02-01},
-  url = {http://chemospec.org/posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1.html},
-  langid = {en}
-}
-</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2022" class="csl-entry quarto-appendix-citeas">
-Hanson, Bryan. 2022. <span>“Metabolic Phenotyping Protocol Part
-1.”</span> February 1, 2022. <a href="http://chemospec.org/posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1.html">http://chemospec.org/posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1.html</a>.
-</div></div></section></div> ]]></description>
-  <category>R</category>
-  <category>ChemoSpec</category>
-  <category>Metabolomics</category>
-  <guid>http://chemospec.org/posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1.html</guid>
-  <pubDate>Tue, 01 Feb 2022 07:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>

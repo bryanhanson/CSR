@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2023-10-24">
 <meta name="description" content="The polarization coil">
 
-<title>Chemometrics and Spectroscopy Using R - Building an EF-NMR Part 1</title>
+<title>Chemometrics and Spectroscopy Using R – Building an EF-NMR Part 1</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -309,7 +309,7 @@ window.Quarto = {
 <p>Michal’s design uses two coils: a polarization coil, and a transmit/receive (T/R) coil. This post will cover the construction of the polarization coil. Michal’s polarization coil is a three-layer solenoid constructed with 18 AWG magnet wire. Each layer is a separate wire but in operation, the three layers are wired in parallel. I scaled the coil dimensions down somewhat so that I could use materials that are readily accessible to me.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> The plan is to use a 50 mL centrifuge tube as the sample holder. The sample will be placed in a T/R coil wound around a 1.25” schedule 40 PVC pipe. The T/R coil will be located inside the polarization coil, which will be wound on a 2” schedule 40 PVC pipe. The dimensions of these pipes were chosen to allow the sample to nest easily inside the T/R coil which nests inside the polarization coil. <a href="#fig-cs" class="quarto-xref">Figure&nbsp;1</a> shows a cross-section of the design.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-cs" class="quarto-figure quarto-figure-center quarto-float anchored" width="408">
+<div id="fig-cs" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-cs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="EF-NMR-Build-1_files/figure-html/fig-cs-1.png" class="img-fluid figure-img" width="408">
@@ -645,7 +645,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      return note.innerHTML;
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
     }
   }
   for (var i=0; i<xrefs.length; i++) {

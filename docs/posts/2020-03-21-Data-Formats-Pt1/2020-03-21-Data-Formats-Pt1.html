@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2020-03-21">
 <meta name="description" content="ASCII &amp; JCAMP-DX formats">
 
-<title>Chemometrics and Spectroscopy Using R - Data Sharing in the Age of Coronavirus, Part 1</title>
+<title>Chemometrics and Spectroscopy Using R – Data Sharing in the Age of Coronavirus, Part 1</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -281,6 +281,7 @@ cookieconsent.run({
 <section id="pros-cons-of-the-ascii-format" class="level3">
 <h3 class="anchored" data-anchor-id="pros-cons-of-the-ascii-format">Pros &amp; Cons of the ASCII Format</h3>
 <div class="cell-output-display">
+<div>
 <table class="table table-striped table-bordered" data-quarto-postprocess="true">
 <tbody>
 <tr class="odd">
@@ -308,6 +309,7 @@ cookieconsent.run({
 
 
 </div>
+</div>
 </section>
 <section id="the-future-of-the-ascii-format" class="level3">
 <h3 class="anchored" data-anchor-id="the-future-of-the-ascii-format">The Future of the ASCII Format</h3>
@@ -328,6 +330,7 @@ cookieconsent.run({
 <section id="pros-cons-of-the-jcamp-dx-format" class="level3">
 <h3 class="anchored" data-anchor-id="pros-cons-of-the-jcamp-dx-format">Pros &amp; Cons of the JCAMP-DX Format</h3>
 <div class="cell-output-display">
+<div>
 <table class="table table-striped table-bordered" data-quarto-postprocess="true">
 <tbody>
 <tr class="odd">
@@ -354,6 +357,7 @@ cookieconsent.run({
 </table>
 
 
+</div>
 </div>
 </section>
 <section id="future-of-the-jcamp-dx-format" class="level3">
@@ -568,7 +572,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      return note.innerHTML;
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
     }
   }
   for (var i=0; i<xrefs.length; i++) {

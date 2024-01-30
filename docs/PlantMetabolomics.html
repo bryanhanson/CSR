@@ -8,7 +8,7 @@
 
 <meta name="dcterms.date" content="2021-11-21">
 
-<title>Chemometrics and Spectroscopy Using R - Plant Metabolomics: Where Spectroscopy Meets Evolution &amp; Ecology</title>
+<title>Chemometrics and Spectroscopy Using R – Plant Metabolomics: Where Spectroscopy Meets Evolution &amp; Ecology</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -231,7 +231,7 @@ cookieconsent.run({
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="images/Bkgnd.jpg" class="img-fluid figure-img" width="750"></p>
+<p><img src="images/Bkgnd.jpg" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -244,7 +244,7 @@ cookieconsent.run({
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="images/KristinaMulry.jpg" class="img-fluid figure-img" width="2010"></p>
+<p><img src="images/KristinaMulry.jpg" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -253,7 +253,7 @@ cookieconsent.run({
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="images/DaGroup.jpg" class="img-fluid figure-img" width="1870"></p>
+<p><img src="images/DaGroup.jpg" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -305,7 +305,7 @@ cookieconsent.run({
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="images/Elizabeth.jpg" class="img-fluid figure-img" width="752"></p>
+<p><img src="images/Elizabeth.jpg" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -314,7 +314,7 @@ cookieconsent.run({
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="images/Matt.jpg" class="img-fluid figure-img" width="720"></p>
+<p><img src="images/Matt.jpg" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -323,7 +323,7 @@ cookieconsent.run({
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="images/ShannonBrian.jpg" class="img-fluid figure-img" width="1824"></p>
+<p><img src="images/ShannonBrian.jpg" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -493,7 +493,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      return note.innerHTML;
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
     }
   }
   for (var i=0; i<xrefs.length; i++) {

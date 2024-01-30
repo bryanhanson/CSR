@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2022-05-01">
 <meta name="description" content="Implementing the Statistical Analysis in Metabolic Phenotyping Protocol of Blaise et al.">
 
-<title>Chemometrics and Spectroscopy Using R - Metabolic Phenotyping Protocol Part 3</title>
+<title>Chemometrics and Spectroscopy Using R – Metabolic Phenotyping Protocol Part 3</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -387,7 +387,7 @@ of class 'Spectra'</code></pre>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">plotScree</span>(c_pca)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="fig-screeAlt" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" width="80%">
+<div id="fig-screeAlt" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-screeAlt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="2022-05-01-Protocol-Pt3_files/figure-html/fig-screeAlt-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -403,7 +403,7 @@ Figure&nbsp;1: Scree plot (recommended style).
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>p <span class="ot">&lt;-</span> <span class="fu">plotScores</span>(Worms2, c_pca, <span class="at">pcs =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="at">ellipse =</span> <span class="st">"rob"</span>, <span class="at">tol =</span> <span class="fl">0.02</span>)</span>
 <span id="cb5-2"><a href="#cb5-2"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="fig-scores12" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" width="80%">
+<div id="fig-scores12" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-scores12-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="2022-05-01-Protocol-Pt3_files/figure-html/fig-scores12-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -420,7 +420,7 @@ Figure&nbsp;2: Score plot for PCs 1 and 2. Compare to protocol figure 7d.
 <span id="cb6-2"><a href="#cb6-2"></a>    <span class="at">tol =</span> <span class="fl">0.02</span>)</span>
 <span id="cb6-3"><a href="#cb6-3"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="fig-scores23" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" width="80%">
+<div id="fig-scores23" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-scores23-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="2022-05-01-Protocol-Pt3_files/figure-html/fig-scores23-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -437,7 +437,7 @@ Figure&nbsp;3: Score plot for PCS 2 and 3.
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>p <span class="ot">&lt;-</span> <span class="fu">plotLoadings</span>(Worms2, c_pca, <span class="at">loads =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)</span>
 <span id="cb7-2"><a href="#cb7-2"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="fig-loadings" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" width="80%">
+<div id="fig-loadings" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-loadings-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="2022-05-01-Protocol-Pt3_files/figure-html/fig-loadings-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -454,7 +454,7 @@ Figure&nbsp;4: Loadings for PC1 and PC2.
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>p <span class="ot">&lt;-</span> <span class="fu">sPlotSpectra</span>(Worms2, c_pca, <span class="at">tol =</span> <span class="fl">0.001</span>)</span>
 <span id="cb8-2"><a href="#cb8-2"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="fig-splot" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" width="80%">
+<div id="fig-splot" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-splot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="2022-05-01-Protocol-Pt3_files/figure-html/fig-splot-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -507,7 +507,7 @@ Attaching package: 'mixOmics'</code></pre>
 <span id="cb16-2"><a href="#cb16-2"></a>  <span class="at">col.per.group =</span> <span class="fu">c</span>(<span class="st">"#FB0D16FF"</span>, <span class="st">"#FFC0CBFF"</span>, <span class="st">"#511CFCFF"</span>, <span class="st">"#2E94E9FF"</span>),</span>
 <span id="cb16-3"><a href="#cb16-3"></a>  <span class="at">title =</span> <span class="st">"sPLS-DA Score Plot"</span>, <span class="at">legend =</span> <span class="cn">TRUE</span>, <span class="at">ellipse =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="fig-plsda-indiv" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" width="80%">
+<div id="fig-plsda-indiv" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-plsda-indiv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="2022-05-01-Protocol-Pt3_files/figure-html/fig-plsda-indiv-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -524,7 +524,7 @@ Figure&nbsp;6: sPLS-DA plot showing classification.
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>perf.splsda <span class="ot">&lt;-</span> <span class="fu">perf</span>(splsda, <span class="at">folds =</span> <span class="dv">5</span>, <span class="at">nrepeat =</span> <span class="dv">5</span>)</span>
 <span id="cb17-2"><a href="#cb17-2"></a><span class="fu">plot</span>(perf.splsda)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="fig-plsda-perf" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" width="80%">
+<div id="fig-plsda-perf" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-plsda-perf-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="2022-05-01-Protocol-Pt3_files/figure-html/fig-plsda-perf-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -727,7 +727,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      return note.innerHTML;
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
     }
   }
   for (var i=0; i<xrefs.length; i++) {

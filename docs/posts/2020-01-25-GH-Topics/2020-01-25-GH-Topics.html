@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2020-01-25">
 <meta name="description" content="Scrape Github for Repos of Interest">
 
-<title>Chemometrics and Spectroscopy Using R - Exploring Github Topics</title>
+<title>Chemometrics and Spectroscopy Using R – Exploring Github Topics</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -652,7 +652,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      return note.innerHTML;
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
     }
   }
   for (var i=0; i<xrefs.length; i++) {

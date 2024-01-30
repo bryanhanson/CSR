@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2022-07-06">
 <meta name="description" content="Now with more Python and Julia packages, and improved workflow">
 
-<title>Chemometrics and Spectroscopy Using R - FOSS4Spectroscopy: R vs Python</title>
+<title>Chemometrics and Spectroscopy Using R – FOSS4Spectroscopy: R vs Python</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -481,7 +481,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      return note.innerHTML;
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
     }
   }
   for (var i=0; i<xrefs.length; i++) {

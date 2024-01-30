@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2023-08-15">
 <meta name="description" content="What’s changed in a year?">
 
-<title>Chemometrics and Spectroscopy Using R - FOSS4Spectroscopy Update</title>
+<title>Chemometrics and Spectroscopy Using R – FOSS4Spectroscopy Update</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -247,7 +247,7 @@ cookieconsent.run({
 
 <p>Yesterday I pushed a major update to the <a href="https://bryanhanson.github.io/FOSS4Spectroscopy/">FOSS for Spectroscopy</a> web site. Remember that this is a lightly curated and imperfect process; I have some scripts that automate the discovery of packages, but there is still a considerable amount of manual inspection and decision making. If you think I’ve missed a package, please let me know.</p>
 <p>It’s been nearly a year, and there are a number of new entries. Let’s do a quick comparison of the results from November 2022 versus August 2023. Back in November 2022 there were 246 packages; nearly a year later there are 287. <a href="#fig-venn" class="quarto-xref">Figure&nbsp;1</a> shows a Venn diagram of the changes.</p>
-<div id="fig-venn" class="quarto-figure quarto-figure-center quarto-float anchored" width="60%">
+<div id="fig-venn" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-venn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="Venn.png" class="img-fluid figure-img" style="width:60.0%">
@@ -674,7 +674,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      return note.innerHTML;
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
     }
   }
   for (var i=0; i<xrefs.length; i++) {

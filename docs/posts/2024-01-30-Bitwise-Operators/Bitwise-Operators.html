@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-99.9.9">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Bryan Hanson">
+<meta name="dcterms.date" content="2024-01-29">
+<meta name="description" content="Parsing Wild-Type Operators">
+
+<title>Chemometrics and Spectroscopy Using R – Bitwise Operators in C</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({
+  "notice_banner_type":"simple",
+  "consent_type":"implied",
+  "palette":"light",
+  "language":"en",
+  "page_load_consent_levels":["strictly-necessary","functionality","tracking","targeting"],
+  "notice_banner_reject_button_hide":false,
+  "preferences_center_close_button_hide":false,
+  "website_name":""
+  ,
+"language":"en"
+  });
+});
+</script> 
+  
+
+
+<link rel="stylesheet" href="../../styles.css">
+<meta name="twitter:title" content="Chemometrics and Spectroscopy Using R - Bitwise Operators in C">
+<meta name="twitter:description" content="Parsing Wild-Type Operators">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Chemometrics and Spectroscopy Using R</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../projects.html"> 
+<span class="menu-text">Projects</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://www.r-bloggers.com/"> 
+<span class="menu-text">R-Bloggers</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="mailto:hanson@depauw.edu"> <i class="bi bi-envelope-fill" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/profbryanhanson"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://fosstodon.org/%40ProfBryanHanson" rel="me"> <i class="bi bi-mastodon" role="img" aria-label="Mastodon">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/bryanhanson"> <i class="bi bi-git" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml"> <i class="bi bi-rss" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><div class="quarto-margin-header"><div class="margin-header-item">
+<!-- Begin Mailchimp Signup Form -->
+<link href="//cdn-images.mailchimp.com/embedcode/classic-071822.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+    #mc_embed_signup{background:#fcfcfc; clear:left; font:14px Helvetica,Arial,sans-serif; }
+    /* Add your own Mailchimp form style overrides in your site stylesheet or in this style block.
+       We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
+</style>
+<div id="mc_embed_signup">
+    <form action="https://chemospec.us21.list-manage.com/subscribe/post?u=1e9f5b8abbc42dc8ff815ba3d&amp;id=d824c5574e&amp;f_id=00b9c6e1f0" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate="">
+        <div id="mc_embed_signup_scroll">
+        <h2>Subscribe</h2>
+        <!-- <div class="indicates-required"><span class="asterisk">*</span> indicates required</div> -->
+<div class="mc-field-group">
+    <label for="mce-EMAIL">Email Address  <span class="asterisk">*</span>
+</label>
+    <input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL" required="">
+    <span id="mce-EMAIL-HELPERTEXT" class="helper_text"></span>
+</div>
+    <div id="mce-responses" class="clear foot">
+        <div class="response" id="mce-error-response" style="display:none"></div>
+        <div class="response" id="mce-success-response" style="display:none"></div>
+    </div>    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+    <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_1e9f5b8abbc42dc8ff815ba3d_d824c5574e" tabindex="-1" value=""></div>
+        <div class="optionalParent">
+            <div class="clear foot">
+                <input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button">
+                <!-- <p class="brandingLogo"><a href="http://eepurl.com/ic07Vr" title="Mailchimp - email marketing made easy and fun"><img src="https://eep.io/mc-cdn-images/template_images/branding_logo_text_dark_dtp.svg"></a></p> -->
+            </div>
+        </div>
+    </div>
+</form>
+</div>
+<script type="text/javascript" src="//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js"></script><script type="text/javascript">(function($) {window.fnames = new Array(); window.ftypes = new Array();fnames[0]='EMAIL';ftypes[0]='email';fnames[1]='FNAME';ftypes[1]='text';fnames[2]='LNAME';ftypes[2]='text';fnames[3]='ADDRESS';ftypes[3]='address';fnames[4]='PHONE';ftypes[4]='phone';fnames[5]='BIRTHDAY';ftypes[5]='birthday';}(jQuery));var $mcj = jQuery.noConflict(true);</script>
+<!--End mc_embed_signup-->
+
+</div></div>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#the-bitwise-operators-in-c" id="toc-the-bitwise-operators-in-c" class="nav-link active" data-scroll-target="#the-bitwise-operators-in-c">The Bitwise Operators in <code>C</code></a></li>
+  <li><a href="#adc-registers" id="toc-adc-registers" class="nav-link" data-scroll-target="#adc-registers">ADC Registers</a></li>
+  <li><a href="#wild-type-operator-constructs-in-use" id="toc-wild-type-operator-constructs-in-use" class="nav-link" data-scroll-target="#wild-type-operator-constructs-in-use">Wild-Type Operator Constructs in Use</a>
+  <ul class="collapse">
+  <li><a href="#simple-direct-assignment" id="toc-simple-direct-assignment" class="nav-link" data-scroll-target="#simple-direct-assignment">Simple Direct Assignment</a></li>
+  <li><a href="#direct-assignment-via-binary-literals" id="toc-direct-assignment-via-binary-literals" class="nav-link" data-scroll-target="#direct-assignment-via-binary-literals">Direct Assignment via Binary Literals</a></li>
+  <li><a href="#typical-bitwise-operator-use-in-the-wild" id="toc-typical-bitwise-operator-use-in-the-wild" class="nav-link" data-scroll-target="#typical-bitwise-operator-use-in-the-wild">Typical Bitwise Operator Use in the Wild</a></li>
+  <li><a href="#functions-that-are-collections-of-bitwise-operators" id="toc-functions-that-are-collections-of-bitwise-operators" class="nav-link" data-scroll-target="#functions-that-are-collections-of-bitwise-operators">Functions that are collections of bitwise operators</a></li>
+  </ul></li>
+  <li><a href="#sanity-preserving-helper-function" id="toc-sanity-preserving-helper-function" class="nav-link" data-scroll-target="#sanity-preserving-helper-function">Sanity-Preserving Helper Function</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Bitwise Operators in C</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">C</div>
+    <div class="quarto-category">Arduino</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Parsing Wild-Type Operators
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Bryan Hanson </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">January 29, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>For the EF-NMR project, I’ve turned my attention to writing the software to capture the FID, which <em>seemed</em> easier than writing a pulse transmitter.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> This requires the use of the ADC (analog to digital converter) on the Arduino. Configuring, starting, and stopping the ADC is handled by directly setting bits in a particular register on the Arduino. New territory! This post will serve as a set of notes on what I’ve learned about how this is done. In particular, I want to focus on the code people <em>actually write</em>, which is generally more complex than what one sees in the language reference.</p>
+<section id="the-bitwise-operators-in-c" class="level2">
+<h2 class="anchored" data-anchor-id="the-bitwise-operators-in-c">The Bitwise Operators in <code>C</code></h2>
+<p>The definitions of the bitwise <code>C</code> operators can be found in numerous places, stated with various levels of clarity and understandability. Sometimes the definitions are very terse and seemingly quite clear, but after reading, one simply doesn’t know how to use it. The revered text known as “K &amp; R” doesn’t even devote much space to them, though that may be because microcontrollers were a relatively new thing at the time of <span class="citation" data-cites="KR1988">Kernighan and Ritchie (<a href="#ref-KR1988" role="doc-biblioref">1988</a>)</span>. The Arduino reference documents give quite a bit more detail but don’t have the complexity seen in the wild.</p>
+<p>The following gives my own interpretation and understanding of the individual operators. To be clear, these definitions don’t really give a sense of <em>why</em> they might be useful or <em>how</em> one would use them.</p>
+<ul>
+<li><strong>OR</strong> (operator: |) compares two bits and sets the destination bit to 1 unless both inputs are 0. It <em>sets</em> a bit.</li>
+<li><strong>AND</strong> (operator: &amp;) compares two bits and sets the destination bit to 0 unless both inputs are 1. It <em>clears</em> a bit.</li>
+<li><strong>XOR</strong> (operator: ^) compares two bits and if they are the same, returns 0, if different, returns 1. It <em>toggles</em> a bit.</li>
+<li><strong>NOT</strong> (operator: ~) is a unary operator which <em>flips</em> all 1’s to 0’s and vice versa.</li>
+<li><strong>Left Shift</strong> (operator: &lt;&lt;) shifts a series of bits left and fills the space with 0’s. Equivalent to multiplying by 2^n.</li>
+<li><strong>Right Shift</strong> (operator: &gt;&gt;) shifts a series of bits right and fills the space with 0’s. Equivalent to dividing by 2^n.</li>
+</ul>
+<p>A key thing to note is that these operators <em>compare</em> two bits (which are either 0 or 1) and returns an updated bit. The exceptions are:</p>
+<ul>
+<li>The left and right shift operators: These operate on a series of bits. You can’t shift a single bit without stomping on adjacent memory. Very ungraceful!</li>
+<li>NOT, the toggle: This flips or toggles a single bit, nothing is compared.</li>
+</ul>
+<p>The reality is that one rarely sees these operators used on a single bit, even NOT. More often, one sees them applied to a byte, a set of 8 bits residing contiguously in memory. Those bytes, at least in the current use, turn out to be registers on the Arduino, our next topic.</p>
+</section>
+<section id="adc-registers" class="level2">
+<h2 class="anchored" data-anchor-id="adc-registers">ADC Registers</h2>
+<p>The ATmega328P microcontroller used in the Arduino Uno has several registers that control the ADC:<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<ul>
+<li>ADMUX = ADC multiplexer selection register</li>
+<li>ADCSRA = ADC status and control register A</li>
+<li>ADCSRB = ADC status and control register B</li>
+<li>ADCL and ADCH = ADC data registers</li>
+</ul>
+<p>We’ll use ADCSRA as our example. ADCSRA is of course an acronym. If you look at the iom238p.h file where these things are defined, you find that ADCSRA is an alias for a specific memory address(<a href="#fig-header" class="quarto-xref">Figure&nbsp;1</a>).<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> It is the address of the first bit of a single byte, composed of 8 bits, numbered 0-7. In the datasheet we can see what is stored in this register. Each of the individual bits has a name, for instance ADEN, which stands for “ADc ENable”, and in the header file, the name ADEN is aliased to bit 7 (<a href="#fig-register" class="quarto-xref">Figure&nbsp;2</a>). So we have an 8 bit memory address with a name and each bit has its own name to make remembering their roles easier. These are the bits we need to control with the bitwise operators in order to configure the ADC.</p>
+<div id="fig-header" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-header-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="imgs/header.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-header-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: A portion of the iom328p.h header file showing how acronyms are aliased to memory locations.
+</figcaption>
+</figure>
+</div>
+<div id="fig-register" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-register-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="imgs/register.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-register-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Documentation of the ADCSRA register from the datasheet.
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="wild-type-operator-constructs-in-use" class="level2">
+<h2 class="anchored" data-anchor-id="wild-type-operator-constructs-in-use">Wild-Type Operator Constructs in Use</h2>
+<p>As I hinted at earlier, what people actually write is rather different from the simple definitions seen in the reference documents (or my version above). So let’s explore these <em>wild-type</em> examples in detail.</p>
+<section id="simple-direct-assignment" class="level3">
+<h3 class="anchored" data-anchor-id="simple-direct-assignment">Simple Direct Assignment</h3>
+<p>One simple example often seen doesn’t even use the bitwise operators.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1"></a>ADCSRA <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>In this case, the right-hand-side (RHS) <code>0</code> is interpreted as an 8 bit binary number, <code>0000 0000</code> and this sets all 8 bits to zero at once. This incantation is probably most appropriate to reset the entire register, as all zeros is the default setting for this particular register (though not necessarily other registers).</p>
+</section>
+<section id="direct-assignment-via-binary-literals" class="level3">
+<h3 class="anchored" data-anchor-id="direct-assignment-via-binary-literals">Direct Assignment via Binary Literals</h3>
+<p>If you know the value for every bit you want to set, and want to set them all at once, you can use a binary literal:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1"></a>ADCSRA <span class="op">=</span> B00101010<span class="op">;</span> <span class="co">// prefix binary number with B, or</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a>ADCSRA <span class="op">=</span> <span class="bn">0b00101010</span><span class="op">;</span> <span class="co">// prefix binary number with 0b</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The downside here is that future readers of your code have to look up the details of a register’s bit settings everytime they look at your code. Other methods discussed here use aliases for particular bits (e.g.&nbsp;<code>ADEN</code>) which provide at least some mnemonic assistance. Binary literals are only supported in more recent versions of <code>C</code> but you are likely to be using such a version.</p>
+</section>
+<section id="typical-bitwise-operator-use-in-the-wild" class="level3">
+<h3 class="anchored" data-anchor-id="typical-bitwise-operator-use-in-the-wild">Typical Bitwise Operator Use in the Wild</h3>
+<section id="example-1" class="level4">
+<h4 class="anchored" data-anchor-id="example-1">Example 1</h4>
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb3-1"><a href="#cb3-1"></a>ADCSRA <span class="op">|=</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> ADEN<span class="op">);</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>In this incantation there are several interesting things going on. Let’s unpack it starting from the RHS. We see this expression: <code>(1 &lt;&lt; ADEN)</code>, which uses the left shift operator. This means take 1 in binary, so <code>0000 0001</code>, and shift the 1 left <code>ADEN</code> times. If we look at either <a href="#fig-register" class="quarto-xref">Figure&nbsp;2</a> or <a href="#fig-header" class="quarto-xref">Figure&nbsp;1</a>, we see that <code>ADEN</code> is 7, so we shift the first bit left 7 places, which gives <code>1000 0000</code> in binary. This is a “bit mask”, it’s used in the next step.</p>
+<p>The operator <code>|=</code> is a variation on the OR operator. It means take whatever is on the RHS, and OR it against the left-hand-side (LHS), and put the result in the LHS.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> What is the current value of <code>ADCSRA</code> in the LHS? We don’t know in this simple example; presumably you would know in a real life example. Whatever it is, when we OR it with the RHS, bit 7, <code>ADEN</code>, gets set to 1, because of how OR is defined. So bit 7 is <em>set</em> to 1, and all other positions are unchanged.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb4-1"><a href="#cb4-1"></a>xxxx xxxx <span class="co">// whatever is in ADCSRA</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="dv">1000</span> <span class="bn">0000</span> <span class="co">// bitmask from RHS</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="dv">1</span><span class="er">xxx</span> xxxx <span class="co">// result of OR (used to overwrite existing ADCSRA)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="example-2" class="level4">
+<h4 class="anchored" data-anchor-id="example-2">Example 2</h4>
+<p>A more involved example using direct assignment as well as bitwise operators is:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb5-1"><a href="#cb5-1"></a>ADCSRA <span class="op">=</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> ADPS2<span class="op">)</span> <span class="op">|</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> ADPS1<span class="op">)</span> <span class="op">|</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> ADPS0<span class="op">);</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>which can be unpacked as three bitmasks, OR’d against each other to get a final result to be put directly into <code>ADCSRA</code>. Using the values of <code>ADPS*</code>, we have:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb6-1"><a href="#cb6-1"></a><span class="bn">0000</span> <span class="bn">0001</span> <span class="co">// 1 &lt;&lt; ADPS0 (note ADPS0 = 0 so this is no shift at all)</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="bn">0000</span> <span class="bn">0010</span> <span class="co">// 1 &lt;&lt; ADPS1</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="bn">0000</span> <span class="bn">0100</span> <span class="co">// 1 &lt;&lt; ADPS2</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="bn">0000</span> <span class="bn">0111</span> <span class="co">// result put directly into ADCSRA overwriting what is there originally</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Note that the result overwrites the current value of <code>ADCSRA</code>; the four most significant bits are set to zero, regardless of whatever value was there. The next example shows you how to avoid that.</p>
+</section>
+<section id="example-3" class="level4">
+<h4 class="anchored" data-anchor-id="example-3">Example 3</h4>
+<p><em>Almost</em> the same action can be accomplished with the following code, except it preserves the current settings in <code>ADCSRA</code> and uses a helper function, <code>bit()</code>, which is specific to Arduino:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb7-1"><a href="#cb7-1"></a>ADCSRA <span class="op">|=</span> bit<span class="op">(</span>ADPS0<span class="op">)</span> <span class="op">|</span> bit<span class="op">(</span>ADPS1<span class="op">)</span> <span class="op">|</span> bit<span class="op">(</span>ADPS2<span class="op">);</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><code>bit()</code> is an Arduino function that takes an integer argument and returns an 8 bit value with 1 in the position given by the argument, and zeros elsewhere.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> Thus it unpacks to:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb8-1"><a href="#cb8-1"></a><span class="bn">0000</span> <span class="bn">0001</span> <span class="co">// bit(ADPS0)</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="bn">0000</span> <span class="bn">0010</span> <span class="co">// bit(ADPS1)</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="bn">0000</span> <span class="bn">0100</span> <span class="co">// bit(ADPS2)</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="co">// the above 3 lines create the same bitmasks as in Example 2; together they become:</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="bn">0000</span> <span class="bn">0111</span> <span class="co">// result of OR the above 3 bitmasks</span></span>
+<span id="cb8-6"><a href="#cb8-6"></a>xxxx xxxx <span class="co">// whatever is in ADCSRA</span></span>
+<span id="cb8-7"><a href="#cb8-7"></a>xxxx x111 <span class="co">// result of OR ADCSRA against 0000 0111</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>In the previous two examples <code>1 &lt;&lt; ADPS0</code> or <code>bit(ADPS0)</code> does very little since <code>ADPS0</code> is 0. However, many coders seem to prefer a little verbosity to make clear what they are trying to achieve.<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></p>
+</section>
+<section id="example-4" class="level4">
+<h4 class="anchored" data-anchor-id="example-4">Example 4</h4>
+<p>Let’s say you wanted to turn the ADC on if it was off, and off if it was on. This is a job for the <code>^</code> or toggle operator. You can use <code>ADCSRA ^= (1 &lt;&lt; ADEN)</code> which unpacks as follows (<code>ADEN</code> is 7):</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb9-1"><a href="#cb9-1"></a><span class="dv">1</span><span class="er">xxx</span> xxxx <span class="co">// initial (on state) of the ADC; other bits unknown</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="dv">1000</span> <span class="bn">0000</span> <span class="co">// result of (1 &lt;&lt; ADEN) </span></span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="dv">0</span><span class="er">xxx</span> xxxx <span class="co">// result of toggling lines 1 and 2; put into ADCSRA; ADC is off</span></span>
+<span id="cb9-4"><a href="#cb9-4"></a><span class="co">// or, starting with ADC off</span></span>
+<span id="cb9-5"><a href="#cb9-5"></a><span class="dv">0</span><span class="er">xxx</span> xxxx <span class="co">// ADC is off</span></span>
+<span id="cb9-6"><a href="#cb9-6"></a><span class="dv">1000</span> <span class="bn">0000</span> <span class="co">// result of (1 &lt;&lt; ADEN)</span></span>
+<span id="cb9-7"><a href="#cb9-7"></a><span class="dv">1</span><span class="er">xxx</span> xxxx <span class="co">// result put into ADCSRA; ADC is now on</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Note that the <code>x</code> bits are toggled against <code>0</code>, which means they are <em>unchanged</em>. See the <a href="https://en.wikipedia.org/wiki/Bitwise_operations_in_C">truth table here</a>.</p>
+</section>
+</section>
+<section id="functions-that-are-collections-of-bitwise-operators" class="level3">
+<h3 class="anchored" data-anchor-id="functions-that-are-collections-of-bitwise-operators">Functions that are collections of bitwise operators</h3>
+<p>The function <code>_BV(bit)</code> is aliased to <code>(1 &lt;&lt; (bit))</code> and for Arduino you can use <code>bitSet(x, n)</code> or <code>sbi(x, n)</code> to write a 1 to the <code>n</code>-th position of register <code>x</code>. Thus,</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb10-1"><a href="#cb10-1"></a>ADCSRA <span class="op">|=</span> <span class="op">(</span><span class="dv">1</span> <span class="op">&lt;&lt;</span> ADEN<span class="op">);</span> <span class="co">// seen earlier</span></span>
+<span id="cb10-2"><a href="#cb10-2"></a>ADCSRA <span class="op">|=</span> _BV<span class="op">(</span>ADEN<span class="op">);</span></span>
+<span id="cb10-3"><a href="#cb10-3"></a>bitSet<span class="op">(</span>ADCSRA<span class="op">,</span> ADEN<span class="op">);</span></span>
+<span id="cb10-4"><a href="#cb10-4"></a>sbi<span class="op">(</span>ADCSRA<span class="op">,</span> ADEN<span class="op">);</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>are equivalent ways to change bit 7 in <code>ADCSRA</code>.</p>
+<p>For Arduino, you also have <code>bitClear(x, n)</code> which writes a 0 at the <code>n</code>-th position of register <code>x</code>, essentially the complement of <code>bitSet(x, n)</code>. Internally, it is defined as <code>((x) &amp;= ~(1 &lt;&lt; (n)))</code>. Alternatively, one can use <code>cbi(x, n)</code>, the complement of <code>sbi(x, n)</code>. Let’s say you had <code>0000 0110</code> in <code>ADCSRA</code> and wanted to clear the 2nd bit.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb11-1"><a href="#cb11-1"></a>bitClear<span class="op">(</span>ADCSRA<span class="op">,</span> <span class="dv">1</span><span class="op">);</span> <span class="co">// expands to the following steps:</span></span>
+<span id="cb11-2"><a href="#cb11-2"></a><span class="bn">0000</span> <span class="bn">0110</span> <span class="co">// initial value in ADCSRA</span></span>
+<span id="cb11-3"><a href="#cb11-3"></a><span class="bn">0000</span> <span class="bn">0010</span> <span class="co">// value of bit mask (1 &lt;&lt; 1)</span></span>
+<span id="cb11-4"><a href="#cb11-4"></a><span class="dv">1111</span> <span class="dv">1101</span> <span class="co">// value of ~(1 &lt;&lt; 1) where all bits have been toggled/flipped</span></span>
+<span id="cb11-5"><a href="#cb11-5"></a><span class="bn">0000</span> <span class="bn">0100</span> <span class="co">// value after &amp; comparing line 2 to line 3, writing 1 if each mask position is 1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Notice that the 2nd bit has been cleared. The <code>=</code> part of <code>&amp;=</code> assigns the result to the LHS, namely <code>ADCSRA</code>.</p>
+<p><em>Note that <code>sbi()</code> and <code>cbi()</code> only work for certain registers on Arduino.</em></p>
+<p>This <a href="https://stackoverflow.com/questions/47981/how-to-set-clear-and-toggle-a-single-bit/47990#47990">StackOverflow Question</a> has examples of more functions and an interesting discussion of pros, cons and caveats.</p>
+</section>
+</section>
+<section id="sanity-preserving-helper-function" class="level2">
+<h2 class="anchored" data-anchor-id="sanity-preserving-helper-function">Sanity-Preserving Helper Function</h2>
+<p>I modified the function found <a href="https://forum.arduino.cc/t/how-can-i-serial-println-a-binary-output-that-will-give-all-the-leading-zeros-of-a-variable/962247/2">here</a> to print register contents (well, bytes generally) in an easy-to-read format.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode numberSource {c} number-lines code-with-copy"><code class="sourceCode"><span id="cb12-1"><a href="#cb12-1"></a>void print_bin(byte aByte) {</span>
+<span id="cb12-2"><a href="#cb12-2"></a>  for (int8_t aBit = 7; aBit &gt;= 0; aBit--) {</span>
+<span id="cb12-3"><a href="#cb12-3"></a>    if (aBit == 3) {</span>
+<span id="cb12-4"><a href="#cb12-4"></a>      Serial.print(" "); // space between nibbles</span>
+<span id="cb12-5"><a href="#cb12-5"></a>    }</span>
+<span id="cb12-6"><a href="#cb12-6"></a>    Serial.print(bitRead(aByte, aBit) ? '1' : '0');</span>
+<span id="cb12-7"><a href="#cb12-7"></a>  }</span>
+<span id="cb12-8"><a href="#cb12-8"></a>  Serial.println(" ");</span>
+<span id="cb12-9"><a href="#cb12-9"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Let’s use it to check a set of operations which blend Example 2 and Example 3 above, and stick to pure <code>C</code> operations. This code chunk</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode numberSource {c} number-lines code-with-copy"><code class="sourceCode"><span id="cb13-1"><a href="#cb13-1"></a>  ADCSRA = B10001000; // arbitrary initial value</span>
+<span id="cb13-2"><a href="#cb13-2"></a>  print_bin(ADCSRA);</span>
+<span id="cb13-3"><a href="#cb13-3"></a>  ADCSRA |= (1 &lt;&lt; ADPS2) | (1 &lt;&lt; ADPS1) | (1 &lt;&lt; ADPS0);</span>
+<span id="cb13-4"><a href="#cb13-4"></a>  print_bin(ADCSRA);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>displays the following:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode numberSource c number-lines code-with-copy"><code class="sourceCode c"><span id="cb14-1"><a href="#cb14-1"></a><span class="dv">1000</span> <span class="dv">1000</span> </span>
+<span id="cb14-2"><a href="#cb14-2"></a><span class="dv">1000</span> <span class="dv">1111</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Use it to check your work!</p>
+
+
+
+</section>
+
+
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-KR1988" class="csl-entry" role="listitem">
+Kernighan, Brian W., and Dennis M. Ritchie. 1988. <em>The <span>C</span> Programming Language (2nd Edition)</em>. Many reprint publishers exist.
+</div>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Let me state for the record that this is just a first version; additional complexity will almost certainly be needed later.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>The details on each of these can be found on the datasheet which can be found via a search engine.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>The header file is available many places on the internet.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>All the operators can be used the same way: <code>|=</code>, <code>^=</code>, <code>&amp;=</code>, <code>&lt;&lt;=</code> and <code>&gt;&gt;=</code>. For example <code>C &amp;= 2</code> should be thought of as <code>C = C &amp; 2</code>. See this <a href="https://stackoverflow.com/a/14296609/633251">SO answer</a>.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>It’s essential to be careful with language to be clear. A byte is 8 bits, numbered from the right position as 0, i.e.&nbsp;76543210. So the first bit is at position 0, etc. Thus <code>bit(0)</code> returns <code>0000 0001</code>.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>These three bits are used as a group to set the clock speed of the ADC, so it makes sense to make it clear you are using all three values <em>together</em>.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2024,
+  author = {Hanson, Bryan},
+  title = {Bitwise {Operators} in {C}},
+  date = {2024-01-30},
+  url = {http://chemospec.org/posts/2024-01-30-Bitwise-Operators/Bitwise-Operators.html},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2024" class="csl-entry quarto-appendix-citeas" role="listitem">
+Hanson, Bryan. 2024. <span>“Bitwise Operators in C.”</span> January 30,
+2024. <a href="http://chemospec.org/posts/2024-01-30-Bitwise-Operators/Bitwise-Operators.html">http://chemospec.org/posts/2024-01-30-Bitwise-Operators/Bitwise-Operators.html</a>.
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://utteranc.es/client.js" repo="bryanhanson/CSR" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+
+<div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookies are used to track visits only</a></div></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

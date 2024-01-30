@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2022-02-01">
 <meta name="description" content="Implementing the Statistical Analysis in Metabolic Phenotyping Protocol of Blaise et al.">
 
-<title>Chemometrics and Spectroscopy Using R - Metabolic Phenotyping Protocol Part 1</title>
+<title>Chemometrics and Spectroscopy Using R – Metabolic Phenotyping Protocol Part 1</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -447,7 +447,7 @@ of class 'Spectra'</code></pre>
 <span id="cb11-2"><a href="#cb11-2"></a>    <span class="at">yrange =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.05</span>, <span class="fl">1.1</span>))</span>
 <span id="cb11-3"><a href="#cb11-3"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="fig-samplePlot" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" width="80%">
+<div id="fig-samplePlot" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-samplePlot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="2022-02-01-Protocol-Pt1_files/figure-html/fig-samplePlot-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -647,7 +647,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      return note.innerHTML;
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
     }
   }
   for (var i=0; i<xrefs.length; i++) {

@@ -1,0 +1,219 @@
+---
+title: "Bitwise Operators in C"
+description: "Parsing Wild-Type Operators"
+date: "2024-01-30"
+categories: [C, Arduino]
+format:
+  html:
+    toc: true
+    code-line-numbers: true
+    highlight-style: ally
+bibliography: references.bib
+engine: jupyter
+---
+
+For the EF-NMR project, I've turned my attention to writing the software to capture the FID, which *seemed* easier than writing a pulse transmitter.[^1] This requires the use of the ADC (analog to digital converter) on the Arduino.  Configuring, starting, and stopping the ADC is handled by directly setting bits in a particular register on the Arduino.  New territory!  This post will serve as a set of notes on what I've learned about how this is done.  In particular, I want to focus on the code people *actually write*, which is generally more complex than what one sees in the language reference. 
+
+## The Bitwise Operators in `C`
+
+The definitions of the bitwise `C` operators can be found in numerous places, stated with various levels of clarity and understandability.  Sometimes the definitions are very terse and seemingly quite clear, but after reading, one simply doesn't know how to use it.  The revered text known as "K & R" doesn't even devote much space to them, though that may be because microcontrollers were a relatively new thing at the time of @KR1988.  The Arduino reference documents give quite a bit more detail but don't have the complexity seen in the wild.
+
+The following gives my own interpretation and understanding of the individual operators.  To be clear, these definitions don't really give a sense of *why* they might be useful or *how* one would use them.
+
+* **OR** (operator: |) compares two bits and sets the destination bit to 1 unless both inputs are 0.  It *sets* a bit.
+* **AND** (operator: &) compares two bits and sets the destination bit to 0 unless both inputs are 1.  It *clears* a bit.
+* **XOR** (operator: ^) compares two bits and if they are the same, returns 0, if different, returns 1.  It *toggles* a bit.
+* **NOT** (operator: ~) is a unary operator which *flips* all 1’s to 0’s and vice versa.
+* **Left Shift** (operator: <<) shifts a series of bits left and fills the space with 0’s.  Equivalent to multiplying by 2^n.
+* **Right Shift** (operator: >>) shifts a series of bits right and fills the space with 0’s.  Equivalent to dividing by 2^n.
+
+A key thing to note is that these operators *compare* two bits (which are either 0 or 1) and returns an updated bit.  The exceptions are:
+
+* The left and right shift operators:  These operate on a series of bits.  You can't shift a single bit without stomping on adjacent memory.  Very ungraceful!
+* NOT, the toggle:  This flips or toggles a single bit, nothing is compared.
+
+The reality is that one rarely sees these operators used on a single bit, even NOT.  More often, one sees them applied to a byte, a set of 8 bits residing contiguously in memory.  Those bytes, at least in the current use, turn out to be registers on the Arduino, our next topic.
+
+## ADC Registers
+
+The ATmega328P microcontroller used in the Arduino Uno has several registers that control the ADC:[^2]
+
+* ADMUX = ADC multiplexer selection register
+* ADCSRA = ADC status and control register A
+* ADCSRB = ADC status and control register B
+* ADCL and ADCH = ADC data registers
+
+We'll use ADCSRA as our example.  ADCSRA is of course an acronym.  If you look at the iom238p.h file where these things are defined, you find that ADCSRA is an alias for a specific memory address(@fig-header).[^3]  It is the address of the first bit of a single byte, composed of 8 bits, numbered 0-7.  In the datasheet we can see what is stored in this register.  Each of the individual bits has a name, for instance ADEN, which stands for "ADc ENable", and in the header file, the name ADEN is aliased to bit 7 (@fig-register).  So we have an 8 bit memory address with a name and each bit has its own name to make remembering their roles easier.  These are the bits we need to control with the bitwise operators in order to configure the ADC.
+
+![A portion of the iom328p.h header file showing how acronyms are aliased to memory locations.](imgs/header.png){#fig-header}
+
+![Documentation of the ADCSRA register from the datasheet.](imgs/register.png){#fig-register}
+
+## Wild-Type Operator Constructs in Use
+
+As I hinted at earlier, what people actually write is rather different from the simple definitions seen in the reference documents (or my version above).  So let's explore these *wild-type* examples in detail.
+
+### Simple Direct Assignment
+
+One simple example often seen doesn't even use the bitwise operators.
+
+```c
+ADCSRA = 0;
+```
+
+In this case, the right-hand-side (RHS) `0` is interpreted as an 8 bit binary number, `0000 0000` and this sets all 8 bits to zero at once.  This incantation is probably most appropriate to reset the entire register, as all zeros is the default setting for this particular register (though not necessarily other registers).
+
+### Direct Assignment via Binary Literals
+
+If you know the value for every bit you want to set, and want to set them all at once, you can use a binary literal:
+
+```c
+ADCSRA = B00101010; // prefix binary number with B, or
+ADCSRA = 0b00101010; // prefix binary number with 0b
+```
+
+The downside here is that future readers of your code have to look up the details of a register's bit settings everytime they look at your code.  Other methods discussed here use aliases for particular bits (e.g. `ADEN`) which provide at least some mnemonic assistance.  Binary literals are only supported in more recent versions of `C` but you are likely to be using such a version.
+
+### Typical Bitwise Operator Use in the Wild
+
+#### Example 1
+
+```c
+ADCSRA |= (1 << ADEN);
+```
+
+In this incantation there are several interesting things going on.  Let's unpack it starting from the RHS.  We see this expression: `(1 << ADEN)`, which uses the left shift operator.  This means take 1 in binary, so `0000 0001`, and shift the 1 left `ADEN` times.  If we look at either @fig-register or @fig-header, we see that `ADEN` is 7, so we shift the first bit left 7 places, which gives `1000 0000` in binary.  This is a "bit mask", it's used in the next step.
+
+The operator `|=` is a variation on the OR operator.  It means take whatever is on the RHS, and OR it against the left-hand-side (LHS), and put the result in the LHS.[^7]  What is the current value of `ADCSRA` in the LHS?  We don't know in this simple example; presumably you would know in a real life example.  Whatever it is, when we OR it with the RHS, bit 7, `ADEN`, gets set to 1, because of how OR is defined.  So bit 7 is *set* to 1, and all other positions are unchanged.
+
+```c
+xxxx xxxx // whatever is in ADCSRA
+1000 0000 // bitmask from RHS
+1xxx xxxx // result of OR (used to overwrite existing ADCSRA)
+```
+
+#### Example 2
+
+A more involved example using direct assignment as well as bitwise operators is:
+
+```c
+ADCSRA = (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);
+```
+
+which can be unpacked as three bitmasks,  OR'd against each other to get a final result to be put directly into `ADCSRA`.  Using the values of `ADPS*`, we have:
+
+```c
+0000 0001 // 1 << ADPS0 (note ADPS0 = 0 so this is no shift at all)
+0000 0010 // 1 << ADPS1
+0000 0100 // 1 << ADPS2
+0000 0111 // result put directly into ADCSRA overwriting what is there originally
+```
+
+Note that the result overwrites the current value of `ADCSRA`; the four most significant bits are set to zero, regardless of whatever value was there.  The next example shows you  how to avoid that.
+
+#### Example 3
+
+*Almost* the same action can be accomplished with the following code, except it preserves the current settings in `ADCSRA` and uses a helper function, `bit()`, which is specific to Arduino:
+
+```c
+ADCSRA |= bit(ADPS0) | bit(ADPS1) | bit(ADPS2);
+```
+`bit()` is an Arduino function that takes an integer argument and returns an 8 bit value with 1 in the position given by the argument, and zeros elsewhere.[^6]  Thus it unpacks to:
+
+```c
+0000 0001 // bit(ADPS0)
+0000 0010 // bit(ADPS1)
+0000 0100 // bit(ADPS2)
+// the above 3 lines create the same bitmasks as in Example 2; together they become:
+0000 0111 // result of OR the above 3 bitmasks
+xxxx xxxx // whatever is in ADCSRA
+xxxx x111 // result of OR ADCSRA against 0000 0111
+```
+
+In the previous two examples `1 << ADPS0` or `bit(ADPS0)` does very little since `ADPS0` is 0.  However, many coders seem to prefer a little verbosity to make clear what they are trying to achieve.[^4]
+
+#### Example 4
+
+Let's say you wanted to turn the ADC on if it was off, and off if it was on. This is a job for the `^` or toggle operator.  You can use `ADCSRA ^= (1 << ADEN)` which unpacks as follows (`ADEN` is 7):
+
+```c
+1xxx xxxx // initial (on state) of the ADC; other bits unknown
+1000 0000 // result of (1 << ADEN) 
+0xxx xxxx // result of toggling lines 1 and 2; put into ADCSRA; ADC is off
+// or, starting with ADC off
+0xxx xxxx // ADC is off
+1000 0000 // result of (1 << ADEN)
+1xxx xxxx // result put into ADCSRA; ADC is now on
+```
+
+Note that the `x` bits are toggled against `0`, which means they are *unchanged*.  See the [truth table here](https://en.wikipedia.org/wiki/Bitwise_operations_in_C).
+
+### Functions that are collections of bitwise operators
+
+The function `_BV(bit)` is aliased to `(1 << (bit))` and for Arduino you can use `bitSet(x, n)` or `sbi(x, n)` to write a 1 to the `n`-th position of register `x`. Thus,
+
+```c
+ADCSRA |= (1 << ADEN); // seen earlier
+ADCSRA |= _BV(ADEN);
+bitSet(ADCSRA, ADEN);
+sbi(ADCSRA, ADEN);
+```
+are equivalent ways to change bit 7 in `ADCSRA`.
+
+For Arduino, you also have `bitClear(x, n)` which writes a 0 at the `n`-th position of register `x`, essentially the complement of `bitSet(x, n)`. Internally, it is defined as `((x) &= ~(1 << (n)))`.  Alternatively, one can use `cbi(x, n)`, the complement of `sbi(x, n)`. Let's say you had `0000 0110` in `ADCSRA` and wanted to clear the 2nd bit.
+
+```c
+bitClear(ADCSRA, 1); // expands to the following steps:
+0000 0110 // initial value in ADCSRA
+0000 0010 // value of bit mask (1 << 1)
+1111 1101 // value of ~(1 << 1) where all bits have been toggled/flipped
+0000 0100 // value after & comparing line 2 to line 3, writing 1 if each mask position is 1
+```
+
+Notice that the 2nd bit has been cleared.  The `=` part of `&=` assigns the result to the LHS, namely `ADCSRA`.
+
+*Note that `sbi()` and `cbi()` only work for certain registers on Arduino.*
+
+This [StackOverflow Question](https://stackoverflow.com/questions/47981/how-to-set-clear-and-toggle-a-single-bit/47990#47990) has examples of more functions and an interesting discussion of pros, cons and caveats.
+
+## Sanity-Preserving Helper Function
+
+I modified the function found [here](https://forum.arduino.cc/t/how-can-i-serial-println-a-binary-output-that-will-give-all-the-leading-zeros-of-a-variable/962247/2) to print register contents (well, bytes generally) in an easy-to-read format.
+
+```{c}
+void print_bin(byte aByte) {
+  for (int8_t aBit = 7; aBit >= 0; aBit--) {
+    if (aBit == 3) {
+      Serial.print(" "); // space between nibbles
+    }
+    Serial.print(bitRead(aByte, aBit) ? '1' : '0');
+  }
+  Serial.println(" ");
+}
+```
+
+Let's use it to check a set of operations which blend Example 2 and Example 3 above, and stick to pure `C` operations.  This code chunk
+
+```{c}
+  ADCSRA = B10001000; // arbitrary initial value
+  print_bin(ADCSRA);
+  ADCSRA |= (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);
+  print_bin(ADCSRA);
+```
+
+displays the following:
+
+```c
+1000 1000 
+1000 1111
+```
+
+Use it to check your work!
+
+[^1]: Let me state for the record that this is just a first version; additional complexity will almost certainly be needed later. 
+[^2]: The details on each of these can be found on the datasheet which can be found via a search engine.
+[^3]: The header file is available many places on the internet.
+[^4]: These three bits are used as a group to set the clock speed of the ADC, so it makes sense to make it clear you are using all three values *together*.
+[^5]: `sbi()` only  works for certain registers.
+[^6]: It's essential to be careful with language to be clear.  A byte is 8 bits, numbered from the right position as 0, i.e. 76543210.  So the first bit is at position 0, etc.  Thus `bit(0)` returns `0000 0001`.
+[^7]: All the operators can be used the same way: `|=`, `^=`, `&=`, `<<=` and `>>=`.  For example `C &= 2` should be thought of as `C = C & 2`.  See this [SO answer](https://stackoverflow.com/a/14296609/633251).

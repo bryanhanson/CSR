@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2023-07-26">
 <meta name="description" content="What can we measure? Why or Why Not? Pros? Cons?">
 
-<title>Chemometrics and Spectroscopy Using R - Earth’s Field NMR</title>
+<title>Chemometrics and Spectroscopy Using R – Earth’s Field NMR</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -370,7 +370,7 @@ ppm = \frac{Hz}{MHz}
 <p>where <span class="math inline">\(\hbar\)</span> is <span class="math inline">\(\frac{h}{2\pi}\)</span>. A plot for <span class="math inline">\(\ce{^{1}H}\)</span> is shown in <a href="#fig-DeltaE" class="quarto-xref">Figure&nbsp;1</a>; the right-most point corresponds to a 1,000 MHz instrument. Clearly as <span class="math inline">\(B_o\)</span> goes to zero the <span class="math inline">\(\Delta E\)</span> goes to zero in a simple linear fashion.</p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-DeltaE" class="quarto-figure quarto-figure-center quarto-float anchored" width="672">
+<div id="fig-DeltaE" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-DeltaE-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="EF-NMR-1_files/figure-html/fig-DeltaE-1.png" class="img-fluid figure-img" width="672">
@@ -620,7 +620,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      return note.innerHTML;
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
     }
   }
   for (var i=0; i<xrefs.length; i++) {

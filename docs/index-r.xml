@@ -579,9 +579,11 @@ font-style: inherit;">$</span>values)))</span></code></pre></div>
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">function</span>(M) {</span>
 <span id="cb39-2">  <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> (<span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">!</span><span class="fu" style="color: #4758AB;
@@ -623,6 +625,7 @@ background-color: null;
 font-style: inherit;">all.equal</span>(tst1, tst2))</span>
 <span id="cb39-7">  <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> (norm) orthog <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
@@ -638,6 +641,7 @@ background-color: null;
 font-style: inherit;">1</span>])))</span>
 <span id="cb39-8">  <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> (orthog) <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">message</span>(<span class="st" style="color: #20794D;
@@ -648,9 +652,11 @@ font-style: inherit;">\n</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"</span>) <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">else</span> </span>
 <span id="cb39-9">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> (norm) <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">message</span>(<span class="st" style="color: #20794D;
@@ -661,6 +667,7 @@ font-style: inherit;">\n</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"</span>) <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">else</span></span>
 <span id="cb39-10">    <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -1171,6 +1178,7 @@ font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">20</span>, <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">function</span>(x,y) <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">sin</span>(<span class="fu" style="color: #4758AB;
@@ -2551,7 +2559,7 @@ font-style: inherit;">"autoscale"</span>)</span></code></pre></div>
 background-color: null;
 font-style: inherit;">plotScree</span>(c_pca)</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-screeAlt" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" width="80%">
+<div id="fig-screeAlt" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-screeAlt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-screeAlt-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -2587,7 +2595,7 @@ background-color: null;
 font-style: inherit;">0.02</span>)</span>
 <span id="cb5-2">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-scores12" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" width="80%">
+<div id="fig-scores12" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-scores12-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-scores12-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -2628,7 +2636,7 @@ background-color: null;
 font-style: inherit;">0.02</span>)</span>
 <span id="cb6-3">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-scores23" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" width="80%">
+<div id="fig-scores23" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-scores23-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-scores23-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -2657,7 +2665,7 @@ background-color: null;
 font-style: inherit;">2</span>)</span>
 <span id="cb7-2">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-loadings" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" width="80%">
+<div id="fig-loadings" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-loadings-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-loadings-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -2682,7 +2690,7 @@ background-color: null;
 font-style: inherit;">0.001</span>)</span>
 <span id="cb8-2">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-splot" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" width="80%">
+<div id="fig-splot" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-splot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-splot-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -2781,7 +2789,7 @@ font-style: inherit;">ellipse =</span> <span class="cn" style="color: #8f5902;
 background-color: null;
 font-style: inherit;">TRUE</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-plsda-indiv" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" width="80%">
+<div id="fig-plsda-indiv" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-plsda-indiv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-plsda-indiv-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -2812,7 +2820,7 @@ font-style: inherit;">5</span>)</span>
 background-color: null;
 font-style: inherit;">plot</span>(perf.splsda)</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-plsda-perf" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" width="80%">
+<div id="fig-plsda-perf" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-plsda-perf-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-plsda-perf-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -2968,7 +2976,7 @@ font-style: inherit;"># no scaling is the default</span></span></code></pre></di
 background-color: null;
 font-style: inherit;">plotScree</span>(c_pca)</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-screeAlt" class="quarto-figure quarto-figure-center quarto-float anchored" width="80%" data-fig-align="center">
+<div id="fig-screeAlt" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-screeAlt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-screeAlt-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -2989,7 +2997,7 @@ font-style: inherit;">style =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"trad"</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-screeTrad" class="quarto-figure quarto-figure-center quarto-float anchored" width="80%" data-fig-align="center">
+<div id="fig-screeTrad" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-screeTrad-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-screeTrad-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -3014,7 +3022,7 @@ font-style: inherit;">pcs =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">10</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-cv-pca" class="quarto-figure quarto-figure-center quarto-float anchored" width="80%" data-fig-align="center">
+<div id="fig-cv-pca" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-cv-pca-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-cv-pca-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -3055,7 +3063,7 @@ background-color: null;
 font-style: inherit;">0.02</span>)</span>
 <span id="cb8-2">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-scores12" class="quarto-figure quarto-figure-center quarto-float anchored" width="80%" data-fig-align="center">
+<div id="fig-scores12" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-scores12-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-scores12-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -3095,7 +3103,7 @@ background-color: null;
 font-style: inherit;">0.02</span>)</span>
 <span id="cb9-2">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-scores23" class="quarto-figure quarto-figure-center quarto-float anchored" width="80%" data-fig-align="center">
+<div id="fig-scores23" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-scores23-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-scores23-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -3190,7 +3198,7 @@ background-color: null;
 font-style: inherit;">"black"</span>)</span>
 <span id="cb10-6">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-hotelling1" class="quarto-figure quarto-figure-center quarto-float anchored" width="80%" data-fig-align="center">
+<div id="fig-hotelling1" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-hotelling1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-hotelling1-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -3216,7 +3224,7 @@ background-color: null;
 font-style: inherit;">"OD"</span>)</span>
 <span id="cb11-2">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-diagOD" class="quarto-figure quarto-figure-center quarto-float anchored" width="80%" data-fig-align="center">
+<div id="fig-diagOD" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-diagOD-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-diagOD-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -3240,7 +3248,7 @@ background-color: null;
 font-style: inherit;">"SD"</span>)</span>
 <span id="cb12-2">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-diagSD" class="quarto-figure quarto-figure-center quarto-float anchored" width="80%" data-fig-align="center">
+<div id="fig-diagSD" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-diagSD-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-diagSD-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -3392,6 +3400,7 @@ font-style: inherit;">$</span>Imports)</span></code></pre></div>
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">function</span>(string) {</span>
 <span id="cb6-2">  string <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -3466,6 +3475,7 @@ font-style: inherit;">$</span>Imports)</span>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">length</span>(imp) <span class="sc" style="color: #5E5E5E;
@@ -3488,8 +3498,10 @@ background-color: null;
 font-style: inherit;"># Boolean to keep track of whether we found a package or not</span></span>
 <span id="cb9-3">  <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">for</span> (i <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">in</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
@@ -3525,6 +3537,7 @@ background-color: null;
 font-style: inherit;">TRUE</span>)</span>
 <span id="cb9-6">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">length</span>(g_imp) <span class="sc" style="color: #5E5E5E;
@@ -3554,6 +3567,7 @@ font-style: inherit;"># run from the package top level</span></span>
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">function</span>() {</span>
 <span id="cb10-3"></span>
 <span id="cb10-4">  <span class="co" style="color: #5E5E5E;
@@ -3566,6 +3580,7 @@ font-style: inherit;"># from strings read by read.dcf</span></span>
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">function</span>(string) {</span>
 <span id="cb10-7">    string <span class="ot" style="color: #003B4F;
 background-color: null;
@@ -3637,6 +3652,7 @@ background-color: null;
 font-style: inherit;">$</span>Imports)</span>
 <span id="cb10-17">  <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">length</span>(imp) <span class="sc" style="color: #5E5E5E;
@@ -3650,6 +3666,7 @@ background-color: null;
 font-style: inherit;">"No Imports: entries found"</span>)</span>
 <span id="cb10-18">  <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">length</span>(imp) <span class="sc" style="color: #5E5E5E;
@@ -3668,8 +3685,10 @@ background-color: null;
 font-style: inherit;">length</span>(imp))</span>
 <span id="cb10-20">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">for</span> (i <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">in</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
@@ -3706,6 +3725,7 @@ background-color: null;
 font-style: inherit;"># always found once in DESCRIPTION, hence &gt; 1</span></span>
 <span id="cb10-24">      <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">length</span>(g_imp) <span class="sc" style="color: #5E5E5E;
@@ -3732,6 +3752,7 @@ background-color: null;
 font-style: inherit;">$</span>Suggests)</span>
 <span id="cb10-30">  <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">length</span>(sug) <span class="sc" style="color: #5E5E5E;
@@ -3745,6 +3766,7 @@ background-color: null;
 font-style: inherit;">"No Suggests: entries found"</span>)</span>
 <span id="cb10-31">  <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">length</span>(sug) <span class="sc" style="color: #5E5E5E;
@@ -3763,8 +3785,10 @@ background-color: null;
 font-style: inherit;">length</span>(sug))</span>
 <span id="cb10-33">    <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">for</span> (i <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">in</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
@@ -3801,6 +3825,7 @@ background-color: null;
 font-style: inherit;"># always found once in DESCRIPTION, hence &gt; 1</span></span>
 <span id="cb10-37">      <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">length</span>(g_sug) <span class="sc" style="color: #5E5E5E;
@@ -4632,7 +4657,7 @@ background-color: null;
 font-style: inherit;">1.1</span>))</span>
 <span id="cb11-3">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-samplePlot" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" width="80%">
+<div id="fig-samplePlot" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-samplePlot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1_files/figure-html/fig-samplePlot-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -4944,8 +4969,10 @@ background-color: null;
 font-style: inherit;">read_xlsx</span>(file_name))</span>
 <span id="cb5-2"><span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">for</span> (i <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">in</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
@@ -4955,6 +4982,7 @@ background-color: null;
 font-style: inherit;">nrow</span>(found)) {</span>
 <span id="cb5-3">  <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">grepl</span>(<span class="st" style="color: #20794D;
@@ -5783,6 +5811,7 @@ font-style: inherit;"># matrix with samples in rows</span></span></code></pre></
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">function</span>(M) {</span>
 <span id="cb9-2">  <span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -5892,6 +5921,7 @@ font-style: inherit;">2</span>)</span></code></pre></div>
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
 background-color: null;
+font-weight: bold;
 font-style: inherit;">function</span>(x, order) <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">outer</span>(x, <span class="dv" style="color: #AD0000;
