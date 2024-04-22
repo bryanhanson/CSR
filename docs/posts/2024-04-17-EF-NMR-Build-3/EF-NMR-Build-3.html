@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-99.9.9">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Bryan Hanson">
+<meta name="dcterms.date" content="2024-04-16">
+<meta name="description" content="Instrument control &amp; capturing the FID">
+
+<title>Chemometrics and Spectroscopy Using R – EF-NMR Part 3: Receiver Software</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({
+  "notice_banner_type":"simple",
+  "consent_type":"implied",
+  "palette":"light",
+  "language":"en",
+  "page_load_consent_levels":["strictly-necessary","functionality","tracking","targeting"],
+  "notice_banner_reject_button_hide":false,
+  "preferences_center_close_button_hide":false,
+  "website_name":""
+  ,
+"language":"en"
+  });
+});
+</script> 
+  
+
+
+<link rel="stylesheet" href="../../styles.css">
+<meta name="twitter:title" content="Chemometrics and Spectroscopy Using R - EF-NMR Part 3: Receiver Software">
+<meta name="twitter:description" content="Instrument control &amp; capturing the FID">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Chemometrics and Spectroscopy Using R</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../projects.html"> 
+<span class="menu-text">Projects</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://www.r-bloggers.com/"> 
+<span class="menu-text">R-Bloggers</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="mailto:hanson@depauw.edu"> <i class="bi bi-envelope-fill" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/profbryanhanson"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://fosstodon.org/%40ProfBryanHanson" rel="me"> <i class="bi bi-mastodon" role="img" aria-label="Mastodon">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/bryanhanson"> <i class="bi bi-git" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml"> <i class="bi bi-rss" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><div class="quarto-margin-header"><div class="margin-header-item">
+<p>subscribe.html</p>
+</div></div>
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">EF-NMR Part 3: Receiver Software</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">EF-NMR</div>
+    <div class="quarto-category">DIY</div>
+    <div class="quarto-category">C</div>
+    <div class="quarto-category">Arduino</div>
+    <div class="quarto-category">NMRduino</div>
+    <div class="quarto-category">UtiliDuino</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Instrument control &amp; capturing the FID
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Bryan Hanson </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 16, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Before We Start…
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>NMRduino is maturing rapidly! If what I’m doing is at all interesting to you, and you don’t know about the <a href="https://github.com/NMRduino/NMRduino">NMRduino Project</a> and their recent <a href="https://www.sciencedirect.com/science/article/pii/S1090780724000491">publication</a>, be sure to check it out. It’s much more sophisticated than what’s going on here, and will be available soon.</p>
+</div>
+</div>
+<p><a href="https://chemospec.org/posts/2023-10-24-EF-NMR-Build-1/EF-NMR-Build-1.html">Part 1</a> <a href="https://chemospec.org/posts/2024-01-01-EF-NMR-Build-2/EF-NMR-Build-2.html">Part 2</a></p>
+<section id="capturing-an-fid" class="level2">
+<h2 class="anchored" data-anchor-id="capturing-an-fid">Capturing an “FID”</h2>
+<p>In the previous post on <a href="https://chemospec.org/posts/2024-01-30-Bitwise-Operators/Bitwise-Operators.html">biwise operators in C</a> I detailed some of the machinations needed to control the ADC on an Arduino. After considerable work, that knowledge has been put to use to develop a working receiver system (though more work will be needed to perfect it). In the process, I have fine-tuned the code needed to control the instrument and collect the data in a useable form.</p>
+<p>The <a href="https://github.com/bryanhanson/EF-NMR">Bnmr software</a> is available on Github. The hardware used for testing and development is shown in <a href="#fig-hardware" class="quarto-xref">Figure&nbsp;1</a>.</p>
+<div id="fig-hardware" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-hardware-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="imgs/Hardware.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-hardware-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: The hardware used for testing. The blue box on the left is the <a href="https://www.picotech.com">PicoScope</a>, which is generating a sine wave simulating an FID. The Arduino is in the middle. The bread board on the right has an Adafruit micro SD card breakout board mounted at the bottom (at the top is a voltage divider which I use to generate a constant voltage for quicker testing; it’s not hooked up when using the PicoScope). Once data is collected, the micro SD card is removed from the breakout board and put in the dongle to move the data to the laptop.
+</figcaption>
+</figure>
+</div>
+<p>Once the proper bits were set so the ADC would collect data, I first used a simple voltage divider to generate a constant ADC signal, adjustable via a potentiometer (if one doesn’t provide some kind of input, the ADC output drifts around). With a signal available, there were many rounds of code revision so that a specified number of data points could be collected and stored somewhere.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<p>In terms of storage, there were issues. The Arduino has very little actual memory, so the amount of data that can be “stored” is very small. As a result, this data has to be quickly moved somewhere else with significant memory. The solution to the transient data storage is a <a href="https://en.wikipedia.org/wiki/Circular_buffer">ring buffer</a>. I was able to implement the code found on Wikipedia in <code>C</code> without too much trouble. The idea behind a ring or circular buffer is that data is stored in a fixed size buffer, and added and removed in a coordinated manner via indices. However, in the big picture data must be removed from the ring buffer as fast or faster than it is put in, otherwise data is overwritten. And, it turns out that the Arduino ADC can really pump out data. In order to keep the ring buffer from filling and overwriting (which is treated as an error), I had to collect data from the ADC at a lower rate that it can produce numbers, for instance every 10th reading.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<p>The second problem was what to do with the data that was emptied out of the ring buffer. I spent a lot of time trying to send it to the serial port, so I could capture it from there. However, <code>Bnmr</code> also sends a lot of messages about various events to the serial port. These messages inform the user about what is happening and also provide troubleshooting guidance. Ultimately, it was not possible to capture the data this way – the messages invariably introduced problems with the formatting of the data. The solution was to add a micro SD card breakout board to store the data on the fly, effectively separating the message stream from the data stream. Before I settled on that approach, I also tried to use <code>R</code> to both send messages and capture the data.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> In addition, I also tried using a shell script and a terminal emulator to do the same. Neither was completely successful when messages and data were mixed. However, the shell script experience proved helpful in developing the final, successful approach. Another problem with having both messages and data in the same serial stream was that MacOS has a nasty habit of reseting high baud rates desirable for data collection back to lower rates. This is discussed in various forums and workarounds exist, but I could not get the overall process to be reliable and robust.</p>
+</section>
+<section id="results" class="level2">
+<h2 class="anchored" data-anchor-id="results">Results</h2>
+<p>With functioning software and a method to control the overall acquistion process in hand, I used the PicoScope to generate a sine wave (<a href="#fig-waveform" class="quarto-xref">Figure&nbsp;2</a>). <code>Bnmr</code> was compiled and uploaded via a shell script calling the <a href="https://arduino.github.io/arduino-cli/0.35/getting-started/"><code>arduino-cli</code></a> (included in the repo, see <a href="#lst-Script" class="quarto-xref">Listing&nbsp;1</a>). Control was then transferred to <code>picocom</code> which is a terminal emulation program, and the start signal sent to the Arduino. Once the scans completed, the micro SD card was moved from the Arduino to a dongle connected to the laptop, and analyzed using <code>R</code> as shown later.</p>
+<div class="cell">
+<div id="lst-Script" class="bash cell-code listing quarto-float">
+<figure class="quarto-float quarto-float-lst figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-Script-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Listing&nbsp;1: Shell Script to Send/Receive Messages &amp; Data.
+</figcaption>
+<div aria-describedby="lst-Script-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="sourceCode cell-code" id="lst-Script"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="lst-Script-1"><a href="#lst-Script-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="lst-Script-2"><a href="#lst-Script-2" aria-hidden="true" tabindex="-1"></a><span class="ex">arduino-cli</span> compile <span class="at">-b</span> arduino:avr:uno <span class="va">$1</span></span>
+<span id="lst-Script-3"><a href="#lst-Script-3" aria-hidden="true" tabindex="-1"></a><span class="ex">arduino-cli</span> upload <span class="at">-p</span> <span class="va">$2</span> <span class="at">-b</span> arduino:avr:uno <span class="va">$1</span></span>
+<span id="lst-Script-4"><a href="#lst-Script-4" aria-hidden="true" tabindex="-1"></a><span class="ex">picocom</span> <span class="va">$2</span> <span class="at">-b</span> <span class="va">$3</span> <span class="at">-g</span> <span class="va">$4</span></span>
+<span id="lst-Script-5"><a href="#lst-Script-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="lst-Script-6"><a href="#lst-Script-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Typical Usage:</span></span>
+<span id="lst-Script-7"><a href="#lst-Script-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Set working directory to .../Bnmr</span></span>
+<span id="lst-Script-8"><a href="#lst-Script-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-1</span> /dev/cu.<span class="pp">*</span> <span class="co"># With Arduino plugged in, get the name of the port</span></span>
+<span id="lst-Script-9"><a href="#lst-Script-9" aria-hidden="true" tabindex="-1"></a><span class="ex">./go.sh</span> Bnmr.ino /dev/cu.usbmodem101 9600 outfile.txt</span>
+<span id="lst-Script-10"><a href="#lst-Script-10" aria-hidden="true" tabindex="-1"></a><span class="co"># $1 is the name of the Arduino code file</span></span>
+<span id="lst-Script-11"><a href="#lst-Script-11" aria-hidden="true" tabindex="-1"></a><span class="co"># $2 is the port name</span></span>
+<span id="lst-Script-12"><a href="#lst-Script-12" aria-hidden="true" tabindex="-1"></a><span class="co"># $3 is the baud rate for messages</span></span>
+<span id="lst-Script-13"><a href="#lst-Script-13" aria-hidden="true" tabindex="-1"></a><span class="co"># $4 is the filename for messages received</span></span>
+<span id="lst-Script-14"><a href="#lst-Script-14" aria-hidden="true" tabindex="-1"></a><span class="co"># ADC data is stored on a micro SD card with a filename given in user_input.h</span></span>
+<span id="lst-Script-15"><a href="#lst-Script-15" aria-hidden="true" tabindex="-1"></a><span class="co"># cntrl-A central-X to quit the Picocom window</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</figure>
+</div>
+</div>
+<div id="fig-waveform" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-waveform-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="imgs/Waveform.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-waveform-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: The sine wave generated by the PicoScope which was used to represent an NMR FID signal. Peak-to-peak voltage was 500 mV, with a 1 V offset as the Arduino ADC can only process positive voltage readings. Frequency is 50 Hz.
+</figcaption>
+</figure>
+</div>
+<section id="message-log-file" class="level3">
+<h3 class="anchored" data-anchor-id="message-log-file">Message Log File</h3>
+<p>Whatever is typed in the <code>picocom</code> terminal/window is sent to the serial port and then to the Arduino. All messages sent by the Arduino are echoed in the <code>picocom</code> window and saved to a <em>message log file</em>. A typical output is in <a href="#lst-msg" class="quarto-xref">Listing&nbsp;2</a>.</p>
+<div class="cell">
+<div id="lst-msg" class="bash cell-code listing quarto-float">
+<figure class="quarto-float quarto-float-lst figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-msg-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Listing&nbsp;2: Messages Captured by Picocom.
+</figcaption>
+<div aria-describedby="lst-msg-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="sourceCode cell-code" id="lst-msg"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="lst-msg-1"><a href="#lst-msg-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Looking</span> for SD card...</span>
+<span id="lst-msg-2"><a href="#lst-msg-2" aria-hidden="true" tabindex="-1"></a><span class="ex">SD</span> card found <span class="kw">&amp;</span> <span class="ex">working</span></span>
+<span id="lst-msg-3"><a href="#lst-msg-3" aria-hidden="true" tabindex="-1"></a><span class="ex">SD</span> card directory:</span>
+<span id="lst-msg-4"><a href="#lst-msg-4" aria-hidden="true" tabindex="-1"></a><span class="ex">SPOTLI~1/</span></span>
+<span id="lst-msg-5"><a href="#lst-msg-5" aria-hidden="true" tabindex="-1"></a><span class="ex">FID_CSV</span>     0</span>
+<span id="lst-msg-6"><a href="#lst-msg-6" aria-hidden="true" tabindex="-1"></a><span class="ex">FSEVEN~5/</span></span>
+<span id="lst-msg-7"><a href="#lst-msg-7" aria-hidden="true" tabindex="-1"></a><span class="ex">TRASHE~9/</span></span>
+<span id="lst-msg-8"><a href="#lst-msg-8" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="lst-msg-9"><a href="#lst-msg-9" aria-hidden="true" tabindex="-1"></a><span class="ex">Bnmr</span> listening...</span>
+<span id="lst-msg-10"><a href="#lst-msg-10" aria-hidden="true" tabindex="-1"></a><span class="ex">Enter</span> g or s at any time <span class="co"># note: g is typed (but not echoed)</span></span>
+<span id="lst-msg-11"><a href="#lst-msg-11" aria-hidden="true" tabindex="-1"></a>                         <span class="co"># and sent to the Arduino, which starts the program</span></span>
+<span id="lst-msg-12"><a href="#lst-msg-12" aria-hidden="true" tabindex="-1"></a><span class="ex">=====================</span></span>
+<span id="lst-msg-13"><a href="#lst-msg-13" aria-hidden="true" tabindex="-1"></a><span class="ex">Loading</span> experiment...</span>
+<span id="lst-msg-14"><a href="#lst-msg-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="lst-msg-15"><a href="#lst-msg-15" aria-hidden="true" tabindex="-1"></a><span class="ex">Starting</span> scans...</span>
+<span id="lst-msg-16"><a href="#lst-msg-16" aria-hidden="true" tabindex="-1"></a>    <span class="ex">Scan</span> no: 1</span>
+<span id="lst-msg-17"><a href="#lst-msg-17" aria-hidden="true" tabindex="-1"></a>    <span class="ex">Scan</span> no: 2</span>
+<span id="lst-msg-18"><a href="#lst-msg-18" aria-hidden="true" tabindex="-1"></a>    <span class="ex">Scan</span> no: 3</span>
+<span id="lst-msg-19"><a href="#lst-msg-19" aria-hidden="true" tabindex="-1"></a>    <span class="ex">Scan</span> no: 4</span>
+<span id="lst-msg-20"><a href="#lst-msg-20" aria-hidden="true" tabindex="-1"></a>    <span class="ex">Scan</span> no: 5</span>
+<span id="lst-msg-21"><a href="#lst-msg-21" aria-hidden="true" tabindex="-1"></a><span class="ex">Scans</span> complete!</span>
+<span id="lst-msg-22"><a href="#lst-msg-22" aria-hidden="true" tabindex="-1"></a><span class="ex">Experiment</span> complete, stop</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</figure>
+</div>
+</div>
+</section>
+<section id="data-log-file" class="level3">
+<h3 class="anchored" data-anchor-id="data-log-file">Data Log File</h3>
+<p>The <em>data log file</em> is a comma-separated file with an entire FID/scan on one long line. There is a blank line between each data line. This is stored on the micro SD card in a file whose name is provided by the user in <code>user_input.h</code> (this is where all user modifiable parameters are given). We can read in the first two scans and plot the early points as follows (<a href="#fig-results" class="quarto-xref">Figure&nbsp;3</a>).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">readLines</span>(<span class="st">"FID_CSV"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2"></a>res1 <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">unlist</span>(<span class="fu">strsplit</span>(dat[<span class="dv">1</span>], <span class="st">", "</span>)))</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="co"># skipping dat[2] as it is a blank line</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a>res2 <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">unlist</span>(<span class="fu">strsplit</span>(dat[<span class="dv">3</span>], <span class="st">", "</span>)))</span>
+<span id="cb1-5"><a href="#cb1-5"></a></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="fu">plot</span>(<span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(res1), <span class="at">y =</span> res1, <span class="at">type =</span> <span class="st">"b"</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">25</span>),</span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="at">xlab =</span> <span class="st">"Index"</span>, <span class="at">ylab =</span> <span class="st">"ADC Reading"</span>)</span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="fu">lines</span>(<span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(res1), <span class="at">y =</span> res2, <span class="at">col =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-results" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="EF-NMR-Build-3_files/figure-html/fig-results-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Two typical “scans”.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Since there is no coordination (i.e.&nbsp;no common time base) between the generated signal and the ADC data collection, the two sample scans are offset slightly. A common time base is very important for an NMR, so this will be one of the next items for focus.</p>
+
+
+</section>
+</section>
+
+
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Right now, a fixed number of data points are collected in whatever time it takes. This needs to be modified so that the data points are collected over a fixed amount of time, specified by the user.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>There’s a potential problem here, and that is one must collect enough points to satisfy <a href="https://en.wikipedia.org/wiki/Nyquist–Shannon_sampling_theorem">Nyquist’s criterion</a> in order to faithfully represent a sine wave. Preliminary experiments suggest that there are plenty of data points because the ADC is extremely fast.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>I spent considerable time writing an <code>R</code> package which I named <a href="https://github.com//bryanhanson/UtiliDuino">UtiliDuino</a> for this purpose, but ultimately it was not the best solution.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2024,
+  author = {Hanson, Bryan},
+  title = {EF-NMR {Part} 3: {Receiver} {Software}},
+  date = {2024-04-16},
+  url = {http://chemospec.org/posts/2024-04-17-EF-NMR-Build-3/EF-NMR-Build-3.html},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2024" class="csl-entry quarto-appendix-citeas" role="listitem">
+Hanson, Bryan. 2024. <span>“EF-NMR Part 3: Receiver Software.”</span>
+April 16, 2024. <a href="http://chemospec.org/posts/2024-04-17-EF-NMR-Build-3/EF-NMR-Build-3.html">http://chemospec.org/posts/2024-04-17-EF-NMR-Build-3/EF-NMR-Build-3.html</a>.
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("http:\/\/chemospec\.org");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://utteranc.es/client.js" repo="bryanhanson/CSR" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+
+<div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookies are used to track visits only</a></div></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

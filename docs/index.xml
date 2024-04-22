@@ -10,7 +10,366 @@
 <atom:link href="http://chemospec.org/index.xml" rel="self" type="application/rss+xml"/>
 <description>Applying chemometrics to spectroscopy using R</description>
 <generator>quarto-99.9.9</generator>
-<lastBuildDate>Tue, 30 Jan 2024 07:00:00 GMT</lastBuildDate>
+<lastBuildDate>Tue, 16 Apr 2024 07:00:00 GMT</lastBuildDate>
+<item>
+  <title>EF-NMR Part 3: Receiver Software</title>
+  <dc:creator>Bryan Hanson</dc:creator>
+  <link>http://chemospec.org/posts/2024-04-17-EF-NMR-Build-3/EF-NMR-Build-3.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Before We Start…
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>NMRduino is maturing rapidly! If what I’m doing is at all interesting to you, and you don’t know about the <a href="https://github.com/NMRduino/NMRduino">NMRduino Project</a> and their recent <a href="https://www.sciencedirect.com/science/article/pii/S1090780724000491">publication</a>, be sure to check it out. It’s much more sophisticated than what’s going on here, and will be available soon.</p>
+</div>
+</div>
+<p><a href="https://chemospec.org/posts/2023-10-24-EF-NMR-Build-1/EF-NMR-Build-1.html">Part 1</a> <a href="https://chemospec.org/posts/2024-01-01-EF-NMR-Build-2/EF-NMR-Build-2.html">Part 2</a></p>
+<section id="capturing-an-fid" class="level2">
+<h2 class="anchored" data-anchor-id="capturing-an-fid">Capturing an “FID”</h2>
+<p>In the previous post on <a href="https://chemospec.org/posts/2024-01-30-Bitwise-Operators/Bitwise-Operators.html">biwise operators in C</a> I detailed some of the machinations needed to control the ADC on an Arduino. After considerable work, that knowledge has been put to use to develop a working receiver system (though more work will be needed to perfect it). In the process, I have fine-tuned the code needed to control the instrument and collect the data in a useable form.</p>
+<p>The <a href="https://github.com/bryanhanson/EF-NMR">Bnmr software</a> is available on Github. The hardware used for testing and development is shown in Figure&nbsp;1.</p>
+<div id="fig-hardware" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-hardware-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="http://chemospec.org/posts/2024-04-17-EF-NMR-Build-3/imgs/Hardware.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-hardware-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: The hardware used for testing. The blue box on the left is the <a href="https://www.picotech.com">PicoScope</a>, which is generating a sine wave simulating an FID. The Arduino is in the middle. The bread board on the right has an Adafruit micro SD card breakout board mounted at the bottom (at the top is a voltage divider which I use to generate a constant voltage for quicker testing; it’s not hooked up when using the PicoScope). Once data is collected, the micro SD card is removed from the breakout board and put in the dongle to move the data to the laptop.
+</figcaption>
+</figure>
+</div>
+<p>Once the proper bits were set so the ADC would collect data, I first used a simple voltage divider to generate a constant ADC signal, adjustable via a potentiometer (if one doesn’t provide some kind of input, the ADC output drifts around). With a signal available, there were many rounds of code revision so that a specified number of data points could be collected and stored somewhere.<sup>1</sup></p>
+<p>In terms of storage, there were issues. The Arduino has very little actual memory, so the amount of data that can be “stored” is very small. As a result, this data has to be quickly moved somewhere else with significant memory. The solution to the transient data storage is a <a href="https://en.wikipedia.org/wiki/Circular_buffer">ring buffer</a>. I was able to implement the code found on Wikipedia in <code>C</code> without too much trouble. The idea behind a ring or circular buffer is that data is stored in a fixed size buffer, and added and removed in a coordinated manner via indices. However, in the big picture data must be removed from the ring buffer as fast or faster than it is put in, otherwise data is overwritten. And, it turns out that the Arduino ADC can really pump out data. In order to keep the ring buffer from filling and overwriting (which is treated as an error), I had to collect data from the ADC at a lower rate that it can produce numbers, for instance every 10th reading.<sup>2</sup></p>
+<p>The second problem was what to do with the data that was emptied out of the ring buffer. I spent a lot of time trying to send it to the serial port, so I could capture it from there. However, <code>Bnmr</code> also sends a lot of messages about various events to the serial port. These messages inform the user about what is happening and also provide troubleshooting guidance. Ultimately, it was not possible to capture the data this way – the messages invariably introduced problems with the formatting of the data. The solution was to add a micro SD card breakout board to store the data on the fly, effectively separating the message stream from the data stream. Before I settled on that approach, I also tried to use <code>R</code> to both send messages and capture the data.<sup>3</sup> In addition, I also tried using a shell script and a terminal emulator to do the same. Neither was completely successful when messages and data were mixed. However, the shell script experience proved helpful in developing the final, successful approach. Another problem with having both messages and data in the same serial stream was that MacOS has a nasty habit of reseting high baud rates desirable for data collection back to lower rates. This is discussed in various forums and workarounds exist, but I could not get the overall process to be reliable and robust.</p>
+</section>
+<section id="results" class="level2">
+<h2 class="anchored" data-anchor-id="results">Results</h2>
+<p>With functioning software and a method to control the overall acquistion process in hand, I used the PicoScope to generate a sine wave (Figure&nbsp;2). <code>Bnmr</code> was compiled and uploaded via a shell script calling the <a href="https://arduino.github.io/arduino-cli/0.35/getting-started/"><code>arduino-cli</code></a> (included in the repo, see Listing&nbsp;1). Control was then transferred to <code>picocom</code> which is a terminal emulation program, and the start signal sent to the Arduino. Once the scans completed, the micro SD card was moved from the Arduino to a dongle connected to the laptop, and analyzed using <code>R</code> as shown later.</p>
+<div class="cell">
+<div id="lst-Script" class="bash cell-code listing quarto-float">
+<figure class="quarto-float quarto-float-lst figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-Script-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Listing&nbsp;1: Shell Script to Send/Receive Messages &amp; Data.
+</figcaption>
+<div aria-describedby="lst-Script-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="sourceCode cell-code" id="lst-Script" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="lst-Script-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#!/bin/bash</span></span>
+<span id="lst-Script-2"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">arduino-cli</span> compile <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-b</span> arduino:avr:uno <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">$1</span></span>
+<span id="lst-Script-3"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">arduino-cli</span> upload <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-p</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">$2</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-b</span> arduino:avr:uno <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">$1</span></span>
+<span id="lst-Script-4"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">picocom</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">$2</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-b</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">$3</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-g</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">$4</span></span>
+<span id="lst-Script-5"></span>
+<span id="lst-Script-6"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Typical Usage:</span></span>
+<span id="lst-Script-7"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Set working directory to .../Bnmr</span></span>
+<span id="lst-Script-8"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ls</span> <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">-1</span> /dev/cu.<span class="pp" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">*</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># With Arduino plugged in, get the name of the port</span></span>
+<span id="lst-Script-9"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">./go.sh</span> Bnmr.ino /dev/cu.usbmodem101 9600 outfile.txt</span>
+<span id="lst-Script-10"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># $1 is the name of the Arduino code file</span></span>
+<span id="lst-Script-11"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># $2 is the port name</span></span>
+<span id="lst-Script-12"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># $3 is the baud rate for messages</span></span>
+<span id="lst-Script-13"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># $4 is the filename for messages received</span></span>
+<span id="lst-Script-14"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># ADC data is stored on a micro SD card with a filename given in user_input.h</span></span>
+<span id="lst-Script-15"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># cntrl-A central-X to quit the Picocom window</span></span></code></pre></div>
+</div>
+</figure>
+</div>
+</div>
+<div id="fig-waveform" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-waveform-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="http://chemospec.org/posts/2024-04-17-EF-NMR-Build-3/imgs/Waveform.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-waveform-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: The sine wave generated by the PicoScope which was used to represent an NMR FID signal. Peak-to-peak voltage was 500 mV, with a 1 V offset as the Arduino ADC can only process positive voltage readings. Frequency is 50 Hz.
+</figcaption>
+</figure>
+</div>
+<section id="message-log-file" class="level3">
+<h3 class="anchored" data-anchor-id="message-log-file">Message Log File</h3>
+<p>Whatever is typed in the <code>picocom</code> terminal/window is sent to the serial port and then to the Arduino. All messages sent by the Arduino are echoed in the <code>picocom</code> window and saved to a <em>message log file</em>. A typical output is in Listing&nbsp;2.</p>
+<div class="cell">
+<div id="lst-msg" class="bash cell-code listing quarto-float">
+<figure class="quarto-float quarto-float-lst figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-msg-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Listing&nbsp;2: Messages Captured by Picocom.
+</figcaption>
+<div aria-describedby="lst-msg-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="sourceCode cell-code" id="lst-msg" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="lst-msg-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">Looking</span> for SD card...</span>
+<span id="lst-msg-2"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">SD</span> card found <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">&amp;</span> <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">working</span></span>
+<span id="lst-msg-3"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">SD</span> card directory:</span>
+<span id="lst-msg-4"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">SPOTLI~1/</span></span>
+<span id="lst-msg-5"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">FID_CSV</span>     0</span>
+<span id="lst-msg-6"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">FSEVEN~5/</span></span>
+<span id="lst-msg-7"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">TRASHE~9/</span></span>
+<span id="lst-msg-8"> </span>
+<span id="lst-msg-9"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">Bnmr</span> listening...</span>
+<span id="lst-msg-10"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">Enter</span> g or s at any time <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># note: g is typed (but not echoed)</span></span>
+<span id="lst-msg-11">                         <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># and sent to the Arduino, which starts the program</span></span>
+<span id="lst-msg-12"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">=====================</span></span>
+<span id="lst-msg-13"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">Loading</span> experiment...</span>
+<span id="lst-msg-14"></span>
+<span id="lst-msg-15"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">Starting</span> scans...</span>
+<span id="lst-msg-16">    <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">Scan</span> no: 1</span>
+<span id="lst-msg-17">    <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">Scan</span> no: 2</span>
+<span id="lst-msg-18">    <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">Scan</span> no: 3</span>
+<span id="lst-msg-19">    <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">Scan</span> no: 4</span>
+<span id="lst-msg-20">    <span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">Scan</span> no: 5</span>
+<span id="lst-msg-21"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">Scans</span> complete!</span>
+<span id="lst-msg-22"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">Experiment</span> complete, stop</span></code></pre></div>
+</div>
+</figure>
+</div>
+</div>
+</section>
+<section id="data-log-file" class="level3">
+<h3 class="anchored" data-anchor-id="data-log-file">Data Log File</h3>
+<p>The <em>data log file</em> is a comma-separated file with an entire FID/scan on one long line. There is a blank line between each data line. This is stored on the micro SD card in a file whose name is provided by the user in <code>user_input.h</code> (this is where all user modifiable parameters are given). We can read in the first two scans and plot the early points as follows (Figure&nbsp;3).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1">dat <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">readLines</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"FID_CSV"</span>)</span>
+<span id="cb1-2">res1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as.numeric</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">unlist</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">strsplit</span>(dat[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>], <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">", "</span>)))</span>
+<span id="cb1-3"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># skipping dat[2] as it is a blank line</span></span>
+<span id="cb1-4">res2 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as.numeric</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">unlist</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">strsplit</span>(dat[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>], <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">", "</span>)))</span>
+<span id="cb1-5"></span>
+<span id="cb1-6"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(res1), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> res1, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">type =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"b"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xlim =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">25</span>),</span>
+<span id="cb1-7"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xlab =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Index"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ylab =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"ADC Reading"</span>)</span>
+<span id="cb1-8"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">lines</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(res1), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> res2, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">col =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"red"</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<div id="fig-results" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="http://chemospec.org/posts/2024-04-17-EF-NMR-Build-3/EF-NMR-Build-3_files/figure-html/fig-results-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Two typical “scans”.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Since there is no coordination (i.e.&nbsp;no common time base) between the generated signal and the ADC data collection, the two sample scans are offset slightly. A common time base is very important for an NMR, so this will be one of the next items for focus.</p>
+
+
+</section>
+</section>
+
+
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Right now, a fixed number of data points are collected in whatever time it takes. This needs to be modified so that the data points are collected over a fixed amount of time, specified by the user.↩︎</p></li>
+<li id="fn2"><p>There’s a potential problem here, and that is one must collect enough points to satisfy <a href="https://en.wikipedia.org/wiki/Nyquist–Shannon_sampling_theorem">Nyquist’s criterion</a> in order to faithfully represent a sine wave. Preliminary experiments suggest that there are plenty of data points because the ADC is extremely fast.↩︎</p></li>
+<li id="fn3"><p>I spent considerable time writing an <code>R</code> package which I named <a href="https://github.com//bryanhanson/UtiliDuino">UtiliDuino</a> for this purpose, but ultimately it was not the best solution.↩︎</p></li>
+</ol>
+</section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2024,
+  author = {Hanson, Bryan},
+  title = {EF-NMR {Part} 3: {Receiver} {Software}},
+  date = {2024-04-16},
+  url = {http://chemospec.org/posts/2024-04-17-EF-NMR-Build-3/EF-NMR-Build-3.html},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2024" class="csl-entry quarto-appendix-citeas">
+Hanson, Bryan. 2024. <span>“EF-NMR Part 3: Receiver Software.”</span>
+April 16, 2024. <a href="http://chemospec.org/posts/2024-04-17-EF-NMR-Build-3/EF-NMR-Build-3.html">http://chemospec.org/posts/2024-04-17-EF-NMR-Build-3/EF-NMR-Build-3.html</a>.
+</div></div></section></div> ]]></description>
+  <category>EF-NMR</category>
+  <category>DIY</category>
+  <category>C</category>
+  <category>Arduino</category>
+  <category>NMRduino</category>
+  <category>UtiliDuino</category>
+  <guid>http://chemospec.org/posts/2024-04-17-EF-NMR-Build-3/EF-NMR-Build-3.html</guid>
+  <pubDate>Tue, 16 Apr 2024 07:00:00 GMT</pubDate>
+</item>
 <item>
   <title>Bitwise Operators in C</title>
   <dc:creator>Bryan Hanson</dc:creator>
@@ -5592,779 +5951,6 @@ References.”</span> February 18, 2022. <a href="http://chemospec.org/posts/202
   <category>Literature</category>
   <guid>http://chemospec.org/posts/2022-02-18-Key-References/2022-02-18-Key-References.html</guid>
   <pubDate>Fri, 18 Feb 2022 07:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>Do You have Stale Imports or Suggests?</title>
-  <dc:creator>Bryan Hanson</dc:creator>
-  <link>http://chemospec.org/posts/2022-02-09-Imports-Suggests/2022-02-09-Imports-Suggests.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<p>I’ve been developing packages in <code>R</code> for over a decade now. When adding new features to a package, I often import functions from another package, and of course that package goes in the <code>Imports:</code> field of the <code>DESCRIPTION</code> file. Later, I might change my approach entirely and no longer need that package. Do I remember to remove it from <code>DESCRIPTION</code>? Generally not. The same thing happens when writing a new vignette, and it can happen with the <code>Suggests:</code> field as well. It can also happen when one splits a packages into several smaller packages. If one forgets to delete a package from the <code>DESCRIPTION</code> file, the dependencies become bloated, because all the imported and suggested packages have to be available to install the package. This adds overhead to the project, and increases the possibility of a namespace conflict.</p>
-<p>In fact this just happened to me <em>again!</em> The author of a package I had in <code>Suggests:</code> wrote to me and let me know their package would be archived. It was an easy enough fix for me, as it was a “stale” package in that I was no longer using it. I had added it for a vignette which I later deleted, as I decided a series of blog posts was a better approach.</p>
-<p>So I decided to write a little function to check for such stale <code>Suggests:</code> and <code>Import:</code> entries. This post is about that function. As far as I can tell there is no built-in function for this purpose, and CRAN does not check for stale entries. So it was worth my time to automate the process.<sup>1</sup></p>
-<p>The first step is to read in the <code>DESCRIPTION</code> file for the package (so we want our working directory to be the top level of the package). There is a built in function for this. We’ll use the <code>DESCRIPTION</code> file from the <code>ChemoSpec</code> package as a demonstration.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># setwd("...") # set to the top level of the package</span></span>
-<span id="cb1-2">desc <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">read.dcf</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"DESCRIPTION"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">all =</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span>)</span></code></pre></div>
-</div>
-<p>The argument <code>all = TRUE</code> is a bit odd in that it has a particular purpose (see <code>?read.dcf</code>) which isn’t really important here, but has the side effect of returning a data frame, which makes our job simpler. Let’s look at what is returned.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">str</span>(desc)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>'data.frame':   1 obs. of  18 variables:
- $ Package         : chr "ChemoSpec"
- $ Type            : chr "Package"
- $ Title           : chr "Exploratory Chemometrics for Spectroscopy"
- $ Version         : chr "6.1.2"
- $ Date            : chr "2022-02-08"
- $ Authors@R       : chr "c(\nperson(\"Bryan A.\", \"Hanson\",\nrole = c(\"aut\", \"cre\"), email =\n\"hanson@depauw.edu\",\ncomment = c("| __truncated__
- $ Description     : chr "A collection of functions for top-down exploratory data analysis\nof spectral data including nuclear magnetic r"| __truncated__
- $ License         : chr "GPL-3"
- $ Depends         : chr "R (&gt;= 3.5),\nChemoSpecUtils (&gt;= 1.0)"
- $ Imports         : chr "plyr,\nstats,\nutils,\ngrDevices,\nreshape2,\nreadJDX (&gt;= 0.6),\npatchwork,\nggplot2,\nplotly,\nmagrittr"
- $ Suggests        : chr "IDPmisc,\nknitr,\njs,\nNbClust,\nlattice,\nbaseline,\nmclust,\npls,\nclusterCrit,\nR.utils,\nRColorBrewer,\nser"| __truncated__
- $ URL             : chr "https://bryanhanson.github.io/ChemoSpec/"
- $ BugReports      : chr "https://github.com/bryanhanson/ChemoSpec/issues"
- $ ByteCompile     : chr "TRUE"
- $ VignetteBuilder : chr "knitr"
- $ Encoding        : chr "UTF-8"
- $ RoxygenNote     : chr "7.1.2"
- $ NeedsCompilation: chr "no"</code></pre>
-</div>
-</div>
-<p>We are interested in the <code>Imports</code> and <code>Suggests</code> elements. Let’s look more closely.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">head</span>(desc<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>Imports)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "plyr,\nstats,\nutils,\ngrDevices,\nreshape2,\nreadJDX (&gt;= 0.6),\npatchwork,\nggplot2,\nplotly,\nmagrittr"</code></pre>
-</div>
-</div>
-<p>You can see there are a bunch of newlines in there (<code>\n</code>), along with some version specifications, in parentheses. We need to clean this up so we have a simple list of the packages as a vector. For clean up we’ll use the following helper function.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1">clean_up <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">function</span>(string) {</span>
-<span id="cb6-2">  string <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">gsub</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">\n</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">""</span>, string) <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># remove newlines</span></span>
-<span id="cb6-3">  string <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">gsub</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">\\</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">(.+</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">\\</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">)"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">""</span>, string) <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># remove parens &amp; anything within them</span></span>
-<span id="cb6-4">  string <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">unlist</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">strsplit</span>(string, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">","</span>)) <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># split the long string into pieces</span></span>
-<span id="cb6-5">  string <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">trimws</span>(string) <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># remove any white space around words</span></span>
-<span id="cb6-6">}</span></code></pre></div>
-</div>
-<p>After we apply this to the raw results, we have what we are after, a clean list of imported packages.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1">imp <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">clean_up</span>(desc<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>Imports)</span>
-<span id="cb7-2">imp</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code> [1] "plyr"      "stats"     "utils"     "grDevices" "reshape2"  "readJDX"  
- [7] "patchwork" "ggplot2"   "plotly"    "magrittr" </code></pre>
-</div>
-</div>
-<p>Next, we can search the entire package looking for these package names to see if they are used in the package. They might appear in import statements, vignettes, code and so forth, so it’s not sufficient to just look at code. This is a job for <code>grep</code>, but we’ll call <code>grep</code> from within <code>R</code> so that we don’t have to use the command line and transfer the results to <code>R</code>, that gets messy and is error-prone.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(imp) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;=</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>) { <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Note 1</span></span>
-<span id="cb9-2">  imp_res <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">rep</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"FALSE"</span>, <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(imp)) <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Boolean to keep track of whether we found a package or not</span></span>
-<span id="cb9-3">  <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">for</span> (i <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">in</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(imp)) {</span>
-<span id="cb9-4">    args <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">paste</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"-r -e '"</span>, imp[i], <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"' *"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">sep =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">""</span>) <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># assemble arguments for grep</span></span>
-<span id="cb9-5">    g_imp <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">system2</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"grep"</span>, args, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">stdout =</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span>)</span>
-<span id="cb9-6">    <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(g_imp) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>L) imp_res[i] <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Note 2</span></span>
-<span id="cb9-7">  }</span>
-<span id="cb9-8">}</span></code></pre></div>
-</div>
-<ul>
-<li>Note 1: We ought to check if there are any imports at all. It would be a bit unusual, but it’s possible to have zero imports.</li>
-<li>Note 2: <code>g_imp</code> contains the results of the grep process. If there <em>are</em> imports in the package, each imported package name will be found by grep in the <code>DESCRIPTION</code> file. That’s not so interesting, so we don’t count it. For a package to be stale, it will be found in <code>DESCRIPTION</code> <em>but no where else</em>.</li>
-</ul>
-<p>We can do the same process for the <code>Suggests:</code> field of <code>DESCRIPTION</code>. And then it would be nice to present the results in a more useable form. At this point we can put it all togther in an easy-to-use function.<sup>2</sup></p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># run from the package top level</span></span>
-<span id="cb10-2">check_stale_imports_suggests <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">function</span>() {</span>
-<span id="cb10-3"></span>
-<span id="cb10-4">  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># helper function: removes extra characters</span></span>
-<span id="cb10-5">  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># from strings read by read.dcf</span></span>
-<span id="cb10-6">  clean_up <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">function</span>(string) {</span>
-<span id="cb10-7">    string <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">gsub</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">\n</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">""</span>, string)</span>
-<span id="cb10-8">    string <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">gsub</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">\\</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">(.+</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">\\</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">)"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">""</span>, string)</span>
-<span id="cb10-9">    string <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">unlist</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">strsplit</span>(string, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">","</span>))</span>
-<span id="cb10-10">    string <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">trimws</span>(string)</span>
-<span id="cb10-11">  }</span>
-<span id="cb10-12"></span>
-<span id="cb10-13">  desc <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">read.dcf</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"DESCRIPTION"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">all =</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span>)</span>
-<span id="cb10-14"></span>
-<span id="cb10-15">  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># look for use of imported packages</span></span>
-<span id="cb10-16">  imp <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">clean_up</span>(desc<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>Imports)</span>
-<span id="cb10-17">  <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(imp) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>L) <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">message</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"No Imports: entries found"</span>)</span>
-<span id="cb10-18">  <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(imp) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;=</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>) {</span>
-<span id="cb10-19">    imp_res <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">rep</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"FALSE"</span>, <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(imp))</span>
-<span id="cb10-20">    <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">for</span> (i <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">in</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(imp)) {</span>
-<span id="cb10-21">      args <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">paste</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"-r -e '"</span>, imp[i], <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"' *"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">sep =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">""</span>)</span>
-<span id="cb10-22">      g_imp <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">system2</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"grep"</span>, args, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">stdout =</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span>)</span>
-<span id="cb10-23">      <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># always found once in DESCRIPTION, hence &gt; 1</span></span>
-<span id="cb10-24">      <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(g_imp) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>L) imp_res[i] <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span></span>
-<span id="cb10-25">    }</span>
-<span id="cb10-26">  }</span>
-<span id="cb10-27"></span>
-<span id="cb10-28">  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># look for use of suggested packages</span></span>
-<span id="cb10-29">  sug <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">clean_up</span>(desc<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>Suggests)</span>
-<span id="cb10-30">  <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(sug) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>L) <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">message</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"No Suggests: entries found"</span>)</span>
-<span id="cb10-31">  <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(sug) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;=</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>) {</span>
-<span id="cb10-32">    sug_res <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">rep</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"FALSE"</span>, <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(sug))</span>
-<span id="cb10-33">    <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">for</span> (i <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">in</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(sug)) {</span>
-<span id="cb10-34">      args <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">paste</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"-r -e '"</span>, sug[i], <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"' *"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">sep =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">""</span>)</span>
-<span id="cb10-35">      g_sug <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">system2</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"grep"</span>, args, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">stdout =</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span>)</span>
-<span id="cb10-36">      <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># always found once in DESCRIPTION, hence &gt; 1</span></span>
-<span id="cb10-37">      <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">if</span> (<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(g_sug) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&gt;</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>L) sug_res[i] <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span></span>
-<span id="cb10-38">    }</span>
-<span id="cb10-39">  }</span>
-<span id="cb10-40"></span>
-<span id="cb10-41">  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># arrange output in easy to read format</span></span>
-<span id="cb10-42">  role <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">rep</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Imports"</span>, <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(imp)), <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">rep</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Suggests"</span>, <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">length</span>(sug)))</span>
-<span id="cb10-43"></span>
-<span id="cb10-44">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">return</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">data.frame</span>(</span>
-<span id="cb10-45">    <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">pkg =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(imp, sug),</span>
-<span id="cb10-46">    <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">role =</span> role,</span>
-<span id="cb10-47">    <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">found =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(imp_res, sug_res)))</span>
-<span id="cb10-48">}</span></code></pre></div>
-</div>
-<p>Applying this function to my <code>ChemoSpec2D</code> package (as of the date of this post), we see the following output. You can see a bunch of packages are imported but never used, so I have some work to do. This was the result of copying the <code>DESCRIPTION</code> file from <code>ChemoSpec</code> when I started <code>ChemoSpec2D</code> and obviously I never went back and cleaned things up.</p>
-<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1">            pkg     role found</span>
-<span id="cb11-2"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>          plyr  Imports  <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span></span>
-<span id="cb11-3"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>         stats  Imports  <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span></span>
-<span id="cb11-4"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span>         utils  Imports  <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span></span>
-<span id="cb11-5"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">4</span>     grDevices  Imports  <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span></span>
-<span id="cb11-6"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">5</span>      reshape2  Imports  <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span></span>
-<span id="cb11-7"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">6</span>       readJDX  Imports  <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span></span>
-<span id="cb11-8"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">7</span>     patchwork  Imports  <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span></span>
-<span id="cb11-9"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">8</span>       ggplot2  Imports  <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span></span>
-<span id="cb11-10"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">9</span>        plotly  Imports  <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span></span>
-<span id="cb11-11"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">10</span>     magrittr  Imports  <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span></span>
-<span id="cb11-12"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">11</span>      IDPmisc Suggests  <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span></span>
-<span id="cb11-13"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">12</span>        knitr Suggests  <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span></span>
-<span id="cb11-14"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">13</span>           js Suggests  <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span></span>
-<span id="cb11-15"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">14</span>      NbClust Suggests  <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span></span>
-<span id="cb11-16"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">15</span>      lattice Suggests  <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span></span>
-<span id="cb11-17"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">16</span>     baseline Suggests  <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span></span>
-<span id="cb11-18"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">17</span>       mclust Suggests  <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span></span>
-<span id="cb11-19"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">18</span>          pls Suggests  <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span></span>
-<span id="cb11-20"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">19</span>  clusterCrit Suggests  <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span></span>
-<span id="cb11-21"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">20</span>      R.utils Suggests  <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span></span>
-<span id="cb11-22"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">21</span> RColorBrewer Suggests  <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span></span>
-<span id="cb11-23"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">22</span>    seriation Suggests <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">FALSE</span></span>
-<span id="cb11-24"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">23</span>         MASS Suggests <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">FALSE</span></span>
-<span id="cb11-25"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">24</span>   robustbase Suggests <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">FALSE</span></span>
-<span id="cb11-26"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">25</span>         grid Suggests  <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span></span>
-<span id="cb11-27"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">26</span>        pcaPP Suggests <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">FALSE</span></span>
-<span id="cb11-28"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">27</span>     jsonlite Suggests <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">FALSE</span></span>
-<span id="cb11-29"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">28</span>       gsubfn Suggests <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">FALSE</span></span>
-<span id="cb11-30"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">29</span>       signal Suggests  <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span></span>
-<span id="cb11-31"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">30</span>        speaq Suggests <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">FALSE</span></span>
-<span id="cb11-32"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">31</span>     tinytest Suggests <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">FALSE</span></span>
-<span id="cb11-33"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">32</span>   elasticnet Suggests <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">FALSE</span></span>
-<span id="cb11-34"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">33</span>        irlba Suggests <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">FALSE</span></span>
-<span id="cb11-35"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">34</span>         amap Suggests <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">FALSE</span></span>
-<span id="cb11-36"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">35</span>    rmarkdown Suggests  <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span></span>
-<span id="cb11-37"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">36</span>     bookdown Suggests <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">FALSE</span></span>
-<span id="cb11-38"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">37</span> chemometrics Suggests <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">FALSE</span></span>
-<span id="cb11-39"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">38</span>    hyperSpec Suggests <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">FALSE</span></span></code></pre></div>
-
-
-
-
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
-
-<ol>
-<li id="fn1"><p>As you will see in a moment, during testing I found a bunch of stale entries I need to remove from several packages!↩︎</p></li>
-<li id="fn2"><p>In easy to use form as a <a href="https://gist.github.com/bryanhanson/4c8ac99903df65af9c7e11a972447bc5">Gist</a>.↩︎</p></li>
-</ol>
-</section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
-  author = {Hanson, Bryan},
-  title = {Do {You} Have {Stale} {Imports} or {Suggests?}},
-  date = {2022-02-09},
-  url = {http://chemospec.org/posts/2022-02-09-Imports-Suggests/2022-02-09-Imports-Suggests.html},
-  langid = {en}
-}
-</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2022" class="csl-entry quarto-appendix-citeas">
-Hanson, Bryan. 2022. <span>“Do You Have Stale Imports or
-Suggests?”</span> February 9, 2022. <a href="http://chemospec.org/posts/2022-02-09-Imports-Suggests/2022-02-09-Imports-Suggests.html">http://chemospec.org/posts/2022-02-09-Imports-Suggests/2022-02-09-Imports-Suggests.html</a>.
-</div></div></section></div> ]]></description>
-  <category>R</category>
-  <category>Utilities</category>
-  <category>Developers</category>
-  <guid>http://chemospec.org/posts/2022-02-09-Imports-Suggests/2022-02-09-Imports-Suggests.html</guid>
-  <pubDate>Wed, 09 Feb 2022 07:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>
