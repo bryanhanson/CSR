@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2024-04-16">
 <meta name="description" content="Instrument control &amp; capturing the FID">
 
-<title>Chemometrics and Spectroscopy Using R – EF-NMR Part 3: Receiver Software</title>
+<title>EF-NMR Part 3: Receiver Software – Chemometrics and Spectroscopy Using R</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -74,10 +74,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-494121dfa8658343c03537e94414993d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-d8a1c43c4a41e87f35b59b82222889d1.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -126,9 +127,6 @@ cookieconsent.run({
 
 
 <link rel="stylesheet" href="../../styles.css">
-<meta name="twitter:title" content="Chemometrics and Spectroscopy Using R - EF-NMR Part 3: Receiver Software">
-<meta name="twitter:description" content="Instrument control &amp; capturing the FID">
-<meta name="twitter:card" content="summary">
 </head>
 
 <body class="nav-fixed">
@@ -143,7 +141,7 @@ cookieconsent.run({
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
@@ -165,15 +163,9 @@ cookieconsent.run({
 </i> 
 <span class="menu-text"></span></a>
   </li>  
-  <li class="nav-item compact">
-    <a class="nav-link" href="https://twitter.com/profbryanhanson"> <i class="bi bi-twitter" role="img">
-</i> 
-<span class="menu-text"></span></a>
-  </li>  
-  <li class="nav-item compact">
-    <a class="nav-link" href="https://fosstodon.org/%40ProfBryanHanson" rel="me"> <i class="bi bi-mastodon" role="img" aria-label="Mastodon">
-</i> 
-<span class="menu-text"></span></a>
+  <li class="nav-item">
+    <a class="nav-link" href="https://bsky.app/profile/profbryanhanson.bsky.social"> 
+<span class="menu-text"><iconify-icon role="img" inline="" icon="simple-icons:bluesky" aria-label="Icon bluesky from simple-icons Iconify.design set." title="Icon bluesky from simple-icons Iconify.design set."></iconify-icon></span></a>
   </li>  
   <li class="nav-item compact">
     <a class="nav-link" href="https://github.com/bryanhanson"> <i class="bi bi-git" role="img">
@@ -300,7 +292,7 @@ Before We Start…
 <h2 class="anchored" data-anchor-id="capturing-an-fid">Capturing an “FID”</h2>
 <p>In the previous post on <a href="https://chemospec.org/posts/2024-01-30-Bitwise-Operators/Bitwise-Operators.html">biwise operators in C</a> I detailed some of the machinations needed to control the ADC on an Arduino. After considerable work, that knowledge has been put to use to develop a working receiver system (though more work will be needed to perfect it). In the process, I have fine-tuned the code needed to control the instrument and collect the data in a useable form.</p>
 <p>The <a href="https://github.com/bryanhanson/EF-NMR">Bnmr software</a> is available on Github. The hardware used for testing and development is shown in <a href="#fig-hardware" class="quarto-xref">Figure&nbsp;1</a>.</p>
-<div id="fig-hardware" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-hardware" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-hardware-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="imgs/Hardware.png" class="img-fluid figure-img">
@@ -318,7 +310,7 @@ Figure&nbsp;1: The hardware used for testing. The blue box on the left is the <a
 <h2 class="anchored" data-anchor-id="results">Results</h2>
 <p>With functioning software and a method to control the overall acquistion process in hand, I used the PicoScope to generate a sine wave (<a href="#fig-waveform" class="quarto-xref">Figure&nbsp;2</a>). <code>Bnmr</code> was compiled and uploaded via a shell script calling the <a href="https://arduino.github.io/arduino-cli/0.35/getting-started/"><code>arduino-cli</code></a> (included in the repo, see <a href="#lst-Script" class="quarto-xref">Listing&nbsp;1</a>). Control was then transferred to <code>picocom</code> which is a terminal emulation program, and the start signal sent to the Arduino. Once the scans completed, the micro SD card was moved from the Arduino to a dongle connected to the laptop, and analyzed using <code>R</code> as shown later.</p>
 <div class="cell">
-<div id="lst-Script" class="bash cell-code listing quarto-float">
+<div id="lst-Script" class="bash cell-code listing quarto-float quarto-figure quarto-figure-left anchored">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-Script-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Listing&nbsp;1: Shell Script to Send/Receive Messages &amp; Data.
@@ -343,7 +335,7 @@ Listing&nbsp;1: Shell Script to Send/Receive Messages &amp; Data.
 </figure>
 </div>
 </div>
-<div id="fig-waveform" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-waveform" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-waveform-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="imgs/Waveform.png" class="img-fluid figure-img">
@@ -357,7 +349,7 @@ Figure&nbsp;2: The sine wave generated by the PicoScope which was used to repres
 <h3 class="anchored" data-anchor-id="message-log-file">Message Log File</h3>
 <p>Whatever is typed in the <code>picocom</code> terminal/window is sent to the serial port and then to the Arduino. All messages sent by the Arduino are echoed in the <code>picocom</code> window and saved to a <em>message log file</em>. A typical output is in <a href="#lst-msg" class="quarto-xref">Listing&nbsp;2</a>.</p>
 <div class="cell">
-<div id="lst-msg" class="bash cell-code listing quarto-float">
+<div id="lst-msg" class="bash cell-code listing quarto-float quarto-figure quarto-figure-left anchored">
 <figure class="quarto-float quarto-float-lst figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-lst" id="lst-msg-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Listing&nbsp;2: Messages Captured by Picocom.
@@ -403,7 +395,7 @@ Listing&nbsp;2: Messages Captured by Picocom.
 <span id="cb1-7"><a href="#cb1-7"></a><span class="at">xlab =</span> <span class="st">"Index"</span>, <span class="at">ylab =</span> <span class="st">"ADC Reading"</span>)</span>
 <span id="cb1-8"><a href="#cb1-8"></a><span class="fu">lines</span>(<span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(res1), <span class="at">y =</span> res2, <span class="at">col =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="fig-results" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-results" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="EF-NMR-Build-3_files/figure-html/fig-results-1.png" class="img-fluid figure-img" width="672">
@@ -522,8 +514,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -634,7 +624,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {

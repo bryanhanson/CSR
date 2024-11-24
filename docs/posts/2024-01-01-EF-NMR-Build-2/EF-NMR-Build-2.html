@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2024-01-01">
 <meta name="description" content="Proof of concept software, and a heckuva learning curve">
 
-<title>Chemometrics and Spectroscopy Using R – Building an EF-NMR Part 2</title>
+<title>Building an EF-NMR Part 2 – Chemometrics and Spectroscopy Using R</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -74,12 +74,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-494121dfa8658343c03537e94414993d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-d8a1c43c4a41e87f35b59b82222889d1.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="../../site_libs/quarto-contrib/videojs/video.min.js"></script>
 <link href="../../site_libs/quarto-contrib/videojs/video-js.css" rel="stylesheet">
+<script src="../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -128,9 +129,6 @@ cookieconsent.run({
 
 
 <link rel="stylesheet" href="../../styles.css">
-<meta name="twitter:title" content="Chemometrics and Spectroscopy Using R - Building an EF-NMR Part 2">
-<meta name="twitter:description" content="Proof of concept software, and a heckuva learning curve">
-<meta name="twitter:card" content="summary">
 </head>
 
 <body class="nav-fixed">
@@ -145,7 +143,7 @@ cookieconsent.run({
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
@@ -167,15 +165,9 @@ cookieconsent.run({
 </i> 
 <span class="menu-text"></span></a>
   </li>  
-  <li class="nav-item compact">
-    <a class="nav-link" href="https://twitter.com/profbryanhanson"> <i class="bi bi-twitter" role="img">
-</i> 
-<span class="menu-text"></span></a>
-  </li>  
-  <li class="nav-item compact">
-    <a class="nav-link" href="https://fosstodon.org/%40ProfBryanHanson" rel="me"> <i class="bi bi-mastodon" role="img" aria-label="Mastodon">
-</i> 
-<span class="menu-text"></span></a>
+  <li class="nav-item">
+    <a class="nav-link" href="https://bsky.app/profile/profbryanhanson.bsky.social"> 
+<span class="menu-text"><iconify-icon role="img" inline="" icon="simple-icons:bluesky" aria-label="Icon bluesky from simple-icons Iconify.design set." title="Icon bluesky from simple-icons Iconify.design set."></iconify-icon></span></a>
   </li>  
   <li class="nav-item compact">
     <a class="nav-link" href="https://github.com/bryanhanson"> <i class="bi bi-git" role="img">
@@ -337,7 +329,7 @@ cookieconsent.run({
 <span id="cb3-4"><a href="#cb3-4"></a>p1 <span class="ot">&lt;-</span> <span class="fu">events</span>(<span class="fu">event_length_to_event_on_off</span>(ev))</span>
 <span id="cb3-5"><a href="#cb3-5"></a>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="fig-timings" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-timings" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-timings-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="EF-NMR-Build-2_files/figure-html/fig-timings-1.png" class="img-fluid figure-img" width="672">
@@ -358,7 +350,7 @@ Figure&nbsp;1: Event timings. The short delays are too short to be visible.
 <h2 class="anchored" data-anchor-id="implementation-for-arduino">Implementation for Arduino</h2>
 <p>The version of event timing in <code>C</code> was adapted to the Arduino with relatively minor modifications, mostly related to how results are printed to the console (the <code>C</code> and <code>C++</code> languages for Arduino are specialized versions of the languages). I also wrote a system to control the starting and stopping of the scans, thinking ahead of how the program is actually going to be used. All user inputs are in a single file, including a simple version of a pulse program (tons of work will be needed in the future on this piece). My overall goal is to write an entire NMR control and acquistion program that runs completely on the Arduino IDE. Well, almost completely: some other entity will have to slurp up the data coming from the Arduino, as there is very little memory on the Arduino. Not sure if this can be done but that’s the goal. The code for this project is stored in a public repo <a href="https://github.com/bryanhanson/EF-NMR">here</a>.</p>
 <p>The output of a “run” on this “instrument” is shown in <a href="#fig-output" class="quarto-xref">Figure&nbsp;2</a>. The table lists the event name, the Arduino pin that should be activated, and the on/off times for the events. Times are in milliseconds in the example, and are relevant for testing, not an actual NMR scan. A pin value of -1 indicates no pin is active; such an event is just a delay period so the (not yet built) electronics can settle.</p>
-<div id="fig-output" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-output" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-output-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="imgs/output.png" class="img-fluid figure-img" style="width:60.0%">
@@ -477,8 +469,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -589,7 +579,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {

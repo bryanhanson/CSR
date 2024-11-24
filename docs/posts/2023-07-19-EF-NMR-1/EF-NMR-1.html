@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2023-07-26">
 <meta name="description" content="What can we measure? Why or Why Not? Pros? Cons?">
 
-<title>Chemometrics and Spectroscopy Using R – Earth’s Field NMR</title>
+<title>Earth’s Field NMR – Chemometrics and Spectroscopy Using R</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -60,10 +60,11 @@ div.csl-indent {
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-494121dfa8658343c03537e94414993d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-d8a1c43c4a41e87f35b59b82222889d1.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -141,9 +142,6 @@ window.Quarto = {
 </script>
 
 <link rel="stylesheet" href="../../styles.css">
-<meta name="twitter:title" content="Chemometrics and Spectroscopy Using R - Earth’s Field NMR">
-<meta name="twitter:description" content="What can we measure? Why or Why Not? Pros? Cons?">
-<meta name="twitter:card" content="summary">
 </head>
 
 <body class="nav-fixed">
@@ -158,7 +156,7 @@ window.Quarto = {
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
@@ -180,15 +178,9 @@ window.Quarto = {
 </i> 
 <span class="menu-text"></span></a>
   </li>  
-  <li class="nav-item compact">
-    <a class="nav-link" href="https://twitter.com/profbryanhanson"> <i class="bi bi-twitter" role="img">
-</i> 
-<span class="menu-text"></span></a>
-  </li>  
-  <li class="nav-item compact">
-    <a class="nav-link" href="https://fosstodon.org/%40ProfBryanHanson" rel="me"> <i class="bi bi-mastodon" role="img" aria-label="Mastodon">
-</i> 
-<span class="menu-text"></span></a>
+  <li class="nav-item">
+    <a class="nav-link" href="https://bsky.app/profile/profbryanhanson.bsky.social"> 
+<span class="menu-text"><iconify-icon role="img" inline="" icon="simple-icons:bluesky" aria-label="Icon bluesky from simple-icons Iconify.design set." title="Icon bluesky from simple-icons Iconify.design set."></iconify-icon></span></a>
   </li>  
   <li class="nav-item compact">
     <a class="nav-link" href="https://github.com/bryanhanson"> <i class="bi bi-git" role="img">
@@ -303,13 +295,13 @@ window.Quarto = {
 </ul>
 <hr>
 <p>Let’s take a closer look from first principles what kinds of information one can glean from EF-NMR. We’ll restrict our discussion to spin <span class="math inline">\(\frac{1}{2}\)</span> nuclei with ~100% abundance, like <span class="math inline">\(\ce{^{1}H}\)</span>, <span class="math inline">\(\ce{^{31}P}\)</span> or <span class="math inline">\(\ce{^{19}F}\)</span> – you’ll see why soon enough. <a href="#tbl-params" class="quarto-xref">Table&nbsp;1</a> gives some relevant physical parameters for these nuclei.</p>
-<div id="tbl-params" class="quarto-float anchored">
+<div id="tbl-params" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-params-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table&nbsp;1: Important NMR parameters for ~100% abundant spin <span class="math inline">\(\frac{1}{2}\)</span> nuclei. The units of <span class="math inline">\(\gamma\)</span> are <span class="math inline">\(10^7\)</span> rad <span class="math inline">\(T^{-1}\)</span> <span class="math inline">\(s^{-1}\)</span>. Larmor frequency is relative in MHz.
 </figcaption>
 <div aria-describedby="tbl-params-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<table class="table">
+<table class="caption-top table">
 <thead>
 <tr class="header">
 <th>Nuclei</th>
@@ -370,7 +362,7 @@ ppm = \frac{Hz}{MHz}
 <p>where <span class="math inline">\(\hbar\)</span> is <span class="math inline">\(\frac{h}{2\pi}\)</span>. A plot for <span class="math inline">\(\ce{^{1}H}\)</span> is shown in <a href="#fig-DeltaE" class="quarto-xref">Figure&nbsp;1</a>; the right-most point corresponds to a 1,000 MHz instrument. Clearly as <span class="math inline">\(B_o\)</span> goes to zero the <span class="math inline">\(\Delta E\)</span> goes to zero in a simple linear fashion.</p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-DeltaE" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-DeltaE" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-DeltaE-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="EF-NMR-1_files/figure-html/fig-DeltaE-1.png" class="img-fluid figure-img" width="672">
@@ -541,8 +533,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -653,7 +643,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {

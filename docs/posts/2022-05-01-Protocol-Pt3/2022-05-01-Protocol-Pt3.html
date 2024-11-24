@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2022-05-01">
 <meta name="description" content="Implementing the Statistical Analysis in Metabolic Phenotyping Protocol of Blaise et al.">
 
-<title>Chemometrics and Spectroscopy Using R – Metabolic Phenotyping Protocol Part 3</title>
+<title>Metabolic Phenotyping Protocol Part 3 – Chemometrics and Spectroscopy Using R</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -94,10 +94,11 @@ div.csl-indent {
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-494121dfa8658343c03537e94414993d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-d8a1c43c4a41e87f35b59b82222889d1.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -175,9 +176,6 @@ window.Quarto = {
 </script>
 
 <link rel="stylesheet" href="../../styles.css">
-<meta name="twitter:title" content="Chemometrics and Spectroscopy Using R - Metabolic Phenotyping Protocol Part 3">
-<meta name="twitter:description" content="Implementing the Statistical Analysis in Metabolic Phenotyping Protocol of Blaise et al.">
-<meta name="twitter:card" content="summary">
 </head>
 
 <body class="nav-fixed">
@@ -192,7 +190,7 @@ window.Quarto = {
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
@@ -214,15 +212,9 @@ window.Quarto = {
 </i> 
 <span class="menu-text"></span></a>
   </li>  
-  <li class="nav-item compact">
-    <a class="nav-link" href="https://twitter.com/profbryanhanson"> <i class="bi bi-twitter" role="img">
-</i> 
-<span class="menu-text"></span></a>
-  </li>  
-  <li class="nav-item compact">
-    <a class="nav-link" href="https://fosstodon.org/%40ProfBryanHanson" rel="me"> <i class="bi bi-mastodon" role="img" aria-label="Mastodon">
-</i> 
-<span class="menu-text"></span></a>
+  <li class="nav-item">
+    <a class="nav-link" href="https://bsky.app/profile/profbryanhanson.bsky.social"> 
+<span class="menu-text"><iconify-icon role="img" inline="" icon="simple-icons:bluesky" aria-label="Icon bluesky from simple-icons Iconify.design set." title="Icon bluesky from simple-icons Iconify.design set."></iconify-icon></span></a>
   </li>  
   <li class="nav-item compact">
     <a class="nav-link" href="https://github.com/bryanhanson"> <i class="bi bi-git" role="img">
@@ -387,7 +379,7 @@ of class 'Spectra'</code></pre>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">plotScree</span>(c_pca)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="fig-screeAlt" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<div id="fig-screeAlt" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-screeAlt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="2022-05-01-Protocol-Pt3_files/figure-html/fig-screeAlt-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -403,7 +395,7 @@ Figure&nbsp;1: Scree plot (recommended style).
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>p <span class="ot">&lt;-</span> <span class="fu">plotScores</span>(Worms2, c_pca, <span class="at">pcs =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="at">ellipse =</span> <span class="st">"rob"</span>, <span class="at">tol =</span> <span class="fl">0.02</span>)</span>
 <span id="cb5-2"><a href="#cb5-2"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="fig-scores12" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<div id="fig-scores12" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-scores12-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="2022-05-01-Protocol-Pt3_files/figure-html/fig-scores12-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -420,7 +412,7 @@ Figure&nbsp;2: Score plot for PCs 1 and 2. Compare to protocol figure 7d.
 <span id="cb6-2"><a href="#cb6-2"></a>    <span class="at">tol =</span> <span class="fl">0.02</span>)</span>
 <span id="cb6-3"><a href="#cb6-3"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="fig-scores23" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<div id="fig-scores23" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-scores23-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="2022-05-01-Protocol-Pt3_files/figure-html/fig-scores23-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -437,7 +429,7 @@ Figure&nbsp;3: Score plot for PCS 2 and 3.
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>p <span class="ot">&lt;-</span> <span class="fu">plotLoadings</span>(Worms2, c_pca, <span class="at">loads =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)</span>
 <span id="cb7-2"><a href="#cb7-2"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="fig-loadings" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<div id="fig-loadings" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-loadings-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="2022-05-01-Protocol-Pt3_files/figure-html/fig-loadings-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -454,7 +446,7 @@ Figure&nbsp;4: Loadings for PC1 and PC2.
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>p <span class="ot">&lt;-</span> <span class="fu">sPlotSpectra</span>(Worms2, c_pca, <span class="at">tol =</span> <span class="fl">0.001</span>)</span>
 <span id="cb8-2"><a href="#cb8-2"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="fig-splot" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<div id="fig-splot" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-splot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="2022-05-01-Protocol-Pt3_files/figure-html/fig-splot-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -507,7 +499,7 @@ Attaching package: 'mixOmics'</code></pre>
 <span id="cb16-2"><a href="#cb16-2"></a>  <span class="at">col.per.group =</span> <span class="fu">c</span>(<span class="st">"#FB0D16FF"</span>, <span class="st">"#FFC0CBFF"</span>, <span class="st">"#511CFCFF"</span>, <span class="st">"#2E94E9FF"</span>),</span>
 <span id="cb16-3"><a href="#cb16-3"></a>  <span class="at">title =</span> <span class="st">"sPLS-DA Score Plot"</span>, <span class="at">legend =</span> <span class="cn">TRUE</span>, <span class="at">ellipse =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="fig-plsda-indiv" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<div id="fig-plsda-indiv" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-plsda-indiv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="2022-05-01-Protocol-Pt3_files/figure-html/fig-plsda-indiv-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -524,7 +516,7 @@ Figure&nbsp;6: sPLS-DA plot showing classification.
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>perf.splsda <span class="ot">&lt;-</span> <span class="fu">perf</span>(splsda, <span class="at">folds =</span> <span class="dv">5</span>, <span class="at">nrepeat =</span> <span class="dv">5</span>)</span>
 <span id="cb17-2"><a href="#cb17-2"></a><span class="fu">plot</span>(perf.splsda)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="fig-plsda-perf" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<div id="fig-plsda-perf" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-plsda-perf-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="2022-05-01-Protocol-Pt3_files/figure-html/fig-plsda-perf-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -648,8 +640,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -760,7 +750,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {

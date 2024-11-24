@@ -10,27 +10,7 @@
 <atom:link href="http://chemospec.org/index-r.xml" rel="self" type="application/rss+xml"/>
 <description>Applying chemometrics to spectroscopy using R</description>
 <generator>quarto-99.9.9</generator>
-<lastBuildDate>Wed, 05 Oct 2022 07:00:00 GMT</lastBuildDate>
-<item>
-  <title></title>
-  <dc:creator>Bryan Hanson</dc:creator>
-  <link>http://chemospec.org/posts/2022-10-05-Linear-Alg-Notes-Pt5/Linear-Alg-Notes-Pt5.html</link>
-  <description><![CDATA[ undefined ]]></description>
-  <category>R</category>
-  <category>Linear Algebra</category>
-  <guid>http://chemospec.org/posts/2022-10-05-Linear-Alg-Notes-Pt5/Linear-Alg-Notes-Pt5.html</guid>
-  <pubDate>Wed, 05 Oct 2022 07:00:00 GMT</pubDate>
-</item>
-<item>
-  <title></title>
-  <dc:creator>Bryan Hanson</dc:creator>
-  <link>http://chemospec.org/posts/2023-03-03-Create-MUD/Creating-MUD.html</link>
-  <description><![CDATA[ undefined ]]></description>
-  <category>R</category>
-  <category>Linear Algebra</category>
-  <guid>http://chemospec.org/posts/2023-03-03-Create-MUD/Creating-MUD.html</guid>
-  <pubDate>Wed, 05 Oct 2022 07:00:00 GMT</pubDate>
-</item>
+<lastBuildDate>Mon, 26 Sep 2022 07:00:00 GMT</lastBuildDate>
 <item>
   <title>Notes on Linear Algebra Part 4</title>
   <dc:creator>Bryan Hanson</dc:creator>
@@ -48,7 +28,7 @@
 <div style="page-break-after: always;"></div>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
-<div id="fig-flow" class="quarto-figure quarto-figure-center quarto-float anchored">
+<div id="fig-flow" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-flow-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div>
@@ -1027,7 +1007,7 @@ September 26, 2022. <a href="http://chemospec.org/posts/2022-11-07-Announce-Subs
 <p>This post is a survey of the linear algebra-related functions from base <code>R</code>. Some of these I’ve disccused in other posts and some I may discuss in the future, but this post is primarily an inventory: these are the key tools we have available. “Notes” in the table are taken from the help files.</p>
 <p>Matrices, including row and column vectors, will be shown in bold e.g.&nbsp;<img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BA%7D"> or <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7Ba%7D"> while scalars and variables will be shown in script, e.g.&nbsp;<img src="https://latex.codecogs.com/png.latex?n">. <code>R</code> code will appear like <code>x &lt;- y</code>.</p>
 <p>In the table, <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BR%7D"> or <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BU%7D"> is an upper/right triangular matrix. <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BL%7D"> is a lower/left triangular matrix (triangular matrices are square). <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BA%7D"> is a generic matrix of dimensions <img src="https://latex.codecogs.com/png.latex?m%20%5Ctimes%20n">. <img src="https://latex.codecogs.com/png.latex?%5Cmathbf%7BM%7D"> is a square matrix of dimensions <img src="https://latex.codecogs.com/png.latex?n%20%5Ctimes%20n">.</p>
-<table class="table">
+<table class="caption-top table">
 <thead>
 <tr class="header">
 <th style="text-align: left;">Function</th>
@@ -2579,7 +2559,7 @@ font-style: inherit;">"autoscale"</span>)</span></code></pre></div>
 background-color: null;
 font-style: inherit;">plotScree</span>(c_pca)</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-screeAlt" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<div id="fig-screeAlt" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-screeAlt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-screeAlt-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -2615,7 +2595,7 @@ background-color: null;
 font-style: inherit;">0.02</span>)</span>
 <span id="cb5-2">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-scores12" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<div id="fig-scores12" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-scores12-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-scores12-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -2656,7 +2636,7 @@ background-color: null;
 font-style: inherit;">0.02</span>)</span>
 <span id="cb6-3">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-scores23" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<div id="fig-scores23" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-scores23-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-scores23-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -2685,7 +2665,7 @@ background-color: null;
 font-style: inherit;">2</span>)</span>
 <span id="cb7-2">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-loadings" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<div id="fig-loadings" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-loadings-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-loadings-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -2710,7 +2690,7 @@ background-color: null;
 font-style: inherit;">0.001</span>)</span>
 <span id="cb8-2">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-splot" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<div id="fig-splot" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-splot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-splot-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -2809,7 +2789,7 @@ font-style: inherit;">ellipse =</span> <span class="cn" style="color: #8f5902;
 background-color: null;
 font-style: inherit;">TRUE</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-plsda-indiv" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<div id="fig-plsda-indiv" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-plsda-indiv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-plsda-indiv-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -2840,7 +2820,7 @@ font-style: inherit;">5</span>)</span>
 background-color: null;
 font-style: inherit;">plot</span>(perf.splsda)</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-plsda-perf" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<div id="fig-plsda-perf" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-plsda-perf-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-plsda-perf-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -2996,7 +2976,7 @@ font-style: inherit;"># no scaling is the default</span></span></code></pre></di
 background-color: null;
 font-style: inherit;">plotScree</span>(c_pca)</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-screeAlt" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<div id="fig-screeAlt" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-screeAlt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-screeAlt-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -3017,7 +2997,7 @@ font-style: inherit;">style =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"trad"</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-screeTrad" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<div id="fig-screeTrad" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-screeTrad-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-screeTrad-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -3042,7 +3022,7 @@ font-style: inherit;">pcs =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">10</span>)</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-cv-pca" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<div id="fig-cv-pca" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-cv-pca-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-cv-pca-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -3083,7 +3063,7 @@ background-color: null;
 font-style: inherit;">0.02</span>)</span>
 <span id="cb8-2">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-scores12" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<div id="fig-scores12" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-scores12-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-scores12-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -3123,7 +3103,7 @@ background-color: null;
 font-style: inherit;">0.02</span>)</span>
 <span id="cb9-2">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-scores23" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<div id="fig-scores23" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-scores23-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-scores23-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -3218,7 +3198,7 @@ background-color: null;
 font-style: inherit;">"black"</span>)</span>
 <span id="cb10-6">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-hotelling1" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<div id="fig-hotelling1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-hotelling1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-hotelling1-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -3244,7 +3224,7 @@ background-color: null;
 font-style: inherit;">"OD"</span>)</span>
 <span id="cb11-2">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-diagOD" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<div id="fig-diagOD" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-diagOD-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-diagOD-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -3268,7 +3248,7 @@ background-color: null;
 font-style: inherit;">"SD"</span>)</span>
 <span id="cb12-2">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-diagSD" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<div id="fig-diagSD" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-diagSD-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-03-24-Protocol-Pt2/2022-03-24-Protocol-Pt2_files/figure-html/fig-diagSD-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -4677,7 +4657,7 @@ background-color: null;
 font-style: inherit;">1.1</span>))</span>
 <span id="cb11-3">p</span></code></pre></div>
 <div class="cell-output-display">
-<div id="fig-samplePlot" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<div id="fig-samplePlot" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-samplePlot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="http://chemospec.org/posts/2022-02-01-Protocol-Pt1/2022-02-01-Protocol-Pt1_files/figure-html/fig-samplePlot-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
@@ -6268,6 +6248,90 @@ Hanson, Bryan. 2020. <span>“Simulating Spectroscopic Data Part
   <category>Baseline</category>
   <guid>http://chemospec.org/posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1.html</guid>
   <pubDate>Sun, 28 Jun 2020 07:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>Fortifying hyperSpec: Getting Ready for GSOC</title>
+  <dc:creator>Bryan Hanson</dc:creator>
+  <link>http://chemospec.org/posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p><a href="https://cran.r-project.org/web/packages/hyperSpec/index.html"><code>hyperSpec</code></a> is an <code>R</code> package for working with hyperspectral data sets. Hyperspectral data can take many forms, but a common application is a series of spectra collected over an x, y grid, for instance Raman imaging of medical specimens. <code>hyperSpec</code> was originally written by Claudia Beleites and she currently guides a core group of contributors.<sup>1</sup></p>
+<p>Claudia, regular <code>hyperSpec</code> contributor Roman Kiselev and myself have joined forces this summer in a <a href="https://summerofcode.withgoogle.com/">Google Summer of Code</a> project to fortify <code>hyperSpec</code>. We are pleased to report that the project was accepted by <a href="https://github.com/rstats-gsoc/gsoc2020/wiki">R-GSOC</a> administrators, and, as of a few days ago, the excellent proposal written by Erick Oduniyi was approved by Google. Erick is a senior computer engineering major at Wichita State University in Kansas. Erick gravitates toward interdisciplinary projects. This, and his experience with <code>R</code>, <code>Python</code> and related skills gives him an excellent background for this project.</p>
+<p>The focus of this project is to fortify the infrastructure of <code>hyperSpec</code>. Over the years, keeping <code>hyperSpec</code> up-to-date has grown a bit unwieldy. While to-do lists always evolve, the current <em>interrelated</em> goals include:</p>
+<ul>
+<li><strong>Distill</strong><sup>2</sup> <code>hyperSpec</code>: Prune <code>hyperSpec</code> back to it’s core functionality to keep it lightweight. Relocate portions, such as importing data, into their own dedicated packages.</li>
+<li><strong>Shield</strong> <code>hyperSpec</code>: Analyze the ecosystem of <code>hyperSpec</code> with an eye to reducing dependencies as much as possible and ensuring that necessary dependencies are the best choices. Avoid “re-inventing the wheel”, as long as the available “wheels” are computationally efficient and stable (code base and API).</li>
+<li><strong>Bridge</strong> <code>hyperSpec</code>: Having decided on how to reorganize <code>hyperSpec</code> and which dependencies are necessary and optimal, ensure that <code>hyperSpec</code>, the constellation of new sub-packages, and all dependencies are integrated efficiently. There are a number of data pre-processing and plotting functions that need to be streamlined and interfaced to external packages more consistently. Some portions may need substantial refactoring.</li>
+</ul>
+<p>Addressing each of these goals will make <code>hyperSpec</code> much easier to maintain, less fragile, and easier for others to contribute. Every step will bring enhanced documentation and vignettes, along with new unit tests. Work will begin in earnest on June 1st, and we are looking forward to a very productive summer.</p>
+<p>Finally, on behalf of all participants, let me just say how grateful we are to Google for establishing the GSOC program and for supporting Erick’s work this summer!</p>
+
+
+
+
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>A little history for the curious: the <code>hyperSpec</code> and <code>ChemoSpec</code> packages were written around the same time, independent of each other (~2009). Eventually, Claudia and I became aware of each other’s work, and we have collaborated in ways large and small ever since (I like working with Claudia because I always learn from her!). We have jointly mentored GSOC students twice before. One side project is <a href="https://github.com/Chathurga/HyperChemoBridge"><code>hyperChemoBridge</code></a>, a small package that converts <code>hyperSpec</code> objects into <code>Spectra</code> objects (the native <code>ChemoSpec</code> format) and vice-versa.↩︎</p></li>
+<li id="fn2"><p>The descriptors here are Erick’s clever choice of words.↩︎</p></li>
+</ol>
+</section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
+  author = {Hanson, Bryan},
+  title = {Fortifying {hyperSpec:} {Getting} {Ready} for {GSOC}},
+  date = {2020-05-07},
+  url = {http://chemospec.org/posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2020" class="csl-entry quarto-appendix-citeas">
+Hanson, Bryan. 2020. <span>“Fortifying hyperSpec: Getting Ready for
+GSOC.”</span> May 7, 2020. <a href="http://chemospec.org/posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html">http://chemospec.org/posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html</a>.
+</div></div></section></div> ]]></description>
+  <category>R</category>
+  <category>hyperSpec</category>
+  <category>GSOC</category>
+  <guid>http://chemospec.org/posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html</guid>
+  <pubDate>Thu, 07 May 2020 07:00:00 GMT</pubDate>
+</item>
+<item>
+  <title>ChemoSpecUtils Update</title>
+  <dc:creator>Bryan Hanson</dc:creator>
+  <link>http://chemospec.org/posts/2020-04-27-CSU-update/2020-04-27-CSU-update.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p><code>ChemoSpecUtils</code>, a package that supports the common needs of <a href="https://bryanhanson.github.io/ChemoSpec/">ChemoSpec</a> and <a href="https://bryanhanson.github.io/ChemoSpec2D/">ChemoSpec2D</a>, has been updated to fix an unfortunate distance calculation error in version 0.4.38, released in January of this year. From the NEWS file for version 0.4.51:</p>
+<ul>
+<li>Function <code>rowDist</code>, which supports a number of functions, was overhauled to address confusion in the documentation, and in my head, about distances vs.&nbsp;similarities. Also, different definitions found in the literature were documented more clearly. The Minkowski distance option was removed (ask if you want it back), code was cleaned up, documentation greatly improved, an example was added and unit tests were added. Plot scales were also corrected as necessary. Depending upon which distance option is chosen, this change affects <code>hcaSpectra</code>, <code>plotSpectraDist</code>, <code>sampleDist</code> and <code>hcaScores</code> in package <code>ChemoSpec</code> as well as <code>hats_alignSpectra2D</code> and <code>hcaScores</code> in package <code>ChemoSpec2D</code>.</li>
+</ul>
+<p>This brings to mind a Karl Broman quote I think about frequently:</p>
+<blockquote class="blockquote">
+<p>“Open source means everyone can see my stupid mistakes. Version control means everyone can see every stupid mistake I’ve ever made.”</p>
+<p>– <cite>Karl Broman</cite></p>
+</blockquote>
+<p><a href="https://kbroman.wordpress.com/2011/08/17/the-stupidest-r-code-ever/">Karl Broman quote source</a></p>
+
+
+
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
+  author = {Hanson, Bryan},
+  title = {ChemoSpecUtils {Update}},
+  date = {2020-04-27},
+  url = {http://chemospec.org/posts/2020-04-27-CSU-update/2020-04-27-CSU-update.html},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2020" class="csl-entry quarto-appendix-citeas">
+Hanson, Bryan. 2020. <span>“ChemoSpecUtils Update.”</span> April 27,
+2020. <a href="http://chemospec.org/posts/2020-04-27-CSU-update/2020-04-27-CSU-update.html">http://chemospec.org/posts/2020-04-27-CSU-update/2020-04-27-CSU-update.html</a>.
+</div></div></section></div> ]]></description>
+  <category>R</category>
+  <category>ChemoSpecUtils</category>
+  <guid>http://chemospec.org/posts/2020-04-27-CSU-update/2020-04-27-CSU-update.html</guid>
+  <pubDate>Mon, 27 Apr 2020 07:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>
