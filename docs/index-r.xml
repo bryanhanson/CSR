@@ -10,7 +10,233 @@
 <atom:link href="http://chemospec.org/index-r.xml" rel="self" type="application/rss+xml"/>
 <description>Applying chemometrics to spectroscopy using R</description>
 <generator>quarto-99.9.9</generator>
-<lastBuildDate>Mon, 26 Sep 2022 07:00:00 GMT</lastBuildDate>
+<lastBuildDate>Thu, 06 Mar 2025 07:00:00 GMT</lastBuildDate>
+<item>
+  <title>A Function to Draw Complex Multiplets</title>
+  <dc:creator>Bryan Hanson</dc:creator>
+  <link>http://chemospec.org/posts/2025-03-06 More Multiplets/MoreMultiplets.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p>Inspired by <a href="https://cheminfographic.wordpress.com">Roman A. Valiulin’s</a> book <a href="https://cheminfographic.wordpress.com/2024/12/09/nmr-multiplet-interpretation-an-infographic-walk-through-2025-2nd-edition/">NMR Multiplet Interpretation</a> (discussed <a href="https://chemospec.org/posts/2025-02-06-Multiplets/Multiplets.html">previously</a>), I decided to write an <code>R</code> function to draw complex multiplets. The function will draw the multiplet, and optionally, can draw a splitting tree and some annotations.<sup>1</sup> Some of you may find this useful for teaching the topic.</p>
+<p>The function is called <code>multiplet</code> and it resides in the <a href="https://cran.r-project.org/package=SpecHelpers"><code>SpecHelpers</code> package</a>, which was just updated to version 0.3.1. Here are some examples of the function at work, drawn from Valiulin’s book:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"SpecHelpers"</span>) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># you need version 0.3.1</span></span></code></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Example 3.1 from Valiulin, a ddt.</span></span>
+<span id="cb2-2">res <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">multiplet</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">J =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">16.8</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10.1</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6.7</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6.7</span>))</span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="http://chemospec.org/posts/2025-03-06 More Multiplets/MoreMultiplets_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Example 3.2 from Valiulin, a tt.</span></span>
+<span id="cb3-2">res <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">multiplet</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">J =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6.1</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6.1</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2.15</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2.15</span>))</span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="http://chemospec.org/posts/2025-03-06 More Multiplets/MoreMultiplets_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Example 3.3 from Valiulin, a dddd.</span></span>
+<span id="cb4-2">res <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">multiplet</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">J =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12.7</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12.2</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10.0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4.9</span>))</span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="http://chemospec.org/posts/2025-03-06 More Multiplets/MoreMultiplets_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>One interesting aspect of Valiulin’s approach is that all multiplets are treated as doublets of doublets … of doublets. We can use the new function to show how a triplet can be understood as a doublet of doublets in which the coupling constants are the same. Starting from what is clearly a doublet of doublets we can see how the spectrum changes as the coupling constants become more equal, finally leading to the overlap of the two central peaks, giving a triplet.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1">Jvals <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">11</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>)</span>
+<span id="cb5-2"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> (i <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(Jvals)) {</span>
+<span id="cb5-3">  res <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">multiplet</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">J =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>, Jvals[i]), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">pw =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.25</span>)</span>
+<span id="cb5-4">}</span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="http://chemospec.org/posts/2025-03-06 More Multiplets/MoreMultiplets_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="http://chemospec.org/posts/2025-03-06 More Multiplets/MoreMultiplets_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="http://chemospec.org/posts/2025-03-06 More Multiplets/MoreMultiplets_files/figure-html/unnamed-chunk-5-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="http://chemospec.org/posts/2025-03-06 More Multiplets/MoreMultiplets_files/figure-html/unnamed-chunk-5-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="http://chemospec.org/posts/2025-03-06 More Multiplets/MoreMultiplets_files/figure-html/unnamed-chunk-5-5.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="http://chemospec.org/posts/2025-03-06 More Multiplets/MoreMultiplets_files/figure-html/unnamed-chunk-5-6.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>I hope some of you will find this function useful!</p>
+
+
+
+
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>As a side note, drawing the spectrum was easy because <code>SpecHelpers</code> already contained the necessary functions. On the other hand, getting the splitting tree correct was, well, a bit of work. In contrast to how quickly one might sketch this out by hand, creating it computationally was much more challenging.↩︎</p></li>
+</ol>
+</section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2025,
+  author = {Hanson, Bryan},
+  title = {A {Function} to {Draw} {Complex} {Multiplets}},
+  date = {2025-03-06},
+  url = {http://chemospec.org/posts/2025-03-06 More Multiplets/MoreMultiplets.html},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2025" class="csl-entry quarto-appendix-citeas">
+Hanson, Bryan. 2025. <span>“A Function to Draw Complex
+Multiplets.”</span> March 6, 2025. <a href="http://chemospec.org/posts/2025-03-06 More Multiplets/MoreMultiplets.html">http://chemospec.org/posts/2025-03-06
+More Multiplets/MoreMultiplets.html</a>.
+</div></div></section></div> ]]></description>
+  <category>NMR</category>
+  <category>R</category>
+  <category>SpecHelpers</category>
+  <guid>http://chemospec.org/posts/2025-03-06 More Multiplets/MoreMultiplets.html</guid>
+  <pubDate>Thu, 06 Mar 2025 07:00:00 GMT</pubDate>
+</item>
 <item>
   <title>Notes on Linear Algebra Part 4</title>
   <dc:creator>Bryan Hanson</dc:creator>
@@ -6294,44 +6520,6 @@ GSOC.”</span> May 7, 2020. <a href="http://chemospec.org/posts/2020-05-07-GSOC
   <category>GSOC</category>
   <guid>http://chemospec.org/posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html</guid>
   <pubDate>Thu, 07 May 2020 07:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>ChemoSpecUtils Update</title>
-  <dc:creator>Bryan Hanson</dc:creator>
-  <link>http://chemospec.org/posts/2020-04-27-CSU-update/2020-04-27-CSU-update.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<p><code>ChemoSpecUtils</code>, a package that supports the common needs of <a href="https://bryanhanson.github.io/ChemoSpec/">ChemoSpec</a> and <a href="https://bryanhanson.github.io/ChemoSpec2D/">ChemoSpec2D</a>, has been updated to fix an unfortunate distance calculation error in version 0.4.38, released in January of this year. From the NEWS file for version 0.4.51:</p>
-<ul>
-<li>Function <code>rowDist</code>, which supports a number of functions, was overhauled to address confusion in the documentation, and in my head, about distances vs.&nbsp;similarities. Also, different definitions found in the literature were documented more clearly. The Minkowski distance option was removed (ask if you want it back), code was cleaned up, documentation greatly improved, an example was added and unit tests were added. Plot scales were also corrected as necessary. Depending upon which distance option is chosen, this change affects <code>hcaSpectra</code>, <code>plotSpectraDist</code>, <code>sampleDist</code> and <code>hcaScores</code> in package <code>ChemoSpec</code> as well as <code>hats_alignSpectra2D</code> and <code>hcaScores</code> in package <code>ChemoSpec2D</code>.</li>
-</ul>
-<p>This brings to mind a Karl Broman quote I think about frequently:</p>
-<blockquote class="blockquote">
-<p>“Open source means everyone can see my stupid mistakes. Version control means everyone can see every stupid mistake I’ve ever made.”</p>
-<p>– <cite>Karl Broman</cite></p>
-</blockquote>
-<p><a href="https://kbroman.wordpress.com/2011/08/17/the-stupidest-r-code-ever/">Karl Broman quote source</a></p>
-
-
-
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
-  author = {Hanson, Bryan},
-  title = {ChemoSpecUtils {Update}},
-  date = {2020-04-27},
-  url = {http://chemospec.org/posts/2020-04-27-CSU-update/2020-04-27-CSU-update.html},
-  langid = {en}
-}
-</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2020" class="csl-entry quarto-appendix-citeas">
-Hanson, Bryan. 2020. <span>“ChemoSpecUtils Update.”</span> April 27,
-2020. <a href="http://chemospec.org/posts/2020-04-27-CSU-update/2020-04-27-CSU-update.html">http://chemospec.org/posts/2020-04-27-CSU-update/2020-04-27-CSU-update.html</a>.
-</div></div></section></div> ]]></description>
-  <category>R</category>
-  <category>ChemoSpecUtils</category>
-  <guid>http://chemospec.org/posts/2020-04-27-CSU-update/2020-04-27-CSU-update.html</guid>
-  <pubDate>Mon, 27 Apr 2020 07:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>

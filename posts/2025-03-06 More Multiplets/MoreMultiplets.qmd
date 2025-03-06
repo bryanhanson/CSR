@@ -1,0 +1,44 @@
+---
+title: "A Function to Draw Complex Multiplets"
+description: "A teaching & self-study tool"
+date: "2025-03-06"
+categories: [NMR, R, SpecHelpers]
+format:
+  html
+---
+
+Inspired by [Roman A. Valiulin's](https://cheminfographic.wordpress.com) book [NMR Multiplet Interpretation](https://cheminfographic.wordpress.com/2024/12/09/nmr-multiplet-interpretation-an-infographic-walk-through-2025-2nd-edition/) (discussed [previously](https://chemospec.org/posts/2025-02-06-Multiplets/Multiplets.html)), I decided to write an `R` function to draw complex multiplets.  The function will draw the multiplet, and optionally, can draw a splitting tree and some annotations.[^1]  Some of you may find this useful for teaching the topic.
+
+The function is called `multiplet` and it resides in the [`SpecHelpers` package](https://cran.r-project.org/package=SpecHelpers), which was just updated to version 0.3.1.  Here are some examples of the function at work, drawn from Valiulin's book:
+
+```{r}
+library("SpecHelpers") # you need version 0.3.1
+```
+
+```{r}
+# Example 3.1 from Valiulin, a ddt.
+res <- multiplet(J = c(16.8, 10.1, 6.7, 6.7))
+```
+
+```{r}
+# Example 3.2 from Valiulin, a tt.
+res <- multiplet(J = c(6.1, 6.1, 2.15, 2.15))
+```
+
+```{r}
+# Example 3.3 from Valiulin, a dddd.
+res <- multiplet(J = c(12.7, 12.2, 10.0, 4.9))
+```
+
+One interesting aspect of Valiulin's approach is that all multiplets are treated as doublets of doublets ... of doublets.  We can use the new function to show how a triplet can be understood as a doublet of doublets in which the coupling constants are the same.  Starting from what is clearly a doublet of doublets, we can see how the spectrum changes as the coupling constants become more equal, finally leading to the overlap of the two central peaks, giving a triplet.
+
+```{r}
+Jvals <- c(2, 4, 8, 10, 11, 12)
+for (i in 1:length(Jvals)) {
+  res <- multiplet(J = c(12, Jvals[i]), pw = 0.25)
+}
+```
+
+I hope some of you will find this function useful!
+
+[^1]: As a side note, drawing the spectrum was easy because `SpecHelpers` already contained the necessary functions.  On the other hand, getting the splitting tree correct was, well, a bit of work. In contrast to how quickly one might sketch this out by hand, creating it computationally was much more challenging.

@@ -6,9 +6,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2021-11-21">
+<meta name="author" content="Bryan Hanson">
+<meta name="dcterms.date" content="2025-03-06">
+<meta name="description" content="A teaching &amp; self-study tool">
 
-<title>Plant Metabolomics: Where Spectroscopy Meets Evolution &amp; Ecology – Chemometrics and Spectroscopy Using R</title>
+<title>A Function to Draw Complex Multiplets – Chemometrics and Spectroscopy Using R</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,29 +23,63 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/cookie-consent/cookie-consent.js"></script>
-<link href="site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-494121dfa8658343c03537e94414993d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-c2ef6f5a8ca5be3a2decfb7f211e6191.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
-<script src="site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-494121dfa8658343c03537e94414993d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-c2ef6f5a8ca5be3a2decfb7f211e6191.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script>
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -91,7 +127,7 @@ cookieconsent.run({
   
 
 
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../../styles.css">
 </head>
 
 <body class="nav-fixed">
@@ -101,7 +137,7 @@ cookieconsent.run({
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Chemometrics and Spectroscopy Using R</span>
     </a>
   </div>
@@ -112,11 +148,11 @@ cookieconsent.run({
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
+    <a class="nav-link" href="../../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./projects.html"> 
+    <a class="nav-link" href="../../projects.html"> 
 <span class="menu-text">Projects</span></a>
   </li>  
   <li class="nav-item">
@@ -138,7 +174,7 @@ cookieconsent.run({
 <span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="./index.xml"> <i class="bi bi-rss" role="img">
+    <a class="nav-link" href="../../index.xml"> <i class="bi bi-rss" role="img">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
@@ -197,18 +233,34 @@ cookieconsent.run({
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Plant Metabolomics: Where Spectroscopy Meets Evolution &amp; Ecology</h1>
-</div>
+<h1 class="title">A Function to Draw Complex Multiplets</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">NMR</div>
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">SpecHelpers</div>
+  </div>
+  </div>
 
+<div>
+  <div class="description">
+    A teaching &amp; self-study tool
+  </div>
+</div>
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Bryan Hanson </p>
+          </div>
+  </div>
     
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 21, 2021</p>
+      <p class="date">March 6, 2025</p>
     </div>
   </div>
   
@@ -220,111 +272,115 @@ cookieconsent.run({
 </header>
 
 
+<p>Inspired by <a href="https://cheminfographic.wordpress.com">Roman A. Valiulin’s</a> book <a href="https://cheminfographic.wordpress.com/2024/12/09/nmr-multiplet-interpretation-an-infographic-walk-through-2025-2nd-edition/">NMR Multiplet Interpretation</a> (discussed <a href="https://chemospec.org/posts/2025-02-06-Multiplets/Multiplets.html">previously</a>), I decided to write an <code>R</code> function to draw complex multiplets. The function will draw the multiplet, and optionally, can draw a splitting tree and some annotations.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Some of you may find this useful for teaching the topic.</p>
+<p>The function is called <code>multiplet</code> and it resides in the <a href="https://cran.r-project.org/package=SpecHelpers"><code>SpecHelpers</code> package</a>, which was just updated to version 0.3.1. Here are some examples of the function at work, drawn from Valiulin’s book:</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(<span class="st">"SpecHelpers"</span>) <span class="co"># you need version 0.3.1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># Example 3.1 from Valiulin, a ddt.</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a>res <span class="ot">&lt;-</span> <span class="fu">multiplet</span>(<span class="at">J =</span> <span class="fu">c</span>(<span class="fl">16.8</span>, <span class="fl">10.1</span>, <span class="fl">6.7</span>, <span class="fl">6.7</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="images/Bkgnd.jpg" class="img-fluid figure-img"></p>
-</figure>
-</div>
-</div>
-</div>
-<p><em>This page honors and makes available the research of my students. However, it is no longer being updated, as I retired in June 2018.</em></p>
-<p>In my group, we conduct research on how plants respond to the stress of climate change. Such stress can take the form of too much heat, too much salt in the soil, or too little water. We use methods from metabolomics, chemistry and ecology, and benefit from collaboration with Prof.&nbsp;Dana Dudle in the Biology Department. We greatly appreciate support from DePauw’s Science Research Fellows program (now discontinued), the Faculty Development Committee, and the Mellon Foundation (through FDC).</p>
-<p>Our plant of choice is <em>Portulaca oleracea</em>, a weed more commonly known as purslane. We have chosen purslane because it is easy to grow and is interesting from a medicinal/nutritional perspective - it has the most omega-3 fatty acids of any plant. Our original objective was to determine whether purslane’s response to stress has a genetic component which also contributes to reproductive fitness. We have been able to confirm this, and we are now focussed on understanding the molecular nature of purslane’s response: What pathways are activated? What molecules are involved?</p>
-<p>Our approach is to blend metabolomic and ecological methods. Metabolomics is the study of an organism’s metabolites under a controlled set of conditions, in our case, normal versus stressful conditions. As far as possible, one tries to measure all the metabolites at once, in a holistic fashion, which is not an easy feat. Typically, this is done with NMR, MS, IR, or other forms of spectroscopy. We also supplement these instrumental techniques with more traditional single point chemical measurements such as antioxidant levels. From the ecological perspective, we record parameters of plant growth that represent measures of fitness, such as biomass produced, the number of flowers, and so forth. To be meaningful, we need to conduct these experiments on large numbers of plants. The resulting data sets, composed of very different sorts of measurements, represent the state of the plant under the conditions tested. We use various statistical methods to figure out which treatments have produced an interesting response, and whether those responses vary with genotype. Our statistical analyses are done with the open source computational statistical program <a href="http://www.r-project.org/">R</a> and in the case of spectroscopic data, with the <a href="https://CRAN.R-project.org/package=ChemoSpec">ChemoSpec</a> package for R, written by Bryan.</p>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="images/KristinaMulry.jpg" class="img-fluid figure-img"></p>
+<p><img src="MoreMultiplets_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># Example 3.2 from Valiulin, a tt.</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a>res <span class="ot">&lt;-</span> <span class="fu">multiplet</span>(<span class="at">J =</span> <span class="fu">c</span>(<span class="fl">6.1</span>, <span class="fl">6.1</span>, <span class="fl">2.15</span>, <span class="fl">2.15</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="images/DaGroup.jpg" class="img-fluid figure-img"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>The following students have carried out this research. Click on their names to download the posters they prepared about their work:</p>
-<ul>
-<li>Academic year 2016-2017
-<ul>
-<li><a href="pdfs/Emma_2017_Poster.pdf">Emma Veon</a></li>
-</ul></li>
-<li>Summer 2015
-<ul>
-<li><a href="pdfs/Jagger_Saulnier_2015_Poster_1.pdf">Shannon Jager</a></li>
-<li><a href="pdfs/Jagger_Saulnier_2015_Poster_2.pdf">Brian Saulnier</a></li>
-</ul></li>
-<li>Summer 2013
-<ul>
-<li><a href="pdfs/Kristina_2013_Poster.pdf">Kristina Mulry</a> Kristina’s work has been <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0138723">published</a></li>
-</ul></li>
-<li>Fall 2012
-<ul>
-<li><a href="pdfs/ACS_2013_Poster.pdf">Polly Haight</a></li>
-</ul></li>
-<li>Summer 2011
-<ul>
-<li><a href="pdfs/Kuk_2011_Poster.pdf">Matt Kukurugya</a></li>
-<li><a href="pdfs/Polly_2011_Poster.pdf">Polly Haight</a></li>
-<li><a href="pdfs/Vince_2011_Poster.pdf">Vincent Guzzetta</a></li>
-<li><a href="pdfs/Matt_2011_Poster.pdf">Matt Keinsley</a></li>
-<li><a href="pdfs/SEB_2011_Poster.pdf">Poster</a> presented at the joint annual meeting of the Society for Economic Botany and The Botanical Society of America in St.&nbsp;Louis.</li>
-</ul></li>
-<li>Summer 2010
-<ul>
-<li>Elizabeth Botts</li>
-<li>Matt Keinsley</li>
-</ul></li>
-<li>Summer 2009 (The Pioneers!)
-<ul>
-<li><a href="pdfs/Tanner_2009_Poster.pdf">Tanner Miller</a></li>
-<li><a href="pdfs/Courtney_2009_Poster.pdf">Courtney Brimmer</a></li>
-<li><a href="pdfs/Kelly_2009_Poster.pdf">Kelly Summers</a></li>
-</ul></li>
-<li>2008 (Bryan’s first metabolomics work!)
-<ul>
-<li><a href="pdfs/SrEPoster.pdf">Poster</a> evaluating various brands of Saw Palmetto (<em>Serenoa repens</em>) by NMR and IR. Presented at the Society for Economic Botany meeting, July 2008.</li>
-</ul></li>
-</ul>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="images/Elizabeth.jpg" class="img-fluid figure-img"></p>
+<p><img src="MoreMultiplets_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># Example 3.3 from Valiulin, a dddd.</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a>res <span class="ot">&lt;-</span> <span class="fu">multiplet</span>(<span class="at">J =</span> <span class="fu">c</span>(<span class="fl">12.7</span>, <span class="fl">12.2</span>, <span class="fl">10.0</span>, <span class="fl">4.9</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="images/Matt.jpg" class="img-fluid figure-img"></p>
+<p><img src="MoreMultiplets_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
+<p>One interesting aspect of Valiulin’s approach is that all multiplets are treated as doublets of doublets … of doublets. We can use the new function to show how a triplet can be understood as a doublet of doublets in which the coupling constants are the same. Starting from what is clearly a doublet of doublets we can see how the spectrum changes as the coupling constants become more equal, finally leading to the overlap of the two central peaks, giving a triplet.</p>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>Jvals <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">8</span>, <span class="dv">10</span>, <span class="dv">11</span>, <span class="dv">12</span>)</span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(Jvals)) {</span>
+<span id="cb5-3"><a href="#cb5-3"></a>  res <span class="ot">&lt;-</span> <span class="fu">multiplet</span>(<span class="at">J =</span> <span class="fu">c</span>(<span class="dv">12</span>, Jvals[i]), <span class="at">pw =</span> <span class="fl">0.25</span>)</span>
+<span id="cb5-4"><a href="#cb5-4"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="images/ShannonBrian.jpg" class="img-fluid figure-img"></p>
+<p><img src="MoreMultiplets_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="MoreMultiplets_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="MoreMultiplets_files/figure-html/unnamed-chunk-5-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="MoreMultiplets_files/figure-html/unnamed-chunk-5-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="MoreMultiplets_files/figure-html/unnamed-chunk-5-5.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="MoreMultiplets_files/figure-html/unnamed-chunk-5-6.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
+<p>I hope some of you will find this function useful!</p>
 
 
 
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script></main> <!-- /main -->
+
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>As a side note, drawing the spectrum was easy because <code>SpecHelpers</code> already contained the necessary functions. On the other hand, getting the splitting tree correct was, well, a bit of work. In contrast to how quickly one might sketch this out by hand, creating it computationally was much more challenging.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2025,
+  author = {Hanson, Bryan},
+  title = {A {Function} to {Draw} {Complex} {Multiplets}},
+  date = {2025-03-06},
+  url = {http://chemospec.org/posts/2025-03-06 More Multiplets/MoreMultiplets.html},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2025" class="csl-entry quarto-appendix-citeas" role="listitem">
+Hanson, Bryan. 2025. <span>“A Function to Draw Complex
+Multiplets.”</span> March 6, 2025. <a href="http://chemospec.org/posts/2025-03-06 More Multiplets/MoreMultiplets.html">http://chemospec.org/posts/2025-03-06
+More Multiplets/MoreMultiplets.html</a>.
+</div></div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -741,6 +797,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
+</script>
+<script src="https://utteranc.es/client.js" repo="bryanhanson/CSR" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
 </script>
 </div> <!-- /content -->
 <footer class="footer">
