@@ -1,0 +1,30 @@
+---
+title: "Multiplet Function Now Handles I > 1/2"
+description: "So fancy!"
+date: "2025-12-30"
+categories: [NMR, R, SpecHelpers]
+format:
+  html
+---
+
+I've been very busy with some other projects lately, but my obsession with NMR got the best of me when I saw this post by the [Q Magnetics folks](https://bsky.app/profile/qmagnetics.bsky.social/post/3m4gmlfgjes2o).  So I decided to modify the `multiplet` function to handle nuclei with spin > 1/2.  Along the way I re-wrote the internals to be more robust and logical (sometimes my first pass can be, shall we say, *clunky*).  Also modified some of the aesthetics of the J-tree slightly.  Here's a couple of examples with I > 1/2.
+
+```{r}
+ # You need `SpecHelpers` version 0.3.2 or higher; there is (as of this writing)
+ # an issue with the Mac Binary database, so if you are on Mac you need
+ # to install from source using:
+ # install.packages("SpecHelpers", type = "source")
+library("SpecHelpers")
+```
+
+```{r}
+res <- multiplet(J = 32, I = 1) # CDCl3 observe 13C -> 2H coupling
+```
+
+```{r}
+res <- multiplet(J = 1.13, I = 3 / 2, pw = 0.1) # NaBF4 observe 19F -> 11B coupling
+```
+
+```{r}
+res <- multiplet(J = c(10, 7), I = 3 / 2) # something random that looks interesting
+```

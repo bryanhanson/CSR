@@ -1,0 +1,17 @@
+{
+  "hash": "4ce080659b0cbd3a78841b5c8f111bcc",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Multiplet Function Now Handles I > 1/2\"\ndescription: \"So fancy!\"\ndate: \"2025-12-30\"\ncategories: [NMR, R, SpecHelpers]\nformat:\n  html\n---\n\nI've been very busy with some other projects lately, but my obsession with NMR got the best of me when I saw this post by the [Q Magnetics folks](https://bsky.app/profile/qmagnetics.bsky.social/post/3m4gmlfgjes2o).  So I decided to modify the `multiplet` function to handle nuclei with spin > 1/2.  Along the way I re-wrote the internals to be more robust and logical (sometimes my first pass can be, shall we say, *clunky*).  Also modified some of the aesthetics of the J-tree slightly.  Here's a couple of examples with I > 1/2.\n\n\n::: {.cell}\n\n```{.r .cell-code}\n # You need `SpecHelpers` version 0.3.2 or higher; there is (as of this writing)\n # an issue with the Mac Binary database, so if you are on Mac you need\n # to install from source using:\n # install.packages(\"SpecHelpers\", type = \"source\")\nlibrary(\"SpecHelpers\")\n```\n:::\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nres <- multiplet(J = 32, I = 1) # CDCl3 observe 13C -> 2H coupling\n```\n\n::: {.cell-output-display}\n![](NowWithI_files/figure-html/unnamed-chunk-2-1.png){width=672}\n:::\n:::\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nres <- multiplet(J = 1.13, I = 3 / 2, pw = 0.1) # NaBF4 observe 19F -> 11B coupling\n```\n\n::: {.cell-output-display}\n![](NowWithI_files/figure-html/unnamed-chunk-3-1.png){width=672}\n:::\n:::\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nres <- multiplet(J = c(10, 7), I = 3 / 2) # something random that looks interesting\n```\n\n::: {.cell-output-display}\n![](NowWithI_files/figure-html/unnamed-chunk-4-1.png){width=672}\n:::\n:::\n\n",
+    "supporting": [
+      "NowWithI_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

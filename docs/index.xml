@@ -10,7 +10,145 @@
 <atom:link href="http://chemospec.org/index.xml" rel="self" type="application/rss+xml"/>
 <description>Applying chemometrics to spectroscopy using R</description>
 <generator>quarto-99.9.9</generator>
-<lastBuildDate>Thu, 06 Mar 2025 07:00:00 GMT</lastBuildDate>
+<lastBuildDate>Tue, 30 Dec 2025 07:00:00 GMT</lastBuildDate>
+<item>
+  <title>Multiplet Function Now Handles I &gt; 1/2</title>
+  <dc:creator>Bryan Hanson</dc:creator>
+  <link>http://chemospec.org/posts/2025-12-30 Now-With-I/NowWithI.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p>I’ve been very busy with some other projects lately, but my obsession with NMR got the best of me when I saw this post by the <a href="https://bsky.app/profile/qmagnetics.bsky.social/post/3m4gmlfgjes2o">Q Magnetics folks</a>. So I decided to modify the <code>multiplet</code> function to handle nuclei with spin &gt; 1/2. Along the way I re-wrote the internals to be more robust and logical (sometimes my first pass can be, shall we say, <em>clunky</em>). Also modified some of the aesthetics of the J-tree slightly. Here’s a couple of examples with I &gt; 1/2.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># You need `SpecHelpers` version 0.3.2 or higher; there is (as of this writing)</span></span>
+<span id="cb1-2"> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># an issue with the Mac Binary database, so if you are on Mac you need</span></span>
+<span id="cb1-3"> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># to install from source using:</span></span>
+<span id="cb1-4"> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># install.packages("SpecHelpers", type = "source")</span></span>
+<span id="cb1-5"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"SpecHelpers"</span>)</span></code></pre></div></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1">res <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">multiplet</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">J =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">32</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">I =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># CDCl3 observe 13C -&gt; 2H coupling</span></span></code></pre></div></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="http://chemospec.org/posts/2025-12-30 Now-With-I/NowWithI_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1">res <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">multiplet</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">J =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.13</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">I =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">pw =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.1</span>) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># NaBF4 observe 19F -&gt; 11B coupling</span></span></code></pre></div></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="http://chemospec.org/posts/2025-12-30 Now-With-I/NowWithI_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1">res <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">multiplet</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">J =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">7</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">I =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># something random that looks interesting</span></span></code></pre></div></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="http://chemospec.org/posts/2025-12-30 Now-With-I/NowWithI_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2025,
+  author = {Hanson, Bryan},
+  title = {Multiplet {Function} {Now} {Handles} {I} \textgreater{} 1/2},
+  date = {2025-12-30},
+  url = {http://chemospec.org/posts/2025-12-30 Now-With-I/NowWithI.html},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2025" class="csl-entry quarto-appendix-citeas">
+Hanson, Bryan. 2025. <span>“Multiplet Function Now Handles I &gt;
+1/2.”</span> December 30, 2025. <a href="http://chemospec.org/posts/2025-12-30 Now-With-I/NowWithI.html">http://chemospec.org/posts/2025-12-30
+Now-With-I/NowWithI.html</a>.
+</div></div></section></div> ]]></description>
+  <category>NMR</category>
+  <category>R</category>
+  <category>SpecHelpers</category>
+  <guid>http://chemospec.org/posts/2025-12-30 Now-With-I/NowWithI.html</guid>
+  <pubDate>Tue, 30 Dec 2025 07:00:00 GMT</pubDate>
+</item>
 <item>
   <title>A Function to Draw Complex Multiplets</title>
   <dc:creator>Bryan Hanson</dc:creator>
@@ -2877,6 +3015,26 @@ Hanson, Bryan. 2022. <span>“You Can Now Subscribe.”</span> November 7,
   <pubDate>Mon, 07 Nov 2022 07:00:00 GMT</pubDate>
 </item>
 <item>
+  <title></title>
+  <dc:creator>Bryan Hanson</dc:creator>
+  <link>http://chemospec.org/posts/2022-10-05-Linear-Alg-Notes-Pt5/Linear-Alg-Notes-Pt5.html</link>
+  <description><![CDATA[ undefined ]]></description>
+  <category>R</category>
+  <category>Linear Algebra</category>
+  <guid>http://chemospec.org/posts/2022-10-05-Linear-Alg-Notes-Pt5/Linear-Alg-Notes-Pt5.html</guid>
+  <pubDate>Wed, 05 Oct 2022 07:00:00 GMT</pubDate>
+</item>
+<item>
+  <title></title>
+  <dc:creator>Bryan Hanson</dc:creator>
+  <link>http://chemospec.org/posts/2023-03-03-Create-MUD/Creating-MUD.html</link>
+  <description><![CDATA[ undefined ]]></description>
+  <category>R</category>
+  <category>Linear Algebra</category>
+  <guid>http://chemospec.org/posts/2023-03-03-Create-MUD/Creating-MUD.html</guid>
+  <pubDate>Wed, 05 Oct 2022 07:00:00 GMT</pubDate>
+</item>
+<item>
   <title>Notes on Linear Algebra Part 4</title>
   <dc:creator>Bryan Hanson</dc:creator>
   <link>http://chemospec.org/posts/2022-11-07-Announce-Subscribe/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html</link>
@@ -5149,591 +5307,6 @@ August 14, 2022. <a href="http://chemospec.org/posts/2022-08-14-Linear-Alg-Notes
   <category>Linear Algebra</category>
   <guid>http://chemospec.org/posts/2022-08-14-Linear-Alg-Notes/2022-08-14-Linear-Alg-Notes.html</guid>
   <pubDate>Sun, 14 Aug 2022 07:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>FOSS4Spectroscopy: R vs Python</title>
-  <dc:creator>Bryan Hanson</dc:creator>
-  <link>http://chemospec.org/posts/2022-07-06-F4S-Update/2022-07-06-F4S-Update.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<p>If you aren’t familiar with it, the <a href="https://bryanhanson.github.io/FOSS4Spectroscopy/">FOSS for Spectroscopy web site</a> lists Free and Open Source Software for spectroscopic applications. The collection is of course never really complete, and your package suggestions are most welcome (<a href="https://github.com/bryanhanson/FOSS4Spectroscopy">how to contribute</a>). My methods for finding packages are improving and at this point the major repositories have been searched reasonably well.</p>
-<p>A few days ago I pushed a major update, and <strong>at this point <code>Python</code> packages outnumber <code>R</code> packages more than two to one</strong>. The update was made possible because I recently had time to figure out how to search the <a href="https://pypi.org/">PyPi.org</a> site automatically.</p>
-<p>In a previous <a href="https://chemospec.org/posts/2021-04-19-Search-GH-Topics/2021-04-19-Search-GH-Topics.html">post</a> I explained the methods I used to find packages related to spectroscopy. These have been updated considerably and the rest of this post will cover the updated methods.</p>
-<section id="repos-topics" class="level2">
-<h2 class="anchored" data-anchor-id="repos-topics">Repos &amp; Topics</h2>
-<p>There are four places I search for packages related to spectroscopy.<sup>1</sup></p>
-<ul>
-<li><a href="https://cran.r-project.org/">CRAN</a>, searched manually using the <a href="https://cran.r-project.org/web/packages/packagefinder/index.html"><code>packagefinder</code></a> package.<sup>2</sup></li>
-<li>Github, searched using custom functions and scripts, detailed below.</li>
-<li><a href="https://pypi.org/">PyPi.org</a>, searched as for Github.</li>
-<li><a href="https://juliapackages.com/">juliapackages.org</a>, searched manually.</li>
-</ul>
-<p>The topics I search are as follows:</p>
-<ul>
-<li>NMR</li>
-<li>EPR</li>
-<li>ESR</li>
-<li>UV</li>
-<li>VIS</li>
-<li>spectrophotometry</li>
-<li>NIR (IR search terms overlap a lot, and also generate many false positives dealing with IR communications, e.g.&nbsp;TV remotes)</li>
-<li>FT-IR</li>
-<li>FTIR</li>
-<li>Raman</li>
-<li>XRF</li>
-<li>XAS</li>
-<li>LIBS (on PyPi.org one must use “laser induced breakdown spectroscopy” because LIBS is the name of a popular software and generates hundreds of false positives)</li>
-</ul>
-</section>
-<section id="searching-cran" class="level2">
-<h2 class="anchored" data-anchor-id="searching-cran">Searching CRAN</h2>
-<p>I search CRAN using <code>packagefinder</code>; the process is quite straightforward and won’t be covered here. However, it is not an automated process (I should probably work on that).</p>
-</section>
-<section id="searching-github" class="level2">
-<h2 class="anchored" data-anchor-id="searching-github">Searching Github</h2>
-<p>The broad approach used to search Github is the same as described in the original <a href="https://chemospec.org/posts/2021-04-19-Search-GH-Topics/2021-04-19-Search-GH-Topics.html">post</a>. However, the scripts have been refined and updated, and now exist as functions in a new package I created called <code>webu</code> (for “webutilities”, but that name is taken on CRAN). The repo is <a href="https://github.com/bryanhanson/webu">here</a>. <code>webu</code> is not on CRAN and I don’t currently intend to put it there, but you can install from the repo of course if you wish to try it out.</p>
-<p>Searching Github is now carried out by a supervising script called <code>/utilities/run_searches.R</code> (in the <code>FOSS4Spectroscopy</code> <a href="https://github.com/bryanhanson/FOSS4Spectroscopy">repo</a>). The script contains some notes about finicky details, but is pretty simple overall and should be easy enough to follow.</p>
-</section>
-<section id="searching-pypi.org" class="level2">
-<h2 class="anchored" data-anchor-id="searching-pypi.org">Searching PyPi.org</h2>
-<p>Unlike Github, it is not necessary to authenticate to use the PyPi.org API. That makes things simpler than the Github case. The needed functions are in <code>webu</code> and include some deliberate delays so as to not overload their servers. As for Github, searches are supervised by <code>/utilities/run_searches.R</code>.</p>
-<p>One thing I observed at PyPi.org is that authors do not always fill out all the fields that PyPi.org can accept, which means some fields are <code>NULL</code> and we have to trap for that possibility. Package information is accessed via a JSON record, for instance the entry for <code>nmrglue</code> can be seen <a href="https://pypi.org/pypi/nmrglue/json">here</a>. This package is pretty typical in that the <code>author_email</code> field is filled out, but the <code>maintainer_email</code> field is not (they are presumably the same). If one considers these JSON files to be analogous to DESCRIPTION in <code>R</code> packages, it looks like there is less oversight on PyPi.org compared to CRAN.</p>
-</section>
-<section id="searching-julia" class="level2">
-<h2 class="anchored" data-anchor-id="searching-julia">Searching Julia</h2>
-<p>Julia packages are readily searched manually at <a href="https://juliapackages.com/">juliapackages.org</a>.</p>
-</section>
-<section id="cleaning-final-vetting" class="level2">
-<h2 class="anchored" data-anchor-id="cleaning-final-vetting">Cleaning &amp; Final Vetting</h2>
-<p>The raw results from the searches described above still need a lot of inspection and cleaning to be usable. The PyPi.org and Github results are saved in an Excel worksheet with the relevant URLs. These links can be followed to determine the suitability of each package. In the <code>/Utilities</code> folder there are additional scripts to remove entries that are already in the main database (FOSS4Spec.xlsx), as well as to check the names of the packages: Python authors and/or policies seem to lead to cases where different packages can have names differing by case, but also authors are sometimes sloppy when referring to their own packages, sometimes using <code>mypkg</code> and at other times <code>myPkg</code> to refer to the same package.</p>
-
-
-</section>
-
-
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
-
-<ol>
-<li id="fn1"><p>Once in a while users submit their own package to the repo, and I also find interesting packages in my literature reading.↩︎</p></li>
-<li id="fn2"><p><code>packagefinder</code> has recently been archived, but hopefully will be back soon.↩︎</p></li>
-</ol>
-</section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
-  author = {Hanson, Bryan},
-  title = {FOSS4Spectroscopy: {R} Vs {Python}},
-  date = {2022-07-06},
-  url = {http://chemospec.org/posts/2022-07-06-F4S-Update/2022-07-06-F4S-Update.html},
-  langid = {en}
-}
-</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2022" class="csl-entry quarto-appendix-citeas">
-Hanson, Bryan. 2022. <span>“FOSS4Spectroscopy: R Vs Python.”</span> July
-6, 2022. <a href="http://chemospec.org/posts/2022-07-06-F4S-Update/2022-07-06-F4S-Update.html">http://chemospec.org/posts/2022-07-06-F4S-Update/2022-07-06-F4S-Update.html</a>.
-</div></div></section></div> ]]></description>
-  <category>FOSS</category>
-  <category>R</category>
-  <category>Python</category>
-  <category>Julia</category>
-  <category>Github</category>
-  <category>PyPi</category>
-  <guid>http://chemospec.org/posts/2022-07-06-F4S-Update/2022-07-06-F4S-Update.html</guid>
-  <pubDate>Wed, 06 Jul 2022 07:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>Introducing LearnPCA</title>
-  <dc:creator>Bryan Hanson</dc:creator>
-  <link>http://chemospec.org/posts/2022-05-03-LearnPCA-Intro/2022-05-03-LearnPCA-Intro.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<p>PCA, or principal components analysis, is one of the most wide-spread statistical methods in use. It shows up in many disciplines, from political science and psychology, to chemistry and biology. PCA is also really challenging to understand.</p>
-<p>I’m pleased to announce that my colleague David Harvey and I have recently released <code>LearnPCA</code>, an <code>R</code> package to help people with understanding PCA. In <code>LearnPCA</code> we’ve tried to integrate our years of experience teaching the topic, along with the best insights we can find in books, tutorials and the nooks and crannies of the internet. Though our experience is in a chemometrics context, we use examples from different disciplines so that the package will be broadly helpful.</p>
-<p>The package contains seven vignettes that proceed from the conceptual basics to advanced topics. As of version 0.2.0, there is also a Shiny app to help visualize the process of finding the principal component axes. The current vignettes are:</p>
-<ul>
-<li>A Guide to the LearnPCA Package</li>
-<li>A Conceptual Introduction to PCA</li>
-<li>Step-by-Step PCA</li>
-<li>Understanding Scores and Loadings</li>
-<li>Visualizing PCA in 3D</li>
-<li>The Math Behind PCA</li>
-<li>A Comparison of Functions for PCA</li>
-</ul>
-<p>You can access the vignettes at the <a href="https://bryanhanson.github.io/LearnPCA/">Github Site</a>, you don’t even have to install the package. For the Shiny app, do the following:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">install.packages</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"LearnPCA"</span>) <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># you'll need version 0.2.0</span></span>
-<span id="cb1-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"LearnPCA"</span>)</span>
-<span id="cb1-3"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">PCsearch</span>()</span></code></pre></div>
-</div>
-<p>We would really appreciate your feedback on this package. You can do so in the comments below, or open an <a href="https://github.com/bryanhanson/LearnPCA/issues">issue</a>. 
-<script type="application/shiny-prerendered" data-context="server-extras">
-ojs_define <- function(..., .session = shiny::getDefaultReactiveDomain()) {
-  quos <- rlang::enquos(...)
-  vars <- rlang::list2(...)
-  nm <- names(vars)
-  if (is.null(nm)) {
-    nm <- rep_len("", length(vars))
-  }
-  mapply(function(q, nm, val) {
-    # Infer name, if possible
-    if (nm == "") {
-      tryCatch({
-        nm <- rlang::as_name(q)
-      }, error = function(e) {
-        code <- paste(collapse = "\n", deparse(rlang::f_rhs(q)))
-        stop("ojs_define() could not create a name for the argument: ", code)
-      })
-    }
-    .session$output[[nm]] <- val
-    outputOptions(.session$output, nm, suspendWhenHidden = FALSE)
-    .session$sendCustomMessage("ojs-export", list(name = nm))
-    NULL
-  }, quos, nm, vars, SIMPLIFY = FALSE, USE.NAMES = FALSE)
-  invisible()
-}
-</script>
-</p>
-<!--html_preserve-->
-<script type="application/shiny-prerendered" data-context="dependencies">
-{"type":"list","attributes":{},"value":[]}
-</script>
-<!--/html_preserve-->
-<!--html_preserve-->
-<script type="application/shiny-prerendered" data-context="execution_dependencies">
-{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages","version"]},"class":{"type":"character","attributes":{},"value":["data.frame"]},"row.names":{"type":"integer","attributes":{},"value":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34]}},"value":[{"type":"character","attributes":{},"value":["base","cli","compiler","datasets","digest","ellipsis","evaluate","fastmap","graphics","grDevices","htmltools","htmlwidgets","httpuv","jsonlite","knitr","later","lifecycle","magrittr","methods","mime","promises","R6","Rcpp","rlang","rmarkdown","shiny","stats","stringi","stringr","tools","utils","xfun","xtable","yaml"]},{"type":"character","attributes":{},"value":["4.2.0","3.3.0","4.2.0","4.2.0","0.6.29","0.3.2","0.15","1.1.0","4.2.0","4.2.0","0.5.2","1.5.4","1.6.5","1.8.0","1.39","1.3.0","1.0.1","2.0.3","4.2.0","0.12","1.2.0.1","2.5.1","1.0.8.3","1.0.2","2.14","1.7.1","4.2.0","1.7.6","1.4.0","4.2.0","4.2.0","0.30","1.8-4","2.3.5"]}]}]}
-</script>
-<!--/html_preserve-->
-
-
-
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
-  author = {Hanson, Bryan},
-  title = {Introducing {LearnPCA}},
-  date = {2022-05-03},
-  url = {http://chemospec.org/posts/2022-05-03-LearnPCA-Intro/2022-05-03-LearnPCA-Intro.html},
-  langid = {en}
-}
-</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2022" class="csl-entry quarto-appendix-citeas">
-Hanson, Bryan. 2022. <span>“Introducing LearnPCA.”</span> May 3, 2022.
-<a href="http://chemospec.org/posts/2022-05-03-LearnPCA-Intro/2022-05-03-LearnPCA-Intro.html">http://chemospec.org/posts/2022-05-03-LearnPCA-Intro/2022-05-03-LearnPCA-Intro.html</a>.
-</div></div></section></div> ]]></description>
-  <category>R</category>
-  <category>PCA</category>
-  <guid>http://chemospec.org/posts/2022-05-03-LearnPCA-Intro/2022-05-03-LearnPCA-Intro.html</guid>
-  <pubDate>Tue, 03 May 2022 07:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>Metabolic Phenotyping Protocol Part 3</title>
-  <dc:creator>Bryan Hanson</dc:creator>
-  <link>http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<ul>
-<li>Part 1 of this series is <a href="https://chemospec.org/posts/2022-02-01-Protocol-Pt1/">here</a>.</li>
-<li>Part 2 of this series is <a href="https://chemospec.org/posts/2022-03-24-Protocol-Pt2/">here</a>.</li>
-</ul>
-<p>If you aren’t familiar with <code>ChemoSpec</code>, you might wish to look at the introductory <a href="https://bryanhanson.github.io/ChemoSpec/articles/ChemoSpec.html">vignette</a> first.</p>
-<p><em>In this series of posts we are following the protocol as described in the printed publication closely <span class="citation" data-cites="Blaise2021">(Blaise et al. 2021)</span>. The authors have also provided a <a href="https://github.com/Gscorreia89/chemometrics-tutorials">Jupyter notebook</a>. This is well worth your time, even if Python is not your preferred language, as there are additional examples and discussion for study.</em></p>
-<section id="read-in-the-data" class="level1">
-<h1>Read in the Data</h1>
-<p>Load the <code>Spectra</code> object we created in Part 2 so we can summarize it.</p>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"ChemoSpec"</span>)</span>
-<span id="cb1-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">load</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Worms2.RData"</span>)  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># restores the 'Worms2' Spectra object</span></span>
-<span id="cb1-3"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">sumSpectra</span>(Worms2)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
- C. elegans metabolic phenotyping study (Blaise 2007) 
-
-    There are 133 spectra in this set.
-    The y-axis unit is intensity.
-
-    The frequency scale runs from
-    8.9995 to 5e-04 ppm
-    There are 8600 frequency values.
-    The frequency resolution is
-    0.001 ppm/point.
-
-    This data set is not continuous
-    along the frequency axis.
-    Here are the data chunks:
-
-  beg.freq end.freq   size beg.indx end.indx
-1   8.9995   5.0005 -3.999        1     4000
-2   4.5995   0.0005 -4.599     4001     8600
-
-    The spectra are divided into 4 groups: 
-
-   group no.     color symbol alt.sym
-1 Mut_L2  28 #FB0D16FF      0      m2
-2 Mut_L4  33 #FFC0CBFF     15      m4
-3  WT_L2  32 #511CFCFF      1      w2
-4  WT_L4  40 #2E94E9FF     16      w4
-
-
-*** Note: this is an S3 object
-of class 'Spectra'</code></pre>
-</div>
-</div>
-</section>
-<section id="exploratory-data-analysis-cont." class="level1">
-<h1>Exploratory Data Analysis, Con’t.</h1>
-<p>If you recall in Part 2 we removed five samples. Let’s re-run PCA without these samples and show the key plots. We will simply report these here without much discussion; they are pretty much as expected.</p>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1">c_pca <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c_pcaSpectra</span>(Worms2, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">choice =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"autoscale"</span>)</span></code></pre></div>
-</div>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">plotScree</span>(c_pca)</span></code></pre></div>
-<div class="cell-output-display">
-<div id="fig-screeAlt" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-screeAlt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-screeAlt-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-screeAlt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: Scree plot (recommended style).
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1">p <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">plotScores</span>(Worms2, c_pca, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">pcs =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">ellipse =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"rob"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">tol =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.02</span>)</span>
-<span id="cb5-2">p</span></code></pre></div>
-<div class="cell-output-display">
-<div id="fig-scores12" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-scores12-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-scores12-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-scores12-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2: Score plot for PCs 1 and 2. Compare to protocol figure 7d.
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1">p <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">plotScores</span>(Worms2, c_pca, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">pcs =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">ellipse =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"rob"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">leg.loc =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"bottomleft"</span>,</span>
-<span id="cb6-2">    <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">tol =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.02</span>)</span>
-<span id="cb6-3">p</span></code></pre></div>
-<div class="cell-output-display">
-<div id="fig-scores23" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-scores23-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-scores23-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-scores23-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3: Score plot for PCS 2 and 3.
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<p>One thing the published protocol does not explicitly discuss is an inspection of the loadings, but it is covered in the <a href="https://github.com/Gscorreia89/chemometrics-tutorials">Jupyter notebook</a>. The loadings are useful in order to see if any particular frequencies are driving the separation of the samples in the score plot. Let’s plot the loadings (Figure&nbsp;4). Remember that these data were autoscaled, and hence all frequencies, including noisy frequencies, will contribute to the separation. If we had not scaled the data, these plots would look dramatically different.</p>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1">p <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">plotLoadings</span>(Worms2, c_pca, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">loads =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>)</span>
-<span id="cb7-2">p</span></code></pre></div>
-<div class="cell-output-display">
-<div id="fig-loadings" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-loadings-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-loadings-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-loadings-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4: Loadings for PC1 and PC2.
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<p>The s-plot is another very useful way to find peaks that are important in separating the samples (Figure&nbsp;5); we can see that the peaks around <img src="https://latex.codecogs.com/png.latex?%5Cdelta"> 1.30-1.32, 1.47-1.48, and 3.03-3.07 are important drivers of the separation in the score plot. Having discovered this, one can investigate the source of those peaks.</p>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1">p <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">sPlotSpectra</span>(Worms2, c_pca, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">tol =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.001</span>)</span>
-<span id="cb8-2">p</span></code></pre></div>
-<div class="cell-output-display">
-<div id="fig-splot" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-splot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-splot-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-splot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;5: s-Plot for PC1.
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<section id="supervised-analysis-with-pls-da" class="level2">
-<h2 class="anchored" data-anchor-id="supervised-analysis-with-pls-da">Supervised Analysis with PLS-DA</h2>
-<p><code>ChemoSpec</code> carries out exploratory data analysis, which is an unsupervised process. The next step in the protocol is PLS-DA (partial least squares - discriminant analysis). I have written about <code>ChemoSpec</code> + PLS <a href="https://chemospec.org/posts/2021-02-08-PLS/2021-02-08-PLS.html">here</a> if you would like more background on plain PLS. However, PLS-DA is a technique that combines data reduction/variable selection along with classification. We’ll need the <code>mixOmics</code> package (<span class="citation" data-cites="mixOmics">F et al. (2017)</span>) package for this analysis; note that loading it replaces the <code>plotLoadings</code> function from <code>ChemoSpec</code>.</p>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"mixOmics"</span>)</span></code></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Loading required package: MASS</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Loading required package: lattice</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Loaded mixOmics 6.20.0
-Thank you for using mixOmics!
-Tutorials: http://mixomics.org
-Bookdown vignette: https://mixomicsteam.github.io/Bookdown
-Questions, issues: Follow the prompts at http://mixomics.org/contact-us
-Cite us:  citation('mixOmics')</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'mixOmics'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following object is masked from 'package:ChemoSpec':
-
-    plotLoadings</code></pre>
-</div>
-</div>
-<p>Figure&nbsp;6 shows the score plot; the results suggest that classification and modeling may be successful. The <code>splsda</code> function carries out a single <em>sparse</em> computation. One computation should not be considered the ideal answer; a better approach is to use cross-validation, for instance the <code>bootsPLS</code> function in the <code>bootsPLS</code> package (<span class="citation" data-cites="bootsPLS">Rohart, Le Cao, and Wells (2018)</span> which uses <code>splsda</code> under the hood). However, that computation is too time-consuming to demonstrate here.</p>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1">X <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> Worms2<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>data</span>
-<span id="cb15-2">Y <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> Worms2<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>groups</span>
-<span id="cb15-3">splsda <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">splsda</span>(X, Y, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">ncomp =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">8</span>)</span></code></pre></div>
-</div>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">plotIndiv</span>(splsda,</span>
-<span id="cb16-2">  <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">col.per.group =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"#FB0D16FF"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"#FFC0CBFF"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"#511CFCFF"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"#2E94E9FF"</span>),</span>
-<span id="cb16-3">  <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"sPLS-DA Score Plot"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">legend =</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">ellipse =</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span>)</span></code></pre></div>
-<div class="cell-output-display">
-<div id="fig-plsda-indiv" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-plsda-indiv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-plsda-indiv-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plsda-indiv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;6: sPLS-DA plot showing classification.
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<p>To estimate the number of components needed, the <code>perf</code> function can be used. The results are in Figure&nbsp;7 and suggest that five components are sufficient to describe the data.</p>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1">perf.splsda <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">perf</span>(splsda, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">folds =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">5</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">nrepeat =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">5</span>)</span>
-<span id="cb17-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">plot</span>(perf.splsda)</span></code></pre></div>
-<div class="cell-output-display">
-<div id="fig-plsda-perf" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-plsda-perf-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3_files/figure-html/fig-plsda-perf-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plsda-perf-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;7: Evaluation of the PLS-DA performance.
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<p>At this point, we have several ideas of how to proceed. Going forward, one might choose to focus on accurate classification, or on determining which frequencies should be included in a predictive model. Any model will need to refined and more details extracted. The reader is referred to the case study from the <a href="http://mixomics.org/case-studies/splsda-srbct/">mixOmics</a> folks which covers these tasks and explains the process.</p>
-<hr>
-<p>This post was created using <code>ChemoSpec</code> version 6.1.3 and <code>ChemoSpecUtils</code> version 1.0.0.</p>
-
-
-
-</section>
-</section>
-
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
-<div id="ref-Blaise2021" class="csl-entry">
-Blaise, Benjamin J., Gonçalo D. S. Correia, Gordon A. Haggart, Izabella Surowiec, Caroline Sands, Matthew R. Lewis, Jake T. M. Pearce, et al. 2021. <span>“Statistical Analysis in Metabolic Phenotyping.”</span> <em>Nature Protocols</em> 16: 4299–4326. <a href="https://doi.org/10.1038/s41596-021-00579-1">https://doi.org/10.1038/s41596-021-00579-1</a>.
-</div>
-<div id="ref-mixOmics" class="csl-entry">
-F, Rohart, Gautier B, Singh A, and Le Cao K-A. 2017. <span>“mixOmics: An r Package for ’Omics Feature Selection and Multiple Data Integration.”</span> <em>PLoS Computational Biology</em> 13 (11): e1005752. <a href="http://www.mixOmics.org">http://www.mixOmics.org</a>.
-</div>
-<div id="ref-bootsPLS" class="csl-entry">
-Rohart, Florian, Kim-Anh Le Cao, and Christine Wells. 2018. <em>bootsPLS: Bootstrap Subsamplings of Sparse Partial Least Squares - Discriminant Analysis for Classification and Signature Identification</em>. <a href="https://CRAN.R-project.org/package=bootsPLS">https://CRAN.R-project.org/package=bootsPLS</a>.
-</div>
-</div></section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2022,
-  author = {Hanson, Bryan},
-  title = {Metabolic {Phenotyping} {Protocol} {Part} 3},
-  date = {2022-05-01},
-  url = {http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3.html},
-  langid = {en}
-}
-</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2022" class="csl-entry quarto-appendix-citeas">
-Hanson, Bryan. 2022. <span>“Metabolic Phenotyping Protocol Part
-3.”</span> May 1, 2022. <a href="http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3.html">http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3.html</a>.
-</div></div></section></div> ]]></description>
-  <category>R</category>
-  <category>ChemoSpec</category>
-  <category>Metabolomics</category>
-  <category>PLS</category>
-  <category>PLS-DA</category>
-  <guid>http://chemospec.org/posts/2022-05-01-Protocol-Pt3/2022-05-01-Protocol-Pt3.html</guid>
-  <pubDate>Sun, 01 May 2022 07:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>

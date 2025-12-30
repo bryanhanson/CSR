@@ -10,7 +10,145 @@
 <atom:link href="http://chemospec.org/index-r.xml" rel="self" type="application/rss+xml"/>
 <description>Applying chemometrics to spectroscopy using R</description>
 <generator>quarto-99.9.9</generator>
-<lastBuildDate>Thu, 06 Mar 2025 07:00:00 GMT</lastBuildDate>
+<lastBuildDate>Tue, 30 Dec 2025 07:00:00 GMT</lastBuildDate>
+<item>
+  <title>Multiplet Function Now Handles I &gt; 1/2</title>
+  <dc:creator>Bryan Hanson</dc:creator>
+  <link>http://chemospec.org/posts/2025-12-30 Now-With-I/NowWithI.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p>I’ve been very busy with some other projects lately, but my obsession with NMR got the best of me when I saw this post by the <a href="https://bsky.app/profile/qmagnetics.bsky.social/post/3m4gmlfgjes2o">Q Magnetics folks</a>. So I decided to modify the <code>multiplet</code> function to handle nuclei with spin &gt; 1/2. Along the way I re-wrote the internals to be more robust and logical (sometimes my first pass can be, shall we say, <em>clunky</em>). Also modified some of the aesthetics of the J-tree slightly. Here’s a couple of examples with I &gt; 1/2.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># You need `SpecHelpers` version 0.3.2 or higher; there is (as of this writing)</span></span>
+<span id="cb1-2"> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># an issue with the Mac Binary database, so if you are on Mac you need</span></span>
+<span id="cb1-3"> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># to install from source using:</span></span>
+<span id="cb1-4"> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># install.packages("SpecHelpers", type = "source")</span></span>
+<span id="cb1-5"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"SpecHelpers"</span>)</span></code></pre></div></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1">res <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">multiplet</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">J =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">32</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">I =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># CDCl3 observe 13C -&gt; 2H coupling</span></span></code></pre></div></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="http://chemospec.org/posts/2025-12-30 Now-With-I/NowWithI_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1">res <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">multiplet</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">J =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.13</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">I =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">pw =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.1</span>) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># NaBF4 observe 19F -&gt; 11B coupling</span></span></code></pre></div></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="http://chemospec.org/posts/2025-12-30 Now-With-I/NowWithI_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1">res <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">multiplet</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">J =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">7</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">I =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># something random that looks interesting</span></span></code></pre></div></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="http://chemospec.org/posts/2025-12-30 Now-With-I/NowWithI_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+
+<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2025,
+  author = {Hanson, Bryan},
+  title = {Multiplet {Function} {Now} {Handles} {I} \textgreater{} 1/2},
+  date = {2025-12-30},
+  url = {http://chemospec.org/posts/2025-12-30 Now-With-I/NowWithI.html},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2025" class="csl-entry quarto-appendix-citeas">
+Hanson, Bryan. 2025. <span>“Multiplet Function Now Handles I &gt;
+1/2.”</span> December 30, 2025. <a href="http://chemospec.org/posts/2025-12-30 Now-With-I/NowWithI.html">http://chemospec.org/posts/2025-12-30
+Now-With-I/NowWithI.html</a>.
+</div></div></section></div> ]]></description>
+  <category>NMR</category>
+  <category>R</category>
+  <category>SpecHelpers</category>
+  <guid>http://chemospec.org/posts/2025-12-30 Now-With-I/NowWithI.html</guid>
+  <pubDate>Tue, 30 Dec 2025 07:00:00 GMT</pubDate>
+</item>
 <item>
   <title>A Function to Draw Complex Multiplets</title>
   <dc:creator>Bryan Hanson</dc:creator>
@@ -236,6 +374,26 @@ More Multiplets/MoreMultiplets.html</a>.
   <category>SpecHelpers</category>
   <guid>http://chemospec.org/posts/2025-03-06 More Multiplets/MoreMultiplets.html</guid>
   <pubDate>Thu, 06 Mar 2025 07:00:00 GMT</pubDate>
+</item>
+<item>
+  <title></title>
+  <dc:creator>Bryan Hanson</dc:creator>
+  <link>http://chemospec.org/posts/2022-10-05-Linear-Alg-Notes-Pt5/Linear-Alg-Notes-Pt5.html</link>
+  <description><![CDATA[ undefined ]]></description>
+  <category>R</category>
+  <category>Linear Algebra</category>
+  <guid>http://chemospec.org/posts/2022-10-05-Linear-Alg-Notes-Pt5/Linear-Alg-Notes-Pt5.html</guid>
+  <pubDate>Wed, 05 Oct 2022 07:00:00 GMT</pubDate>
+</item>
+<item>
+  <title></title>
+  <dc:creator>Bryan Hanson</dc:creator>
+  <link>http://chemospec.org/posts/2023-03-03-Create-MUD/Creating-MUD.html</link>
+  <description><![CDATA[ undefined ]]></description>
+  <category>R</category>
+  <category>Linear Algebra</category>
+  <guid>http://chemospec.org/posts/2023-03-03-Create-MUD/Creating-MUD.html</guid>
+  <pubDate>Wed, 05 Oct 2022 07:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Notes on Linear Algebra Part 4</title>
@@ -5668,858 +5826,6 @@ February 8, 2021. <a href="http://chemospec.org/posts/2021-02-08-PLS/2021-02-08-
   <category>ChemoSpec</category>
   <guid>http://chemospec.org/posts/2021-02-08-PLS/2021-02-08-PLS.html</guid>
   <pubDate>Mon, 08 Feb 2021 07:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>GSOC Wrap Up</title>
-  <dc:creator>Erick Oduniyi</dc:creator>
-  <link>http://chemospec.org/posts/2020-09-08-GSOC-hyperSpec/2020-09-08-GSOC-hyperSpec.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<table>
-<tbody><tr>
-<td>
-<img src="http://chemospec.org/posts/2020-09-08-GSOC-hyperSpec/og-image.png" alt="GSOC_logo" style="width:100px;">
-</td>
-<td>
-Well, things have been busy lately! As reported back in <a href="https://chemospec.org/posts/2020-05-07-GSOC-hyperSpec/"><em>May</em></a>, I’ve been participating in Google Summer of Code which has now wrapped up. This was very rewarding for me, but today I want to share a guest post by Erick Oduniyi, the very talented student on the project. Bryan
-</td>
-</tr>
-</tbody></table>
-<hr>
-<p>Checking in from Kansas!</p>
-<p>This past summer (2020) I had the amazing opportunity to participate in the <a href="https://summerofcode.withgoogle.com/">Google Summer of Code</a> (GSoC or GSOC). As stated on the the GSOC website, GSOC is a “global program focused on bringing more student developers into open source software development. Students work with an open-source organization on a 3-month programming project during their break from school.”</p>
-<p>This was a particularly meaningful experience as it was my last undergraduate summer internship. I’m a senior studying computer engineering at the University of Kansas, and at the beginning of the summer I still didn’t feel super comfortable working on public (open-source) projects. So, I thought this program would help build my confidence as a computer and software engineer. Moreover:</p>
-<ul>
-<li>I wanted to work with the <code>R</code> organization because that is my favorite programming language.</li>
-<li>I wanted to work with <code>r-hyperspec</code> because I thought that would be the most impactful in terms of practicing project management and software ecosystem development.</li>
-</ul>
-<p>In the process I hoped to:</p>
-<ul>
-<li>Become proficient using <code>Git/Github</code>, including continuous integration</li>
-<li>Become proficient in using <a href="https://trello.com/">Trello</a></li>
-<li>Become proficient in using <code>R</code></li>
-<li>Become familiar with the spectroscopy community</li>
-<li>Become inspired to code more</li>
-<li>Become inspired to document and write more open source projects.</li>
-<li>Become excited to collaborate more across various industrial, academic, and community domains.</li>
-</ul>
-<p>And through a lot of hard work all of those things came to be! Truthfully, even though the summer project was successful there is still a lot of work to do:</p>
-<ul>
-<li>Fortify <code>hyperSpec</code> for <code>baseline</code> with bridge packages</li>
-<li>Fortify <code>hyperSpec</code> for <code>EMSC</code> with bridge packages</li>
-<li>Fortify <code>hyperSpec</code> for <code>matrixStats</code> with bridge packages.</li>
-</ul>
-<p>So, I’m excited to continue to work with the team! I think there are a ton of ideas I and the team have and hopefully we will get to explore them in deeper context. Speaking of the <a href="https://github.com/orgs/r-hyperspec/teams/r-hyperspec/members">team</a>, I have them to thank for an awesome <code>GSOC 2020</code> experience. If you are interested in the journey that was the GSoC 2020 experience (perhaps you might be interested in trying the program next year), then please feel free to jump around <a href="https://eoduniyi.github.io/hyperSpec.gsoc2020/">here</a> to get a feel for the things that I learned and how I worked with the <code>r-hyperspec</code> team this summer.</p>
-<p>Best, E. Oduniyi</p>
-
-
-
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{oduniyi2020,
-  author = {Oduniyi, Erick},
-  title = {GSOC {Wrap} {Up}},
-  date = {2020-09-08},
-  url = {http://chemospec.org/posts/2020-09-08-GSOC-hyperSpec/2020-09-08-GSOC-hyperSpec.html},
-  langid = {en}
-}
-</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-oduniyi2020" class="csl-entry quarto-appendix-citeas">
-Oduniyi, Erick. 2020. <span>“GSOC Wrap Up.”</span> September 8, 2020. <a href="http://chemospec.org/posts/2020-09-08-GSOC-hyperSpec/2020-09-08-GSOC-hyperSpec.html">http://chemospec.org/posts/2020-09-08-GSOC-hyperSpec/2020-09-08-GSOC-hyperSpec.html</a>.
-</div></div></section></div> ]]></description>
-  <category>R</category>
-  <category>hyperSpec</category>
-  <category>GSOC</category>
-  <category>Guest Post</category>
-  <guid>http://chemospec.org/posts/2020-09-08-GSOC-hyperSpec/2020-09-08-GSOC-hyperSpec.html</guid>
-  <pubDate>Tue, 08 Sep 2020 07:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>Simulating Spectroscopic Data Part 1</title>
-  <dc:creator>Bryan Hanson</dc:creator>
-  <link>http://chemospec.org/posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<p>It is well-recognized that one of the virtues of the <code>R</code> language is the extensive tools it provides for working with distributions. <a href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/Distributions">Functions</a> exist to generate random number draws, determine quantiles, and examine the probability <a href="https://en.wikipedia.org/wiki/Probability_density_function">density</a> and <a href="https://en.wikipedia.org/wiki/Cumulative_distribution_function">cumulative</a> distribution curves that describe each distribution.</p>
-<p>This toolbox gives one the ability to create simulated data sets for testing very easily. If you need a few random numbers from a Gaussian distribution then <code>rnorm</code> is your friend:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">rnorm</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span>)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] -1.67497913 -1.49447605 -0.02394601</code></pre>
-</div>
-</div>
-<p>Imagine you were developing a new technique to determine if two methods of manufacturing widgets produced widgets of the same mass.<sup>1</sup> Even before the widgets were manufactured, you could test your code by simulating widget masses using <code>rnorm</code>:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1">widget_1_masses <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">rnorm</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">100</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">5.0</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.5</span>) <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># mean mass 5.0</span></span>
-<span id="cb3-2">widget_2_masses <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">rnorm</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">100</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">4.5</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.5</span>) <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># mean mass 4.5</span></span></code></pre></div>
-</div>
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="http://chemospec.org/posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1_files/figure-html/widgetPlot-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>Variations on this approach can be used to simulate spectral data sets.<sup>2</sup> The information I will share here is accumulated knowledge. I have no formal training in the theory behind the issues discussed, just skills I have picked up in various places and by experimenting. If you see something that is wrong or needs clarification or elaboration, please use the comments to set me straight!</p>
-<section id="peak-shapes" class="level2">
-<h2 class="anchored" data-anchor-id="peak-shapes">Peak Shapes</h2>
-<p>What peak shape is expected for a given type of spectroscopy? In principle this is based on the theory behind the method, either some quantum mechanical model or an approximation of it. For some methods, like NMR, this might be fairly straightforward, at least in simple systems. But the frequencies involved in some spectroscopies not too different from others, and coupling is observed. Two examples which “interfere” with each other are:</p>
-<ul>
-<li>Electronic transitions in UV spectra which are broadened by interactions with vibrational states.</li>
-<li>Vibrational transitions in IR spectroscopy (bonds stretching and bond angles bending in various ways) are coupled to electronic transitions.</li>
-</ul>
-<p>After theoretical considerations, we should keep in mind that all spectroscopies have some sort of detector, electronic components and basic data processing that can affect peak shape. A CCD on a UV detector is one of the simpler situations. FT-IR has a mechanical interferometer, and the raw signal from both IR and NMR is Fourier-transformed prior to use. So there are not only theoretical issues to think about, but also engineering, instrument tuning, electrical engineering and mathematical issues to consider.</p>
-<p>Even with myriad theoretical and practical considerations, a Gaussian curve is a good approximation to a simple peak, and more complex peaks can be built by summing Gaussian curves. If we want to simulate a simple peak with a Gaussian shape, we can use the <code>dnorm</code> function, which gives us the “density” of the distribution:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1">std_deviations <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">seq</span>(<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">5</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">5</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">length.out =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">100</span>)</span>
-<span id="cb4-2">Gaussian_1 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">dnorm</span>(std_deviations)</span>
-<span id="cb4-3"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">plot</span>(std_deviations, Gaussian_1, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">type =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"l"</span>,</span>
-<span id="cb4-4">  <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">xlab =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"standard deviations"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">ylab =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Gaussian Density"</span>)</span></code></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="http://chemospec.org/posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1_files/figure-html/dnorm1-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>If we want this to look more like a “real” peak, we can increase the x range and use x values with realistic frequency values. And if we want our spectrum to be more complex, we can add several of these curves together. Keep in mind that the area under the density curve is 1.0, and the peak width is determined by the value of argument <code>sd</code> (the standard deviation). For example if you want to simulate the UV spectrum of <a href="https://webbook.nist.gov/cgi/cbook.cgi?ID=C121335&amp;Units=SI&amp;Mask=400">vanillin</a>, which has maxima at about 230, 280 and 315 nm, one can do something along these lines:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1">wavelengths <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">220</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">350</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">by =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1.0</span>)</span>
-<span id="cb5-2">Peak1 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">dnorm</span>(wavelengths, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">230</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">22</span>)</span>
-<span id="cb5-3">Peak2 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">dnorm</span>(wavelengths, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">280</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">17</span>)</span>
-<span id="cb5-4">Peak3 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">dnorm</span>(wavelengths, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">315</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">17</span>)</span>
-<span id="cb5-5">Peaks123 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">colSums</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">rbind</span>(<span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1.6</span> <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> Peak1, Peak2, Peak3))</span>
-<span id="cb5-6"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">plot</span>(wavelengths, Peaks123, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">type =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"l"</span>,</span>
-<span id="cb5-7">  <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">xlab =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"wavelengths (nm)"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">ylab =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"arbitrary intensity"</span>)</span></code></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="http://chemospec.org/posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1_files/figure-html/vanillin-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>The coefficient on <code>Peak1</code> is needed to increase the contribution of that peak in order to better resemble the linked spectrum (note that the linked spectrum y-axis is <img src="https://latex.codecogs.com/png.latex?log%20%5Cepsilon">; we’re just going for a rough visual approximation).</p>
-<p>It’s a simple, if tedious, task to add Gaussian curves in this manner to simulate a <em>single spectrum</em>. One can also create several different spectra, and then combine them in various ratios to create a data set representing samples composed of <em>mixtures of compounds</em>. UV spectra are tougher due to the vibrational coupling; NMR spectra are quite straightforward since we know the area of each magnetic environment in the structure (but we also have to deal with doublets etc.). If you plan to do a lot of this, take a look at the <a href="https://cran.r-project.org/package=SpecHelpers"><code>SpecHelpers</code></a> package, which is designed to streamline these tasks.</p>
-<p>A relatively minor exception to the typical Gaussian peak shape is NMR. Peaks in NMR are typically described as “Lorentzian”, which corresponds to the <a href="https://en.wikipedia.org/wiki/Cauchy_distribution">Cauchy</a> distribution <span class="citation" data-cites="Goldenberg2016">(Goldenberg 2016)</span>. This quick comparison shows that NMR peaks are expected to be less sharp and have fatter tails:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1">Gaussian_1 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">dnorm</span>(std_deviations)</span>
-<span id="cb6-2">Cauchy_1 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">dcauchy</span>(std_deviations)</span>
-<span id="cb6-3"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">plot</span>(std_deviations, Gaussian_1, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">type =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"l"</span>,</span>
-<span id="cb6-4">  <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">xlab =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"standard deviations"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">ylab =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"density"</span>)</span>
-<span id="cb6-5"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">lines</span>(std_deviations, Cauchy_1, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">col =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"red"</span>)</span></code></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="http://chemospec.org/posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1_files/figure-html/GvC-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="baselines" class="level2">
-<h2 class="anchored" data-anchor-id="baselines">Baselines</h2>
-<p>For many types of spectroscopies there is a need to correct the baseline when processing the data. But if you are simulating spectroscopic (or chromatographic) data, how can you introduce baseline anomalies? Such anomalies can take many forms, for instance a linear dependence on wavelength (i.e.&nbsp;a steadily rising baseline without curvature). But more often one sees complex rolling baseline issues.</p>
-<p>Let’s play with introducing different types of baseline abberations. First, let’s create a set of three simple spectra. We’ll use a simple function to scale the set of spectra so the range is on the interval [0…1] for ease of further manipulations.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1">wavelengths <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">200</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">800</span></span>
-<span id="cb7-2">Spec1 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">dnorm</span>(wavelengths, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">425</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">30</span>)</span>
-<span id="cb7-3">Spec2 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">dnorm</span>(wavelengths, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">550</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">20</span>) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># boost the area</span></span>
-<span id="cb7-4">Spec3 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">dnorm</span>(wavelengths, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">615</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">15</span>)</span>
-<span id="cb7-5">Spec123 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">rbind</span>(Spec1, Spec2, Spec3)</span>
-<span id="cb7-6"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">dim</span>(Spec123) <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># matrix with samples in rows</span></span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1]   3 601</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1">scale01 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">function</span>(M) {</span>
-<span id="cb9-2">  <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># scales the range of the matrix to [0...1]</span></span>
-<span id="cb9-3">  mn <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">min</span>(M)</span>
-<span id="cb9-4">  M <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> M <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span> mn</span>
-<span id="cb9-5">  mx <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">max</span>(M)</span>
-<span id="cb9-6">  M <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> M<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">/</span>mx</span>
-<span id="cb9-7">}</span></code></pre></div>
-</div>
-<p>Here are the results; the dotted line is the sum of the three spectra, offset vertically for ease of comparison.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1">Spec123 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">scale01</span>(Spec123)</span>
-<span id="cb10-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">plot</span>(wavelengths, Spec123[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>,], <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">col =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"black"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">type =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"l"</span>,</span>
-<span id="cb10-3">  <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">xlab =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"wavelength (nm)"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">ylab =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"intensity"</span>,</span>
-<span id="cb10-4">  <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">ylim =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1.3</span>))</span>
-<span id="cb10-5"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">lines</span>(wavelengths, Spec123[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>,], <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">col =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"red"</span>)</span>
-<span id="cb10-6"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">lines</span>(wavelengths, Spec123[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span>,], <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">col =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"blue"</span>)</span>
-<span id="cb10-7"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">lines</span>(wavelengths, <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">colSums</span>(Spec123) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.2</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">lty =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>)</span></code></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="http://chemospec.org/posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1_files/figure-html/showThree-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>One clever way to introduce baseline anomalies is to use a <a href="https://en.wikipedia.org/wiki/Vandermonde_matrix">Vandermonde matrix</a>. This is a trick I learned while working with the team on the <code>hyperSpec</code> overhaul funded by <a href="https://chemospec.org/posts/2020-05-07-GSOC-hyperSpec/">GSOC</a>.<sup>3</sup> It’s easiest to explain by an example:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1">vander <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">function</span>(x, order) <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">outer</span>(x, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span>order, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">`</span><span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">^</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">`</span>)</span>
-<span id="cb11-2">vdm <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">vander</span>(wavelengths, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>)</span>
-<span id="cb11-3"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">dim</span>(vdm)</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 601   3</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1">vdm[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">5</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span>]</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>     [,1] [,2]  [,3]
-[1,]    1  200 40000
-[2,]    1  201 40401
-[3,]    1  202 40804
-[4,]    1  203 41209
-[5,]    1  204 41616</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1">vdm <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">scale</span>(vdm, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">center =</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">FALSE</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">scale =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">50</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2000</span>))</span></code></pre></div>
-</div>
-<p>Looking at the first few rows of <code>vdm</code>, you can see that the first column is a simple multiplier, in this case an identity vector. This can be viewed as an offset term.<sup>4</sup> The second column contains the original wavelength values, in effect a linear term. The third column contains the square of the original wavelength values. If more terms had been requested, they would be the cubed values etc. In the code above we also scaled the columns of the matrix so that the influence of the linear and especially the squared terms don’t dominate the absolute values of the final result. Scaling does not affect the shape of the curves.</p>
-<p>To use this Vandermonde matrix, we need another matrix which will function as a set of coefficients.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1">coefs <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">matrix</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">runif</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">nrow</span>(Spec123) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span>), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">ncol =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span>)</span>
-<span id="cb16-2">coefs</span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>           [,1]      [,2]      [,3]
-[1,] 0.81126877 0.9094830 0.2902550
-[2,] 0.15101528 0.9878546 0.3244570
-[3,] 0.05994409 0.5978804 0.9532016</code></pre>
-</div>
-</div>
-<p>If we multiply the coefficients by the tranposed Vandermonde matrix, we get back a set of offsets which are the rows of the Vandermonde matrix modified by the coefficients. We’ll scale things so that <code>Spec123</code> and <code>offsets</code> are on the same overall scale and then further scale so that the spectra are not overwhelmed by the offsets in the next step.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1">offsets <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> coefs <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">%*%</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">t</span>(vdm)</span>
-<span id="cb18-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">dim</span>(offsets) <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># same dimensions as Spec123 above</span></span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1]   3 601</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb20" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1">offsets <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">scale01</span>(offsets) <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.1</span></span></code></pre></div>
-</div>
-<p>These offsets can then be added to the original spectrum to obtain our spectra with a distorted baseline. Here we have summed the individual spectra. We have added a line based on extrapolating the first 20 points of the distorted data, which clearly shows the influence of the squared term.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1">FinalSpec1 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> offsets <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> Spec123</span>
-<span id="cb21-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">plot</span>(wavelengths, <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">colSums</span>(FinalSpec1), <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">type =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"l"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">col =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"red"</span>,</span>
-<span id="cb21-3">  <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">xlab =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"wavelength (nm)"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">ylab =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"intensity"</span>)</span>
-<span id="cb21-4"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">lines</span>(wavelengths, <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">colSums</span>(Spec123))</span>
-<span id="cb21-5">fit <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">lm</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">colSums</span>(FinalSpec1)[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">20</span>] <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> wavelengths[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">20</span>])</span>
-<span id="cb21-6"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">lines</span>(wavelengths, fit<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>coef[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>]<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span>wavelengths <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> fit<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span>coef[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>],</span>
-<span id="cb21-7">  <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">col =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"red"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">lty =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>) <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># good ol' y = mx + b</span></span></code></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="http://chemospec.org/posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1_files/figure-html/vdm4-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>The Vandermonde matrix approach works by creating offsets that are added to the original spectrum. However, it is limited to creating baseline distortions that generally increase at higher values. To create other types of distortions, you can use your imagination. For instance, you could reverse the order of the rows of <code>offsets</code> and/or use higher terms, scale a row, etc. One could also play with various polynomial functions to create the desired effect over the wavelength range of interest. For instance, the following code adds a piece of an inverted parabola to the original spectrum to simulate a baseline hump.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb22" style="background: #f1f3f5;"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1">hump <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">15</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span>(wavelengths <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">-</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">450</span>))<span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">^</span><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span> <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># piece of a parabola</span></span>
-<span id="cb22-2">hump <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">scale01</span>(hump)</span>
-<span id="cb22-3">FinalSpec2 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> hump <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.1</span> <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">colSums</span>(Spec123)</span>
-<span id="cb22-4"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">plot</span>(wavelengths, FinalSpec2, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">type =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"l"</span>,</span>
-<span id="cb22-5">  <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">xlab =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"wavelengths (nm)"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">ylab =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"intensity"</span>)</span>
-<span id="cb22-6"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">lines</span>(wavelengths, hump <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">*</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0.1</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">lty =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>) <span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># trace the hump</span></span></code></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="http://chemospec.org/posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1_files/figure-html/hump-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>In the plot, the dotted line traces out the value of <code>hump * 0.1</code>, the offset.</p>
-<p>In the next post we’ll look at ways to introduce noise into simulated spectra.</p>
-
-
-
-</section>
-
-
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0">
-<div id="ref-Goldenberg2016" class="csl-entry">
-Goldenberg, David P. 2016. <em><span class="nocase">Principles of NMR Spectroscopy: An Illustrated Guide</span></em>. University Science Books.
-</div>
-</div></section><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
-
-<ol>
-<li id="fn1"><p>Of course, this is simply the t-test.↩︎</p></li>
-<li id="fn2"><p>For that matter, you can also simulate chromatograms using the methods we are about to show. It’s even possible to introduce tailing of a peak. For a function to do this, see the <a href="https://cran.r-project.org/package=SpecHelpers"><code>SpecHelpers</code></a> package.↩︎</p></li>
-<li id="fn3"><p>The work I’m showing here is based on original code in package <a href="https://cran.r-project.org/web/packages/hyperSpec/index.html"><code>hyperSpec</code></a> by Claudia Belietes.↩︎</p></li>
-<li id="fn4"><p>As a vector of 1’s it will have no effect on the calculations to come. However, you could multiply this column by a value to add an offset to your simulated spectra. This would be a means of simulating a steady electronic bias in an instrument’s raw data.↩︎</p></li>
-</ol>
-</section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
-  author = {Hanson, Bryan},
-  title = {Simulating {Spectroscopic} {Data} {Part} 1},
-  date = {2020-06-28},
-  url = {http://chemospec.org/posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1.html},
-  langid = {en}
-}
-</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2020" class="csl-entry quarto-appendix-citeas">
-Hanson, Bryan. 2020. <span>“Simulating Spectroscopic Data Part
-1.”</span> June 28, 2020. <a href="http://chemospec.org/posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1.html">http://chemospec.org/posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1.html</a>.
-</div></div></section></div> ]]></description>
-  <category>R</category>
-  <category>Simulated Data</category>
-  <category>SpecHelpers</category>
-  <category>Baseline</category>
-  <guid>http://chemospec.org/posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1.html</guid>
-  <pubDate>Sun, 28 Jun 2020 07:00:00 GMT</pubDate>
-</item>
-<item>
-  <title>Fortifying hyperSpec: Getting Ready for GSOC</title>
-  <dc:creator>Bryan Hanson</dc:creator>
-  <link>http://chemospec.org/posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html</link>
-  <description><![CDATA[ 
-
-
-
-
-<p><a href="https://cran.r-project.org/web/packages/hyperSpec/index.html"><code>hyperSpec</code></a> is an <code>R</code> package for working with hyperspectral data sets. Hyperspectral data can take many forms, but a common application is a series of spectra collected over an x, y grid, for instance Raman imaging of medical specimens. <code>hyperSpec</code> was originally written by Claudia Beleites and she currently guides a core group of contributors.<sup>1</sup></p>
-<p>Claudia, regular <code>hyperSpec</code> contributor Roman Kiselev and myself have joined forces this summer in a <a href="https://summerofcode.withgoogle.com/">Google Summer of Code</a> project to fortify <code>hyperSpec</code>. We are pleased to report that the project was accepted by <a href="https://github.com/rstats-gsoc/gsoc2020/wiki">R-GSOC</a> administrators, and, as of a few days ago, the excellent proposal written by Erick Oduniyi was approved by Google. Erick is a senior computer engineering major at Wichita State University in Kansas. Erick gravitates toward interdisciplinary projects. This, and his experience with <code>R</code>, <code>Python</code> and related skills gives him an excellent background for this project.</p>
-<p>The focus of this project is to fortify the infrastructure of <code>hyperSpec</code>. Over the years, keeping <code>hyperSpec</code> up-to-date has grown a bit unwieldy. While to-do lists always evolve, the current <em>interrelated</em> goals include:</p>
-<ul>
-<li><strong>Distill</strong><sup>2</sup> <code>hyperSpec</code>: Prune <code>hyperSpec</code> back to it’s core functionality to keep it lightweight. Relocate portions, such as importing data, into their own dedicated packages.</li>
-<li><strong>Shield</strong> <code>hyperSpec</code>: Analyze the ecosystem of <code>hyperSpec</code> with an eye to reducing dependencies as much as possible and ensuring that necessary dependencies are the best choices. Avoid “re-inventing the wheel”, as long as the available “wheels” are computationally efficient and stable (code base and API).</li>
-<li><strong>Bridge</strong> <code>hyperSpec</code>: Having decided on how to reorganize <code>hyperSpec</code> and which dependencies are necessary and optimal, ensure that <code>hyperSpec</code>, the constellation of new sub-packages, and all dependencies are integrated efficiently. There are a number of data pre-processing and plotting functions that need to be streamlined and interfaced to external packages more consistently. Some portions may need substantial refactoring.</li>
-</ul>
-<p>Addressing each of these goals will make <code>hyperSpec</code> much easier to maintain, less fragile, and easier for others to contribute. Every step will bring enhanced documentation and vignettes, along with new unit tests. Work will begin in earnest on June 1st, and we are looking forward to a very productive summer.</p>
-<p>Finally, on behalf of all participants, let me just say how grateful we are to Google for establishing the GSOC program and for supporting Erick’s work this summer!</p>
-
-
-
-
-<script data-goatcounter="https://chemospec.goatcounter.com/count" async="" src="//gc.zgo.at/count.js"></script><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
-
-<ol>
-<li id="fn1"><p>A little history for the curious: the <code>hyperSpec</code> and <code>ChemoSpec</code> packages were written around the same time, independent of each other (~2009). Eventually, Claudia and I became aware of each other’s work, and we have collaborated in ways large and small ever since (I like working with Claudia because I always learn from her!). We have jointly mentored GSOC students twice before. One side project is <a href="https://github.com/Chathurga/HyperChemoBridge"><code>hyperChemoBridge</code></a>, a small package that converts <code>hyperSpec</code> objects into <code>Spectra</code> objects (the native <code>ChemoSpec</code> format) and vice-versa.↩︎</p></li>
-<li id="fn2"><p>The descriptors here are Erick’s clever choice of words.↩︎</p></li>
-</ol>
-</section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{hanson2020,
-  author = {Hanson, Bryan},
-  title = {Fortifying {hyperSpec:} {Getting} {Ready} for {GSOC}},
-  date = {2020-05-07},
-  url = {http://chemospec.org/posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html},
-  langid = {en}
-}
-</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-hanson2020" class="csl-entry quarto-appendix-citeas">
-Hanson, Bryan. 2020. <span>“Fortifying hyperSpec: Getting Ready for
-GSOC.”</span> May 7, 2020. <a href="http://chemospec.org/posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html">http://chemospec.org/posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html</a>.
-</div></div></section></div> ]]></description>
-  <category>R</category>
-  <category>hyperSpec</category>
-  <category>GSOC</category>
-  <guid>http://chemospec.org/posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html</guid>
-  <pubDate>Thu, 07 May 2020 07:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>

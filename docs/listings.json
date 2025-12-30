@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/2025-12-30 Now-With-I/NowWithI.html",
       "/posts/2025-03-06 More Multiplets/MoreMultiplets.html",
       "/posts/2025-02-06-Multiplets/Multiplets.html",
       "/posts/2024-04-17-EF-NMR-Build-3/EF-NMR-Build-3.html",
@@ -15,6 +16,8 @@
       "/posts/2023-07-16-Photometer/Photometer.html",
       "/posts/2023-06-12-DIY-NMR/DIY-NMR.html",
       "/posts/2022-11-07-Announce-Subscribe/Announce-Subscribe.html",
+      "/posts/2022-10-05-Linear-Alg-Notes-Pt5/Linear-Alg-Notes-Pt5.html",
+      "/posts/2023-03-03-Create-MUD/Creating-MUD.html",
       "/posts/2022-11-07-Announce-Subscribe/2022-09-26-Linear-Alg-Notes-Pt4/Linear-Alg-Notes-Pt4.html",
       "/posts/2022-09-10-Linear-Alg-Notes-Pt3/Linear-Alg-Notes-Pt3.html",
       "/posts/2022-09-01-Linear-Alg-Notes-Pt2/Linear-Alg-Notes-Pt2.html",
@@ -34,6 +37,7 @@
       "/posts/2021-02-08-PLS/2021-02-08-PLS.html",
       "/posts/2020-09-08-GSOC-hyperSpec/2020-09-08-GSOC-hyperSpec.html",
       "/posts/2020-06-28-Sim-Spec-Data-Pt1/2020-06-28-Sim-Spec-Data-Pt1.html",
+      "/posts/2021-xx-xx-Sim-Spec-Data-Pt2/2021-xx-xx-Sim-Spec-Data-Pt2.html",
       "/posts/2020-05-07-GSOC-hyperSpec/2020-05-07-GSOC-hyperSpec.html",
       "/posts/2020-04-27-CSU-update/2020-04-27-CSU-update.html",
       "/posts/2020-04-25-Heatmaps/2020-04-25-Heatmaps.html",
